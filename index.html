@@ -296,6 +296,32 @@
             font-style: italic;
         }
 
+        .achievement-notification {
+            animation: slideInRight 0.5s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
         @media (max-width: 768px) {
             .portal-grid { grid-template-columns: 1fr; }
             .stats-mini { display: none; }
@@ -310,7 +336,7 @@
         <div class="header-content">
             <div class="logo">Divine Discernment</div>
             <div class="user-status">
-                <div class="stats-mini">
+                <div class="stats-mini" id="header-stats-mini">
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <span>🏛️</span>
                         <span id="header-chambers">0/9</span>
@@ -318,7 +344,7 @@
                 </div>
                 <div class="user-info">
                     <div class="user-avatar">🙏</div>
-                    <div style="font-weight: 600; font-size: 0.9rem;">Sacred Seeker</div>
+                    <div style="font-weight: 600; font-size: 0.9rem;" id="user-badge">Sacred Seeker</div>
                 </div>
                 <button class="btn-modern" id="music-btn" onclick="toggleBackgroundMusic()" style="padding: 0.5rem 1rem; font-size: 0.85rem;">🎵 Music</button>
             </div>
@@ -329,6 +355,32 @@
         <div style="text-align: center; margin-bottom: 3rem;">
             <h1 style="font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">Choose Your Path</h1>
             <p style="color: var(--text-secondary); font-size: 1.1rem;">Select a portal to begin your sacred journey</p>
+        </div>
+
+        <!-- EMAIL CAPTURE SECTION -->
+        <div style="max-width: 600px; margin: 0 auto 4rem; padding: 2.5rem; background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(245, 158, 11, 0.15)); border: 1px solid var(--accent-purple); border-radius: 24px; text-align: center;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">✨</div>
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 1rem; color: var(--accent-gold);">
+                Join the Awakening
+            </h3>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary); line-height: 1.6;">
+                Receive cosmic timing updates, manifestation guidance, and divine wisdom directly to your inbox
+            </p>
+            <form id="email-signup-form" style="display: flex; flex-direction: column; gap: 1rem; max-width: 400px; margin: 0 auto;">
+                <input 
+                    type="email" 
+                    id="signup-email" 
+                    placeholder="Enter your email" 
+                    required
+                    style="width: 100%; padding: 0.875rem; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 12px; color: white; font-size: 1rem;"
+                >
+                <button type="submit" class="btn-modern" style="width: 100%;">
+                    🌟 Begin Your Journey
+                </button>
+            </form>
+            <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-secondary);">
+                No spam. Just divine timing and spiritual wisdom. Unsubscribe anytime.
+            </p>
         </div>
 
         <div class="portal-grid">
@@ -379,6 +431,12 @@
                 <h3>Sacred Library</h3>
                 <p>Access the complete book and workbook.</p>
             </div>
+
+            <div class="portal-card" onclick="window.open('https://calendly.com/YOUR_CALENDLY_LINK', '_blank')">
+                <div class="portal-icon">👤</div>
+                <h3>1-on-1 Guidance</h3>
+                <p>Book a personal session with Nazir El for aligned manifestation coaching.</p>
+            </div>
         </div>
     </div>
 
@@ -425,7 +483,7 @@
             <div class="chamber-header-modern">
                 <div style="display: inline-block; padding: 0.5rem 1rem; background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem;">Progress Tracker</div>
                 <h2 class="chamber-title">Your Sacred Journey</h2>
-                <p style="color: var(--text-secondary); font-size: 1.1rem;">Enoch Calendar (364 days) - Begins Spring Equinox • Today Auto-Tracked</p>
+                <p style="color: var(--text-secondary); font-size: 1.1rem;" id="calendar-subtitle">Enoch Calendar (364 days) - Begins Spring Equinox • Today Auto-Tracked</p>
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
@@ -443,7 +501,7 @@
                 </div>
             </div>
 
-            <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(245, 158, 11, 0.1)); border: 1px solid var(--accent-purple); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; text-align: center;">
+            <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(245, 158, 11, 0.1)); border: 1px solid var(--accent-purple); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; text-align: center;" id="season-energy-display">
                 <div style="font-size: 1rem; font-weight: 600; color: var(--accent-gold); margin-bottom: 0.5rem;">🌸 Enoch Calendar System</div>
                 <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
                     364-day sacred calendar • Begins Spring Equinox (March 20) • 12 months, 4 quarters (30-30-31) • Always starts Wednesday • Pure divine timing
@@ -460,6 +518,16 @@
                 </div>
                 <div style="text-align: center; margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-secondary);">📅 Today is auto-tracked from Spring Equinox • Click any day to log practices</div>
                 <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem;" id="calendar-grid"></div>
+            </div>
+
+            <!-- SHARE AND DOWNLOAD BUTTONS -->
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                <button class="btn-modern btn-outline" onclick="shareProgress()" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span>📤</span> Share My Progress
+                </button>
+                <button class="btn-modern" onclick="downloadMyJourney()" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span>💾</span> Download My Journey
+                </button>
             </div>
         </div>
     </div>
@@ -486,36 +554,218 @@
         </div>
     </div>
 
-    <!-- Library Panel -->
+    <!-- Library Panel - UPDATED WITH NEW PRICING STRUCTURE -->
     <div class="chamber-panel" id="library-panel">
         <div class="close-btn" onclick="closePanel('library-panel')">✕</div>
         <div class="chamber-wrapper">
             <div class="chamber-header-modern">
                 <div style="display: inline-block; padding: 0.5rem 1rem; background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem;">Sacred Library</div>
-                <h2 class="chamber-title">Divine Wisdom</h2>
-                <p style="color: var(--text-secondary); font-size: 1.1rem;">Unlock complete book and workbook</p>
+                <h2 class="chamber-title">Begin Your Journey</h2>
+                <p style="color: var(--text-secondary); font-size: 1.1rem;">Choose your path to awakening</p>
+            </div>
+
+            <!-- FOUNDING MEMBER SPECIAL (First 100) -->
+            <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(139, 92, 246, 0.2)); border: 2px solid var(--accent-gold); border-radius: 24px; padding: 2rem; margin-bottom: 3rem; text-align: center;">
+                <div style="background: linear-gradient(135deg, var(--accent-gold), #F97316); padding: 0.5rem 1.5rem; border-radius: 12px; display: inline-block; margin-bottom: 1rem;">
+                    <span style="font-weight: 700; font-size: 0.9rem;">🔥 LIMITED: FIRST 100 ONLY</span>
+                </div>
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 1rem; color: var(--accent-gold);">
+                    ⭐ Founding Member Elite
+                </h3>
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary); line-height: 1.8;">
+                    Be one of the first 100 to join Eden Consciousness
+                </p>
+                
+                <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1.5rem; align-items: center; margin: 2rem 0; padding: 2rem; background: rgba(0,0,0,0.3); border-radius: 16px;">
+                    <div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Regular Price</div>
+                        <div style="font-size: 1.8rem; text-decoration: line-through; opacity: 0.5;">$44</div>
+                    </div>
+                    <div style="font-size: 2rem; color: var(--accent-gold);">→</div>
+                    <div>
+                        <div style="font-size: 0.9rem; color: var(--accent-gold); margin-bottom: 0.5rem;">Founding Price</div>
+                        <div style="font-size: 3rem; font-weight: 700; color: var(--accent-gold);">$17</div>
+                    </div>
+                </div>
+
+                <div style="text-align: left; max-width: 500px; margin: 0 auto 2rem;">
+                    <div style="font-weight: 600; margin-bottom: 1rem; color: var(--accent-gold);">What You Get:</div>
+                    <div style="display: grid; gap: 0.75rem;">
+                        <div style="display: flex; align-items: start; gap: 0.75rem;">
+                            <span style="color: var(--accent-gold);">✓</span>
+                            <span>📖 "Ya Heard Me" Complete Book (PDF - 33,631 words)</span>
+                        </div>
+                        <div style="display: flex; align-items: start; gap: 0.75rem;">
+                            <span style="color: var(--accent-gold);">✓</span>
+                            <span>📘 Exclusive Bonus Chapter</span>
+                        </div>
+                        <div style="display: flex; align-items: start; gap: 0.75rem;">
+                            <span style="color: var(--accent-gold);">✓</span>
+                            <span>🏛️ 30-Day FREE Temple Access (normally $27/month)</span>
+                        </div>
+                        <div style="display: flex; align-items: start; gap: 0.75rem;">
+                            <span style="color: var(--accent-gold);">✓</span>
+                            <span>👑 Elite Founder Status - Forever (#1-100)</span>
+                        </div>
+                        <div style="display: flex; align-items: start; gap: 0.75rem;">
+                            <span style="color: var(--accent-gold);">✓</span>
+                            <span>📛 Your Name in Book Acknowledgments</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(139, 92, 246, 0.2); padding: 1rem; border-radius: 12px; margin-bottom: 2rem;">
+                    <div style="font-size: 0.9rem; line-height: 1.6;">
+                        <strong>After 30 Days:</strong> Continue Temple for $27/month or $270/year<br>
+                        Or keep the book free - your choice!
+                    </div>
+                </div>
+
+                <button class="btn-modern" onclick="window.open('YOUR_FOUNDING_MEMBER_SQUARE_LINK', '_blank')" style="width: 100%; max-width: 400px; background: linear-gradient(135deg, var(--accent-gold), #F97316); font-size: 1.1rem; padding: 1.25rem 2rem;">
+                    🌟 Claim Founding Member Spot - $17
+                </button>
+                
+                <div style="margin-top: 1rem;">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--accent-gold);" id="spots-remaining">87 of 100 Remaining</div>
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        Once gone, this offer disappears forever
+                    </div>
+                </div>
+            </div>
+
+            <!-- REGULAR OPTIONS -->
+            <div style="text-align: center; margin: 3rem 0 2rem;">
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 0.5rem;">
+                    Regular Access Options
+                </h3>
+                <p style="color: var(--text-secondary);">Available after Founding Member spots fill</p>
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                
+                <!-- BOOK ONLY -->
                 <div class="reflection-section">
-                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent-gold);">📖 The Book</h3>
-                    <p style="margin-bottom: 1rem;">A Wake-Up Call from One Divine Being to Another</p>
-                    <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent-gold); margin: 1.5rem 0;">$27</div>
-                    <button class="btn-modern" style="width: 100%;">Purchase Book</button>
-                </div>
-
-                <div class="reflection-section">
-                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent-gold);">📝 The Workbook</h3>
-                    <p style="margin-bottom: 1rem;">Complete Divine Discernment Workbook</p>
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent-gold);">📖 Ya Heard Me</h3>
+                    <p style="margin-bottom: 1rem; color: var(--text-secondary);">Digital Book (PDF)</p>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                        33,631 words of revolutionary spiritual truth. Break free from institutional programming.
+                    </p>
                     <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent-gold); margin: 1.5rem 0;">$17</div>
-                    <button class="btn-modern" style="width: 100%;">Purchase Workbook</button>
+                    <button class="btn-modern" onclick="window.open('YOUR_BOOK_ONLY_SQUARE_LINK', '_blank')" style="width: 100%;">
+                        📚 Get Book
+                    </button>
                 </div>
 
+                <!-- MONTHLY TEMPLE -->
+                <div class="reflection-section" style="border: 2px solid var(--accent-purple);">
+                    <div style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); padding: 0.5rem 1rem; border-radius: 12px; display: inline-block; margin-bottom: 1rem;">
+                        <span style="font-weight: 700; font-size: 0.85rem;">⭐ MOST FLEXIBLE</span>
+                    </div>
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent-gold);">🏛️ Temple Monthly</h3>
+                    <p style="margin-bottom: 1rem; color: var(--text-secondary);">Month-to-Month Access</p>
+                    <ul style="text-align: left; margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
+                        <li>All 9 Sacred Chambers</li>
+                        <li>Cosmic Timing Tools</li>
+                        <li>Daily Oracle</li>
+                        <li>Manifestation Board</li>
+                        <li>Progress Tracker</li>
+                        <li>Cancel Anytime</li>
+                    </ul>
+                    <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent-gold); margin: 1.5rem 0;">$27<span style="font-size: 1rem; font-weight: 400;">/month</span></div>
+                    <div style="font-size: 0.85rem; color: var(--accent-purple); margin-bottom: 1rem;">
+                        7-day free trial • Cancel anytime
+                    </div>
+                    <button class="btn-modern" onclick="window.open('YOUR_MONTHLY_TEMPLE_SQUARE_LINK', '_blank')" style="width: 100%;">
+                        🌟 Start 7-Day Trial
+                    </button>
+                </div>
+
+                <!-- ANNUAL TEMPLE -->
                 <div class="reflection-section" style="border: 2px solid var(--accent-gold);">
-                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent-gold);">🌟 Bundle</h3>
-                    <p style="margin-bottom: 1rem;">Book + Workbook</p>
-                    <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent-gold); margin: 1.5rem 0;">$39</div>
-                    <button class="btn-modern" style="width: 100%; background: linear-gradient(135deg, var(--accent-gold), #F97316);">Get Bundle</button>
+                    <div style="background: linear-gradient(135deg, var(--accent-gold), #F97316); padding: 0.5rem 1rem; border-radius: 12px; display: inline-block; margin-bottom: 1rem;">
+                        <span style="font-weight: 700; font-size: 0.85rem;">🔥 BEST VALUE</span>
+                    </div>
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent-gold);">👑 Temple Annual</h3>
+                    <p style="margin-bottom: 1rem; color: var(--text-secondary);">Full Year Access</p>
+                    <ul style="text-align: left; margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
+                        <li>Everything in Monthly</li>
+                        <li>Save $54 (2 months FREE)</li>
+                        <li>Rate locked forever</li>
+                        <li>Priority support</li>
+                        <li>Annual member badge</li>
+                    </ul>
+                    <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent-gold); margin: 1.5rem 0;">$270<span style="font-size: 1rem; font-weight: 400;">/year</span></div>
+                    <div style="font-size: 0.85rem; color: var(--accent-gold); margin-bottom: 1rem;">
+                        Save $54 vs monthly • Lock in rate forever
+                    </div>
+                    <button class="btn-modern" onclick="window.open('YOUR_ANNUAL_TEMPLE_SQUARE_LINK', '_blank')" style="width: 100%; background: linear-gradient(135deg, var(--accent-gold), #F97316);">
+                        🌟 Get Annual Access
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- COMPARISON TABLE -->
+            <div style="margin-top: 3rem; padding: 2rem; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px;">
+                <h3 style="text-align: center; font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 2rem;">
+                    Compare Your Options
+                </h3>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--glass-border);">
+                                <th style="padding: 1rem; text-align: left;">Feature</th>
+                                <th style="padding: 1rem; text-align: center;">Book Only</th>
+                                <th style="padding: 1rem; text-align: center;">Monthly</th>
+                                <th style="padding: 1rem; text-align: center;">Annual</th>
+                                <th style="padding: 1rem; text-align: center; background: rgba(245, 158, 11, 0.1);">Founding Elite</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--glass-border);">
+                                <td style="padding: 1rem;">"Ya Heard Me" Book</td>
+                                <td style="padding: 1rem; text-align: center;">✅</td>
+                                <td style="padding: 1rem; text-align: center;">❌</td>
+                                <td style="padding: 1rem; text-align: center;">❌</td>
+                                <td style="padding: 1rem; text-align: center; background: rgba(245, 158, 11, 0.05);">✅</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--glass-border);">
+                                <td style="padding: 1rem;">Temple Access</td>
+                                <td style="padding: 1rem; text-align: center;">❌</td>
+                                <td style="padding: 1rem; text-align: center;">✅</td>
+                                <td style="padding: 1rem; text-align: center;">✅</td>
+                                <td style="padding: 1rem; text-align: center; background: rgba(245, 158, 11, 0.05);">✅ 30 days FREE</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--glass-border);">
+                                <td style="padding: 1rem;">9 Sacred Chambers</td>
+                                <td style="padding: 1rem; text-align: center;">❌</td>
+                                <td style="padding: 1rem; text-align: center;">✅</td>
+                                <td style="padding: 1rem; text-align: center;">✅</td>
+                                <td style="padding: 1rem; text-align: center; background: rgba(245, 158, 11, 0.05);">✅</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--glass-border);">
+                                <td style="padding: 1rem;">Cosmic Timing Tools</td>
+                                <td style="padding: 1rem; text-align: center;">❌</td>
+                                <td style="padding: 1rem; text-align: center;">✅</td>
+                                <td style="padding: 1rem; text-align: center;">✅</td>
+                                <td style="padding: 1rem; text-align: center; background: rgba(245, 158, 11, 0.05);">✅</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--glass-border);">
+                                <td style="padding: 1rem;">Elite Founder Status</td>
+                                <td style="padding: 1rem; text-align: center;">❌</td>
+                                <td style="padding: 1rem; text-align: center;">❌</td>
+                                <td style="padding: 1rem; text-align: center;">❌</td>
+                                <td style="padding: 1rem; text-align: center; background: rgba(245, 158, 11, 0.05);">✅ Limited 100</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--glass-border);">
+                                <td style="padding: 1rem;"><strong>Price</strong></td>
+                                <td style="padding: 1rem; text-align: center;"><strong>$17</strong></td>
+                                <td style="padding: 1rem; text-align: center;"><strong>$27/mo</strong></td>
+                                <td style="padding: 1rem; text-align: center;"><strong>$270/yr</strong></td>
+                                <td style="padding: 1rem; text-align: center; background: rgba(245, 158, 11, 0.05);"><strong>$17 ONE-TIME</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -739,6 +989,45 @@
             }
         ];
 
+        // Achievement System
+        const achievements = [
+            { 
+                id: 'first_chamber', 
+                icon: '🎯', 
+                title: 'First Steps', 
+                description: 'Complete your first chamber',
+                condition: () => state.completedChambers.size >= 1 
+            },
+            { 
+                id: 'half_journey', 
+                icon: '🌟', 
+                title: 'Halfway There', 
+                description: 'Complete 5 chambers',
+                condition: () => state.completedChambers.size >= 5 
+            },
+            { 
+                id: 'temple_master', 
+                icon: '👑', 
+                title: 'Temple Master', 
+                description: 'Complete all 9 chambers',
+                condition: () => state.completedChambers.size === 9 
+            },
+            { 
+                id: 'week_streak', 
+                icon: '🔥', 
+                title: '7 Day Streak', 
+                description: 'Log practice for 7 consecutive days',
+                condition: () => checkStreak() >= 7 
+            },
+            { 
+                id: 'manifestor', 
+                icon: '✨', 
+                title: 'Active Manifestor', 
+                description: 'Create 5 manifestations',
+                condition: () => state.manifestations.length >= 5 
+            }
+        ];
+
         // Audio System
         let audioContext = null;
         let backgroundMusic = null;
@@ -748,7 +1037,6 @@
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
         }
 
-        // Play button click sound
         function playClickSound() {
             if (!audioContext) initAudio();
             
@@ -758,7 +1046,7 @@
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
             
-            oscillator.frequency.value = 528; // 528Hz - Love frequency
+            oscillator.frequency.value = 528;
             oscillator.type = 'sine';
             
             gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
@@ -768,7 +1056,6 @@
             oscillator.stop(audioContext.currentTime + 0.1);
         }
 
-        // Play success sound
         function playSuccessSound() {
             if (!audioContext) initAudio();
             
@@ -780,8 +1067,8 @@
             oscillator2.connect(gainNode);
             gainNode.connect(audioContext.destination);
             
-            oscillator1.frequency.value = 432; // 432Hz - Universal harmony
-            oscillator2.frequency.value = 528; // 528Hz - Love frequency
+            oscillator1.frequency.value = 432;
+            oscillator2.frequency.value = 528;
             oscillator1.type = 'sine';
             oscillator2.type = 'sine';
             
@@ -794,7 +1081,6 @@
             oscillator2.stop(audioContext.currentTime + 0.6);
         }
 
-        // Play ambient background music
         function toggleBackgroundMusic() {
             if (!audioContext) initAudio();
             
@@ -808,7 +1094,6 @@
         function startBackgroundMusic() {
             if (!audioContext) initAudio();
             
-            // Create oscillators for ambient sound
             const osc1 = audioContext.createOscillator();
             const osc2 = audioContext.createOscillator();
             const osc3 = audioContext.createOscillator();
@@ -827,10 +1112,9 @@
             gain3.connect(masterGain);
             masterGain.connect(audioContext.destination);
             
-            // Sacred frequencies
-            osc1.frequency.value = 432; // Universal harmony
-            osc2.frequency.value = 528; // Love frequency  
-            osc3.frequency.value = 639; // Connection frequency
+            osc1.frequency.value = 432;
+            osc2.frequency.value = 528;
+            osc3.frequency.value = 639;
             
             osc1.type = 'sine';
             osc2.type = 'sine';
@@ -865,7 +1149,6 @@
             }
         }
 
-        // Play portal open sound
         function playPortalSound() {
             if (!audioContext) initAudio();
             
@@ -886,11 +1169,10 @@
             oscillator.stop(audioContext.currentTime + 0.3);
         }
 
-        // Play completion chime
         function playCompletionChime() {
             if (!audioContext) initAudio();
             
-            const frequencies = [432, 528, 639, 741]; // Ascending sacred frequencies
+            const frequencies = [432, 528, 639, 741];
             
             frequencies.forEach((freq, index) => {
                 const oscillator = audioContext.createOscillator();
@@ -925,8 +1207,344 @@
             currentEnochMonth: 0,
             enochYear: 1,
             dailyLogs: {},
-            currentLogDate: null
+            currentLogDate: null,
+            achievements: [],
+            membershipType: null
         };
+
+        // AUTO ENOCH DAY CALCULATION
+        function calculateEnochDay() {
+            const springEquinox2025 = new Date('2025-03-20T00:00:00');
+            const today = new Date();
+            
+            let daysSinceEquinox = Math.floor((today - springEquinox2025) / (1000 * 60 * 60 * 24));
+            
+            if (daysSinceEquinox < 0) {
+                const springEquinox2024 = new Date('2024-03-20T00:00:00');
+                daysSinceEquinox = Math.floor((today - springEquinox2024) / (1000 * 60 * 60 * 24));
+            }
+            
+            const enochDay = (daysSinceEquinox % 364) + 1;
+            const enochMonth = Math.floor((enochDay - 1) / 30.33);
+            
+            let season = '';
+            let seasonEnergy = '';
+            if (enochDay >= 1 && enochDay <= 91) {
+                season = 'Spring';
+                seasonEnergy = '🌸 Renewal & New Beginnings';
+            } else if (enochDay >= 92 && enochDay <= 182) {
+                season = 'Early Summer';
+                seasonEnergy = '☀️ Expansion & Growth';
+            } else if (enochDay >= 183 && enochDay <= 273) {
+                season = 'Late Summer';
+                seasonEnergy = '🌞 Harvest & Abundance';
+            } else {
+                season = 'Autumn';
+                seasonEnergy = '🍂 Wisdom & Preparation';
+            }
+            
+            document.getElementById('stat-enoch-day').textContent = enochDay + '/364';
+            
+            const seasonDisplay = document.getElementById('season-energy-display');
+            if (seasonDisplay) {
+                seasonDisplay.innerHTML = `
+                    <div style="font-size: 1rem; font-weight: 600; color: var(--accent-gold); margin-bottom: 0.5rem;">${seasonEnergy}</div>
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+                        Day ${enochDay}/364 • ${season} Season • Enoch Calendar aligned with Spring Equinox (March 20)
+                    </div>
+                `;
+            }
+            
+            state.currentEnochDay = enochDay;
+            state.currentEnochMonth = enochMonth;
+            
+            return { day: enochDay, month: enochMonth, season: season, energy: seasonEnergy };
+        }
+
+        function updateCosmicHeader() {
+            const enoch = calculateEnochDay();
+            const headerStats = document.getElementById('header-stats-mini');
+            
+            if (headerStats) {
+                const enochDisplay = document.createElement('div');
+                enochDisplay.style.cssText = 'display: flex; align-items: center; gap: 0.5rem;';
+                enochDisplay.innerHTML = `
+                    <span>📅</span>
+                    <span>Day ${enoch.day}/364</span>
+                `;
+                headerStats.insertBefore(enochDisplay, headerStats.firstChild);
+            }
+        }
+
+        // REAL MOON PHASE CALCULATION
+        function getCurrentMoonPhase() {
+            const today = new Date();
+            const knownNewMoon = new Date('2024-01-11');
+            const daysSinceNew = Math.floor((today - knownNewMoon) / (1000 * 60 * 60 * 24));
+            
+            const lunarCycle = 29.53;
+            const currentPhaseDay = daysSinceNew % lunarCycle;
+            
+            let phaseName, phaseIcon, guidance, manifestationFocus;
+            
+            if (currentPhaseDay < 1.85) {
+                phaseName = 'New Moon';
+                phaseIcon = '🌑';
+                guidance = 'The New Moon is a time of new beginnings and setting intentions. Plant the seeds of what you wish to manifest.';
+                manifestationFocus = 'Write your desires with present-tense authority. Declare what IS.';
+            } else if (currentPhaseDay < 7.38) {
+                phaseName = 'Waxing Crescent';
+                phaseIcon = '🌒';
+                guidance = 'The Waxing Crescent brings energy for nurturing your intentions. Take aligned action on what you declared.';
+                manifestationFocus = 'Build momentum. Feed your manifestations with consistent energy.';
+            } else if (currentPhaseDay < 9.23) {
+                phaseName = 'First Quarter';
+                phaseIcon = '🌓';
+                guidance = 'The First Quarter is decision time. Overcome obstacles and recommit to your path.';
+                manifestationFocus = 'Break through resistance. Make key decisions with confidence.';
+            } else if (currentPhaseDay < 14.77) {
+                phaseName = 'Waxing Gibbous';
+                phaseIcon = '🌔';
+                guidance = 'The Waxing Gibbous asks you to refine and adjust. Prepare to receive your manifestations.';
+                manifestationFocus = 'Optimize your approach. Get ready for results.';
+            } else if (currentPhaseDay < 16.62) {
+                phaseName = 'Full Moon';
+                phaseIcon = '🌕';
+                guidance = 'The Full Moon is peak manifestation time. Receive your results with gratitude and celebrate.';
+                manifestationFocus = 'Harvest what you planted. Celebrate abundance. Share testimony.';
+            } else if (currentPhaseDay < 22.15) {
+                phaseName = 'Waning Gibbous';
+                phaseIcon = '🌖';
+                guidance = 'The Waning Gibbous is for gratitude and sharing. Give thanks and teach what you learned.';
+                manifestationFocus = 'Share your wins. Help others. Document the journey.';
+            } else if (currentPhaseDay < 23.99) {
+                phaseName = 'Last Quarter';
+                phaseIcon = '🌗';
+                guidance = 'The Last Quarter calls for release. Let go of what didn\'t manifest and clear space.';
+                manifestationFocus = 'Release resistance. Forgive. Clear energetic space.';
+            } else {
+                phaseName = 'Waning Crescent';
+                phaseIcon = '🌘';
+                guidance = 'The Waning Crescent invites deep rest. Empty your consciousness and prepare for the next new moon.';
+                manifestationFocus = 'Complete rest. Vision clarity. Strategic planning.';
+            }
+            
+            document.getElementById('moon-icon').textContent = phaseIcon;
+            document.getElementById('moon-phase-name').textContent = phaseName;
+            document.getElementById('moon-guidance').innerHTML = `
+                <strong>${guidance}</strong><br><br>
+                <em>Manifestation Focus:</em> ${manifestationFocus}
+            `;
+            
+            return { phase: phaseName, icon: phaseIcon };
+        }
+
+        // FOUNDING MEMBER SPOT TRACKER
+        function updateFoundingSpots() {
+            // TODO: Connect to your Square inventory API or manual counter
+            // For now, update manually
+            const spotsRemaining = 87; // Update this number as spots sell
+            const spotsElement = document.getElementById('spots-remaining');
+            
+            if (spotsElement) {
+                spotsElement.textContent = spotsRemaining + ' of 100 Remaining';
+                
+                // Add urgency colors
+                if (spotsRemaining <= 10) {
+                    spotsElement.style.color = '#EF4444';
+                    spotsElement.innerHTML = '🔥 ONLY ' + spotsRemaining + ' SPOTS LEFT! 🔥';
+                } else if (spotsRemaining <= 25) {
+                    spotsElement.style.color = '#F59E0B';
+                }
+            }
+        }
+
+        // Show Temple Member Badge for Paying Members
+        function activateTempleMembership(membershipType) {
+            const badge = membershipType === 'annual' ? '👑 Annual Member' : 
+                         membershipType === 'founding' ? '⭐ Founding Elite' : 
+                         '⭐ Temple Member';
+            const userBadge = document.getElementById('user-badge');
+            if (userBadge) {
+                userBadge.textContent = badge;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('temple-membership', membershipType);
+            localStorage.setItem('temple-start-date', new Date().toISOString());
+            state.membershipType = membershipType;
+        }
+
+        // Check membership status on load
+        function checkMembershipStatus() {
+            const savedMembership = localStorage.getItem('temple-membership');
+            if (savedMembership) {
+                activateTempleMembership(savedMembership);
+            }
+        }
+
+        // EMAIL CAPTURE
+        document.addEventListener('DOMContentLoaded', function() {
+            const emailForm = document.getElementById('email-signup-form');
+            if (emailForm) {
+                emailForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = document.getElementById('signup-email').value;
+                    
+                    localStorage.setItem('temple-email', email);
+                    
+                    playSuccessSound();
+                    alert('🌟 Welcome to the Temple! Check your email for your cosmic timing guide.');
+                    
+                    // TODO: Send to your email service (Mailchimp, ConvertKit, etc.)
+                    // fetch('/api/subscribe', { method: 'POST', body: JSON.stringify({ email }) });
+                });
+            }
+        });
+
+        // SHARE PROGRESS
+        function shareProgress() {
+            const chambersCompleted = state.completedChambers.size;
+            const daysLogged = Object.keys(state.dailyLogs).length;
+            const enochDay = state.currentEnochDay;
+            
+            const shareText = `🏛️ My Spiritual Journey at Divine Discernment Temple:
+
+✅ ${chambersCompleted}/9 Sacred Chambers Complete
+📅 ${daysLogged} Days of Practice Logged  
+🌸 Currently on Enoch Day ${enochDay}/364
+
+Join me in remembering your divine creative authority!
+
+#SpiritualJourney #DivineDiscernment #CosmicTiming`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Spiritual Journey',
+                    text: shareText,
+                    url: window.location.href
+                }).then(() => {
+                    playSuccessSound();
+                });
+            } else {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    playSuccessSound();
+                    alert('✨ Progress copied to clipboard! Share it wherever you like.');
+                });
+            }
+        }
+
+        // DOWNLOAD JOURNEY
+        function downloadMyJourney() {
+            let content = "MY DIVINE DISCERNMENT JOURNEY\n";
+            content += "=" + "=".repeat(60) + "\n\n";
+            content += `Generated: ${new Date().toLocaleDateString()}\n`;
+            content += `Chambers Completed: ${state.completedChambers.size}/9\n`;
+            content += `Days Logged: ${Object.keys(state.dailyLogs).length}\n`;
+            content += `Current Enoch Day: ${state.currentEnochDay}/364\n\n`;
+            
+            for (let i = 0; i < chamberData.length; i++) {
+                if (state.completedChambers.has(i)) {
+                    content += `\n${"=".repeat(70)}\n`;
+                    content += `CHAMBER ${i+1}: ${chamberData[i].title.toUpperCase()}\n`;
+                    content += `${chamberData[i].subtitle}\n`;
+                    content += `${"=".repeat(70)}\n\n`;
+                    
+                    for (let qi = 0; qi < chamberData[i].questions.length; qi++) {
+                        const response = state.responses[i + '_' + qi] || '';
+                        if (response) {
+                            content += `Q${qi + 1}: ${chamberData[i].questions[qi].label}\n\n`;
+                            content += `${response}\n\n`;
+                            content += "-".repeat(70) + "\n\n";
+                        }
+                    }
+                }
+            }
+            
+            if (state.manifestations.length > 0) {
+                content += `\n${"=".repeat(70)}\n`;
+                content += `MY MANIFESTATIONS\n`;
+                content += `${"=".repeat(70)}\n\n`;
+                
+                state.manifestations.forEach((m, index) => {
+                    content += `${index + 1}. ${m.text}\n`;
+                    content += `   Declared: ${new Date(m.createdAt).toLocaleDateString()}\n\n`;
+                });
+            }
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `My_Divine_Journey_${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            
+            playSuccessSound();
+            alert('📥 Your journey has been downloaded! Keep it safe.');
+        }
+
+        // ACHIEVEMENT SYSTEM
+        function checkStreak() {
+            const dates = Object.keys(state.dailyLogs).sort();
+            if (dates.length === 0) return 0;
+            
+            let streak = 1;
+            for (let i = dates.length - 1; i > 0; i--) {
+                const current = new Date(dates[i]);
+                const previous = new Date(dates[i-1]);
+                const diff = Math.floor((current - previous) / (1000 * 60 * 60 * 24));
+                
+                if (diff === 1) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+            return streak;
+        }
+
+        function checkAchievements() {
+            const unlockedAchievements = achievements.filter(a => 
+                a.condition() && !state.achievements.includes(a.id)
+            );
+            
+            if (unlockedAchievements.length > 0) {
+                unlockedAchievements.forEach(achievement => {
+                    state.achievements.push(achievement.id);
+                    showAchievementNotification(achievement);
+                });
+            }
+        }
+
+        function showAchievementNotification(achievement) {
+            playCompletionChime();
+            
+            const notification = document.createElement('div');
+            notification.className = 'achievement-notification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 2rem;
+                background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+                border-radius: 16px;
+                padding: 1.5rem;
+                max-width: 300px;
+                z-index: 3000;
+            `;
+            notification.innerHTML = `
+                <div style="font-size: 3rem; text-align: center;">${achievement.icon}</div>
+                <div style="font-weight: 700; font-size: 1.2rem; margin: 0.5rem 0; text-align: center;">Achievement Unlocked!</div>
+                <div style="font-weight: 600; margin-bottom: 0.25rem;">${achievement.title}</div>
+                <div style="font-size: 0.9rem; opacity: 0.9;">${achievement.description}</div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.5s ease';
+                setTimeout(() => notification.remove(), 500);
+            }, 4000);
+        }
 
         // Three.js setup
         let scene, camera, renderer;
@@ -1000,6 +1618,7 @@
 
             document.getElementById('new-manifestation').value = '';
             displayManifestations();
+            checkAchievements();
             playSuccessSound();
             alert('🌟 Your desire has been declared to the universe!');
         }
@@ -1022,6 +1641,7 @@
             playPortalSound();
             document.getElementById('portal-container').style.display = 'none';
             document.getElementById('moon-panel').classList.add('open');
+            getCurrentMoonPhase();
         }
 
         // Breathing functions
@@ -1123,7 +1743,9 @@
         function completeChamber(index) {
             state.completedChambers.add(index);
             document.getElementById('stat-chambers').textContent = state.completedChambers.size + '/9';
+            document.getElementById('header-chambers').textContent = state.completedChambers.size + '/9';
             
+            checkAchievements();
             playCompletionChime();
             
             if (index < 8) {
@@ -1333,6 +1955,7 @@
             document.getElementById('stat-days').textContent = daysLogged;
             closeDailyLog();
             
+            checkAchievements();
             playSuccessSound();
             alert('✨ Daily log saved! Keep building your practice!');
         }
@@ -1350,19 +1973,27 @@
             document.getElementById('library-panel').classList.add('open');
         }
 
-        // General functions
-        function closePanel(panelId) {
-            document.getElementById(panelId).classList.remove('open');
-            document.getElementById('portal-container').style.display = 'block';
-        }
-
-        // Initialize
-        initThreeJS();
-        updateMeditationDisplay();
-        initAudio();
-        console.log('Divine Discernment Temple initialized successfully!');
-        console.log('All features active: Oracle, Manifestation, Breathing, Moon, Chambers, Meditation, Calendar, Library');
-        console.log('Sacred sound frequencies: 432Hz (harmony), 528Hz (love), 639Hz (connection), 741Hz (awakening)');
+        // Initialize everything
+        window.addEventListener('load', function() {
+            initThreeJS();
+            updateMeditationDisplay();
+            initAudio();
+            calculateEnochDay();
+            updateCosmicHeader();
+            updateFoundingSpots();
+            checkMembershipStatus();
+            
+            console.log('✨ Divine Discernment Temple initialized successfully!');
+            console.log('🏛️ All features active: Oracle, Manifestation, Breathing, Moon, Chambers, Meditation, Calendar, Library');
+            console.log('🎵 Sacred sound frequencies: 432Hz (harmony), 528Hz (love), 639Hz (connection), 741Hz (awakening)');
+            console.log('📅 Enoch Calendar auto-tracking enabled');
+            console.log('🌙 Real-time moon phase calculation active');
+            console.log('🏆 Achievement system ready');
+            console.log('📧 Email capture integrated');
+            console.log('📤 Share & download features ready');
+            console.log('⭐ FOUNDING MEMBER ELITE: Limited 100 spots available');
+            console.log('💳 New pricing structure: $17 book, $27/mo temple, $270/yr annual');
+        });
     </script>
 </body>
 </html>
