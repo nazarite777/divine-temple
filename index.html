@@ -528,6 +528,270 @@
     </style>
 </head>
 <body>
+<!-- Divine Frequency Music Player - Top of Page -->
+<div id="divine-frequency-player" style="width: 100%; background: linear-gradient(135deg, rgba(10, 14, 39, 0.98), rgba(26, 31, 58, 0.98)); border-bottom: 2px solid rgba(139, 92, 246, 0.3); backdrop-filter: blur(10px); position: relative; z-index: 999;">
+    
+    <!-- Collapsed State (Default) -->
+    <div id="player-collapsed" style="padding: 0.75rem 2rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="expandPlayer()">
+        
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #8B5CF6, #F59E0B); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; animation: pulse 2s infinite;">
+                🎵
+            </div>
+            <div>
+                <div style="color: var(--accent-gold); font-weight: 600; font-size: 1rem; font-family: 'Playfair Display', serif;">Divine Frequencies</div>
+                <div style="color: rgba(255,255,255,0.7); font-size: 0.85rem;" id="track-info">432Hz Healing & Meditation • Click to play</div>
+            </div>
+        </div>
+        
+        <button id="expand-icon" style="background: none; border: none; color: var(--accent-gold); font-size: 1.5rem; cursor: pointer; transition: transform 0.3s;">
+            ▼
+        </button>
+    </div>
+    
+    <!-- Expanded State (Hidden by default) -->
+    <div id="player-expanded" style="display: none; padding: 1.5rem 2rem;">
+        
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div>
+                <h3 style="color: var(--accent-gold); font-family: 'Playfair Display', serif; margin: 0 0 0.5rem 0; font-size: 1.5rem;">Divine Frequencies</h3>
+                <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 0.9rem;">Enhance your journey with sacred sound healing</p>
+            </div>
+            <button onclick="collapsePlayer()" style="background: none; border: none; color: white; font-size: 2rem; cursor: pointer; line-height: 1; opacity: 0.7; transition: opacity 0.3s;">
+                ×
+            </button>
+        </div>
+        
+        <!-- YouTube Player Container -->
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <iframe 
+                id="youtube-iframe"
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                src="https://www.youtube.com/embed/NDbicVxyzBY?enablejsapi=1&controls=1&rel=0&modestbranding=1&autoplay=0"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+        
+        <!-- Playlist Controls -->
+        <div style="margin-top: 1.5rem;">
+            <div style="color: rgba(255,255,255,0.9); font-size: 0.9rem; margin-bottom: 1rem; font-weight: 600;">Sacred Sound Playlist:</div>
+            
+            <div style="display: grid; gap: 0.75rem;">
+                <!-- Track 1 -->
+                <div class="playlist-track active-track" onclick="playTrack(0)" style="background: rgba(139, 92, 246, 0.2); padding: 1rem; border-radius: 12px; cursor: pointer; transition: all 0.3s; border: 2px solid var(--accent-gold); display: flex; align-items: center; gap: 1rem;">
+                    <div style="color: var(--accent-gold); font-size: 1.5rem;">▶</div>
+                    <div style="flex: 1;">
+                        <div style="color: white; font-weight: 600; font-size: 0.95rem;">432Hz Divine Healing</div>
+                        <div style="color: rgba(255,255,255,0.6); font-size: 0.8rem;">Frequency #1 • Healing & Restoration</div>
+                    </div>
+                    <div style="color: var(--accent-gold); font-weight: 600;">NOW</div>
+                </div>
+                
+                <!-- Track 2 -->
+                <div class="playlist-track" onclick="playTrack(1)" style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 12px; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; display: flex; align-items: center; gap: 1rem;">
+                    <div style="color: rgba(255,255,255,0.5); font-size: 1.5rem;">▶</div>
+                    <div style="flex: 1;">
+                        <div style="color: white; font-weight: 600; font-size: 0.95rem;">Cosmic Vibration</div>
+                        <div style="color: rgba(255,255,255,0.6); font-size: 0.8rem;">Frequency #2 • Manifestation & Flow</div>
+                    </div>
+                </div>
+                
+                <!-- Track 3 -->
+                <div class="playlist-track" onclick="playTrack(2)" style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 12px; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; display: flex; align-items: center; gap: 1rem;">
+                    <div style="color: rgba(255,255,255,0.5); font-size: 1.5rem;">▶</div>
+                    <div style="flex: 1;">
+                        <div style="color: white; font-weight: 600; font-size: 0.95rem;">Sacred Meditation</div>
+                        <div style="color: rgba(255,255,255,0.6); font-size: 0.8rem;">Frequency #3 • Deep Consciousness</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer Note -->
+        <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+            <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem; margin: 0;">
+                🎧 Best experienced with headphones • Volume at 30-50%
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    
+    .playlist-track:hover {
+        background: rgba(139, 92, 246, 0.15) !important;
+        border-color: rgba(139, 92, 246, 0.5) !important;
+        transform: translateX(5px);
+    }
+    
+    .active-track {
+        background: rgba(139, 92, 246, 0.2) !important;
+        border-color: var(--accent-gold) !important;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        #player-collapsed {
+            padding: 0.5rem 1rem !important;
+        }
+        
+        #player-expanded {
+            padding: 1rem !important;
+        }
+        
+        .playlist-track {
+            padding: 0.75rem !important;
+        }
+    }
+</style>
+
+<script>
+    // Playlist configuration
+    const playlist = [
+        {
+            id: 'NDbicVxyzBY',
+            title: '432Hz Divine Healing',
+            subtitle: 'Healing & Restoration'
+        },
+        {
+            id: 'fnbu2mcmQak',
+            title: 'Cosmic Vibration',
+            subtitle: 'Manifestation & Flow'
+        },
+        {
+            id: 'jdJzSfcy6q0',
+            title: 'Sacred Meditation',
+            subtitle: 'Deep Consciousness'
+        }
+    ];
+    
+    let currentTrack = 0;
+    let player = null;
+    let playerReady = false;
+    
+    // Expand/Collapse functions
+    function expandPlayer() {
+        document.getElementById('player-collapsed').style.display = 'none';
+        document.getElementById('player-expanded').style.display = 'block';
+        document.getElementById('expand-icon').style.transform = 'rotate(180deg)';
+        
+        // Load YouTube API if not already loaded
+        if (!window.YT) {
+            loadYouTubeAPI();
+        }
+    }
+    
+    function collapsePlayer() {
+        document.getElementById('player-expanded').style.display = 'none';
+        document.getElementById('player-collapsed').style.display = 'flex';
+        document.getElementById('expand-icon').style.transform = 'rotate(0deg)';
+        
+        // Pause video when collapsed
+        if (player && player.pauseVideo) {
+            player.pauseVideo();
+        }
+    }
+    
+    // Load YouTube API
+    function loadYouTubeAPI() {
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    }
+    
+    // YouTube API Ready
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('youtube-iframe', {
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
+    
+    function onPlayerReady(event) {
+        playerReady = true;
+        updateTrackInfo();
+    }
+    
+    function onPlayerStateChange(event) {
+        // Auto-play next track when current ends
+        if (event.data === YT.PlayerState.ENDED) {
+            playNextTrack();
+        }
+        
+        // Update collapsed info when playing
+        if (event.data === YT.PlayerState.PLAYING) {
+            updateCollapsedInfo();
+        }
+    }
+    
+    // Play specific track
+    function playTrack(index) {
+        currentTrack = index;
+        
+        if (playerReady && player.loadVideoById) {
+            player.loadVideoById(playlist[index].id);
+        } else {
+            // Reload iframe with new video
+            const iframe = document.getElementById('youtube-iframe');
+            iframe.src = `https://www.youtube.com/embed/${playlist[index].id}?enablejsapi=1&controls=1&rel=0&modestbranding=1&autoplay=1`;
+        }
+        
+        updateTrackInfo();
+        updateActiveTrack();
+    }
+    
+    // Play next track
+    function playNextTrack() {
+        currentTrack = (currentTrack + 1) % playlist.length;
+        playTrack(currentTrack);
+    }
+    
+    // Update track info display
+    function updateTrackInfo() {
+        const track = playlist[currentTrack];
+        updateActiveTrack();
+    }
+    
+    // Update collapsed info
+    function updateCollapsedInfo() {
+        const track = playlist[currentTrack];
+        document.getElementById('track-info').textContent = `${track.title} • ${track.subtitle}`;
+    }
+    
+    // Update active track styling
+    function updateActiveTrack() {
+        const tracks = document.querySelectorAll('.playlist-track');
+        tracks.forEach((track, index) => {
+            if (index === currentTrack) {
+                track.classList.add('active-track');
+                track.style.background = 'rgba(139, 92, 246, 0.2)';
+                track.style.borderColor = 'var(--accent-gold)';
+                track.querySelector('div:last-child').textContent = 'NOW';
+                track.querySelector('div:nth-child(1)').style.color = 'var(--accent-gold)';
+            } else {
+                track.classList.remove('active-track');
+                track.style.background = 'rgba(255, 255, 255, 0.05)';
+                track.style.borderColor = 'transparent';
+                track.querySelector('div:last-child').textContent = '';
+                track.querySelector('div:nth-child(1)').style.color = 'rgba(255,255,255,0.5)';
+            }
+        });
+    }
+    
+    // Make functions globally available
+    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+</script>
+
     <div class="container">
         <!-- Hero Section -->
         <div class="hero">
