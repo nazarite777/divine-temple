@@ -1068,6 +1068,57 @@
             </div>
         </div>
 
+                <div class="faq-item" style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; margin-bottom: 1rem; overflow: hidden;">
+                    <div class="faq-question" onclick="toggleFaq(this)" style="padding: 1.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                        <h4 style="margin: 0;">How do I contact you with questions?</h4>
+                        <span style="font-size: 1.5rem; transition: transform 0.3s;">+</span>
+                    </div>
+                    <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s;">
+                        <p style="padding: 0 1.5rem 1.5rem; color: var(--text-secondary); line-height: 1.8;">
+                            Use the contact form below the FAQ section, or email us directly at edenconsciousnesssdt@gmail.com. We respond to all inquiries within 24 hours.
+                        </p>
+                    </div>
+                </div>
+
+<!-- Contact Section -->
+        <div style="padding: 4rem 0;">
+            <h2 class="section-title">Have Questions? Contact Us</h2>
+            
+            <div style="max-width: 600px; margin: 3rem auto; padding: 2.5rem; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px;">
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.1rem;">
+                    Questions about Founding Membership, payments, or anything else?<br>Send us a message.
+                </p>
+                
+                <form id="contact-form" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Your Name *</label>
+                        <input type="text" id="contact-name" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 8px; color: white; font-size: 1rem;">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Your Email *</label>
+                        <input type="email" id="contact-email" required style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 8px; color: white; font-size: 1rem;">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Your Message *</label>
+                        <textarea id="contact-message" required rows="6" style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 8px; color: white; font-size: 1rem; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="cta-button" style="width: 100%; margin: 0;">SEND MESSAGE</button>
+                </form>
+                
+                <div id="contact-submitted" style="display: none; text-align: center; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+                    <p style="color: var(--accent-gold); font-weight: 600; margin-bottom: 0.5rem;">Message sent!</p>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">We'll respond within 24 hours.</p>
+                </div>
+            </div>
+            
+            <p style="text-align: center; color: var(--text-secondary); font-size: 0.9rem; margin-top: 2rem;">
+                Or email directly: <a href="mailto:edenconsciousnesssdt@gmail.com" style="color: var(--accent-gold); text-decoration: none; font-weight: 600;">edenconsciousnesssdt@gmail.com</a>
+            </p>
+        </div>
         <!-- Email Capture Section -->
         <div id="email-capture" style="padding: 4rem 0;">
             <div style="max-width: 600px; margin: 0 auto; padding: 3rem; background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(245, 158, 11, 0.2)); border: 2px solid var(--accent-purple); border-radius: 24px; text-align: center;">
@@ -1387,6 +1438,59 @@
                 console.error('Error:', error);
                 alert('Thanks for joining! We\'ll be in touch soon.');
                 document.getElementById('email-input').value = '';
+                button.textContent = originalText;
+                button.disabled = false;
+            });
+        });
+
+
+// Contact Form Submission
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const message = document.getElementById('contact-message').value;
+            const button = this.querySelector('.cta-button');
+            const originalText = button.textContent;
+            
+            // Show loading state
+            button.textContent = '⏳ Sending...';
+            button.disabled = true;
+            
+            // Send to Formspree (same endpoint)
+            fetch('https://formspree.io/f/xvgwnkvl', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    message: message,
+                    type: 'Contact Form',
+                    timestamp: new Date().toISOString()
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Contact form success:', data);
+                document.getElementById('contact-form').style.display = 'none';
+                document.getElementById('contact-submitted').style.display = 'block';
+                
+                // Reset after 5 seconds
+                setTimeout(() => {
+                    document.getElementById('contact-form').style.display = 'flex';
+                    document.getElementById('contact-submitted').style.display = 'none';
+                    document.getElementById('contact-form').reset();
+                    button.textContent = originalText;
+                    button.disabled = false;
+                }, 5000);
+            })
+            .catch(error => {
+                console.error('Contact form error:', error);
+                alert('Message sent! We\'ll get back to you soon.');
+                document.getElementById('contact-form').reset();
                 button.textContent = originalText;
                 button.disabled = false;
             });
