@@ -1136,13 +1136,27 @@
                     No spam. Just truth. Unsubscribe anytime.
                 </p>
                 
-                <form class="email-form" id="email-form">
-                    <input type="email" id="email-input" placeholder="Enter your email" required 
-                        style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); border-radius: 12px; color: white; font-size: 1rem; margin-bottom: 1rem;">
-                    <button type="submit" class="cta-button" style="width: 100%; margin: 0;">
-                        ✨ JOIN THE AWAKENING
-                    </button>
-                </form>
+                <div id="mc_embed_shell">
+      <link href="//cdn-images.mailchimp.com/embedcode/classic-061523.css" rel="stylesheet" type="text/css">
+  <style type="text/css">
+        #mc_embed_signup{background:#fff; false;clear:left; font:14px Helvetica,Arial,sans-serif; width: 600px;}
+        /* Add your own Mailchimp form style overrides in your site stylesheet or in this style block.
+           We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+</style>
+<div id="mc_embed_signup">
+    <form action="https://gmail.us9.list-manage.com/subscribe/post?u=53f0baf84fb1bc8c515e6f731&amp;id=0005a32626&amp;f_id=007053e1f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+        <div id="mc_embed_signup_scroll"><h2>Subscribe</h2>
+            <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+            <div class="mc-field-group"><label for="mce-EMAIL">Email Address <span class="asterisk">*</span></label><input type="email" name="EMAIL" class="required email" id="mce-EMAIL" required="" value=""></div>
+        <div id="mce-responses" class="clear">
+            <div class="response" id="mce-error-response" style="display: none;"></div>
+            <div class="response" id="mce-success-response" style="display: none;"></div>
+        </div><div aria-hidden="true" style="position: absolute; left: -5000px;"><input type="text" name="b_53f0baf84fb1bc8c515e6f731_0005a32626" tabindex="-1" value=""></div><div class="clear"><input type="submit" name="subscribe" id="mc-embedded-subscribe" class="button" value="Subscribe"></div>
+    </div>
+</form>
+</div>
+<script type="text/javascript" src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script><script type="text/javascript">(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';fnames[3]='ADDRESS';ftypes[3]='address';fnames[4]='PHONE';ftypes[4]='phone';fnames[5]='BIRTHDAY';ftypes[5]='birthday';fnames[6]='COMPANY';ftypes[6]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script></div>
+
             </div>
         </div>
 
@@ -1398,51 +1412,7 @@
             }).join('');
         }
 
-        // Email Capture with Formspree
-        document.getElementById('email-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('email-input').value;
-            const button = this.querySelector('.cta-button');
-            const originalText = button.textContent;
-            
-            // Show loading state
-            button.textContent = '⏳ Joining...';
-            button.disabled = true;
-            
-            // Send to Formspree
-            fetch('https://formspree.io/f/xvgwnkvr', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: email,
-                    source: 'Eden Consciousness Landing Page',
-                    timestamp: new Date().toISOString()
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('✨ Welcome to the awakening! You\'ll be first to know when the Eden Consciousness Temple opens.');
-                    document.getElementById('email-input').value = '';
-                    button.textContent = '✅ Joined!';
-                    setTimeout(() => {
-                        button.textContent = originalText;
-                        button.disabled = false;
-                    }, 2000);
-                } else {
-                    throw new Error('Submission failed');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Thanks for joining! We\'ll be in touch soon.');
-                document.getElementById('email-input').value = '';
-                button.textContent = originalText;
-                button.disabled = false;
-            });
-        });
-
+       
 
 // Contact Form Submission
         document.getElementById('contact-form').addEventListener('submit', function(e) {
