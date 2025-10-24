@@ -711,26 +711,8 @@
         // ============================================
         // DAILY LOG FUNCTIONS
         // ============================================
-        function openDailyLog(dateKey, monthName, monthHebrew, day, enochDay, theme, season, color) {
-    state.currentLogDate = dateKey;
-    
-    document.getElementById('log-date-title').textContent = `${monthName} ${day} (${monthHebrew})`;
-    document.getElementById('log-date-subtitle').innerHTML = `
-        Day ${enochDay}/364 • ${season} • Theme: ${theme}
-    `;
-    
-    const existingLog = state.dailyLogs[dateKey] || { 
-        practices: {},
-        duration: {},
-        energyLevel: 5,
-        mood: '',
-        gratitudeList: [],
-        scripturePassages: [],
-        challengesFaced: '',
-        blessingsReceived: '',
-        divineGuidance: '',
-        reflection: '' 
-    };
+        
+
     
     // PART 1: Practice Checkboxes with Duration
     const practices = [
@@ -885,38 +867,6 @@
             document.getElementById('daily-reflection').value = existingLog.reflection || '';
             document.getElementById('daily-log-modal').style.display = 'flex';
         }
-
-        function togglePractice(practice) {
-            if (!state.currentLogDate) return;
-            
-            if (!state.dailyLogs[state.currentLogDate]) {
-                state.dailyLogs[state.currentLogDate] = { practices: {}, reflection: '' };
-            }
-            
-            state.dailyLogs[state.currentLogDate].practices[practice] = 
-                !state.dailyLogs[state.currentLogDate].practices[practice];
-            
-            const checkbox = document.getElementById('check-' + practice);
-            const isChecked = state.dailyLogs[state.currentLogDate].practices[practice];
-            const month = state.enochCalendar.months[state.enochCalendar.currentMonthIndex];
-            
-            if (isChecked) {
-                checkbox.style.background = `linear-gradient(135deg, ${month.color}, ${month.color}dd)`;
-                checkbox.style.borderColor = 'transparent';
-                checkbox.textContent = '✓';
-            } else {
-                checkbox.style.background = '';
-                checkbox.style.borderColor = 'var(--glass-border)';
-                checkbox.textContent = '';
-            }
-        }
-
-        function saveDailyLog() {
-    if (!state.currentLogDate) return;
-    
-    if (!state.dailyLogs[state.currentLogDate]) {
-        state.dailyLogs[state.currentLogDate] = {};
-    }
     
     const log = state.dailyLogs[state.currentLogDate];
     
