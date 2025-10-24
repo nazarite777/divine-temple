@@ -912,11 +912,42 @@
         }
 
         function saveDailyLog() {
-            if (!state.currentLogDate) return;
-            
-            if (!state.dailyLogs[state.currentLogDate]) {
-                state.dailyLogs[state.currentLogDate] = { practices: {}, reflection: '' };
-            }
+    if (!state.currentLogDate) return;
+    
+    if (!state.dailyLogs[state.currentLogDate]) {
+        state.dailyLogs[state.currentLogDate] = {};
+    }
+    
+    const log = state.dailyLogs[state.currentLogDate];
+    
+    // Save all the data
+    log.reflection = document.getElementById('daily-reflection').value;
+    log.energyLevel = parseInt(document.getElementById('energy-level').value);
+    
+    log.gratitudeList = [
+        document.getElementById('gratitude-1').value,
+        document.getElementById('gratitude-2').value,
+        document.getElementById('gratitude-3').value
+    ].filter(g => g.trim() !== '');
+    
+    const scriptureInput = document.getElementById('scripture-passages').value;
+    log.scripturePassages = scriptureInput ? scriptureInput.split(',').map(s => s.trim()) : [];
+    
+    log.challengesFaced = document.getElementById('challenges-faced').value;
+    log.blessingsReceived = document.getElementById('blessings-received').value;
+    log.divineGuidance = document.getElementById('divine-guidance').value;
+    
+    // Save to localStorage
+    localStorage.setItem('edenDailyLogs', JSON.stringify(state.dailyLogs));
+    
+    updateCalendar();
+    const daysLogged = Object.keys(state.dailyLogs).length;
+    document.getElementById('stat-days').textContent = daysLogged;
+    closeDailyLog();
+    
+    alert('✨ Daily log saved! Your spiritual journey is documented.');
+    console.log('📖 Log saved for', state.currentLogDate);
+}
             
        function saveDuration(practice, value) {
     if (!state.currentLogDate) return;
