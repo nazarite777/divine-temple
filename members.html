@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eden Consciousness Temple - Members Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: #0A0E27;
+            --accent-purple: #8B5CF6;
+            --accent-gold: #F59E0B;
+            --accent-blue: #3B82F6;
+            --accent-green: #10B981;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A1A1AA;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0A0E27 0%, #1a1f3a 50%, #0A0E27 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .temple-3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .modern-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            background: rgba(10, 14, 39, 0.8);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1.5rem 2rem;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #F59E0B, #8B5CF6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-status {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .stats-mini {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.85rem;
+        }
+
+        .portal-container {
+            max-width: 1400px;
+            margin: 120px auto 4rem;
+            padding: 0 2rem;
+        }
+
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .portal-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            cursor: pointer;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.3);
+        }
+
+        .portal-card:hover::before {
+            opacity: 1;
+        }
+
+        .portal-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .portal-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .portal-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .chamber-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--bg-primary);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s;
+            overflow-y: auto;
+        }
+
+        .chamber-panel.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .chamber-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 6rem 2rem 4rem;
+        }
+
+        .chamber-header-modern {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 2rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+        }
+
+        .chamber-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #F59E0B, #8B5CF6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .reflection-section {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .reflection-textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn-modern {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-modern:active {
+            transform: translateY(0);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+        }
+
+        .close-btn {
+            position: fixed;
+            top: 1.5rem;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2100;
+            font-size: 1.5rem;
+        }
+
+        @keyframes shimmer {
+            100% { left: 100%; }
+        }
+
+        @media (max-width: 768px) {
+            .portal-grid { grid-template-columns: 1fr; }
+            .stats-mini { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="temple-3d" id="temple-3d"></div>
+
+    <div class="modern-header">
+        <div class="header-content">
+            <div class="logo">🏛️ Eden Consciousness</div>
+            <div class="user-status">
+                <div class="stats-mini">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span>📅</span>
+                        <span id="header-enoch-date">Loading...</span>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar">🙏</div>
+                    <div style="font-weight: 600; font-size: 0.9rem;">Sacred Seeker</div>
+                </div>
+                <button class="btn-modern" id="music-btn" onclick="toggleBackgroundMusic()" style="padding: 0.5rem 1rem; font-size: 0.85rem;">🎵 Music</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="portal-container" id="portal-container">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">Choose Your Path</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;" id="portal-subtitle">Loading sacred calendar...</p>
+        </div>
+
+        <div class="portal-grid">
+            <div class="portal-card" onclick="openCalendar()">
+                <div class="portal-icon">📅</div>
+                <h3>Sacred Calendar</h3>
+                <p>Enoch Calendar with Hebrew months - Track your spiritual journey day by day.</p>
+            </div>
+
+            <div class="portal-card" onclick="alert('Coming soon!')">
+                <div class="portal-icon">🏛️</div>
+                <h3>Sacred Chambers</h3>
+                <p>Nine chambers of reflection and inner guidance.</p>
+            </div>
+
+            <div class="portal-card" onclick="alert('Coming soon!')">
+                <div class="portal-icon">🎯</div>
+                <h3>Manifestation Board</h3>
+                <p>Write your desires, track prayers, witness divine timing.</p>
+            </div>
+
+            <div class="portal-card" onclick="alert('Coming soon!')">
+                <div class="portal-icon">🧘</div>
+                <h3>Meditation Space</h3>
+                <p>Guided meditation timer and mindfulness practice.</p>
+            </div>
+
+            <div class="portal-card" onclick="alert('Coming soon!')">
+                <div class="portal-icon">🌙</div>
+                <h3>Cosmic Timing</h3>
+                <p>Track moon phases and align with celestial cycles.</p>
+            </div>
+
+            <div class="portal-card" onclick="alert('Coming soon!')">
+                <div class="portal-icon">📚</div>
+                <h3>Sacred Library</h3>
+                <p>Access the complete book and workbook.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calendar Panel -->
+    <div class="chamber-panel" id="calendar-panel">
+        <div class="close-btn" onclick="closePanel('calendar-panel')">✕</div>
+        <div class="chamber-wrapper" style="max-width: 1200px;">
+            <div class="chamber-header-modern">
+                <div style="display: inline-block; padding: 0.5rem 1rem; background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem;">Enoch Calendar</div>
+                <h2 class="chamber-title">Your Sacred Journey</h2>
+                <p style="color: var(--text-secondary); font-size: 1.1rem;">364-Day Divine Calendar • Begins Spring Equinox</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.5rem;">
+                    <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">Current Day</div>
+                    <div style="font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #F59E0B, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="stat-enoch-day">1/364</div>
+                </div>
+                <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.5rem;">
+                    <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">Days Logged</div>
+                    <div style="font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #F59E0B, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="stat-days">0</div>
+                </div>
+                <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.5rem;">
+                    <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">Current Month</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, #F59E0B, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="stat-month-name">Loading...</div>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(245, 158, 11, 0.1)); border: 1px solid var(--accent-purple); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; text-align: center;">
+                <div style="font-size: 1rem; font-weight: 600; color: var(--accent-gold); margin-bottom: 0.5rem;">🌸 Enoch Calendar System</div>
+                <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+                    364-day sacred calendar • 12 Hebrew months • 4 seasons of 91 days • Always starts Spring Equinox (March 20) • Pure divine timing
+                </div>
+            </div>
+
+            <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <div style="font-size: 1.5rem; font-weight: 600; font-family: 'Playfair Display', serif;" id="calendar-month">Loading...</div>
+                    <div style="display: flex; gap: 1rem;">
+                        <button style="width: 40px; height: 40px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 10px; color: white; cursor: pointer;" onclick="prevMonth()">‹</button>
+                        <button style="width: 40px; height: 40px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 10px; color: white; cursor: pointer;" onclick="nextMonth()">›</button>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-secondary);">📅 Today auto-tracked • Click any day to log spiritual practices</div>
+                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem;" id="calendar-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Log Modal -->
+    <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 3000;" id="daily-log-modal">
+        <div style="max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; background: var(--glass-bg); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 2.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <div>
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--accent-gold);" id="log-date-title">Day Log</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;" id="log-date-subtitle">Track your spiritual practices</p>
+                </div>
+                <button onclick="closeDailyLog()" style="background: none; border: none; color: var(--text-primary); font-size: 2rem; cursor: pointer;">✕</button>
+            </div>
+
+            <div id="practice-list" style="display: grid; gap: 1rem; margin: 1.5rem 0;"></div>
+
+            <div style="margin-top: 2rem;">
+                <label style="display: block; font-weight: 500; margin-bottom: 0.75rem;">Daily Reflection</label>
+                <textarea id="daily-reflection" class="reflection-textarea" placeholder="What insights did you receive today?" style="min-height: 100px;"></textarea>
+            </div>
+
+            <button class="btn-modern" onclick="saveDailyLog()" style="width: 100%; margin-top: 2rem;">💾 Save Daily Log</button>
+        </div>
+    </div>
+
+   <script>
+        // ============================================
+        // STATE MANAGEMENT WITH HEBREW CALENDAR
+        // ============================================
+        let state = {
+            // ENOCH CALENDAR STATE WITH HEBREW MONTHS
+            enochCalendar: {
+                months: [
+                    { name: 'Aviv', hebrew: 'אָבִיב', days: 30, season: 'Spring', theme: 'Renewal', color: '#8B5CF6' },
+                    { name: 'Ziv', hebrew: 'זִו', days: 30, season: 'Spring', theme: 'Radiance', color: '#8B5CF6' },
+                    { name: 'Sivan', hebrew: 'סִיוָן', days: 31, season: 'Spring', theme: 'Harvest', color: '#8B5CF6' },
+                    { name: 'Tammuz', hebrew: 'תַּמּוּז', days: 30, season: 'Summer', theme: 'Heat', color: '#F59E0B' },
+                    { name: 'Av', hebrew: 'אָב', days: 30, season: 'Summer', theme: 'Strength', color: '#F59E0B' },
+                    { name: 'Elul', hebrew: 'אֱלוּל', days: 31, season: 'Summer', theme: 'Completion', color: '#F59E0B' },
+                    { name: 'Ethanim', hebrew: 'אֵיתָנִים', days: 30, season: 'Autumn', theme: 'Foundation', color: '#3B82F6' },
+                    { name: 'Bul', hebrew: 'בּוּל', days: 30, season: 'Autumn', theme: 'Preparation', color: '#3B82F6' },
+                    { name: 'Kislev', hebrew: 'כִּסְלֵו', days: 31, season: 'Autumn', theme: 'Security', color: '#3B82F6' },
+                    { name: 'Tevet', hebrew: 'טֵבֵת', days: 30, season: 'Winter', theme: 'Reflection', color: '#10B981' },
+                    { name: 'Shevat', hebrew: 'שְׁבָט', days: 30, season: 'Winter', theme: 'Endurance', color: '#10B981' },
+                    { name: 'Adar', hebrew: 'אֲדָר', days: 31, season: 'Winter', theme: 'Victory', color: '#10B981' }
+                ],
+                currentMonthIndex: 0,
+                currentDayOfMonth: 1,
+                currentEnochDay: 1,
+                todayEnochDay: 1,
+                todayMonthIndex: 0,
+                todayDayOfMonth: 1
+            },
+            
+            dailyLogs: {},
+            currentLogDate: null
+        };
+
+        // ============================================
+        // ENOCH CALENDAR AUTO-DATE CONVERTER
+        // ============================================
+        function calculateEnochDate() {
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            
+            // Spring Equinox - Enoch Year Start (March 20)
+            // Enoch calendar always starts March 20 (Spring Equinox)
+            const springEquinox = new Date(currentYear, 2, 20); // Month 2 = March (0-indexed)
+            
+            // If we haven't reached this year's equinox yet, use last year's
+            const enochYearStart = today < springEquinox 
+                ? new Date(currentYear - 1, 2, 20) 
+                : springEquinox;
+            
+            // Calculate days since Enoch year started
+            const millisecondsPerDay = 1000 * 60 * 60 * 24;
+            const daysSinceStart = Math.floor((today - enochYearStart) / millisecondsPerDay);
+            
+            // Enoch day of year (1-364, then resets)
+            const enochDay = (daysSinceStart % 364) + 1;
+            
+            // Find which month we're in
+            const months = state.enochCalendar.months;
+            let daysAccumulated = 0;
+            let currentMonthIndex = 0;
+            let dayOfMonth = 0;
+            
+            for (let i = 0; i < months.length; i++) {
+                if (enochDay <= daysAccumulated + months[i].days) {
+                    currentMonthIndex = i;
+                    dayOfMonth = enochDay - daysAccumulated;
+                    break;
+                }
+                daysAccumulated += months[i].days;
+            }
+            
+            // Update state with today's date
+            state.enochCalendar.todayEnochDay = enochDay;
+            state.enochCalendar.todayMonthIndex = currentMonthIndex;
+            state.enochCalendar.todayDayOfMonth = dayOfMonth;
+            
+            // Set current view to today
+            state.enochCalendar.currentMonthIndex = currentMonthIndex;
+            state.enochCalendar.currentDayOfMonth = dayOfMonth;
+            state.enochCalendar.currentEnochDay = enochDay;
+            
+            // Update header display
+            const month = months[currentMonthIndex];
+            document.getElementById('header-enoch-date').textContent = 
+                `${month.name} ${dayOfMonth}`;
+            
+            document.getElementById('portal-subtitle').textContent = 
+                `Today: ${month.name} ${dayOfMonth} (${month.hebrew}) - Day ${enochDay}/364`;
+            
+            console.log('📅 Enoch Calendar Initialized:');
+            console.log('Today is:', month.name, dayOfMonth);
+            console.log('Hebrew:', month.hebrew);
+            console.log('Day', enochDay, 'of 364');
+            console.log('Season:', month.season);
+            console.log('Theme:', month.theme);
+            console.log('Enoch Year Started:', enochYearStart.toLocaleDateString());
+            
+            return {
+                enochDay: enochDay,
+                monthIndex: currentMonthIndex,
+                monthName: month.name,
+                monthHebrew: month.hebrew,
+                dayOfMonth: dayOfMonth,
+                season: month.season,
+                theme: month.theme,
+                color: month.color,
+                quarter: Math.floor(currentMonthIndex / 3) + 1,
+                gregorianDate: today,
+                enochYearStart: enochYearStart
+            };
+        }
+
+        // ============================================
+        // CALENDAR DISPLAY FUNCTIONS
+        // ============================================
+        function updateCalendar() {
+            const months = state.enochCalendar.months;
+            const currentMonth = months[state.enochCalendar.currentMonthIndex];
+            const isToday = state.enochCalendar.currentMonthIndex === state.enochCalendar.todayMonthIndex;
+            
+            // Quarter colors
+            const quarter = Math.floor(state.enochCalendar.currentMonthIndex / 3);
+            const quarterColor = currentMonth.color;
+            
+            // Update month header with Hebrew
+            document.getElementById('calendar-month').innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="font-size: 2rem; font-family: 'Playfair Display', serif; transition: color 0.3s;" 
+                             onmouseover="this.style.color='${quarterColor}'" 
+                             onmouseout="this.style.color='white'">${currentMonth.name}</div>
+                        <div style="font-size: 1.5rem; opacity: 0.6; font-weight: 300;">${currentMonth.hebrew}</div>
+                    </div>
+                    <div style="display: flex; gap: 1.5rem; font-size: 0.85rem; color: var(--text-secondary); flex-wrap: wrap;">
+                        <div><span style="color: ${quarterColor};">●</span> ${currentMonth.season}</div>
+                        <div>Quarter ${quarter + 1}/4</div>
+                        <div>${currentMonth.theme}</div>
+                        <div>${currentMonth.days} days</div>
+                    </div>
+                </div>
+            `;
+            
+            // Update stats
+            let daysBeforeMonth = 0;
+            for (let i = 0; i < state.enochCalendar.currentMonthIndex; i++) {
+                daysBeforeMonth += months[i].days;
+            }
+            const startDayOfMonth = daysBeforeMonth + 1;
+            const endDayOfMonth = daysBeforeMonth + currentMonth.days;
+            
+            document.getElementById('stat-enoch-day').textContent = 
+                `${startDayOfMonth}-${endDayOfMonth}/364`;
+            
+            document.getElementById('stat-month-name').textContent = 
+                `${currentMonth.name}`;
+            
+            // Build calendar grid
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+            
+            // Day headers (Enoch week starts Wednesday)
+            const days = ['Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue'];
+            for (let d = 0; d < days.length; d++) {
+                const cell = document.createElement('div');
+                cell.style.cssText = `
+                    background: transparent; 
+                    color: var(--text-secondary); 
+                    font-weight: 600; 
+                    font-size: 0.75rem; 
+                    text-transform: uppercase; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    padding: 0.75rem;
+                    border-bottom: 2px solid ${quarterColor}33;
+                `;
+                cell.textContent = days[d];
+                grid.appendChild(cell);
+            }
+            
+            // Create day cells
+            for (let day = 1; day <= currentMonth.days; day++) {
+                const cell = document.createElement('div');
+                const enochDayNum = daysBeforeMonth + day;
+                const dateKey = `enoch-${state.enochCalendar.currentMonthIndex}-${day}`;
+                const hasLog = state.dailyLogs[dateKey];
+                const isTodayCell = isToday && day === state.enochCalendar.todayDayOfMonth;
+                
+                cell.style.cssText = `
+                    aspect-ratio: 1; 
+                    display: flex; 
+                    flex-direction: column; 
+                    align-items: center; 
+                    justify-content: center; 
+                    gap: 0.25rem; 
+                    background: ${isTodayCell ? `linear-gradient(135deg, ${quarterColor}44, ${quarterColor}22)` : hasLog ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255, 255, 255, 0.03)'}; 
+                    border-radius: 12px; 
+                    cursor: pointer; 
+                    transition: all 0.3s; 
+                    border: ${isTodayCell ? `3px solid ${quarterColor}` : `1px solid ${quarterColor}22`};
+                    position: relative;
+                    overflow: hidden;
+                `;
+                
+                // Add shimmer effect to today
+                if (isTodayCell) {
+                    cell.innerHTML = `
+                        <div style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; 
+                             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); 
+                             animation: shimmer 2s infinite;"></div>
+                    `;
+                }
+                
+                cell.innerHTML += `
+                    <div style="font-size: 1.1rem; font-weight: ${isTodayCell ? '700' : '500'}; 
+                         color: ${isTodayCell ? quarterColor : 'white'};">${day}</div>
+                    <div style="font-size: 0.65rem; opacity: 0.6;">Day ${enochDayNum}</div>
+                `;
+                
+                // Add practice indicators
+                if (hasLog && hasLog.practices) {
+                    const icons = { 
+                        meditation: '🧘', 
+                        prayer: '🙏', 
+                        scripture: '📖', 
+                        gratitude: '✨',
+                        fasting: '🕯️',
+                        worship: '🎵'
+                    };
+                    let practiceIcons = '';
+                    for (let key in hasLog.practices) {
+                        if (hasLog.practices[key] && icons[key]) practiceIcons += icons[key];
+                    }
+                    if (practiceIcons) {
+                        cell.innerHTML += `<div style="font-size: 0.7rem; margin-top: 0.25rem;">${practiceIcons.substring(0, 12)}</div>`;
+                    }
+                }
+                
+                // Add "Today" badge
+                if (isTodayCell) {
+                    cell.innerHTML += `<div style="position: absolute; top: 0.25rem; right: 0.25rem; 
+                         background: ${quarterColor}; color: white; font-size: 0.6rem; 
+                         padding: 0.15rem 0.4rem; border-radius: 8px; font-weight: 700;">TODAY</div>`;
+                }
+                
+                // Hover effect
+                cell.onmouseover = function() {
+                    if (!isTodayCell) {
+                        this.style.transform = 'scale(1.05)';
+                        this.style.borderColor = quarterColor;
+                    }
+                };
+                cell.onmouseout = function() {
+                    if (!isTodayCell) {
+                        this.style.transform = 'scale(1)';
+                        this.style.borderColor = quarterColor + '22';
+                    }
+                };
+                
+                cell.onclick = function() { 
+                    openDailyLog(dateKey, currentMonth.name, currentMonth.hebrew, day, enochDayNum, currentMonth.theme, currentMonth.season, quarterColor); 
+                };
+                
+                grid.appendChild(cell);
+            }
+        }
+
+        function prevMonth() {
+            state.enochCalendar.currentMonthIndex = 
+                state.enochCalendar.currentMonthIndex === 0 
+                ? 11 
+                : state.enochCalendar.currentMonthIndex - 1;
+            updateCalendar();
+        }
+
+        function nextMonth() {
+            state.enochCalendar.currentMonthIndex = 
+                state.enochCalendar.currentMonthIndex === 11 
+                ? 0 
+                : state.enochCalendar.currentMonthIndex + 1;
+            updateCalendar();
+        }
+
+        // ============================================
+        // DAILY LOG FUNCTIONS
+        // ============================================
+        function openDailyLog(dateKey, monthName, monthHebrew, day, enochDay, theme, season, color) {
+            state.currentLogDate = dateKey;
+            
+            document.getElementById('log-date-title').textContent = `${monthName} ${day} (${monthHebrew})`;
+            document.getElementById('log-date-subtitle').innerHTML = `
+                Day ${enochDay}/364 • ${season} • Theme: ${theme}
+            `;
+            
+            const existingLog = state.dailyLogs[dateKey] || { practices: {}, reflection: '' };
+            
+            const practices = [
+                { id: 'meditation', icon: '🧘', label: 'Meditation', desc: 'Centered and present' },
+                { id: 'prayer', icon: '🙏', label: 'Prayer', desc: 'Communed with divine' },
+                { id: 'scripture', icon: '📖', label: 'Scripture Study', desc: 'Studied sacred texts' },
+                { id: 'gratitude', icon: '✨', label: 'Gratitude Practice', desc: 'Counted blessings' },
+                { id: 'fasting', icon: '🕯️', label: 'Fasting', desc: 'Spiritual discipline' },
+                { id: 'worship', icon: '🎵', label: 'Worship', desc: 'Praised in song/spirit' }
+            ];
+            
+            let html = '';
+            for (let p of practices) {
+                const checked = existingLog.practices[p.id];
+                html += `
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; 
+                         background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); 
+                         border-radius: 12px; cursor: pointer; transition: all 0.3s;" 
+                         onclick="togglePractice('${p.id}')"
+                         onmouseover="this.style.borderColor='${color}'; this.style.background='rgba(255,255,255,0.05)'"
+                         onmouseout="this.style.borderColor='var(--glass-border)'; this.style.background='rgba(255,255,255,0.03)'">
+                        <div style="width: 24px; height: 24px; border: 2px solid var(--glass-border); 
+                             border-radius: 6px; display: flex; align-items: center; justify-content: center; 
+                             transition: all 0.3s; ${checked ? `background: linear-gradient(135deg, ${color}, ${color}dd); border-color: transparent;` : ''}" 
+                             id="check-${p.id}">
+                            ${checked ? '✓' : ''}
+                        </div>
+                        <div style="font-size: 1.5rem;">${p.icon}</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 500;">${p.label}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">${p.desc}</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('practice-list').innerHTML = html;
+            document.getElementById('daily-reflection').value = existingLog.reflection || '';
+            document.getElementById('daily-log-modal').style.display = 'flex';
+        }
+
+        function togglePractice(practice) {
+            if (!state.currentLogDate) return;
+            
+            if (!state.dailyLogs[state.currentLogDate]) {
+                state.dailyLogs[state.currentLogDate] = { practices: {}, reflection: '' };
+            }
+            
+            state.dailyLogs[state.currentLogDate].practices[practice] = 
+                !state.dailyLogs[state.currentLogDate].practices[practice];
+            
+            const checkbox = document.getElementById('check-' + practice);
+            const isChecked = state.dailyLogs[state.currentLogDate].practices[practice];
+            const month = state.enochCalendar.months[state.enochCalendar.currentMonthIndex];
+            
+            if (isChecked) {
+                checkbox.style.background = `linear-gradient(135deg, ${month.color}, ${month.color}dd)`;
+                checkbox.style.borderColor = 'transparent';
+                checkbox.textContent = '✓';
+            } else {
+                checkbox.style.background = '';
+                checkbox.style.borderColor = 'var(--glass-border)';
+                checkbox.textContent = '';
+            }
+        }
+
+        function saveDailyLog() {
+            if (!state.currentLogDate) return;
+            
+            if (!state.dailyLogs[state.currentLogDate]) {
+                state.dailyLogs[state.currentLogDate] = { practices: {}, reflection: '' };
+            }
+            
+            state.dailyLogs[state.currentLogDate].reflection = 
+                document.getElementById('daily-reflection').value;
+            
+            // Save to localStorage
+            localStorage.setItem('edenDailyLogs', JSON.stringify(state.dailyLogs));
+            
+            updateCalendar();
+            const daysLogged = Object.keys(state.dailyLogs).length;
+            document.getElementById('stat-days').textContent = daysLogged;
+            closeDailyLog();
+            
+            alert('✨ Daily log saved! Keep building your practice!');
+        }
+
+        function closeDailyLog() {
+            document.getElementById('daily-log-modal').style.display = 'none';
+            state.currentLogDate = null;
+        }
+
+        // ============================================
+        // CALENDAR PANEL FUNCTIONS
+        // ============================================
+        function openCalendar() {
+            document.getElementById('portal-container').style.display = 'none';
+            document.getElementById('calendar-panel').classList.add('open');
+            updateCalendar();
+        }
+
+        function closePanel(panelId) {
+            document.getElementById(panelId).classList.remove('open');
+            document.getElementById('portal-container').style.display = 'block';
+        }
+
+// ============================================
+        // THREE.JS TEMPLE ANIMATION
+        // ============================================
+        let scene, camera, renderer;
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 30;
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0);
+            document.getElementById('temple-3d').appendChild(renderer.domElement);
+
+            const geometry = new THREE.BufferGeometry();
+            const vertices = [];
+            for (let i = 0; i < 500; i++) {
+                vertices.push(
+                    Math.random() * 100 - 50, 
+                    Math.random() * 100 - 50, 
+                    Math.random() * 100 - 50
+                );
+            }
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            const material = new THREE.PointsMaterial({ 
+                color: 0x8B5CF6, 
+                size: 0.5, 
+                transparent: true, 
+                opacity: 0.6 
+            });
+            const particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                scene.rotation.y += 0.0005;
+                renderer.render(scene, camera);
+            }
+            animate();
+            
+            window.addEventListener('resize', function() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // ============================================
+        // AUDIO SYSTEM (Sacred Frequencies)
+        // ============================================
+        let audioContext = null;
+        let backgroundMusic = null;
+        let isMusicPlaying = false;
+
+        function initAudio() {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function toggleBackgroundMusic() {
+            if (!audioContext) initAudio();
+            
+            if (isMusicPlaying) {
+                stopBackgroundMusic();
+            } else {
+                startBackgroundMusic();
+            }
+        }
+
+        function startBackgroundMusic() {
+            if (!audioContext) initAudio();
+            
+            // Create oscillators for ambient sound
+            const osc1 = audioContext.createOscillator();
+            const osc2 = audioContext.createOscillator();
+            const osc3 = audioContext.createOscillator();
+            
+            const gain1 = audioContext.createGain();
+            const gain2 = audioContext.createGain();
+            const gain3 = audioContext.createGain();
+            const masterGain = audioContext.createGain();
+            
+            osc1.connect(gain1);
+            osc2.connect(gain2);
+            osc3.connect(gain3);
+            
+            gain1.connect(masterGain);
+            gain2.connect(masterGain);
+            gain3.connect(masterGain);
+            masterGain.connect(audioContext.destination);
+            
+            // Sacred frequencies
+            osc1.frequency.value = 432; // Universal harmony
+            osc2.frequency.value = 528; // Love frequency  
+            osc3.frequency.value = 639; // Connection frequency
+            
+            osc1.type = 'sine';
+            osc2.type = 'sine';
+            osc3.type = 'triangle';
+            
+            gain1.gain.value = 0.03;
+            gain2.gain.value = 0.02;
+            gain3.gain.value = 0.015;
+            masterGain.gain.value = 0.3;
+            
+            osc1.start();
+            osc2.start();
+            osc3.start();
+            
+            backgroundMusic = { osc1, osc2, osc3, masterGain };
+            isMusicPlaying = true;
+            
+            document.getElementById('music-btn').textContent = '🔇 Mute';
+            document.getElementById('music-btn').style.background = 'linear-gradient(135deg, var(--accent-gold), #F97316)';
+            
+            console.log('🎵 Sacred frequencies activated: 432Hz, 528Hz, 639Hz');
+        }
+
+        function stopBackgroundMusic() {
+            if (backgroundMusic) {
+                backgroundMusic.osc1.stop();
+                backgroundMusic.osc2.stop();
+                backgroundMusic.osc3.stop();
+                backgroundMusic = null;
+                isMusicPlaying = false;
+                
+                document.getElementById('music-btn').textContent = '🎵 Music';
+                document.getElementById('music-btn').style.background = 'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))';
+            }
+        }
+
+        // ============================================
+        // LOCAL STORAGE MANAGEMENT
+        // ============================================
+        function loadFromStorage() {
+            try {
+                const savedLogs = localStorage.getItem('edenDailyLogs');
+                if (savedLogs) {
+                    state.dailyLogs = JSON.parse(savedLogs);
+                    const daysLogged = Object.keys(state.dailyLogs).length;
+                    document.getElementById('stat-days').textContent = daysLogged;
+                    console.log('📖 Loaded', daysLogged, 'saved daily logs');
+                }
+            } catch (e) {
+                console.error('Error loading from storage:', e);
+            }
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        function initialize() {
+            console.log('🏛️ Initializing Eden Consciousness Temple...');
+            
+            // Initialize 3D temple
+            initThreeJS();
+            
+            // Initialize audio
+            initAudio();
+            
+            // Calculate and display Enoch date
+            const today = calculateEnochDate();
+            console.log('✅ Today calculated:', today);
+            
+            // Load saved data
+            loadFromStorage();
+            
+            // Welcome message
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.log('🏛️ EDEN CONSCIOUSNESS TEMPLE');
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.log('📅 Enoch Calendar: ACTIVE');
+            console.log('🗓️  Today:', today.monthName, today.dayOfMonth, `(${today.monthHebrew})`);
+            console.log('📊 Day:', today.enochDay, 'of 364');
+            console.log('🌸 Season:', today.season);
+            console.log('💎 Theme:', today.theme);
+            console.log('🎯 Quarter:', today.quarter, 'of 4');
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.log('✨ Temple initialized successfully!');
+            console.log('📖 Click Sacred Calendar to begin your journey');
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        }
+
+        // Run initialization when page loads
+        window.addEventListener('DOMContentLoaded', initialize);
+    </script>
+</body>
+</html>
