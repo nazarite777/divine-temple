@@ -17544,12 +17544,33 @@ Signature: ________________"></textarea>
         }
 
         function validateMemberCredentials(divineName, sacredKey) {
-            // Load members from localStorage
+            // Ensure admin account is always available
+            const adminAccount = {
+                id: 'admin001',
+                divineName: 'nazir777',
+                sacredKey: 'Cjanimal23$',
+                email: 'edenconsciousnesssdt@gmail.com',
+                membershipType: 'Founding Member',
+                registrationDate: '2025-10-25',
+                status: 'active',
+                isAdmin: true
+            };
+            
+            // Start with admin account
+            REGISTERED_MEMBERS.length = 0;
+            REGISTERED_MEMBERS.push(adminAccount);
+            
+            // Load additional members from localStorage
             const savedMembers = localStorage.getItem('registeredMembers');
             if (savedMembers) {
-                const members = JSON.parse(savedMembers);
-                REGISTERED_MEMBERS.length = 0;
-                REGISTERED_MEMBERS.push(...members);
+                try {
+                    const members = JSON.parse(savedMembers);
+                    // Add all saved members except admin (to avoid duplicates)
+                    const nonAdminMembers = members.filter(m => m.id !== 'admin001');
+                    REGISTERED_MEMBERS.push(...nonAdminMembers);
+                } catch (e) {
+                    console.log('Error loading saved members:', e);
+                }
             }
             
             // Find matching member
@@ -17561,8 +17582,10 @@ Signature: ________________"></textarea>
             
             if (member) {
                 // Update login statistics
-                member.loginCount++;
+                member.loginCount = (member.loginCount || 0) + 1;
                 member.lastLogin = new Date().toISOString();
+                
+                // Save updated member list (but always keep admin account)
                 localStorage.setItem('registeredMembers', JSON.stringify(REGISTERED_MEMBERS));
                 
                 return member;
@@ -17597,7 +17620,9 @@ Signature: ________________"></textarea>
                 successDiv.style.display = 'block';
                 
                 // Add welcome back activity
-                addToActivityFeed(`🏛️ ${member.firstName || member.divineName} entered the Divine Temple`, 'login');
+                if (typeof addToActivityFeed !== 'undefined') {
+                    addToActivityFeed(`🏛️ ${member.firstName || member.divineName} entered the Divine Temple`, 'login');
+                }
                 
                 setTimeout(() => {
                     document.getElementById('auth-overlay').style.display = 'none';
@@ -17701,7 +17726,10 @@ Signature: ________________"></textarea>
 
         // Check authentication on page load
         document.addEventListener('DOMContentLoaded', function() {
-            checkExistingAuthentication();
+            // Initialize authentication system
+            if (!checkAuthentication()) {
+                showAuthOverlay();
+            }
         });
 
         // Logout function

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authentication Test</title>
+</head>
+<body>
+    <h1>Divine Temple Authentication Test</h1>
+    <div id="result"></div>
+    
+    <script>
+        // Test the authentication logic
+        const REGISTERED_MEMBERS = [];
+        
+        function validateMemberCredentials(divineName, sacredKey) {
+            // Ensure admin account is always available
+            const adminAccount = {
+                id: 'admin001',
+                divineName: 'nazir777',
+                sacredKey: 'Cjanimal23$',
+                email: 'edenconsciousnesssdt@gmail.com',
+                membershipType: 'Founding Member',
+                registrationDate: '2025-10-25',
+                status: 'active',
+                isAdmin: true
+            };
+            
+            // Start with admin account
+            REGISTERED_MEMBERS.length = 0;
+            REGISTERED_MEMBERS.push(adminAccount);
+            
+            // Find matching member
+            const member = REGISTERED_MEMBERS.find(m => 
+                m.divineName.toLowerCase() === divineName.toLowerCase() && 
+                m.sacredKey === sacredKey &&
+                m.status === 'active'
+            );
+            
+            return member;
+        }
+        
+        // Test the exact credentials
+        const testUser = validateMemberCredentials('nazir777', 'Cjanimal23$');
+        const testUser2 = validateMemberCredentials('NAZIR777', 'Cjanimal23$'); // Test case insensitive
+        
+        document.getElementById('result').innerHTML = `
+            <p><strong>Test 1 (nazir777):</strong> ${testUser ? '✅ SUCCESS' : '❌ FAILED'}</p>
+            <p><strong>Test 2 (NAZIR777):</strong> ${testUser2 ? '✅ SUCCESS' : '❌ FAILED'}</p>
+            <p><strong>Member found:</strong> ${JSON.stringify(testUser, null, 2)}</p>
+        `;
+    </script>
+</body>
+</html>
