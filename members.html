@@ -51,6 +51,14 @@
             opacity: 1 !important;
         }
 
+        /* Hidden state with higher specificity */
+        #auth-overlay.hidden {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            z-index: -999 !important;
+        }
+
         #auth-overlay.show {
             display: flex !important;
         }
@@ -203,7 +211,9 @@
         }
 
         #main-content.authenticated {
-            display: block;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
 
         .hidden {
@@ -17708,8 +17718,11 @@ Signature: ________________"></textarea>
                 successDiv.innerHTML = `
                     ✨ Welcome back to the Divine Temple, Nazir! ✨
                     <br><br>
+                    <div style="margin: 1rem 0; padding: 0.5rem; background: rgba(0,255,0,0.1); border: 1px solid #00ff00; border-radius: 0.5rem;">
+                        🔓 Authentication Successful!
+                    </div>
                     <button onclick="enterTempleNow()" class="auth-btn" style="margin-top: 1rem;">
-                        🏛️ Enter Temple Now 🏛️
+                        🏛️ ENTER TEMPLE NOW 🏛️
                     </button>
                 `;
                 successDiv.style.display = 'block';
@@ -17848,6 +17861,9 @@ Signature: ________________"></textarea>
             console.log('👁️ Showing authentication overlay...');
             const authOverlay = document.getElementById('auth-overlay');
             if (authOverlay) {
+                // Remove hidden class first
+                authOverlay.classList.remove('hidden');
+                
                 // Force display with maximum priority
                 authOverlay.style.display = 'flex';
                 authOverlay.style.visibility = 'visible';
@@ -17880,10 +17896,10 @@ Signature: ________________"></textarea>
             console.log('🚪 Hiding authentication overlay...');
             const authOverlay = document.getElementById('auth-overlay');
             if (authOverlay) {
-                authOverlay.style.display = 'none';
+                authOverlay.classList.add('hidden');
                 authOverlay.classList.remove('show');
                 document.body.classList.remove('auth-active');
-                console.log('✅ Auth overlay hidden successfully');
+                console.log('✅ Auth overlay hidden successfully with CSS class');
             }
         }
 
@@ -17893,15 +17909,12 @@ Signature: ________________"></textarea>
             // Prevent race condition with setTimeout
             window.templeEntryPending = false;
             
-            // Force hide overlay with multiple methods
+            // Hide overlay using CSS class (overrides !important rules)
             const authOverlay = document.getElementById('auth-overlay');
             if (authOverlay) {
-                authOverlay.style.setProperty('display', 'none', 'important');
-                authOverlay.style.visibility = 'hidden';
-                authOverlay.style.opacity = '0';
-                authOverlay.style.zIndex = '-1';
                 authOverlay.classList.add('hidden');
-                console.log('✅ Overlay hidden immediately');
+                authOverlay.classList.remove('show');
+                console.log('✅ Overlay hidden immediately with CSS class');
             }
             
             // Force show main content with multiple methods
