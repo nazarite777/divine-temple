@@ -356,7 +356,7 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Calendar Panel -->
     <div class="chamber-panel" id="calendar-panel">
         <div class="close-btn" onclick="closePanel('calendar-panel')">✕</div>
@@ -425,12 +425,11 @@
         </div>
     </div>
 
-   <script>
+    <script>
         // ============================================
         // STATE MANAGEMENT WITH HEBREW CALENDAR
         // ============================================
         let state = {
-            // ENOCH CALENDAR STATE WITH HEBREW MONTHS
             enochCalendar: {
                 months: [
                     { name: 'Aviv', hebrew: 'אָבִיב', days: 30, season: 'Spring', theme: 'Renewal', color: '#8B5CF6' },
@@ -453,7 +452,6 @@
                 todayMonthIndex: 0,
                 todayDayOfMonth: 1
             },
-            
             dailyLogs: {},
             currentLogDate: null
         };
@@ -464,24 +462,15 @@
         function calculateEnochDate() {
             const today = new Date();
             const currentYear = today.getFullYear();
-            
-            // Spring Equinox - Enoch Year Start (March 20)
-            // Enoch calendar always starts March 20 (Spring Equinox)
-            const springEquinox = new Date(currentYear, 2, 20); // Month 2 = March (0-indexed)
-            
-            // If we haven't reached this year's equinox yet, use last year's
+            const springEquinox = new Date(currentYear, 2, 20);
             const enochYearStart = today < springEquinox 
                 ? new Date(currentYear - 1, 2, 20) 
                 : springEquinox;
             
-            // Calculate days since Enoch year started
             const millisecondsPerDay = 1000 * 60 * 60 * 24;
             const daysSinceStart = Math.floor((today - enochYearStart) / millisecondsPerDay);
-            
-            // Enoch day of year (1-364, then resets)
             const enochDay = (daysSinceStart % 364) + 1;
             
-            // Find which month we're in
             const months = state.enochCalendar.months;
             let daysAccumulated = 0;
             let currentMonthIndex = 0;
@@ -496,21 +485,15 @@
                 daysAccumulated += months[i].days;
             }
             
-            // Update state with today's date
             state.enochCalendar.todayEnochDay = enochDay;
             state.enochCalendar.todayMonthIndex = currentMonthIndex;
             state.enochCalendar.todayDayOfMonth = dayOfMonth;
-            
-            // Set current view to today
             state.enochCalendar.currentMonthIndex = currentMonthIndex;
             state.enochCalendar.currentDayOfMonth = dayOfMonth;
             state.enochCalendar.currentEnochDay = enochDay;
             
-            // Update header display
             const month = months[currentMonthIndex];
-            document.getElementById('header-enoch-date').textContent = 
-                `${month.name} ${dayOfMonth}`;
-            
+            document.getElementById('header-enoch-date').textContent = `${month.name} ${dayOfMonth}`;
             document.getElementById('portal-subtitle').textContent = 
                 `Today: ${month.name} ${dayOfMonth} (${month.hebrew}) - Day ${enochDay}/364`;
             
@@ -520,7 +503,6 @@
             console.log('Day', enochDay, 'of 364');
             console.log('Season:', month.season);
             console.log('Theme:', month.theme);
-            console.log('Enoch Year Started:', enochYearStart.toLocaleDateString());
             
             return {
                 enochDay: enochDay,
@@ -544,12 +526,9 @@
             const months = state.enochCalendar.months;
             const currentMonth = months[state.enochCalendar.currentMonthIndex];
             const isToday = state.enochCalendar.currentMonthIndex === state.enochCalendar.todayMonthIndex;
-            
-            // Quarter colors
             const quarter = Math.floor(state.enochCalendar.currentMonthIndex / 3);
             const quarterColor = currentMonth.color;
             
-            // Update month header with Hebrew
             document.getElementById('calendar-month').innerHTML = `
                 <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                     <div style="display: flex; align-items: center; gap: 1rem;">
@@ -567,7 +546,6 @@
                 </div>
             `;
             
-            // Update stats
             let daysBeforeMonth = 0;
             for (let i = 0; i < state.enochCalendar.currentMonthIndex; i++) {
                 daysBeforeMonth += months[i].days;
@@ -575,17 +553,12 @@
             const startDayOfMonth = daysBeforeMonth + 1;
             const endDayOfMonth = daysBeforeMonth + currentMonth.days;
             
-            document.getElementById('stat-enoch-day').textContent = 
-                `${startDayOfMonth}-${endDayOfMonth}/364`;
+            document.getElementById('stat-enoch-day').textContent = `${startDayOfMonth}-${endDayOfMonth}/364`;
+            document.getElementById('stat-month-name').textContent = `${currentMonth.name}`;
             
-            document.getElementById('stat-month-name').textContent = 
-                `${currentMonth.name}`;
-            
-            // Build calendar grid
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
             
-            // Day headers (Enoch week starts Wednesday)
             const days = ['Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue'];
             for (let d = 0; d < days.length; d++) {
                 const cell = document.createElement('div');
@@ -605,7 +578,6 @@
                 grid.appendChild(cell);
             }
             
-            // Create day cells
             for (let day = 1; day <= currentMonth.days; day++) {
                 const cell = document.createElement('div');
                 const enochDayNum = daysBeforeMonth + day;
@@ -629,7 +601,6 @@
                     overflow: hidden;
                 `;
                 
-                // Add shimmer effect to today
                 if (isTodayCell) {
                     cell.innerHTML = `
                         <div style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; 
@@ -644,7 +615,6 @@
                     <div style="font-size: 0.65rem; opacity: 0.6;">Day ${enochDayNum}</div>
                 `;
                 
-                // Add practice indicators
                 if (hasLog && hasLog.practices) {
                     const icons = { 
                         meditation: '🧘', 
@@ -663,14 +633,12 @@
                     }
                 }
                 
-                // Add "Today" badge
                 if (isTodayCell) {
                     cell.innerHTML += `<div style="position: absolute; top: 0.25rem; right: 0.25rem; 
                          background: ${quarterColor}; color: white; font-size: 0.6rem; 
                          padding: 0.15rem 0.4rem; border-radius: 8px; font-weight: 700;">TODAY</div>`;
                 }
                 
-                // Hover effect
                 cell.onmouseover = function() {
                     if (!isTodayCell) {
                         this.style.transform = 'scale(1.05)';
@@ -694,243 +662,240 @@
 
         function prevMonth() {
             state.enochCalendar.currentMonthIndex = 
-                state.enochCalendar.currentMonthIndex === 0 
-                ? 11 
-                : state.enochCalendar.currentMonthIndex - 1;
+                state.enochCalendar.currentMonthIndex === 0 ? 11 : state.enochCalendar.currentMonthIndex - 1;
             updateCalendar();
         }
 
         function nextMonth() {
             state.enochCalendar.currentMonthIndex = 
-                state.enochCalendar.currentMonthIndex === 11 
-                ? 0 
-                : state.enochCalendar.currentMonthIndex + 1;
+                state.enochCalendar.currentMonthIndex === 11 ? 0 : state.enochCalendar.currentMonthIndex + 1;
             updateCalendar();
         }
 
         // ============================================
         // DAILY LOG FUNCTIONS
         // ============================================
-        
-
-    
-    // PART 1: Practice Checkboxes with Duration
-    const practices = [
-        { id: 'meditation', icon: '🧘', label: 'Meditation', desc: 'Centered and present', hasDuration: true },
-        { id: 'prayer', icon: '🙏', label: 'Prayer', desc: 'Communed with divine', hasDuration: true },
-        { id: 'scripture', icon: '📖', label: 'Scripture Study', desc: 'Studied sacred texts', hasDuration: true },
-        { id: 'gratitude', icon: '✨', label: 'Gratitude Practice', desc: 'Counted blessings', hasDuration: false },
-        { id: 'fasting', icon: '🕯️', label: 'Fasting', desc: 'Spiritual discipline', hasDuration: false },
-        { id: 'worship', icon: '🎵', label: 'Worship', desc: 'Praised in song/spirit', hasDuration: true }
-    ];
-    
-    let html = '<h4 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--accent-gold);">📝 Daily Practices</h4>';
-    
-    for (let p of practices) {
-        const checked = existingLog.practices[p.id];
-        const duration = existingLog.duration[p.id] || '';
-        
-        html += `
-            <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; 
-                 background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); 
-                 border-radius: 12px; transition: all 0.3s; margin-bottom: 0.75rem;" 
-                 id="practice-${p.id}"
-                 onmouseover="this.style.borderColor='${color}'; this.style.background='rgba(255,255,255,0.05)'"
-                 onmouseout="this.style.borderColor='var(--glass-border)'; this.style.background='rgba(255,255,255,0.03)'">
-                <div style="width: 24px; height: 24px; border: 2px solid var(--glass-border); 
-                     border-radius: 6px; display: flex; align-items: center; justify-content: center; 
-                     cursor: pointer; transition: all 0.3s; ${checked ? `background: linear-gradient(135deg, ${color}, ${color}dd); border-color: transparent;` : ''}" 
-                     id="check-${p.id}"
-                     onclick="togglePractice('${p.id}')">
-                    ${checked ? '✓' : ''}
-                </div>
-                <div style="font-size: 1.5rem;">${p.icon}</div>
-                <div style="flex: 1;">
-                    <div style="font-weight: 500;">${p.label}</div>
-                    <div style="font-size: 0.8rem; color: var(--text-secondary);">${p.desc}</div>
-                </div>
-                ${p.hasDuration ? `
-                    <input type="number" 
-                           id="duration-${p.id}" 
-                           value="${duration}" 
-                           placeholder="mins"
-                           min="0"
-                           style="width: 60px; padding: 0.5rem; background: rgba(255,255,255,0.05); 
-                                  border: 1px solid var(--glass-border); border-radius: 8px; 
-                                  color: white; text-align: center;"
-                           onchange="saveDuration('${p.id}', this.value)">
-                ` : ''}
-            </div>
-        `;
-    }
-    
-    // PART 2: Energy & Mood
-    html += `
-        <h4 style="font-size: 1.2rem; margin: 2rem 0 1rem; color: var(--accent-gold);">💫 Energy & Mood</h4>
-        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); 
-             border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;">
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Energy Level (1-10)</label>
-            <input type="range" id="energy-level" min="1" max="10" value="${existingLog.energyLevel || 5}" 
-                   style="width: 100%; margin-bottom: 0.5rem;"
-                   oninput="document.getElementById('energy-value').textContent = this.value">
-            <div style="text-align: center; font-size: 1.5rem; font-weight: 700; color: ${color};" id="energy-value">${existingLog.energyLevel || 5}</div>
-        </div>
-        
-        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); 
-             border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;">
-            <label style="display: block; margin-bottom: 0.75rem; font-weight: 500;">Today's Mood</label>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
-                ${['Peaceful', 'Joyful', 'Contemplative', 'Struggling'].map(mood => `
-                    <div onclick="selectMood('${mood}')" 
-                         id="mood-${mood}"
-                         style="padding: 0.75rem; text-align: center; background: ${existingLog.mood === mood ? color + '44' : 'rgba(255,255,255,0.03)'}; 
-                                border: 1px solid ${existingLog.mood === mood ? color : 'var(--glass-border)'}; 
-                                border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: all 0.3s;"
-                         onmouseover="if(this.id !== 'mood-${existingLog.mood}') this.style.borderColor='${color}'"
-                         onmouseout="if(this.id !== 'mood-${existingLog.mood}') this.style.borderColor='var(--glass-border)'">
-                        ${mood}
+        function openDailyLog(dateKey, monthName, monthHebrew, day, enochDay, theme, season, color) {
+            state.currentLogDate = dateKey;
+            
+            document.getElementById('log-date-title').textContent = `${monthName} ${day} (${monthHebrew})`;
+            document.getElementById('log-date-subtitle').innerHTML = `Day ${enochDay}/364 • ${season} • Theme: ${theme}`;
+            
+            const existingLog = state.dailyLogs[dateKey] || { 
+                practices: {},
+                duration: {},
+                energyLevel: 5,
+                mood: '',
+                gratitudeList: [],
+                scripturePassages: [],
+                challengesFaced: '',
+                blessingsReceived: '',
+                divineGuidance: '',
+                reflection: '' 
+            };
+            
+            const practices = [
+                { id: 'meditation', icon: '🧘', label: 'Meditation', desc: 'Centered and present', hasDuration: true },
+                { id: 'prayer', icon: '🙏', label: 'Prayer', desc: 'Communed with divine', hasDuration: true },
+                { id: 'scripture', icon: '📖', label: 'Scripture Study', desc: 'Studied sacred texts', hasDuration: true },
+                { id: 'gratitude', icon: '✨', label: 'Gratitude Practice', desc: 'Counted blessings', hasDuration: false },
+                { id: 'fasting', icon: '🕯️', label: 'Fasting', desc: 'Spiritual discipline', hasDuration: false },
+                { id: 'worship', icon: '🎵', label: 'Worship', desc: 'Praised in song/spirit', hasDuration: true }
+            ];
+            
+            let html = '<h4 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--accent-gold);">📝 Daily Practices</h4>';
+            
+            for (let p of practices) {
+                const checked = existingLog.practices[p.id];
+                const duration = existingLog.duration[p.id] || '';
+                
+                html += `
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; 
+                         background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); 
+                         border-radius: 12px; transition: all 0.3s; margin-bottom: 0.75rem;" 
+                         onmouseover="this.style.borderColor='${color}'; this.style.background='rgba(255,255,255,0.05)'"
+                         onmouseout="this.style.borderColor='var(--glass-border)'; this.style.background='rgba(255,255,255,0.03)'">
+                        <div style="width: 24px; height: 24px; border: 2px solid var(--glass-border); 
+                             border-radius: 6px; display: flex; align-items: center; justify-content: center; 
+                             cursor: pointer; transition: all 0.3s; ${checked ? `background: linear-gradient(135deg, ${color}, ${color}dd); border-color: transparent;` : ''}" 
+                             id="check-${p.id}" onclick="togglePractice('${p.id}')">
+                            ${checked ? '✓' : ''}
+                        </div>
+                        <div style="font-size: 1.5rem;">${p.icon}</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 500;">${p.label}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">${p.desc}</div>
+                        </div>
+                        ${p.hasDuration ? `
+                            <input type="number" id="duration-${p.id}" value="${duration}" placeholder="mins" min="0"
+                                   style="width: 60px; padding: 0.5rem; background: rgba(255,255,255,0.05); 
+                                          border: 1px solid var(--glass-border); border-radius: 8px; 
+                                          color: white; text-align: center;"
+                                   onchange="saveDuration('${p.id}', this.value)">
+                        ` : ''}
                     </div>
-                `).join('')}
-            </div>
-        </div>
-    `;
-    
-    // PART 3: Gratitude List
-    html += `
-        <h4 style="font-size: 1.2rem; margin: 2rem 0 1rem; color: var(--accent-gold);">✨ Gratitude (3 Things)</h4>
-        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); 
-             border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;">
-            <input type="text" id="gratitude-1" value="${existingLog.gratitudeList[0] || ''}" 
-                   placeholder="1. I am grateful for..." 
-                   style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); 
-                          border: 1px solid var(--glass-border); border-radius: 8px; 
-                          color: white; margin-bottom: 0.75rem;">
-            <input type="text" id="gratitude-2" value="${existingLog.gratitudeList[1] || ''}" 
-                   placeholder="2. I am grateful for..." 
-                   style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); 
-                          border: 1px solid var(--glass-border); border-radius: 8px; 
-                          color: white; margin-bottom: 0.75rem;">
-            <input type="text" id="gratitude-3" value="${existingLog.gratitudeList[2] || ''}" 
-                   placeholder="3. I am grateful for..." 
-                   style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); 
-                          border: 1px solid var(--glass-border); border-radius: 8px; 
-                          color: white;">
-        </div>
-    `;
-    
-    // PART 4: Scripture Passages
-    html += `
-        <h4 style="font-size: 1.2rem; margin: 2rem 0 1rem; color: var(--accent-gold);">📖 Scripture That Spoke Today</h4>
-        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); 
-             border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;">
-            <input type="text" id="scripture-passages" value="${existingLog.scripturePassages.join(', ')}" 
-                   placeholder="e.g., Psalm 23:1, John 3:16, Proverbs 3:5-6" 
-                   style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); 
-                          border: 1px solid var(--glass-border); border-radius: 8px; 
-                          color: white;">
-            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
-                Separate multiple passages with commas
-            </div>
-        </div>
-    `;
-    
-    // PART 5: Challenges & Blessings
-    html += `
-        <h4 style="font-size: 1.2rem; margin: 2rem 0 1rem; color: var(--accent-gold);">⚡ Challenges Faced</h4>
-        <textarea id="challenges-faced" 
-                  placeholder="What challenges or struggles did you face today?" 
-                  style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.05); 
-                         border: 1px solid var(--glass-border); border-radius: 12px; 
-                         color: white; min-height: 80px; resize: vertical; font-family: 'Inter', sans-serif; margin-bottom: 1rem;">${existingLog.challengesFaced || ''}</textarea>
-        
-        <h4 style="font-size: 1.2rem; margin: 2rem 0 1rem; color: var(--accent-gold);">🌟 Blessings Received</h4>
-        <textarea id="blessings-received" 
-                  placeholder="What blessings, synchronicities, or answered prayers did you receive?" 
-                  style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.05); 
-                         border: 1px solid var(--glass-border); border-radius: 12px; 
-                         color: white; min-height: 80px; resize: vertical; font-family: 'Inter', sans-serif; margin-bottom: 1rem;">${existingLog.blessingsReceived || ''}</textarea>
-        
-        <h4 style="font-size: 1.2rem; margin: 2rem 0 1rem; color: var(--accent-gold);">💎 Divine Guidance</h4>
-        <textarea id="divine-guidance" 
-                  placeholder="What messages, insights, or guidance did you receive today?" 
-                  style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.05); 
-                         border: 1px solid var(--glass-border); border-radius: 12px; 
-                         color: white; min-height: 80px; resize: vertical; font-family: 'Inter', sans-serif; margin-bottom: 1rem;">${existingLog.divineGuidance || ''}</textarea>
-    `;
-    
-    document.getElementById('practice-list').innerHTML = html;
-    document.getElementById('daily-reflection').value = existingLog.reflection || '';
-    document.getElementById('daily-log-modal').style.display = 'flex';
-}
+                `;
+            }
+            
+            html += `
+                <h4 style="font-size: 1.2rem; margin: 2rem 0 1rem; color: var(--accent-gold);">💫 Energy & Mood</h4>
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); 
+                     border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Energy Level (1-10)</label>
+                    <input type="range" id="energy-level" min="1" max="10" value="${existingLog.energyLevel || 5}" 
+                           style="width: 100%; margin-bottom: 0.5rem;"
+                           oninput="document.getElementById('energy-value').textContent = this.value">
+                    <div style="text-align: center; font-size: 1.5rem; font-weight: 700; color: ${color};" id="energy-value">${existingLog.energyLevel || 5}</div>
+                </div>
+                
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); 
+                     border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.75rem; font-weight: 500;">Today's Mood</label>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
+                        ${['Peaceful', 'Joyful', 'Contemplative', 'Struggling'].map(mood => `
+                            <div onclick="selectMood('${mood}')" id="mood-${mood}"
+                                 style="padding: 0.75rem; text-align: center; background: ${existingLog.mood === mood ? color + '44' : 'rgba(255,255,255,0.03)'}; 
+                                        border: 1px solid ${existingLog.mood === mood ? color : 'var(--glass-border)'}; 
+                                        border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: all 0.3s;">
+                                ${mood}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <h4 style="font-size: 1.2rem; margin: 2rem 0 1rem; color: var(--accent-gold);">✨ Gratitude (3 Things)</h4>
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); 
+                     border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;">
+                    <input type="text" id="gratitude-1" value="${existingLog.gratitudeList[0] || ''}" 
+                           placeholder="1. I am grateful for..." 
+                           style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); 
+                                  border: 1px solid var(--glass-border); border-radius: 8px; 
+                                  color: white; margin-bottom: 0.75rem;">
+                    <input type="text" id="gratitude-2" value="${existingLog.gratitudeList[1] || ''}" 
+                           placeholder="2. I am grateful for..." 
+                           style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); 
+                                  border: 1px solid var(--glass-border); border-radius: 8px; 
+                                  color: white; margin-bottom: 0.75rem;">
+                    <input type="text" id="gratitude-3" value="${existingLog.gratitudeList[2] || ''}" 
+                           placeholder="3. I am grateful for..." 
+                           style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); 
+                                  border: 1px solid var(--glass-border); border-radius: 8px; 
+                                  color: white;">
+                </div>
+                
+                <h4 style="font-size: 1.2rem; margin: 2rem 0 1rem; color: var(--accent-gold);">📖 Scripture That Spoke Today</h4>
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); 
+                     border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;">
+                    <input type="text" id="scripture-passages" value="${existingLog.scripturePassages.join(', ')}" 
+                           placeholder="e.g., Psalm 23:1, John 3:16" 
+                           style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); 
+                                  border: 1px solid var(--glass-border); border-radius: 8px; color: white;">
+                </div>
+                
+                <h4 style="font-size: 1.2rem; margin: 2rem 0 1rem; color: var(--accent-gold);">⚡ Challenges Faced</h4>
+                <textarea id="challenges-faced" placeholder="What challengesor struggles did you face today?" 
+                          style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.05); 
+                                 border: 1px solid var(--glass-border); border-radius: 12px; 
+                                 color: white; min-height: 80px; resize: vertical; font-family: 'Inter', sans-serif; margin-bottom: 1rem;">${existingLog.challengesFaced || ''}</textarea>
+                
+                <h4 style="font-size: 1.2rem; margin: 2rem 0 1rem; color: var(--accent-gold);">🌟 Blessings Received</h4>
+                <textarea id="blessings-received" 
+                          placeholder="What blessings, synchronicities, or answered prayers did you receive?" 
+                          style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.05); 
+                                 border: 1px solid var(--glass-border); border-radius: 12px; 
+                                 color: white; min-height: 80px; resize: vertical; font-family: 'Inter', sans-serif; margin-bottom: 1rem;">${existingLog.blessingsReceived || ''}</textarea>
+                
+                <h4 style="font-size: 1.2rem; margin: 2rem 0 1rem; color: var(--accent-gold);">💎 Divine Guidance</h4>
+                <textarea id="divine-guidance" 
+                          placeholder="What messages, insights, or guidance did you receive today?" 
+                          style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.05); 
+                                 border: 1px solid var(--glass-border); border-radius: 12px; 
+                                 color: white; min-height: 80px; resize: vertical; font-family: 'Inter', sans-serif; margin-bottom: 1rem;">${existingLog.divineGuidance || ''}</textarea>
+            `;
             
             document.getElementById('practice-list').innerHTML = html;
             document.getElementById('daily-reflection').value = existingLog.reflection || '';
             document.getElementById('daily-log-modal').style.display = 'flex';
         }
-    
-    const log = state.dailyLogs[state.currentLogDate];
-    
-    // Save all the data
-    log.reflection = document.getElementById('daily-reflection').value;
-    log.energyLevel = parseInt(document.getElementById('energy-level').value);
-    
-    log.gratitudeList = [
-        document.getElementById('gratitude-1').value,
-        document.getElementById('gratitude-2').value,
-        document.getElementById('gratitude-3').value
-    ].filter(g => g.trim() !== '');
-    
-    const scriptureInput = document.getElementById('scripture-passages').value;
-    log.scripturePassages = scriptureInput ? scriptureInput.split(',').map(s => s.trim()) : [];
-    
-    log.challengesFaced = document.getElementById('challenges-faced').value;
-    log.blessingsReceived = document.getElementById('blessings-received').value;
-    log.divineGuidance = document.getElementById('divine-guidance').value;
-    
-    // Save to localStorage
-    localStorage.setItem('edenDailyLogs', JSON.stringify(state.dailyLogs));
-    
-    updateCalendar();
-    const daysLogged = Object.keys(state.dailyLogs).length;
-    document.getElementById('stat-days').textContent = daysLogged;
-    closeDailyLog();
-    
-    alert('✨ Daily log saved! Your spiritual journey is documented.');
-    console.log('📖 Log saved for', state.currentLogDate);
-}
-            
-       function saveDuration(practice, value) {
-    if (!state.currentLogDate) return;
-    if (!state.dailyLogs[state.currentLogDate]) {
-        state.dailyLogs[state.currentLogDate] = { practices: {}, duration: {} };
-    }
-    state.dailyLogs[state.currentLogDate].duration[practice] = value;
-}
 
-function selectMood(mood) {
-    if (!state.currentLogDate) return;
-    if (!state.dailyLogs[state.currentLogDate]) {
-        state.dailyLogs[state.currentLogDate] = {};
-    }
-    state.dailyLogs[state.currentLogDate].mood = mood;
-    
-    // Update UI
-    ['Peaceful', 'Joyful', 'Contemplative', 'Struggling'].forEach(m => {
-        const el = document.getElementById('mood-' + m);
-        const month = state.enochCalendar.months[state.enochCalendar.currentMonthIndex];
-        if (m === mood) {
-            el.style.background = month.color + '44';
-            el.style.borderColor = month.color;
-        } else {
-            el.style.background = 'rgba(255,255,255,0.03)';
-            el.style.borderColor = 'var(--glass-border)';
-        }
-    });
-}
-            state.dailyLogs[state.currentLogDate].reflection = 
-                document.getElementById('daily-reflection').value;
+        function togglePractice(practice) {
+            if (!state.currentLogDate) return;
             
-            // Save to localStorage
+            if (!state.dailyLogs[state.currentLogDate]) {
+                state.dailyLogs[state.currentLogDate] = { practices: {}, duration: {} };
+            }
+            
+            state.dailyLogs[state.currentLogDate].practices[practice] = 
+                !state.dailyLogs[state.currentLogDate].practices[practice];
+            
+            const checkbox = document.getElementById('check-' + practice);
+            const isChecked = state.dailyLogs[state.currentLogDate].practices[practice];
+            const month = state.enochCalendar.months[state.enochCalendar.currentMonthIndex];
+            
+            if (isChecked) {
+                checkbox.style.background = `linear-gradient(135deg, ${month.color}, ${month.color}dd)`;
+                checkbox.style.borderColor = 'transparent';
+                checkbox.textContent = '✓';
+            } else {
+                checkbox.style.background = '';
+                checkbox.style.borderColor = 'var(--glass-border)';
+                checkbox.textContent = '';
+            }
+        }
+
+        function saveDuration(practice, value) {
+            if (!state.currentLogDate) return;
+            if (!state.dailyLogs[state.currentLogDate]) {
+                state.dailyLogs[state.currentLogDate] = { practices: {}, duration: {} };
+            }
+            state.dailyLogs[state.currentLogDate].duration[practice] = value;
+        }
+
+        function selectMood(mood) {
+            if (!state.currentLogDate) return;
+            if (!state.dailyLogs[state.currentLogDate]) {
+                state.dailyLogs[state.currentLogDate] = {};
+            }
+            state.dailyLogs[state.currentLogDate].mood = mood;
+            
+            ['Peaceful', 'Joyful', 'Contemplative', 'Struggling'].forEach(function(m) {
+                const el = document.getElementById('mood-' + m);
+                const month = state.enochCalendar.months[state.enochCalendar.currentMonthIndex];
+                if (m === mood) {
+                    el.style.background = month.color + '44';
+                    el.style.borderColor = month.color;
+                } else {
+                    el.style.background = 'rgba(255,255,255,0.03)';
+                    el.style.borderColor = 'var(--glass-border)';
+                }
+            });
+        }
+
+        function saveDailyLog() {
+            if (!state.currentLogDate) return;
+            
+            if (!state.dailyLogs[state.currentLogDate]) {
+                state.dailyLogs[state.currentLogDate] = {};
+            }
+            
+            const log = state.dailyLogs[state.currentLogDate];
+            
+            log.reflection = document.getElementById('daily-reflection').value;
+            log.energyLevel = parseInt(document.getElementById('energy-level').value);
+            
+            log.gratitudeList = [
+                document.getElementById('gratitude-1').value,
+                document.getElementById('gratitude-2').value,
+                document.getElementById('gratitude-3').value
+            ].filter(function(g) { return g.trim() !== ''; });
+            
+            const scriptureInput = document.getElementById('scripture-passages').value;
+            log.scripturePassages = scriptureInput ? scriptureInput.split(',').map(function(s) { return s.trim(); }) : [];
+            
+            log.challengesFaced = document.getElementById('challenges-faced').value;
+            log.blessingsReceived = document.getElementById('blessings-received').value;
+            log.divineGuidance = document.getElementById('divine-guidance').value;
+            
             localStorage.setItem('edenDailyLogs', JSON.stringify(state.dailyLogs));
             
             updateCalendar();
@@ -938,7 +903,7 @@ function selectMood(mood) {
             document.getElementById('stat-days').textContent = daysLogged;
             closeDailyLog();
             
-            alert('✨ Daily log saved! Keep building your practice!');
+            alert('✨ Daily log saved! Your spiritual journey is documented.');
         }
 
         function closeDailyLog() {
@@ -946,9 +911,6 @@ function selectMood(mood) {
             state.currentLogDate = null;
         }
 
-        // ============================================
-        // CALENDAR PANEL FUNCTIONS
-        // ============================================
         function openCalendar() {
             document.getElementById('portal-container').style.display = 'none';
             document.getElementById('calendar-panel').classList.add('open');
@@ -960,7 +922,7 @@ function selectMood(mood) {
             document.getElementById('portal-container').style.display = 'block';
         }
 
-// ============================================
+        // ============================================
         // THREE.JS TEMPLE ANIMATION
         // ============================================
         let scene, camera, renderer;
@@ -1007,7 +969,7 @@ function selectMood(mood) {
         }
 
         // ============================================
-        // AUDIO SYSTEM (Sacred Frequencies)
+        // AUDIO SYSTEM
         // ============================================
         let audioContext = null;
         let backgroundMusic = null;
@@ -1030,7 +992,6 @@ function selectMood(mood) {
         function startBackgroundMusic() {
             if (!audioContext) initAudio();
             
-            // Create oscillators for ambient sound
             const osc1 = audioContext.createOscillator();
             const osc2 = audioContext.createOscillator();
             const osc3 = audioContext.createOscillator();
@@ -1049,10 +1010,9 @@ function selectMood(mood) {
             gain3.connect(masterGain);
             masterGain.connect(audioContext.destination);
             
-            // Sacred frequencies
-            osc1.frequency.value = 432; // Universal harmony
-            osc2.frequency.value = 528; // Love frequency  
-            osc3.frequency.value = 639; // Connection frequency
+            osc1.frequency.value = 432;
+            osc2.frequency.value = 528;
+            osc3.frequency.value = 639;
             
             osc1.type = 'sine';
             osc2.type = 'sine';
@@ -1072,8 +1032,6 @@ function selectMood(mood) {
             
             document.getElementById('music-btn').textContent = '🔇 Mute';
             document.getElementById('music-btn').style.background = 'linear-gradient(135deg, var(--accent-gold), #F97316)';
-            
-            console.log('🎵 Sacred frequencies activated: 432Hz, 528Hz, 639Hz');
         }
 
         function stopBackgroundMusic() {
@@ -1090,7 +1048,7 @@ function selectMood(mood) {
         }
 
         // ============================================
-        // LOCAL STORAGE MANAGEMENT
+        // LOCAL STORAGE
         // ============================================
         function loadFromStorage() {
             try {
@@ -1112,20 +1070,14 @@ function selectMood(mood) {
         function initialize() {
             console.log('🏛️ Initializing Eden Consciousness Temple...');
             
-            // Initialize 3D temple
             initThreeJS();
-            
-            // Initialize audio
             initAudio();
             
-            // Calculate and display Enoch date
             const today = calculateEnochDate();
             console.log('✅ Today calculated:', today);
             
-            // Load saved data
             loadFromStorage();
             
-            // Welcome message
             console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
             console.log('🏛️ EDEN CONSCIOUSNESS TEMPLE');
             console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -1141,7 +1093,6 @@ function selectMood(mood) {
             console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         }
 
-        // Run initialization when page loads
         window.addEventListener('DOMContentLoaded', initialize);
     </script>
 </body>
