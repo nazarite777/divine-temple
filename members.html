@@ -1169,6 +1169,516 @@
         }
 
         /* =====================================
+           COMMUNITY HUB STYLES
+           ===================================== */
+        #community-hub-panel {
+            background: linear-gradient(135deg, 
+                rgba(30, 40, 50, 0.95) 0%,
+                rgba(45, 55, 65, 0.95) 50%,
+                rgba(35, 45, 55, 0.95) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .community-navigation {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .community-tab {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .community-tab:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .community-tab.active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-color: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .community-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .community-content.active {
+            display: block;
+        }
+
+        .community-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .community-intro {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .connection-form,
+        .discussion-form,
+        .event-form,
+        .service-form {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .connection-form h4,
+        .discussion-form h4,
+        .event-form h4,
+        .service-form h4 {
+            color: #3b82f6;
+            margin-bottom: 1rem;
+        }
+
+        .community-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .community-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #3b82f6;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+            outline: none;
+        }
+
+        .community-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .community-btn.primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .community-btn.primary:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .community-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .community-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .community-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .community-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .community-item-header h4 {
+            color: #3b82f6;
+            margin: 0;
+        }
+
+        .community-item-header span {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .community-type {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .community-level {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .community-level.soul-family {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .community-level.close {
+            background: rgba(139, 92, 246, 0.2);
+            color: #8b5cf6;
+        }
+
+        .community-level.friend {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .community-level.acquaintance {
+            background: rgba(156, 163, 175, 0.2);
+            color: #9ca3af;
+        }
+
+        .mentorship-offerings {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .offering-section,
+        .seeking-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+        }
+
+        .offering-section h4,
+        .seeking-section h4 {
+            color: #3b82f6;
+            margin-bottom: 1rem;
+        }
+
+        .event-upcoming {
+            border-left: 4px solid #22c55e;
+        }
+
+        .event-past {
+            border-left: 4px solid #6b7280;
+            opacity: 0.7;
+        }
+
+        .service-urgent {
+            border-left: 4px solid #ef4444;
+        }
+
+        .service-active {
+            border-left: 4px solid #22c55e;
+        }
+
+        @media (max-width: 768px) {
+            .mentorship-offerings {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* =====================================
+           ANCIENT WISDOM PORTAL STYLES
+           ===================================== */
+        #ancient-wisdom-panel {
+            background: linear-gradient(135deg, 
+                rgba(30, 20, 40, 0.95) 0%,
+                rgba(45, 35, 60, 0.95) 50%,
+                rgba(35, 25, 50, 0.95) 100%);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .wisdom-navigation {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .wisdom-tab {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .wisdom-tab:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: rgba(168, 85, 247, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .wisdom-tab.active {
+            background: linear-gradient(135deg, #a855f7, #8b5cf6);
+            border-color: #a855f7;
+            color: white;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        }
+
+        .wisdom-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .wisdom-content.active {
+            display: block;
+        }
+
+        .wisdom-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .wisdom-intro {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .teaching-form,
+        .symbol-form,
+        .meditation-form,
+        .mystery-form,
+        .archive-practice-log {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .teaching-form h4,
+        .symbol-form h4,
+        .meditation-form h4,
+        .mystery-form h4,
+        .archive-practice-log h4 {
+            color: #a855f7;
+            margin-bottom: 1rem;
+        }
+
+        .wisdom-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .wisdom-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #a855f7;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+            outline: none;
+        }
+
+        .wisdom-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .wisdom-btn.primary {
+            background: linear-gradient(135deg, #a855f7, #8b5cf6);
+            color: white;
+        }
+
+        .wisdom-btn.primary:hover {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        }
+
+        .wisdom-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .wisdom-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .wisdom-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(168, 85, 247, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .wisdom-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .wisdom-item-header h4 {
+            color: #a855f7;
+            margin: 0;
+        }
+
+        .wisdom-item-header span {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .wisdom-tradition {
+            display: inline-block;
+            background: rgba(168, 85, 247, 0.2);
+            color: #a855f7;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .wisdom-level {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .wisdom-level.master {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .wisdom-level.advanced {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .wisdom-level.intermediate {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .wisdom-level.foundational,
+        .wisdom-level.beginner {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .symbol-character {
+            font-size: 2rem;
+            text-align: center;
+            margin: 1rem 0;
+            color: #a855f7;
+        }
+
+        .symbol-power {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .meditation-duration {
+            font-weight: bold;
+            color: #a855f7;
+            margin-bottom: 0.5rem;
+        }
+
+        .mystery-depth {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .mystery-depth.integration {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .mystery-depth.breakthrough {
+            background: rgba(168, 85, 247, 0.2);
+            color: #a855f7;
+        }
+
+        .mystery-depth.deepening {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .mystery-depth.surface {
+            background: rgba(156, 163, 175, 0.2);
+            color: #9ca3af;
+        }
+
+        .archive-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .archive-stats .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .archive-stats .stat-card h4 {
+            color: #a855f7;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* =====================================
            SHADOW INTEGRATION STYLES
            ===================================== */
         #shadow-panel {
@@ -3341,13 +3851,13 @@
                 <p>Complete workbook • Divine texts • Study guides • Reference materials</p>
             </div>
 
-            <div class="portal-card" onclick="alert('Opening Community Hub...')">
+            <div class="portal-card" onclick="openCommunityHub()">
                 <div class="portal-icon">🤝</div>
                 <h3>Community & Service</h3>
                 <p>Service projects • Mentorship • Teaching • Spiritual community connection</p>
             </div>
 
-            <div class="portal-card" onclick="alert('Opening Wisdom Archive...')">
+            <div class="portal-card" onclick="openAncientWisdom()">
                 <div class="portal-icon">🧙‍♂️</div>
                 <h3>Ancient Wisdom</h3>
                 <p>Esoteric teachings • Sacred symbols • Mystical traditions • Divine mysteries</p>
@@ -4277,7 +4787,7 @@
                             <option value="4">4 - Very Clear</option>
                             <option value="5">5 - Crystal Clear</option>
                         </select>
-                        <button onclick="saveDreamEntry()" class="dreams-btn primary">💫 Save Dream</button>
+                        <button onclick="recordDream()" class="dreams-btn primary">💫 Save Dream</button>
                     </div>
                     
                     <div id="dreams-journal-list" class="dreams-list"></div>
@@ -6455,6 +6965,411 @@ Signature: ________________"></textarea>
                     </div>
                     
                     <div id="reading-sessions-list" class="library-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Community Hub Panel -->
+    <div id="community-hub-panel" class="spiritual-panel">
+        <div class="panel-header">
+            <h2>🤝 Community Hub</h2>
+            <button class="close-btn" onclick="closeCommunityHub()">×</button>
+        </div>
+        
+        <div class="community-navigation">
+            <button class="community-tab active" id="connections-tab" onclick="nextCommunityTab('connections')">👥 Connections</button>
+            <button class="community-tab" id="discussions-tab" onclick="nextCommunityTab('discussions')">💬 Discussions</button>
+            <button class="community-tab" id="events-tab" onclick="nextCommunityTab('events')">📅 Events</button>
+            <button class="community-tab" id="mentorship-tab" onclick="nextCommunityTab('mentorship')">🌱 Mentorship</button>
+            <button class="community-tab" id="service-tab" onclick="nextCommunityTab('service')">🙏 Service</button>
+        </div>
+
+        <div class="community-content-container">
+            <!-- Connections Tab -->
+            <div id="community-connections" class="community-content active">
+                <div class="community-section">
+                    <h3>👥 Spiritual Connections</h3>
+                    <p class="community-intro">Connect with fellow seekers on your spiritual journey.</p>
+                    
+                    <div class="connection-form">
+                        <h4>✨ Add New Connection</h4>
+                        <input type="text" id="connection-name" class="community-input" placeholder="Full name...">
+                        <input type="email" id="connection-email" class="community-input" placeholder="Email address...">
+                        <select id="connection-type" class="community-input">
+                            <option value="seeker">Fellow Seeker</option>
+                            <option value="mentor">Spiritual Mentor</option>
+                            <option value="student">Student/Mentee</option>
+                            <option value="teacher">Spiritual Teacher</option>
+                            <option value="healer">Energy Healer</option>
+                            <option value="guide">Spirit Guide</option>
+                        </select>
+                        <textarea id="connection-notes" class="community-input" rows="3" placeholder="How you know them and their spiritual journey..."></textarea>
+                        <input type="text" id="connection-gifts" class="community-input" placeholder="Their spiritual gifts and strengths...">
+                        <select id="connection-level" class="community-input">
+                            <option value="acquaintance">Acquaintance</option>
+                            <option value="friend">Spiritual Friend</option>
+                            <option value="close">Close Connection</option>
+                            <option value="soul-family">Soul Family</option>
+                        </select>
+                        <button onclick="addConnection()" class="community-btn primary">👥 Add Connection</button>
+                    </div>
+                    
+                    <div id="connections-list" class="community-list"></div>
+                </div>
+            </div>
+
+            <!-- Discussions Tab -->
+            <div id="community-discussions" class="community-content">
+                <div class="community-section">
+                    <h3>💬 Spiritual Discussions</h3>
+                    <p class="community-intro">Engage in meaningful spiritual conversations and share insights.</p>
+                    
+                    <div class="discussion-form">
+                        <h4>✨ Start New Discussion</h4>
+                        <input type="text" id="discussion-title" class="community-input" placeholder="Discussion topic or question...">
+                        <select id="discussion-category" class="community-input">
+                            <option value="spiritual-growth">Spiritual Growth</option>
+                            <option value="meditation">Meditation & Mindfulness</option>
+                            <option value="dreams-visions">Dreams & Visions</option>
+                            <option value="healing">Energy Healing</option>
+                            <option value="ancient-wisdom">Ancient Wisdom</option>
+                            <option value="consciousness">Consciousness Studies</option>
+                            <option value="service">Service & Purpose</option>
+                            <option value="mystical">Mystical Experiences</option>
+                        </select>
+                        <textarea id="discussion-content" class="community-input" rows="5" placeholder="Share your thoughts, questions, or experiences..."></textarea>
+                        <select id="discussion-type" class="community-input">
+                            <option value="question">Question for Community</option>
+                            <option value="sharing">Experience Sharing</option>
+                            <option value="insight">Spiritual Insight</option>
+                            <option value="guidance">Seeking Guidance</option>
+                            <option value="teaching">Teaching Moment</option>
+                        </select>
+                        <button onclick="startDiscussion()" class="community-btn primary">💬 Start Discussion</button>
+                    </div>
+                    
+                    <div id="discussions-list" class="community-list"></div>
+                </div>
+            </div>
+
+            <!-- Events Tab -->
+            <div id="community-events" class="community-content">
+                <div class="community-section">
+                    <h3>📅 Spiritual Events</h3>
+                    <p class="community-intro">Organize and participate in community spiritual gatherings.</p>
+                    
+                    <div class="event-form">
+                        <h4>✨ Create New Event</h4>
+                        <input type="text" id="event-title" class="community-input" placeholder="Event name...">
+                        <input type="datetime-local" id="event-datetime" class="community-input">
+                        <select id="event-type" class="community-input">
+                            <option value="meditation">Group Meditation</option>
+                            <option value="study">Study Circle</option>
+                            <option value="healing">Healing Circle</option>
+                            <option value="ceremony">Sacred Ceremony</option>
+                            <option value="workshop">Spiritual Workshop</option>
+                            <option value="discussion">Community Discussion</option>
+                            <option value="service">Service Project</option>
+                            <option value="celebration">Spiritual Celebration</option>
+                        </select>
+                        <textarea id="event-description" class="community-input" rows="4" placeholder="Event description and what participants can expect..."></textarea>
+                        <input type="text" id="event-location" class="community-input" placeholder="Location (physical or online link)...">
+                        <input type="number" id="event-capacity" class="community-input" placeholder="Maximum participants..." min="1">
+                        <select id="event-level" class="community-input">
+                            <option value="all">All Levels Welcome</option>
+                            <option value="beginner">Beginner Friendly</option>
+                            <option value="intermediate">Intermediate Practice</option>
+                            <option value="advanced">Advanced Practitioners</option>
+                        </select>
+                        <button onclick="createEvent()" class="community-btn primary">📅 Create Event</button>
+                    </div>
+                    
+                    <div id="events-list" class="community-list"></div>
+                </div>
+            </div>
+
+            <!-- Mentorship Tab -->
+            <div id="community-mentorship" class="community-content">
+                <div class="community-section">
+                    <h3>🌱 Spiritual Mentorship</h3>
+                    <p class="community-intro">Give and receive guidance on the spiritual path.</p>
+                    
+                    <div class="mentorship-offerings">
+                        <div class="offering-section">
+                            <h4>✨ Offer Mentorship</h4>
+                            <input type="text" id="mentor-expertise" class="community-input" placeholder="Your areas of spiritual expertise...">
+                            <textarea id="mentor-experience" class="community-input" rows="3" placeholder="Your spiritual journey and qualifications..."></textarea>
+                            <input type="text" id="mentor-approach" class="community-input" placeholder="Your mentoring style and approach...">
+                            <select id="mentor-availability" class="community-input">
+                                <option value="high">Highly Available</option>
+                                <option value="medium">Moderately Available</option>
+                                <option value="low">Limited Availability</option>
+                            </select>
+                            <button onclick="offerMentorship()" class="community-btn primary">🌟 Offer Guidance</button>
+                        </div>
+                        
+                        <div class="seeking-section">
+                            <h4>✨ Seek Mentorship</h4>
+                            <textarea id="seeker-goals" class="community-input" rows="3" placeholder="What spiritual guidance are you seeking?"></textarea>
+                            <input type="text" id="seeker-challenges" class="community-input" placeholder="Current spiritual challenges or blocks...">
+                            <select id="seeker-commitment" class="community-input">
+                                <option value="high">Highly Committed</option>
+                                <option value="medium">Moderately Committed</option>
+                                <option value="exploratory">Just Exploring</option>
+                            </select>
+                            <textarea id="seeker-background" class="community-input" rows="2" placeholder="Brief spiritual background..."></textarea>
+                            <button onclick="seekMentorship()" class="community-btn primary">🙏 Seek Guidance</button>
+                        </div>
+                    </div>
+                    
+                    <div id="mentorship-list" class="community-list"></div>
+                </div>
+            </div>
+
+            <!-- Service Tab -->
+            <div id="community-service" class="community-content">
+                <div class="community-section">
+                    <h3>🙏 Service Projects</h3>
+                    <p class="community-intro">Serve others and make a positive impact in the world.</p>
+                    
+                    <div class="service-form">
+                        <h4>✨ Create Service Project</h4>
+                        <input type="text" id="service-title" class="community-input" placeholder="Service project name...">
+                        <select id="service-category" class="community-input">
+                            <option value="community-healing">Community Healing</option>
+                            <option value="education">Spiritual Education</option>
+                            <option value="environmental">Environmental Care</option>
+                            <option value="charity">Charitable Giving</option>
+                            <option value="mentorship">Youth Mentorship</option>
+                            <option value="elder-care">Elder Care</option>
+                            <option value="prayer-support">Prayer Support</option>
+                            <option value="outreach">Community Outreach</option>
+                        </select>
+                        <textarea id="service-description" class="community-input" rows="4" placeholder="Describe the service project and its impact..."></textarea>
+                        <input type="text" id="service-skills" class="community-input" placeholder="Skills or resources needed...">
+                        <input type="number" id="service-volunteers" class="community-input" placeholder="Number of volunteers needed..." min="1">
+                        <input type="date" id="service-deadline" class="community-input">
+                        <select id="service-commitment" class="community-input">
+                            <option value="one-time">One-time Project</option>
+                            <option value="weekly">Weekly Commitment</option>
+                            <option value="monthly">Monthly Service</option>
+                            <option value="ongoing">Ongoing Support</option>
+                        </select>
+                        <button onclick="createServiceProject()" class="community-btn primary">🙏 Create Project</button>
+                    </div>
+                    
+                    <div id="service-projects-list" class="community-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ancient Wisdom Portal -->
+    <div id="ancient-wisdom-panel" class="spiritual-panel">
+        <div class="panel-header">
+            <h2>🧙‍♂️ Ancient Wisdom</h2>
+            <button class="close-btn" onclick="closeAncientWisdom()">×</button>
+        </div>
+        
+        <div class="wisdom-navigation">
+            <button class="wisdom-tab active" id="teachings-tab" onclick="nextWisdomTab('teachings')">📜 Sacred Teachings</button>
+            <button class="wisdom-tab" id="symbols-tab" onclick="nextWisdomTab('symbols')">🔮 Sacred Symbols</button>
+            <button class="wisdom-tab" id="meditations-tab" onclick="nextWisdomTab('meditations')">🧘‍♂️ Guided Meditations</button>
+            <button class="wisdom-tab" id="mysteries-tab" onclick="nextWisdomTab('mysteries')">🔍 Divine Mysteries</button>
+            <button class="wisdom-tab" id="wisdom-archive-tab" onclick="nextWisdomTab('archive')">📚 Wisdom Archive</button>
+        </div>
+
+        <div class="wisdom-content-container">
+            <!-- Sacred Teachings Tab -->
+            <div id="wisdom-teachings" class="wisdom-content active">
+                <div class="wisdom-section">
+                    <h3>📜 Sacred Teachings</h3>
+                    <p class="wisdom-intro">Preserve and study ancient spiritual wisdom from across cultures and traditions.</p>
+                    
+                    <div class="teaching-form">
+                        <h4>✨ Add Sacred Teaching</h4>
+                        <input type="text" id="teaching-title" class="wisdom-input" placeholder="Teaching name or title...">
+                        <select id="teaching-tradition" class="wisdom-input">
+                            <option value="hermetic">Hermetic Tradition</option>
+                            <option value="kabbalah">Kabbalah</option>
+                            <option value="gnostic">Gnostic Teachings</option>
+                            <option value="buddhist">Buddhist Wisdom</option>
+                            <option value="sufi">Sufi Mysticism</option>
+                            <option value="egyptian">Egyptian Mysteries</option>
+                            <option value="vedic">Vedic Knowledge</option>
+                            <option value="celtic">Celtic Wisdom</option>
+                            <option value="norse">Norse Traditions</option>
+                            <option value="indigenous">Indigenous Wisdom</option>
+                        </select>
+                        <textarea id="teaching-content" class="wisdom-input" rows="5" placeholder="The sacred teaching or wisdom..."></textarea>
+                        <textarea id="teaching-interpretation" class="wisdom-input" rows="3" placeholder="Your understanding and interpretation..."></textarea>
+                        <input type="text" id="teaching-source" class="wisdom-input" placeholder="Source or origin...">
+                        <select id="teaching-level" class="wisdom-input">
+                            <option value="foundational">Foundational</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="master">Master Level</option>
+                        </select>
+                        <button onclick="addSacredTeaching()" class="wisdom-btn primary">📜 Add Teaching</button>
+                    </div>
+                    
+                    <div id="teachings-list" class="wisdom-list"></div>
+                </div>
+            </div>
+
+            <!-- Sacred Symbols Tab -->
+            <div id="wisdom-symbols" class="wisdom-content">
+                <div class="wisdom-section">
+                    <h3>🔮 Sacred Symbols</h3>
+                    <p class="wisdom-intro">Catalog and study sacred symbols, their meanings, and mystical significance.</p>
+                    
+                    <div class="symbol-form">
+                        <h4>✨ Add Sacred Symbol</h4>
+                        <input type="text" id="symbol-name" class="wisdom-input" placeholder="Symbol name...">
+                        <input type="text" id="symbol-character" class="wisdom-input" placeholder="Symbol character or description...">
+                        <select id="symbol-tradition" class="wisdom-input">
+                            <option value="alchemical">Alchemical</option>
+                            <option value="astrological">Astrological</option>
+                            <option value="runic">Runic</option>
+                            <option value="hebrew">Hebrew/Kabbalah</option>
+                            <option value="egyptian">Egyptian</option>
+                            <option value="sanskrit">Sanskrit</option>
+                            <option value="celtic">Celtic</option>
+                            <option value="geometric">Sacred Geometry</option>
+                            <option value="christian">Christian Mystical</option>
+                            <option value="pagan">Pagan/Wiccan</option>
+                        </select>
+                        <textarea id="symbol-meaning" class="wisdom-input" rows="4" placeholder="Symbolic meaning and significance..."></textarea>
+                        <textarea id="symbol-uses" class="wisdom-input" rows="3" placeholder="Practical uses in meditation, ritual, or study..."></textarea>
+                        <select id="symbol-power" class="wisdom-input">
+                            <option value="protection">Protection</option>
+                            <option value="manifestation">Manifestation</option>
+                            <option value="healing">Healing</option>
+                            <option value="wisdom">Wisdom</option>
+                            <option value="transformation">Transformation</option>
+                            <option value="communication">Divine Communication</option>
+                            <option value="balance">Balance & Harmony</option>
+                        </select>
+                        <button onclick="addSacredSymbol()" class="wisdom-btn primary">🔮 Add Symbol</button>
+                    </div>
+                    
+                    <div id="symbols-list" class="wisdom-list"></div>
+                </div>
+            </div>
+
+            <!-- Guided Meditations Tab -->
+            <div id="wisdom-meditations" class="wisdom-content">
+                <div class="wisdom-section">
+                    <h3>🧘‍♂️ Guided Meditations</h3>
+                    <p class="wisdom-intro">Create and practice ancient meditation techniques and guided journeys.</p>
+                    
+                    <div class="meditation-form">
+                        <h4>✨ Add Meditation Practice</h4>
+                        <input type="text" id="meditation-title" class="wisdom-input" placeholder="Meditation name...">
+                        <select id="meditation-type" class="wisdom-input">
+                            <option value="visualization">Visualization Journey</option>
+                            <option value="breathing">Sacred Breathing</option>
+                            <option value="mantra">Mantra Meditation</option>
+                            <option value="chakra">Chakra Activation</option>
+                            <option value="merkaba">Merkaba Meditation</option>
+                            <option value="temple">Temple Meditation</option>
+                            <option value="elemental">Elemental Meditation</option>
+                            <option value="ancestral">Ancestral Connection</option>
+                        </select>
+                        <input type="number" id="meditation-duration" class="wisdom-input" placeholder="Duration in minutes..." min="1">
+                        <textarea id="meditation-script" class="wisdom-input" rows="6" placeholder="Meditation script or instructions..."></textarea>
+                        <textarea id="meditation-preparation" class="wisdom-input" rows="2" placeholder="Preparation instructions..."></textarea>
+                        <textarea id="meditation-benefits" class="wisdom-input" rows="2" placeholder="Expected benefits and outcomes..."></textarea>
+                        <select id="meditation-difficulty" class="wisdom-input">
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="master">Master Practice</option>
+                        </select>
+                        <button onclick="addMeditation()" class="wisdom-btn primary">🧘‍♂️ Add Meditation</button>
+                    </div>
+                    
+                    <div id="meditations-list" class="wisdom-list"></div>
+                </div>
+            </div>
+
+            <!-- Divine Mysteries Tab -->
+            <div id="wisdom-mysteries" class="wisdom-content">
+                <div class="wisdom-section">
+                    <h3>🔍 Divine Mysteries</h3>
+                    <p class="wisdom-intro">Explore and contemplate the great mysteries of existence and consciousness.</p>
+                    
+                    <div class="mystery-form">
+                        <h4>✨ Record Mystery Exploration</h4>
+                        <input type="text" id="mystery-title" class="wisdom-input" placeholder="Mystery or question title...">
+                        <select id="mystery-category" class="wisdom-input">
+                            <option value="consciousness">Nature of Consciousness</option>
+                            <option value="creation">Creation Mysteries</option>
+                            <option value="afterlife">Death & Afterlife</option>
+                            <option value="time-space">Time & Space</option>
+                            <option value="divine-nature">Divine Nature</option>
+                            <option value="soul-purpose">Soul & Purpose</option>
+                            <option value="manifestation">Reality Creation</option>
+                            <option value="unity">Unity & Separation</option>
+                        </select>
+                        <textarea id="mystery-question" class="wisdom-input" rows="3" placeholder="The fundamental question or mystery..."></textarea>
+                        <textarea id="mystery-exploration" class="wisdom-input" rows="5" placeholder="Your exploration, insights, and contemplations..."></textarea>
+                        <textarea id="mystery-resources" class="wisdom-input" rows="2" placeholder="Related teachings, texts, or practices..."></textarea>
+                        <select id="mystery-depth" class="wisdom-input">
+                            <option value="surface">Surface Understanding</option>
+                            <option value="deepening">Deepening Inquiry</option>
+                            <option value="breakthrough">Breakthrough Insights</option>
+                            <option value="integration">Deep Integration</option>
+                        </select>
+                        <button onclick="addMystery()" class="wisdom-btn primary">🔍 Record Mystery</button>
+                    </div>
+                    
+                    <div id="mysteries-list" class="wisdom-list"></div>
+                </div>
+            </div>
+
+            <!-- Wisdom Archive Tab -->
+            <div id="wisdom-archive" class="wisdom-content">
+                <div class="wisdom-section">
+                    <h3>📚 Wisdom Archive</h3>
+                    <p class="wisdom-intro">Your complete collection of ancient wisdom, insights, and spiritual knowledge.</p>
+                    
+                    <div class="archive-stats">
+                        <div class="stat-card">
+                            <h4>📜 Sacred Teachings</h4>
+                            <div class="stat-number" id="total-teachings">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>🔮 Sacred Symbols</h4>
+                            <div class="stat-number" id="total-symbols">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>🧘‍♂️ Meditations</h4>
+                            <div class="stat-number" id="total-meditations">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h4>🔍 Mysteries</h4>
+                            <div class="stat-number" id="total-mysteries">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="archive-practice-log">
+                        <h4>✨ Log Wisdom Practice</h4>
+                        <select id="practice-type" class="wisdom-input">
+                            <option value="study">Wisdom Study</option>
+                            <option value="meditation">Meditation Practice</option>
+                            <option value="contemplation">Mystery Contemplation</option>
+                            <option value="symbol-work">Symbol Work</option>
+                            <option value="teaching-review">Teaching Review</option>
+                        </select>
+                        <input type="number" id="practice-duration" class="wisdom-input" placeholder="Duration in minutes..." min="1">
+                        <textarea id="practice-focus" class="wisdom-input" rows="2" placeholder="What did you focus on or practice?"></textarea>
+                        <textarea id="practice-insights" class="wisdom-input" rows="3" placeholder="Insights, realizations, or experiences..."></textarea>
+                        <button onclick="logWisdomPractice()" class="wisdom-btn primary">📝 Log Practice</button>
+                    </div>
+                    
+                    <div id="practice-log-list" class="wisdom-list"></div>
                 </div>
             </div>
         </div>
@@ -11202,6 +12117,8 @@ Signature: ________________"></textarea>
         let soulJourney = null;
         let dreamsVisions = null;
         let sacredLibrary = null;
+        let communityHub = null;
+        let ancientWisdom = null;
 
         function initializeSoulJourney() {
             if (!soulJourney) {
@@ -11218,6 +12135,18 @@ Signature: ________________"></textarea>
         function initializeSacredLibrary() {
             if (!sacredLibrary) {
                 sacredLibrary = new SacredLibrary();
+            }
+        }
+
+        function initializeCommunityHub() {
+            if (!communityHub) {
+                communityHub = new CommunityHub();
+            }
+        }
+
+        function initializeAncientWisdom() {
+            if (!ancientWisdom) {
+                ancientWisdom = new AncientWisdom();
             }
         }
 
@@ -11537,6 +12466,347 @@ Signature: ________________"></textarea>
             // Show selected tab and content
             document.getElementById(tabName + '-tab').classList.add('active');
             document.getElementById('library-' + tabName).classList.add('active');
+        }
+
+        // ============================================
+        // COMMUNITY HUB PORTAL FUNCTIONS
+        // ============================================
+        function openCommunityHub() {
+            if (!communityHub) {
+                initializeCommunityHub();
+            }
+            document.getElementById('community-hub-panel').classList.add('open');
+            communityHub.updateConnectionsDisplay();
+            communityHub.updateDiscussionsDisplay();
+            communityHub.updateEventsDisplay();
+            communityHub.updateMentorshipDisplay();
+            communityHub.updateServiceProjectsDisplay();
+        }
+
+        function closeCommunityHub() {
+            document.getElementById('community-hub-panel').classList.remove('open');
+        }
+
+        function addConnection() {
+            const name = document.getElementById('connection-name').value;
+            const email = document.getElementById('connection-email').value;
+            const type = document.getElementById('connection-type').value;
+            const notes = document.getElementById('connection-notes').value;
+            const gifts = document.getElementById('connection-gifts').value;
+            const level = document.getElementById('connection-level').value;
+
+            if (!name || !email || !notes) {
+                alert('Please fill in name, email, and notes');
+                return;
+            }
+
+            communityHub.addConnection(name, email, type, notes, gifts, level);
+            
+            // Clear form
+            document.getElementById('connection-name').value = '';
+            document.getElementById('connection-email').value = '';
+            document.getElementById('connection-type').value = 'seeker';
+            document.getElementById('connection-notes').value = '';
+            document.getElementById('connection-gifts').value = '';
+            document.getElementById('connection-level').value = 'acquaintance';
+
+            alert('Connection added to your spiritual community!');
+        }
+
+        function startDiscussion() {
+            const title = document.getElementById('discussion-title').value;
+            const category = document.getElementById('discussion-category').value;
+            const content = document.getElementById('discussion-content').value;
+            const type = document.getElementById('discussion-type').value;
+
+            if (!title || !content) {
+                alert('Please provide a title and content for the discussion');
+                return;
+            }
+
+            communityHub.startDiscussion(title, category, content, type);
+            
+            // Clear form
+            document.getElementById('discussion-title').value = '';
+            document.getElementById('discussion-category').value = 'spiritual-growth';
+            document.getElementById('discussion-content').value = '';
+            document.getElementById('discussion-type').value = 'question';
+
+            alert('Discussion started successfully!');
+        }
+
+        function createEvent() {
+            const title = document.getElementById('event-title').value;
+            const datetime = document.getElementById('event-datetime').value;
+            const type = document.getElementById('event-type').value;
+            const description = document.getElementById('event-description').value;
+            const location = document.getElementById('event-location').value;
+            const capacity = document.getElementById('event-capacity').value;
+            const level = document.getElementById('event-level').value;
+
+            if (!title || !datetime || !description || !location) {
+                alert('Please fill in title, date/time, description, and location');
+                return;
+            }
+
+            communityHub.createEvent(title, datetime, type, description, location, capacity, level);
+            
+            // Clear form
+            document.getElementById('event-title').value = '';
+            document.getElementById('event-datetime').value = '';
+            document.getElementById('event-type').value = 'meditation';
+            document.getElementById('event-description').value = '';
+            document.getElementById('event-location').value = '';
+            document.getElementById('event-capacity').value = '';
+            document.getElementById('event-level').value = 'all';
+
+            alert('Event created successfully!');
+        }
+
+        function offerMentorship() {
+            const expertise = document.getElementById('mentor-expertise').value;
+            const experience = document.getElementById('mentor-experience').value;
+            const approach = document.getElementById('mentor-approach').value;
+            const availability = document.getElementById('mentor-availability').value;
+
+            if (!expertise || !experience || !approach) {
+                alert('Please fill in your expertise, experience, and approach');
+                return;
+            }
+
+            communityHub.offerMentorship(expertise, experience, approach, availability);
+            
+            // Clear form
+            document.getElementById('mentor-expertise').value = '';
+            document.getElementById('mentor-experience').value = '';
+            document.getElementById('mentor-approach').value = '';
+            document.getElementById('mentor-availability').value = 'high';
+
+            alert('Mentorship offering created successfully!');
+        }
+
+        function seekMentorship() {
+            const goals = document.getElementById('seeker-goals').value;
+            const challenges = document.getElementById('seeker-challenges').value;
+            const commitment = document.getElementById('seeker-commitment').value;
+            const background = document.getElementById('seeker-background').value;
+
+            if (!goals || !challenges) {
+                alert('Please describe your goals and challenges');
+                return;
+            }
+
+            communityHub.seekMentorship(goals, challenges, commitment, background);
+            
+            // Clear form
+            document.getElementById('seeker-goals').value = '';
+            document.getElementById('seeker-challenges').value = '';
+            document.getElementById('seeker-commitment').value = 'high';
+            document.getElementById('seeker-background').value = '';
+
+            alert('Mentorship request submitted successfully!');
+        }
+
+        function createServiceProject() {
+            const title = document.getElementById('service-title').value;
+            const category = document.getElementById('service-category').value;
+            const description = document.getElementById('service-description').value;
+            const skills = document.getElementById('service-skills').value;
+            const volunteers = document.getElementById('service-volunteers').value;
+            const deadline = document.getElementById('service-deadline').value;
+            const commitment = document.getElementById('service-commitment').value;
+
+            if (!title || !description || !skills || !volunteers) {
+                alert('Please fill in title, description, skills needed, and number of volunteers');
+                return;
+            }
+
+            communityHub.createServiceProject(title, category, description, skills, volunteers, deadline, commitment);
+            
+            // Clear form
+            document.getElementById('service-title').value = '';
+            document.getElementById('service-category').value = 'community-healing';
+            document.getElementById('service-description').value = '';
+            document.getElementById('service-skills').value = '';
+            document.getElementById('service-volunteers').value = '';
+            document.getElementById('service-deadline').value = '';
+            document.getElementById('service-commitment').value = 'one-time';
+
+            alert('Service project created successfully!');
+        }
+
+        function nextCommunityTab(tabName) {
+            const tabs = ['connections', 'discussions', 'events', 'mentorship', 'service'];
+            const contents = ['community-connections', 'community-discussions', 'community-events', 'community-mentorship', 'community-service'];
+            
+            // Hide all tabs and contents
+            tabs.forEach(tab => document.getElementById(tab + '-tab').classList.remove('active'));
+            contents.forEach(content => document.getElementById(content).classList.remove('active'));
+            
+            // Show selected tab and content
+            document.getElementById(tabName + '-tab').classList.add('active');
+            document.getElementById('community-' + tabName).classList.add('active');
+        }
+
+        // ============================================
+        // ANCIENT WISDOM PORTAL FUNCTIONS
+        // ============================================
+        function openAncientWisdom() {
+            if (!ancientWisdom) {
+                initializeAncientWisdom();
+            }
+            document.getElementById('ancient-wisdom-panel').classList.add('open');
+            ancientWisdom.updateTeachingsDisplay();
+            ancientWisdom.updateSymbolsDisplay();
+            ancientWisdom.updateMeditationsDisplay();
+            ancientWisdom.updateMysteriesDisplay();
+            ancientWisdom.updatePracticeLogDisplay();
+            ancientWisdom.updateArchiveStats();
+        }
+
+        function closeAncientWisdom() {
+            document.getElementById('ancient-wisdom-panel').classList.remove('open');
+        }
+
+        function addSacredTeaching() {
+            const title = document.getElementById('teaching-title').value;
+            const tradition = document.getElementById('teaching-tradition').value;
+            const content = document.getElementById('teaching-content').value;
+            const interpretation = document.getElementById('teaching-interpretation').value;
+            const source = document.getElementById('teaching-source').value;
+            const level = document.getElementById('teaching-level').value;
+
+            if (!title || !content || !interpretation) {
+                alert('Please fill in title, content, and interpretation');
+                return;
+            }
+
+            ancientWisdom.addSacredTeaching(title, tradition, content, interpretation, source, level);
+            
+            // Clear form
+            document.getElementById('teaching-title').value = '';
+            document.getElementById('teaching-tradition').value = 'hermetic';
+            document.getElementById('teaching-content').value = '';
+            document.getElementById('teaching-interpretation').value = '';
+            document.getElementById('teaching-source').value = '';
+            document.getElementById('teaching-level').value = 'foundational';
+
+            alert('Sacred teaching added to your wisdom archive!');
+        }
+
+        function addSacredSymbol() {
+            const name = document.getElementById('symbol-name').value;
+            const character = document.getElementById('symbol-character').value;
+            const tradition = document.getElementById('symbol-tradition').value;
+            const meaning = document.getElementById('symbol-meaning').value;
+            const uses = document.getElementById('symbol-uses').value;
+            const power = document.getElementById('symbol-power').value;
+
+            if (!name || !character || !meaning) {
+                alert('Please fill in symbol name, character, and meaning');
+                return;
+            }
+
+            ancientWisdom.addSacredSymbol(name, character, tradition, meaning, uses, power);
+            
+            // Clear form
+            document.getElementById('symbol-name').value = '';
+            document.getElementById('symbol-character').value = '';
+            document.getElementById('symbol-tradition').value = 'alchemical';
+            document.getElementById('symbol-meaning').value = '';
+            document.getElementById('symbol-uses').value = '';
+            document.getElementById('symbol-power').value = 'protection';
+
+            alert('Sacred symbol added to your collection!');
+        }
+
+        function addMeditation() {
+            const title = document.getElementById('meditation-title').value;
+            const type = document.getElementById('meditation-type').value;
+            const duration = document.getElementById('meditation-duration').value;
+            const script = document.getElementById('meditation-script').value;
+            const preparation = document.getElementById('meditation-preparation').value;
+            const benefits = document.getElementById('meditation-benefits').value;
+            const difficulty = document.getElementById('meditation-difficulty').value;
+
+            if (!title || !duration || !script) {
+                alert('Please fill in title, duration, and meditation script');
+                return;
+            }
+
+            ancientWisdom.addMeditation(title, type, duration, script, preparation, benefits, difficulty);
+            
+            // Clear form
+            document.getElementById('meditation-title').value = '';
+            document.getElementById('meditation-type').value = 'visualization';
+            document.getElementById('meditation-duration').value = '';
+            document.getElementById('meditation-script').value = '';
+            document.getElementById('meditation-preparation').value = '';
+            document.getElementById('meditation-benefits').value = '';
+            document.getElementById('meditation-difficulty').value = 'beginner';
+
+            alert('Meditation practice added successfully!');
+        }
+
+        function addMystery() {
+            const title = document.getElementById('mystery-title').value;
+            const category = document.getElementById('mystery-category').value;
+            const question = document.getElementById('mystery-question').value;
+            const exploration = document.getElementById('mystery-exploration').value;
+            const resources = document.getElementById('mystery-resources').value;
+            const depth = document.getElementById('mystery-depth').value;
+
+            if (!title || !question || !exploration) {
+                alert('Please fill in title, question, and exploration');
+                return;
+            }
+
+            ancientWisdom.addMystery(title, category, question, exploration, resources, depth);
+            
+            // Clear form
+            document.getElementById('mystery-title').value = '';
+            document.getElementById('mystery-category').value = 'consciousness';
+            document.getElementById('mystery-question').value = '';
+            document.getElementById('mystery-exploration').value = '';
+            document.getElementById('mystery-resources').value = '';
+            document.getElementById('mystery-depth').value = 'surface';
+
+            alert('Mystery exploration recorded successfully!');
+        }
+
+        function logWisdomPractice() {
+            const type = document.getElementById('practice-type').value;
+            const duration = document.getElementById('practice-duration').value;
+            const focus = document.getElementById('practice-focus').value;
+            const insights = document.getElementById('practice-insights').value;
+
+            if (!type || !duration || !focus) {
+                alert('Please fill in practice type, duration, and focus');
+                return;
+            }
+
+            ancientWisdom.logWisdomPractice(type, duration, focus, insights);
+            
+            // Clear form
+            document.getElementById('practice-type').value = 'study';
+            document.getElementById('practice-duration').value = '';
+            document.getElementById('practice-focus').value = '';
+            document.getElementById('practice-insights').value = '';
+
+            alert('Wisdom practice logged successfully!');
+        }
+
+        function nextWisdomTab(tabName) {
+            const tabs = ['teachings', 'symbols', 'meditations', 'mysteries', 'archive'];
+            const contents = ['wisdom-teachings', 'wisdom-symbols', 'wisdom-meditations', 'wisdom-mysteries', 'wisdom-archive'];
+            
+            // Hide all tabs and contents
+            tabs.forEach(tab => document.getElementById(tab + '-tab').classList.remove('active'));
+            contents.forEach(content => document.getElementById(content).classList.remove('active'));
+            
+            // Show selected tab and content
+            document.getElementById(tabName + '-tab').classList.add('active');
+            document.getElementById('wisdom-' + tabName).classList.add('active');
         }
 
         // ============================================
@@ -15553,6 +16823,550 @@ Signature: ________________"></textarea>
         }
 
         // ============================================
+        // COMMUNITY HUB PORTAL
+        // ============================================
+        class CommunityHub {
+            constructor() {
+                this.connections = JSON.parse(localStorage.getItem('communityHubConnections') || '[]');
+                this.discussions = JSON.parse(localStorage.getItem('communityHubDiscussions') || '[]');
+                this.events = JSON.parse(localStorage.getItem('communityHubEvents') || '[]');
+                this.mentorships = JSON.parse(localStorage.getItem('communityHubMentorships') || '[]');
+                this.serviceProjects = JSON.parse(localStorage.getItem('communityHubService') || '[]');
+            }
+
+            generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+            }
+
+            saveToStorage() {
+                localStorage.setItem('communityHubConnections', JSON.stringify(this.connections));
+                localStorage.setItem('communityHubDiscussions', JSON.stringify(this.discussions));
+                localStorage.setItem('communityHubEvents', JSON.stringify(this.events));
+                localStorage.setItem('communityHubMentorships', JSON.stringify(this.mentorships));
+                localStorage.setItem('communityHubService', JSON.stringify(this.serviceProjects));
+            }
+
+            addConnection(name, email, type, notes, gifts, level) {
+                const connection = {
+                    id: this.generateId(),
+                    name, email, type, notes, gifts, level,
+                    timestamp: new Date().toISOString(),
+                    dateAdded: new Date().toLocaleDateString(),
+                    lastContact: null,
+                    interactions: 0
+                };
+                this.connections.unshift(connection);
+                this.saveToStorage();
+                this.updateConnectionsDisplay();
+                addToActivityFeed(`👥 Connection added: ${name}`, 'connection');
+            }
+
+            startDiscussion(title, category, content, type) {
+                const discussion = {
+                    id: this.generateId(),
+                    title, category, content, type,
+                    timestamp: new Date().toISOString(),
+                    date: new Date().toLocaleDateString(),
+                    responses: [],
+                    views: 0,
+                    likes: 0
+                };
+                this.discussions.unshift(discussion);
+                this.saveToStorage();
+                this.updateDiscussionsDisplay();
+                addToActivityFeed(`💬 Discussion started: ${title}`, 'discussion');
+            }
+
+            createEvent(title, datetime, type, description, location, capacity, level) {
+                const event = {
+                    id: this.generateId(),
+                    title, datetime, type, description, location, capacity, level,
+                    timestamp: new Date().toISOString(),
+                    dateCreated: new Date().toLocaleDateString(),
+                    attendees: [],
+                    status: 'upcoming'
+                };
+                this.events.unshift(event);
+                this.saveToStorage();
+                this.updateEventsDisplay();
+                addToActivityFeed(`📅 Event created: ${title}`, 'event');
+            }
+
+            offerMentorship(expertise, experience, approach, availability) {
+                const mentorship = {
+                    id: this.generateId(),
+                    type: 'offering',
+                    expertise, experience, approach, availability,
+                    timestamp: new Date().toISOString(),
+                    date: new Date().toLocaleDateString(),
+                    matches: [],
+                    status: 'active'
+                };
+                this.mentorships.unshift(mentorship);
+                this.saveToStorage();
+                this.updateMentorshipDisplay();
+                addToActivityFeed(`🌟 Mentorship offered: ${expertise}`, 'mentorship');
+            }
+
+            seekMentorship(goals, challenges, commitment, background) {
+                const mentorship = {
+                    id: this.generateId(),
+                    type: 'seeking',
+                    goals, challenges, commitment, background,
+                    timestamp: new Date().toISOString(),
+                    date: new Date().toLocaleDateString(),
+                    matches: [],
+                    status: 'active'
+                };
+                this.mentorships.unshift(mentorship);
+                this.saveToStorage();
+                this.updateMentorshipDisplay();
+                addToActivityFeed(`🙏 Seeking mentorship: ${goals.substring(0, 30)}...`, 'mentorship');
+            }
+
+            createServiceProject(title, category, description, skills, volunteers, deadline, commitment) {
+                const project = {
+                    id: this.generateId(),
+                    title, category, description, skills, volunteers, deadline, commitment,
+                    timestamp: new Date().toISOString(),
+                    dateCreated: new Date().toLocaleDateString(),
+                    applicants: [],
+                    status: 'recruiting'
+                };
+                this.serviceProjects.unshift(project);
+                this.saveToStorage();
+                this.updateServiceProjectsDisplay();
+                addToActivityFeed(`🙏 Service project: ${title}`, 'service');
+            }
+
+            updateConnectionsDisplay() {
+                const container = document.getElementById('connections-list');
+                if (!container) return;
+
+                container.innerHTML = this.connections.length ? 
+                    this.connections.map(connection => `
+                        <div class="community-item">
+                            <div class="community-item-header">
+                                <h4>👥 ${connection.name}</h4>
+                                <span>${connection.dateAdded}</span>
+                            </div>
+                            <div class="community-type">${connection.type}</div>
+                            <div class="community-level ${connection.level}">${connection.level.replace('-', ' ').toUpperCase()}</div>
+                            <div class="connection-email">📧 ${connection.email}</div>
+                            <div class="connection-gifts">🎁 Gifts: ${connection.gifts}</div>
+                            <div class="connection-notes">${connection.notes}</div>
+                            <div class="connection-interactions">Interactions: ${connection.interactions}</div>
+                            <button onclick="communityHub.deleteConnection('${connection.id}')" class="delete-btn">Remove</button>
+                        </div>
+                    `).join('') : '<p>No connections yet. Start building your spiritual community!</p>';
+            }
+
+            updateDiscussionsDisplay() {
+                const container = document.getElementById('discussions-list');
+                if (!container) return;
+
+                container.innerHTML = this.discussions.length ? 
+                    this.discussions.map(discussion => `
+                        <div class="community-item">
+                            <div class="community-item-header">
+                                <h4>💬 ${discussion.title}</h4>
+                                <span>${discussion.date}</span>
+                            </div>
+                            <div class="community-type">${discussion.category}</div>
+                            <div class="discussion-type">${discussion.type.replace('-', ' ')}</div>
+                            <div class="discussion-content">${discussion.content}</div>
+                            <div class="discussion-stats">👁️ ${discussion.views} views • ❤️ ${discussion.likes} likes • 💬 ${discussion.responses.length} responses</div>
+                            <button onclick="communityHub.deleteDiscussion('${discussion.id}')" class="delete-btn">Remove</button>
+                        </div>
+                    `).join('') : '<p>No discussions yet. Start meaningful spiritual conversations!</p>';
+            }
+
+            updateEventsDisplay() {
+                const container = document.getElementById('events-list');
+                if (!container) return;
+
+                // Sort events by datetime
+                const sortedEvents = this.events.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+
+                container.innerHTML = sortedEvents.length ? 
+                    sortedEvents.map(event => {
+                        const eventDate = new Date(event.datetime);
+                        const now = new Date();
+                        const isUpcoming = eventDate > now;
+                        return `
+                            <div class="community-item ${isUpcoming ? 'event-upcoming' : 'event-past'}">
+                                <div class="community-item-header">
+                                    <h4>📅 ${event.title}</h4>
+                                    <span>${eventDate.toLocaleDateString()}</span>
+                                </div>
+                                <div class="community-type">${event.type}</div>
+                                <div class="event-level">${event.level}</div>
+                                <div class="event-datetime">📅 ${eventDate.toLocaleString()}</div>
+                                <div class="event-location">📍 ${event.location}</div>
+                                <div class="event-description">${event.description}</div>
+                                <div class="event-capacity">👥 ${event.attendees.length}/${event.capacity} attendees</div>
+                                <div class="event-status">${isUpcoming ? '🟢 Upcoming' : '🔴 Past'}</div>
+                                <button onclick="communityHub.deleteEvent('${event.id}')" class="delete-btn">Remove</button>
+                            </div>
+                        `;
+                    }).join('') : '<p>No events scheduled yet. Create spiritual gatherings for the community!</p>';
+            }
+
+            updateMentorshipDisplay() {
+                const container = document.getElementById('mentorship-list');
+                if (!container) return;
+
+                const offerings = this.mentorships.filter(m => m.type === 'offering');
+                const seeking = this.mentorships.filter(m => m.type === 'seeking');
+
+                container.innerHTML = `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div>
+                            <h4 style="color: #3b82f6; margin-bottom: 1rem;">🌟 Mentorship Offerings</h4>
+                            ${offerings.length ? offerings.map(mentor => `
+                                <div class="community-item" style="margin-bottom: 1rem;">
+                                    <div class="community-item-header">
+                                        <h4>🌟 Mentor Available</h4>
+                                        <span>${mentor.date}</span>
+                                    </div>
+                                    <div class="mentor-expertise">Expertise: ${mentor.expertise}</div>
+                                    <div class="mentor-approach">Approach: ${mentor.approach}</div>
+                                    <div class="mentor-availability">Availability: ${mentor.availability}</div>
+                                    <div class="mentor-experience">${mentor.experience}</div>
+                                    <button onclick="communityHub.deleteMentorship('${mentor.id}')" class="delete-btn">Remove</button>
+                                </div>
+                            `).join('') : '<p>No mentorship offerings yet.</p>'}
+                        </div>
+                        <div>
+                            <h4 style="color: #3b82f6; margin-bottom: 1rem;">🙏 Seeking Guidance</h4>
+                            ${seeking.length ? seeking.map(seeker => `
+                                <div class="community-item" style="margin-bottom: 1rem;">
+                                    <div class="community-item-header">
+                                        <h4>🙏 Seeking Mentor</h4>
+                                        <span>${seeker.date}</span>
+                                    </div>
+                                    <div class="seeker-goals">Goals: ${seeker.goals}</div>
+                                    <div class="seeker-challenges">Challenges: ${seeker.challenges}</div>
+                                    <div class="seeker-commitment">Commitment: ${seeker.commitment}</div>
+                                    <div class="seeker-background">${seeker.background}</div>
+                                    <button onclick="communityHub.deleteMentorship('${seeker.id}')" class="delete-btn">Remove</button>
+                                </div>
+                            `).join('') : '<p>No mentorship requests yet.</p>'}
+                        </div>
+                    </div>
+                `;
+            }
+
+            updateServiceProjectsDisplay() {
+                const container = document.getElementById('service-projects-list');
+                if (!container) return;
+
+                container.innerHTML = this.serviceProjects.length ? 
+                    this.serviceProjects.map(project => {
+                        const deadline = new Date(project.deadline);
+                        const now = new Date();
+                        const isUrgent = deadline - now < 7 * 24 * 60 * 60 * 1000; // Less than 7 days
+                        return `
+                            <div class="community-item ${isUrgent ? 'service-urgent' : 'service-active'}">
+                                <div class="community-item-header">
+                                    <h4>🙏 ${project.title}</h4>
+                                    <span>${project.dateCreated}</span>
+                                </div>
+                                <div class="community-type">${project.category}</div>
+                                <div class="service-commitment">${project.commitment}</div>
+                                <div class="service-description">${project.description}</div>
+                                <div class="service-skills">Skills needed: ${project.skills}</div>
+                                <div class="service-volunteers">👥 ${project.applicants.length}/${project.volunteers} volunteers</div>
+                                <div class="service-deadline">⏰ Deadline: ${deadline.toLocaleDateString()}</div>
+                                <div class="service-status">${isUrgent ? '🔴 Urgent' : '🟢 Active'}</div>
+                                <button onclick="communityHub.deleteServiceProject('${project.id}')" class="delete-btn">Remove</button>
+                            </div>
+                        `;
+                    }).join('') : '<p>No service projects yet. Create opportunities to serve others!</p>';
+            }
+
+            deleteConnection(id) {
+                this.connections = this.connections.filter(item => item.id !== id);
+                this.saveToStorage();
+                this.updateConnectionsDisplay();
+            }
+
+            deleteDiscussion(id) {
+                this.discussions = this.discussions.filter(item => item.id !== id);
+                this.saveToStorage();
+                this.updateDiscussionsDisplay();
+            }
+
+            deleteEvent(id) {
+                this.events = this.events.filter(item => item.id !== id);
+                this.saveToStorage();
+                this.updateEventsDisplay();
+            }
+
+            deleteMentorship(id) {
+                this.mentorships = this.mentorships.filter(item => item.id !== id);
+                this.saveToStorage();
+                this.updateMentorshipDisplay();
+            }
+
+            deleteServiceProject(id) {
+                this.serviceProjects = this.serviceProjects.filter(item => item.id !== id);
+                this.saveToStorage();
+                this.updateServiceProjectsDisplay();
+            }
+        }
+
+        // ============================================
+        // ANCIENT WISDOM PORTAL
+        // ============================================
+        class AncientWisdom {
+            constructor() {
+                this.teachings = JSON.parse(localStorage.getItem('ancientWisdomTeachings') || '[]');
+                this.symbols = JSON.parse(localStorage.getItem('ancientWisdomSymbols') || '[]');
+                this.meditations = JSON.parse(localStorage.getItem('ancientWisdomMeditations') || '[]');
+                this.mysteries = JSON.parse(localStorage.getItem('ancientWisdomMysteries') || '[]');
+                this.practiceLog = JSON.parse(localStorage.getItem('ancientWisdomPractice') || '[]');
+            }
+
+            generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+            }
+
+            saveToStorage() {
+                localStorage.setItem('ancientWisdomTeachings', JSON.stringify(this.teachings));
+                localStorage.setItem('ancientWisdomSymbols', JSON.stringify(this.symbols));
+                localStorage.setItem('ancientWisdomMeditations', JSON.stringify(this.meditations));
+                localStorage.setItem('ancientWisdomMysteries', JSON.stringify(this.mysteries));
+                localStorage.setItem('ancientWisdomPractice', JSON.stringify(this.practiceLog));
+            }
+
+            addSacredTeaching(title, tradition, content, interpretation, source, level) {
+                const teaching = {
+                    id: this.generateId(),
+                    title, tradition, content, interpretation, source, level,
+                    timestamp: new Date().toISOString(),
+                    dateAdded: new Date().toLocaleDateString(),
+                    studyCount: 0,
+                    lastStudied: null
+                };
+                this.teachings.unshift(teaching);
+                this.saveToStorage();
+                this.updateTeachingsDisplay();
+                this.updateArchiveStats();
+                addToActivityFeed(`📜 Teaching added: ${title}`, 'wisdom');
+            }
+
+            addSacredSymbol(name, character, tradition, meaning, uses, power) {
+                const symbol = {
+                    id: this.generateId(),
+                    name, character, tradition, meaning, uses, power,
+                    timestamp: new Date().toISOString(),
+                    dateAdded: new Date().toLocaleDateString(),
+                    useCount: 0,
+                    lastUsed: null
+                };
+                this.symbols.unshift(symbol);
+                this.saveToStorage();
+                this.updateSymbolsDisplay();
+                this.updateArchiveStats();
+                addToActivityFeed(`🔮 Symbol added: ${name}`, 'symbol');
+            }
+
+            addMeditation(title, type, duration, script, preparation, benefits, difficulty) {
+                const meditation = {
+                    id: this.generateId(),
+                    title, type, duration, script, preparation, benefits, difficulty,
+                    timestamp: new Date().toISOString(),
+                    dateAdded: new Date().toLocaleDateString(),
+                    practiceCount: 0,
+                    lastPracticed: null,
+                    totalMinutes: 0
+                };
+                this.meditations.unshift(meditation);
+                this.saveToStorage();
+                this.updateMeditationsDisplay();
+                this.updateArchiveStats();
+                addToActivityFeed(`🧘‍♂️ Meditation added: ${title}`, 'meditation');
+            }
+
+            addMystery(title, category, question, exploration, resources, depth) {
+                const mystery = {
+                    id: this.generateId(),
+                    title, category, question, exploration, resources, depth,
+                    timestamp: new Date().toISOString(),
+                    dateAdded: new Date().toLocaleDateString(),
+                    contemplationCount: 0,
+                    lastContemplated: null
+                };
+                this.mysteries.unshift(mystery);
+                this.saveToStorage();
+                this.updateMysteriesDisplay();
+                this.updateArchiveStats();
+                addToActivityFeed(`🔍 Mystery recorded: ${title}`, 'mystery');
+            }
+
+            logWisdomPractice(type, duration, focus, insights) {
+                const practice = {
+                    id: this.generateId(),
+                    type, duration, focus, insights,
+                    timestamp: new Date().toISOString(),
+                    date: new Date().toLocaleDateString()
+                };
+                this.practiceLog.unshift(practice);
+                this.saveToStorage();
+                this.updatePracticeLogDisplay();
+                addToActivityFeed(`📝 Wisdom practice: ${type} (${duration}min)`, 'practice');
+            }
+
+            updateTeachingsDisplay() {
+                const container = document.getElementById('teachings-list');
+                if (!container) return;
+
+                container.innerHTML = this.teachings.length ? 
+                    this.teachings.map(teaching => `
+                        <div class="wisdom-item">
+                            <div class="wisdom-item-header">
+                                <h4>📜 ${teaching.title}</h4>
+                                <span>${teaching.dateAdded}</span>
+                            </div>
+                            <div class="wisdom-tradition">${teaching.tradition}</div>
+                            <div class="wisdom-level ${teaching.level}">${teaching.level.toUpperCase()}</div>
+                            <div class="teaching-source">Source: ${teaching.source}</div>
+                            <div class="teaching-content">${teaching.content}</div>
+                            <div class="teaching-interpretation">Interpretation: ${teaching.interpretation}</div>
+                            <div class="teaching-stats">Studied: ${teaching.studyCount} times</div>
+                            <button onclick="ancientWisdom.deleteTeaching('${teaching.id}')" class="delete-btn">Remove</button>
+                        </div>
+                    `).join('') : '<p>No sacred teachings yet. Begin preserving ancient wisdom!</p>';
+            }
+
+            updateSymbolsDisplay() {
+                const container = document.getElementById('symbols-list');
+                if (!container) return;
+
+                container.innerHTML = this.symbols.length ? 
+                    this.symbols.map(symbol => `
+                        <div class="wisdom-item">
+                            <div class="wisdom-item-header">
+                                <h4>🔮 ${symbol.name}</h4>
+                                <span>${symbol.dateAdded}</span>
+                            </div>
+                            <div class="wisdom-tradition">${symbol.tradition}</div>
+                            <div class="symbol-power">${symbol.power}</div>
+                            <div class="symbol-character">${symbol.character}</div>
+                            <div class="symbol-meaning">${symbol.meaning}</div>
+                            <div class="symbol-uses">Uses: ${symbol.uses}</div>
+                            <div class="symbol-stats">Used: ${symbol.useCount} times</div>
+                            <button onclick="ancientWisdom.deleteSymbol('${symbol.id}')" class="delete-btn">Remove</button>
+                        </div>
+                    `).join('') : '<p>No sacred symbols yet. Start your mystical symbol collection!</p>';
+            }
+
+            updateMeditationsDisplay() {
+                const container = document.getElementById('meditations-list');
+                if (!container) return;
+
+                container.innerHTML = this.meditations.length ? 
+                    this.meditations.map(meditation => `
+                        <div class="wisdom-item">
+                            <div class="wisdom-item-header">
+                                <h4>🧘‍♂️ ${meditation.title}</h4>
+                                <span>${meditation.dateAdded}</span>
+                            </div>
+                            <div class="wisdom-tradition">${meditation.type}</div>
+                            <div class="wisdom-level ${meditation.difficulty}">${meditation.difficulty.toUpperCase()}</div>
+                            <div class="meditation-duration">Duration: ${meditation.duration} minutes</div>
+                            <div class="meditation-preparation">Preparation: ${meditation.preparation}</div>
+                            <div class="meditation-script">${meditation.script}</div>
+                            <div class="meditation-benefits">Benefits: ${meditation.benefits}</div>
+                            <div class="meditation-stats">Practiced: ${meditation.practiceCount} times (${meditation.totalMinutes} total minutes)</div>
+                            <button onclick="ancientWisdom.deleteMeditation('${meditation.id}')" class="delete-btn">Remove</button>
+                        </div>
+                    `).join('') : '<p>No meditations yet. Create guided spiritual practices!</p>';
+            }
+
+            updateMysteriesDisplay() {
+                const container = document.getElementById('mysteries-list');
+                if (!container) return;
+
+                container.innerHTML = this.mysteries.length ? 
+                    this.mysteries.map(mystery => `
+                        <div class="wisdom-item">
+                            <div class="wisdom-item-header">
+                                <h4>🔍 ${mystery.title}</h4>
+                                <span>${mystery.dateAdded}</span>
+                            </div>
+                            <div class="wisdom-tradition">${mystery.category}</div>
+                            <div class="mystery-depth ${mystery.depth}">${mystery.depth.toUpperCase()}</div>
+                            <div class="mystery-question">Question: ${mystery.question}</div>
+                            <div class="mystery-exploration">${mystery.exploration}</div>
+                            <div class="mystery-resources">Resources: ${mystery.resources}</div>
+                            <div class="mystery-stats">Contemplated: ${mystery.contemplationCount} times</div>
+                            <button onclick="ancientWisdom.deleteMystery('${mystery.id}')" class="delete-btn">Remove</button>
+                        </div>
+                    `).join('') : '<p>No mysteries explored yet. Begin your journey into the unknown!</p>';
+            }
+
+            updatePracticeLogDisplay() {
+                const container = document.getElementById('practice-log-list');
+                if (!container) return;
+
+                container.innerHTML = this.practiceLog.length ? 
+                    this.practiceLog.slice(0, 10).map(practice => `
+                        <div class="wisdom-item">
+                            <div class="wisdom-item-header">
+                                <h4>📝 ${practice.type.replace('-', ' ').toUpperCase()}</h4>
+                                <span>${practice.date}</span>
+                            </div>
+                            <div class="practice-duration">${practice.duration} minutes</div>
+                            <div class="practice-focus">Focus: ${practice.focus}</div>
+                            <div class="practice-insights">${practice.insights}</div>
+                        </div>
+                    `).join('') : '<p>No practice sessions logged yet. Start tracking your wisdom journey!</p>';
+            }
+
+            updateArchiveStats() {
+                const totalTeachings = this.teachings.length;
+                const totalSymbols = this.symbols.length;
+                const totalMeditations = this.meditations.length;
+                const totalMysteries = this.mysteries.length;
+
+                document.getElementById('total-teachings').textContent = totalTeachings;
+                document.getElementById('total-symbols').textContent = totalSymbols;
+                document.getElementById('total-meditations').textContent = totalMeditations;
+                document.getElementById('total-mysteries').textContent = totalMysteries;
+            }
+
+            deleteTeaching(id) {
+                this.teachings = this.teachings.filter(item => item.id !== id);
+                this.saveToStorage();
+                this.updateTeachingsDisplay();
+                this.updateArchiveStats();
+            }
+
+            deleteSymbol(id) {
+                this.symbols = this.symbols.filter(item => item.id !== id);
+                this.saveToStorage();
+                this.updateSymbolsDisplay();
+                this.updateArchiveStats();
+            }
+
+            deleteMeditation(id) {
+                this.meditations = this.meditations.filter(item => item.id !== id);
+                this.saveToStorage();
+                this.updateMeditationsDisplay();
+                this.updateArchiveStats();
+            }
+
+            deleteMystery(id) {
+                this.mysteries = this.mysteries.filter(item => item.id !== id);
+                this.saveToStorage();
+                this.updateMysteriesDisplay();
+                this.updateArchiveStats();
+            }
+        }
+
+        // ============================================
         // LOCAL STORAGE
         // ============================================
         function loadFromStorage() {
@@ -15599,17 +17413,168 @@ Signature: ________________"></textarea>
         }
 
         // ============================================
-        // AUTHENTICATION SYSTEM
+        // MEMBER REGISTRATION & AUTHENTICATION SYSTEM
         // ============================================
-        const DIVINE_CREDENTIALS = {
+        
+        // Master admin credentials (for initial setup)
+        const MASTER_ADMIN = {
             name: 'nazir777',
             key: 'Cjanimal23$'
         };
 
+        // Member database - will be expanded as members register
+        const REGISTERED_MEMBERS = [
+            {
+                id: 'admin001',
+                divineName: 'nazir777',
+                sacredKey: 'Cjanimal23$',
+                email: 'edenconsciousnesssdt@gmail.com',
+                membershipType: 'Founding Member',
+                registrationDate: '2025-10-25',
+                status: 'active',
+                isAdmin: true
+            }
+        ];
+
+        function generateDivineCredentials(firstName, lastName, email) {
+            // Generate unique Divine Name
+            const nameBase = (firstName + lastName).toLowerCase().replace(/[^a-z]/g, '');
+            const randomNum = Math.floor(Math.random() * 999) + 1;
+            const divineName = nameBase.substring(0, 8) + randomNum;
+            
+            // Generate Sacred Key (12 characters: letters, numbers, symbols)
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            let sacredKey = '';
+            for (let i = 0; i < 12; i++) {
+                sacredKey += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            return { divineName, sacredKey };
+        }
+
+        function registerNewMember(memberData) {
+            const { firstName, lastName, email, membershipType, paymentId } = memberData;
+            const credentials = generateDivineCredentials(firstName, lastName, email);
+            
+            const newMember = {
+                id: 'member' + Date.now(),
+                divineName: credentials.divineName,
+                sacredKey: credentials.sacredKey,
+                firstName,
+                lastName,
+                email,
+                membershipType,
+                paymentId,
+                registrationDate: new Date().toISOString().split('T')[0],
+                status: 'active',
+                isAdmin: false,
+                loginCount: 0,
+                lastLogin: null
+            };
+            
+            // Add to members database
+            REGISTERED_MEMBERS.push(newMember);
+            
+            // Save to localStorage (in production, this would be a secure database)
+            localStorage.setItem('registeredMembers', JSON.stringify(REGISTERED_MEMBERS));
+            
+            // Send welcome email with credentials
+            sendWelcomeEmail(newMember);
+            
+            return newMember;
+        }
+
+        function sendWelcomeEmail(member) {
+            // Email template for new members
+            const emailTemplate = `
+                Subject: 🏛️ Welcome to Eden Consciousness Divine Temple!
+                
+                Dear ${member.firstName},
+                
+                Welcome to the Eden Consciousness Divine Temple! Your spiritual journey awaits.
+                
+                🔑 YOUR DIVINE CREDENTIALS:
+                Divine Name: ${member.divineName}
+                Sacred Key: ${member.sacredKey}
+                
+                ⚠️ IMPORTANT: Keep these credentials safe and secure. They grant access to your personal spiritual portals.
+                
+                🏛️ ACCESS YOUR TEMPLE:
+                Visit: https://nazarite777.github.io/divine-temple/members.html
+                
+                ✨ YOUR MEMBERSHIP INCLUDES:
+                • Dreams & Visions Portal - Track dreams, visions, and astral journeys
+                • Sacred Library - Study spiritual texts and record insights
+                • Community Hub - Connect with fellow seekers and mentors
+                • Ancient Wisdom Portal - Explore sacred teachings and mysteries
+                • Plus 14+ additional spiritual development tools
+                
+                🎯 GETTING STARTED:
+                1. Click the link above to access the Temple
+                2. Enter your Divine Credentials
+                3. Begin with the Soul Journey portal to set your spiritual foundation
+                4. Explore each portal at your own pace
+                
+                📧 SUPPORT:
+                Email: edenconsciousnesssdt@gmail.com
+                
+                Blessings on your path,
+                Nazir El & The Eden Consciousness Team
+                
+                "You never left Eden. You're building the Temple."
+            `;
+            
+            // In a real implementation, this would send actual email
+            console.log('Welcome email sent to:', member.email);
+            console.log(emailTemplate);
+            
+            // For now, show success message
+            if (document.getElementById('registration-success')) {
+                document.getElementById('registration-success').innerHTML = `
+                    <div style="background: rgba(34, 197, 94, 0.2); border: 1px solid #22c55e; border-radius: 0.75rem; padding: 1.5rem; margin: 1rem 0;">
+                        <h3 style="color: #22c55e; margin-bottom: 1rem;">✅ Registration Successful!</h3>
+                        <p><strong>Divine Name:</strong> ${member.divineName}</p>
+                        <p><strong>Sacred Key:</strong> ${member.sacredKey}</p>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
+                            Welcome email sent to ${member.email}. Save your credentials safely!
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        function validateMemberCredentials(divineName, sacredKey) {
+            // Load members from localStorage
+            const savedMembers = localStorage.getItem('registeredMembers');
+            if (savedMembers) {
+                const members = JSON.parse(savedMembers);
+                REGISTERED_MEMBERS.length = 0;
+                REGISTERED_MEMBERS.push(...members);
+            }
+            
+            // Find matching member
+            const member = REGISTERED_MEMBERS.find(m => 
+                m.divineName.toLowerCase() === divineName.toLowerCase() && 
+                m.sacredKey === sacredKey &&
+                m.status === 'active'
+            );
+            
+            if (member) {
+                // Update login statistics
+                member.loginCount++;
+                member.lastLogin = new Date().toISOString();
+                localStorage.setItem('registeredMembers', JSON.stringify(REGISTERED_MEMBERS));
+                
+                return member;
+            }
+            
+            return null;
+        }
+
         function authenticateUser(event) {
             event.preventDefault();
             
-            const divineName = document.getElementById('divine-name').value.toLowerCase().trim();
+            const divineName = document.getElementById('divine-name').value.trim();
             const sacredKey = document.getElementById('sacred-key').value;
             
             const errorDiv = document.getElementById('auth-error');
@@ -15619,40 +17584,85 @@ Signature: ________________"></textarea>
             errorDiv.style.display = 'none';
             successDiv.style.display = 'none';
             
-            // Validate credentials
-            if (divineName === DIVINE_CREDENTIALS.name.toLowerCase() && sacredKey === DIVINE_CREDENTIALS.key) {
+            // Validate credentials against member database
+            const member = validateMemberCredentials(divineName, sacredKey);
+            
+            if (member) {
                 // Success - store authentication and show portal
                 localStorage.setItem('divineAuthenticated', 'true');
-                localStorage.setItem('divineName', divineName);
+                localStorage.setItem('currentMember', JSON.stringify(member));
                 localStorage.setItem('authTimestamp', Date.now().toString());
                 
-                successDiv.textContent = '✨ Welcome to the Divine Temple, Sacred One! ✨';
+                successDiv.innerHTML = `✨ Welcome back to the Divine Temple, ${member.firstName || 'Sacred One'}! ✨`;
                 successDiv.style.display = 'block';
+                
+                // Add welcome back activity
+                addToActivityFeed(`🏛️ ${member.firstName || member.divineName} entered the Divine Temple`, 'login');
                 
                 setTimeout(() => {
                     document.getElementById('auth-overlay').style.display = 'none';
-                    document.getElementById('main-content').classList.add('authenticated');
+                    document.body.classList.remove('auth-active');
                     
-                    // Update header with divine name
-                    const userInfo = document.querySelector('.user-info div:last-child');
-                    if (userInfo) {
-                        userInfo.textContent = `Divine ${divineName}`;
-                    }
-                    
-                    // Welcome notification
-                    if (typeof showNotification !== 'undefined') {
-                        showNotification('🏛️ Welcome to your Divine Temple! All sacred portals are now accessible.', 'success');
-                    }
+                    // Update member info in UI
+                    updateMemberInfo(member);
                 }, 2000);
-                
             } else {
-                // Error - invalid credentials
                 errorDiv.textContent = '❌ Invalid Divine Credentials. Please check your Divine Name and Sacred Key.';
                 errorDiv.style.display = 'block';
-                
-                // Clear password field
-                document.getElementById('sacred-key').value = '';
             }
+        }
+
+        function updateMemberInfo(member) {
+            // Update member greeting in the UI
+            const memberGreeting = document.querySelector('.member-greeting');
+            if (memberGreeting) {
+                memberGreeting.textContent = `Welcome, ${member.firstName || member.divineName}`;
+            }
+            
+            // Update membership type display
+            const membershipDisplay = document.querySelector('.membership-type');
+            if (membershipDisplay) {
+                membershipDisplay.textContent = member.membershipType || 'Sacred Member';
+            }
+        }
+
+        // Check authentication on page load
+        function checkAuthentication() {
+            const isAuthenticated = localStorage.getItem('divineAuthenticated');
+            const authTimestamp = localStorage.getItem('authTimestamp');
+            const currentMember = localStorage.getItem('currentMember');
+            
+            if (!isAuthenticated || !authTimestamp || !currentMember) {
+                showAuthOverlay();
+                return false;
+            }
+            
+            // Check if session expired (24 hours)
+            const sessionAge = Date.now() - parseInt(authTimestamp);
+            const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+            
+            if (sessionAge > maxAge) {
+                // Session expired
+                logoutUser();
+                return false;
+            }
+            
+            // Valid session - update member info
+            const member = JSON.parse(currentMember);
+            updateMemberInfo(member);
+            return true;
+        }
+
+        function showAuthOverlay() {
+            document.getElementById('auth-overlay').style.display = 'flex';
+            document.body.classList.add('auth-active');
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('divineAuthenticated');
+            localStorage.removeItem('currentMember');
+            localStorage.removeItem('authTimestamp');
+            showAuthOverlay();
         }
 
         function checkExistingAuthentication() {
@@ -15722,7 +17732,484 @@ Signature: ________________"></textarea>
         }
 
         window.addEventListener('DOMContentLoaded', initialize);
+        
+        // ============================================
+        // ADDITIONAL AUTHENTICATION FUNCTIONS FOR REGISTRATION
+        // ============================================
+        
+        // Registration and payment integration functions
+        function showAuthTab(tabName) {
+            // Hide all forms
+            document.getElementById('login-form').classList.remove('active');
+            document.getElementById('register-form').classList.remove('active');
+            
+            // Remove active from all tabs
+            document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected form and tab
+            document.getElementById(`${tabName}-form`).classList.add('active');
+            document.querySelector(`[onclick="showAuthTab('${tabName}')"]`).classList.add('active');
+        }
+
+        function updatePricing() {
+            const membershipSelect = document.getElementById('membership-type');
+            const pricingDisplay = document.getElementById('pricing-display');
+            const priceAmount = document.getElementById('price-amount');
+            
+            if (membershipSelect.value) {
+                const selectedOption = membershipSelect.selectedOptions[0];
+                const price = selectedOption.getAttribute('data-price');
+                
+                pricingDisplay.style.display = 'block';
+                priceAmount.textContent = `$${price}`;
+                
+                // Update benefits based on membership type
+                updateMembershipBenefits(membershipSelect.value);
+            } else {
+                pricingDisplay.style.display = 'none';
+            }
+        }
+
+        function updateMembershipBenefits(membershipType) {
+            const benefitsList = document.querySelector('.price-info ul');
+            
+            let benefits = [
+                '🏛️ Full access to 4 Sacred Portals',
+                '📔 Dreams & Visions tracking',
+                '📚 Sacred Library with ancient texts',
+                '🤝 Community Hub for spiritual connection',
+                '🧿 Ancient Wisdom teachings',
+                '⭐ 14+ additional spiritual tools',
+                '📧 Direct support & guidance'
+            ];
+            
+            if (membershipType === 'founding') {
+                benefits.push('👑 Founding Member status (Lifetime)');
+                benefits.push('🎓 Licensed facilitator training included');
+                benefits.push('📖 All future books FREE forever');
+                benefits.push('🌟 Leadership development opportunities');
+            } else if (membershipType === 'student') {
+                benefits.push('📚 6 months full access');
+                benefits.push('🎧 Audiobook included');
+                benefits.push('📝 Workbook included');
+            }
+            
+            benefitsList.innerHTML = benefits.map(benefit => `<li>${benefit}</li>`).join('');
+        }
+
+        function proceedToPayment() {
+            const firstName = document.getElementById('reg-firstname').value.trim();
+            const lastName = document.getElementById('reg-lastname').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const membershipType = document.getElementById('membership-type').value;
+            
+            const errorDiv = document.getElementById('registration-error');
+            errorDiv.style.display = 'none';
+            
+            // Validation
+            if (!firstName || !lastName || !email || !membershipType) {
+                errorDiv.textContent = '❌ Please fill in all fields before proceeding to payment.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                errorDiv.textContent = '❌ Please enter a valid email address.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            // Store registration data temporarily
+            const registrationData = {
+                firstName,
+                lastName,
+                email,
+                membershipType,
+                timestamp: Date.now()
+            };
+            
+            localStorage.setItem('pendingRegistration', JSON.stringify(registrationData));
+            
+            // Redirect to appropriate payment link
+            let paymentUrl;
+            switch (membershipType) {
+                case 'founding':
+                    paymentUrl = 'https://square.link/u/xuKzAPeA';
+                    break;
+                case 'monthly':
+                    paymentUrl = 'https://square.link/u/g8CFT019';
+                    break;
+                case 'student':
+                    paymentUrl = 'https://square.link/u/qodANI9O';
+                    break;
+                default:
+                    errorDiv.textContent = '❌ Invalid membership type selected.';
+                    errorDiv.style.display = 'block';
+                    return;
+            }
+            
+            // Open payment in new window
+            const paymentWindow = window.open(paymentUrl, '_blank');
+            
+            // Show payment pending message
+            document.getElementById('register-form').innerHTML = `
+                <div class="auth-header">
+                    <h2>💳 Payment Processing</h2>
+                    <p>Complete your payment to receive Divine Credentials</p>
+                </div>
+                
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">⏳</div>
+                    <h3 style="color: var(--accent-gold); margin-bottom: 1rem;">Payment Window Opened</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                        Complete your payment in the new window, then return here to receive your Divine Credentials.
+                    </p>
+                    
+                    <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 0.75rem; padding: 1.5rem; margin: 1rem 0;">
+                        <h4 style="color: var(--accent-gold); margin-bottom: 1rem;">📋 Registration Summary:</h4>
+                        <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+                        <p><strong>Email:</strong> ${email}</p>
+                        <p><strong>Membership:</strong> ${document.getElementById('membership-type').selectedOptions[0].textContent}</p>
+                    </div>
+                    
+                    <button onclick="checkPaymentCompletion()" class="auth-btn" style="margin-top: 1rem;">
+                        ✅ I've Completed Payment
+                    </button>
+                    
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 1rem;">
+                        After payment, you'll receive an email with your unique Divine Credentials within 5 minutes.
+                    </p>
+                </div>
+                
+                <div class="auth-footer">
+                    <p>Need help? <a href="mailto:edenconsciousnesssdt@gmail.com">Contact Support</a></p>
+                </div>
+            `;
+        }
+
+        function checkPaymentCompletion() {
+            const pendingData = localStorage.getItem('pendingRegistration');
+            
+            if (!pendingData) {
+                alert('No pending registration found. Please restart the registration process.');
+                location.reload();
+                return;
+            }
+            
+            const registrationData = JSON.parse(pendingData);
+            
+            // In a real implementation, this would verify payment with Square API
+            // For now, we'll simulate the registration process
+            
+            // Generate unique payment ID for tracking
+            const paymentId = 'SQ' + Date.now() + Math.floor(Math.random() * 1000);
+            registrationData.paymentId = paymentId;
+            
+            // Register the new member
+            const newMember = registerNewMember(registrationData);
+            
+            // Clear pending registration
+            localStorage.removeItem('pendingRegistration');
+            
+            // Show success and credentials
+            document.getElementById('register-form').innerHTML = `
+                <div class="auth-header">
+                    <h2>🎉 Welcome to the Divine Temple!</h2>
+                    <p>Your registration is complete</p>
+                </div>
+                
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">✨</div>
+                    
+                    <div style="background: rgba(34, 197, 94, 0.2); border: 2px solid #22c55e; border-radius: 1rem; padding: 2rem; margin: 1rem 0;">
+                        <h3 style="color: #22c55e; margin-bottom: 1.5rem;">🔑 Your Divine Credentials</h3>
+                        <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0;">
+                            <p style="font-family: monospace; font-size: 1.1rem; margin: 0.5rem 0;">
+                                <strong>Divine Name:</strong> <span style="color: var(--accent-gold);">${newMember.divineName}</span>
+                            </p>
+                            <p style="font-family: monospace; font-size: 1.1rem; margin: 0.5rem 0;">
+                                <strong>Sacred Key:</strong> <span style="color: var(--accent-gold);">${newMember.sacredKey}</span>
+                            </p>
+                        </div>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 1rem;">
+                            ⚠️ Save these credentials safely! They grant access to your sacred portals.
+                        </p>
+                    </div>
+                    
+                    <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 0.75rem; padding: 1.5rem; margin: 1rem 0;">
+                        <h4 style="color: var(--accent-blue); margin-bottom: 1rem;">📧 Welcome Email Sent</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                            Check ${newMember.email} for your welcome email with these credentials and getting started guide.
+                        </p>
+                    </div>
+                    
+                    <button onclick="useNewCredentials('${newMember.divineName}', '${newMember.sacredKey}')" class="auth-btn" style="margin-top: 1.5rem;">
+                        🏛️ Enter Divine Temple Now
+                    </button>
+                </div>
+            `;
+        }
+
+        function useNewCredentials(divineName, sacredKey) {
+            // Fill in the login form
+            document.getElementById('divine-name').value = divineName;
+            document.getElementById('sacred-key').value = sacredKey;
+            
+            // Switch to login tab
+            showAuthTab('login');
+            
+            // Auto-submit after a moment
+            setTimeout(() => {
+                const form = document.querySelector('#login-form form');
+                if (form) {
+                    const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+                    form.dispatchEvent(submitEvent);
+                }
+            }, 1000);
+        }
+
+        function processRegistration(event) {
+            event.preventDefault();
+            proceedToPayment();
+        }
     </script>
+    
+    <!-- Authentication Overlay with Registration -->
+    <div id="auth-overlay" class="auth-overlay">
+        <div class="auth-container">
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="showAuthTab('login')">Sacred Login</button>
+                <button class="auth-tab" onclick="showAuthTab('register')">Temple Registration</button>
+            </div>
+            
+            <!-- Login Form -->
+            <div id="login-form" class="auth-form active">
+                <div class="auth-header">
+                    <h2>🏛️ Enter the Divine Temple</h2>
+                    <p>Access your sacred portals with Divine Credentials</p>
+                </div>
+                
+                <form onsubmit="authenticateUser(event)">
+                    <div class="form-group">
+                        <label for="divine-name">Divine Name</label>
+                        <input type="text" id="divine-name" required 
+                               placeholder="Enter your Divine Name" class="auth-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sacred-key">Sacred Key</label>
+                        <input type="password" id="sacred-key" required 
+                               placeholder="Enter your Sacred Key" class="auth-input">
+                    </div>
+                    
+                    <button type="submit" class="auth-btn">
+                        ✨ Enter Temple ✨
+                    </button>
+                </form>
+                
+                <div id="auth-error" class="auth-error" style="display: none;"></div>
+                <div id="auth-success" class="auth-success" style="display: none;"></div>
+                
+                <div class="auth-footer">
+                    <p>New to the Divine Temple? <a href="#" onclick="showAuthTab('register')">Register for Membership</a></p>
+                </div>
+            </div>
+
+            <!-- Registration Form -->
+            <div id="register-form" class="auth-form">
+                <div class="auth-header">
+                    <h2>🌟 Join the Divine Temple</h2>
+                    <p>Begin your spiritual journey with sacred access</p>
+                </div>
+                
+                <form onsubmit="processRegistration(event)">
+                    <div class="form-group">
+                        <label for="reg-firstname">First Name</label>
+                        <input type="text" id="reg-firstname" required 
+                               placeholder="Your first name" class="auth-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg-lastname">Last Name</label>
+                        <input type="text" id="reg-lastname" required 
+                               placeholder="Your last name" class="auth-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg-email">Email Address</label>
+                        <input type="email" id="reg-email" required 
+                               placeholder="your@email.com" class="auth-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="membership-type">Membership Type</label>
+                        <select id="membership-type" required onchange="updatePricing()" class="auth-input">
+                            <option value="">Select your path...</option>
+                            <option value="founding" data-price="347">Founding Member - $347 (Lifetime Access)</option>
+                            <option value="monthly" data-price="27">Monthly Member - $27/month</option>
+                            <option value="student" data-price="47">Student Package - $47 (6 months)</option>
+                        </select>
+                    </div>
+                    
+                    <div id="pricing-display" class="pricing-display" style="display: none;">
+                        <div class="price-info">
+                            <h4>✨ Membership Benefits:</h4>
+                            <ul>
+                                <li>🏛️ Full access to 4 Sacred Portals</li>
+                                <li>📔 Dreams & Visions tracking</li>
+                                <li>📚 Sacred Library with ancient texts</li>
+                                <li>🤝 Community Hub for spiritual connection</li>
+                                <li>🧿 Ancient Wisdom teachings</li>
+                                <li>⭐ 14+ additional spiritual tools</li>
+                                <li>📧 Direct support & guidance</li>
+                            </ul>
+                            <div class="total-price">
+                                Total: <span id="price-amount">$0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="auth-btn" onclick="proceedToPayment()">
+                        💳 Proceed to Secure Payment
+                    </button>
+                </form>
+                
+                <div id="registration-success" class="auth-success" style="display: none;"></div>
+                <div id="registration-error" class="auth-error" style="display: none;"></div>
+                
+                <div class="auth-footer">
+                    <p>Already a member? <a href="#" onclick="showAuthTab('login')">Sacred Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Registration Form Styles */
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .auth-tab.active {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            color: white;
+        }
+
+        .auth-tab:hover:not(.active) {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-gold);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .pricing-display {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 0.75rem;
+        }
+
+        .price-info h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .price-info ul {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .price-info li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .price-info li::before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+        }
+
+        .total-price {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            padding: 1rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 0.5rem;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-header h2 {
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .auth-header p {
+            color: var(--text-secondary);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-footer a {
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    
     </div> <!-- End Main Content -->
 </body>
 </html>
