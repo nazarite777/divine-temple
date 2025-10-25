@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sacred Calendar - Divine Temple</title>
+    <style>
+        :root {
+            --accent-gold: #d4af37;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+        .section-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .calendar-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .calendar-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            cursor: pointer;
+            transition: all 0.4s;
+            text-align: center;
+        }
+        
+        .calendar-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--accent-gold);
+        }
+        
+        .calendar-card:active {
+            transform: translateY(-5px) scale(1.01);
+        }
+        
+        .calendar-card.implemented {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        
+        .calendar-card.implemented:hover {
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.2), 0 0 0 1px var(--accent-gold);
+        }
+        
+        .calendar-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        .tool-status {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-complete {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 2.5rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.6s;
+        }
+        
+        .back-btn:hover::before {
+            left: 100%;
+        }
+        
+        .back-btn:hover {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            border-color: var(--accent-gold);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .back-btn .back-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+        
+        .back-btn:hover .back-icon {
+            transform: translateX(-3px);
+        }
+        
+        .calendar-info {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .feature-item {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="section-container">
+        <button class="back-btn" onclick="goBackToDashboard()">
+            <span class="back-icon">←</span>
+            <span>Back to Dashboard</span>
+        </button>
+        
+        <div class="section-header">
+            <h1>📅 Sacred Calendar</h1>
+            <p>Experience time through the divine Enoch Calendar system</p>
+        </div>
+        
+        <div class="calendar-info">
+            <h3>🌟 The Enoch Calendar System</h3>
+            <p>A 364-day divine calendar that begins with the Spring Equinox, perfectly aligned with celestial cycles and sacred seasons.</p>
+            
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <strong>📊 364 Days</strong><br>
+                    Perfect solar year
+                </div>
+                <div class="feature-item">
+                    <strong>🌸 Spring Start</strong><br>
+                    Begins at equinox
+                </div>
+                <div class="feature-item">
+                    <strong>🏛️ Hebrew Months</strong><br>
+                    Traditional names
+                </div>
+                <div class="feature-item">
+                    <strong>🎨 Seasonal Themes</strong><br>
+                    Colors & energies
+                </div>
+            </div>
+        </div>
+        
+        <div class="calendar-features">
+            <div class="calendar-card implemented" onclick="openCalendar()">
+                <div class="calendar-icon">📅</div>
+                <h3>Interactive Calendar</h3>
+                <p>Navigate through the Enoch Calendar with Hebrew months, daily themes, and seasonal colors</p>
+                <div style="margin-top: 1.5rem; font-size: 0.9rem; opacity: 0.8;">
+                    🗓️ Full year view • 📝 Daily spiritual logging • 🌙 Moon phase tracking • 🎭 Sacred seasonal themes
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="calendar-card implemented" onclick="openDailyDevotions()">
+                <div class="calendar-icon">🙏</div>
+                <h3>Daily Devotions</h3>
+                <p>Morning prayers, evening reflections, sacred affirmations, and gratitude journaling</p>
+                <div style="margin-top: 1.5rem; font-size: 0.9rem; opacity: 0.8;">
+                    🌅 Morning prayers • 🌆 Evening reflections • ✨ Sacred affirmations • 🙏 Gratitude practice
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: var(--glass-bg); border-radius: 20px; border: 1px solid var(--glass-border);">
+            <h3>📊 Calendar Features</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                <div>
+                    <div style="font-size: 2rem;">📖</div>
+                    <strong>Daily Logs</strong><br>
+                    Track your journey
+                </div>
+                <div>
+                    <div style="font-size: 2rem;">🎨</div>
+                    <strong>Seasonal Colors</strong><br>
+                    Visual themes
+                </div>
+                <div>
+                    <div style="font-size: 2rem;">🌙</div>
+                    <strong>Lunar Cycles</strong><br>
+                    Moon tracking
+                </div>
+                <div>
+                    <div style="font-size: 2rem;">⭐</div>
+                    <strong>Sacred Events</strong><br>
+                    Divine timing
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Enhanced back navigation with feedback
+        function goBackToDashboard() {
+            try {
+                if (window.parent && window.parent.showSection) {
+                    window.parent.showSection('dashboard');
+                } else {
+                    window.location.href = '../members.html';
+                }
+            } catch (error) {
+                console.error('Navigation error:', error);
+                window.location.href = '../members.html';
+            }
+        }
+        
+        // Enhanced tool opening functions with loading feedback
+        function openTool(toolName, fallbackFunction) {
+            try {
+                if (window.parent && window.parent[fallbackFunction]) {
+                    window.parent[fallbackFunction]();
+                } else {
+                    console.warn(`${toolName} function not found in parent window`);
+                }
+            } catch (error) {
+                console.error(`Error opening ${toolName}:`, error);
+            }
+        }
+        
+        function openCalendar() {
+            openTool('Interactive Calendar', 'openCalendar');
+        }
+        
+        function openDailyDevotions() {
+            openTool('Daily Devotions', 'openDailyDevotions');
+        }
+        
+        // Add loading animation when calendar tools are clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarCards = document.querySelectorAll('.calendar-card');
+            
+            calendarCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Add visual feedback for tool activation
+                    this.style.transform = 'translateY(-5px) scale(1.01)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+                
+                // Add special hover effects for calendar cards
+                card.addEventListener('mouseenter', function() {
+                    const icon = this.querySelector('.calendar-icon');
+                    icon.style.transform = 'scale(1.1) rotate(5deg)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    const icon = this.querySelector('.calendar-icon');
+                    icon.style.transform = 'scale(1) rotate(0deg)';
+                });
+            });
+            
+            // Add calendar activation animation
+            setTimeout(() => {
+                const cards = document.querySelectorAll('.calendar-card.implemented');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.animation = 'calendarPulse 2s ease-in-out';
+                    }, index * 600);
+                });
+            }, 1000);
+            
+            // Show current date/time in Enoch Calendar context
+            updateCurrentCalendarInfo();
+            setInterval(updateCurrentCalendarInfo, 60000); // Update every minute
+        });
+        
+        function updateCurrentCalendarInfo() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            
+            // Add a subtle current time display
+            const timeDisplay = document.getElementById('current-time') || createTimeDisplay();
+            timeDisplay.textContent = `Current time: ${now.toLocaleDateString('en-US', options)}`;
+        }
+        
+        function createTimeDisplay() {
+            const timeDisplay = document.createElement('div');
+            timeDisplay.id = 'current-time';
+            timeDisplay.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: rgba(255,255,255,0.1);
+                padding: 0.5rem 1rem;
+                border-radius: 10px;
+                font-size: 0.8rem;
+                opacity: 0.7;
+                backdrop-filter: blur(10px);
+            `;
+            document.body.appendChild(timeDisplay);
+            return timeDisplay;
+        }
+        
+        // Add CSS for calendar-specific animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes calendarPulse {
+                0%, 100% { 
+                    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4);
+                    border-color: rgba(16, 185, 129, 0.3);
+                }
+                50% { 
+                    box-shadow: 0 0 0 15px rgba(212, 175, 55, 0);
+                    border-color: rgba(212, 175, 55, 0.8);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

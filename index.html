@@ -7,34 +7,6 @@
     <meta name="description" content="Join Eden Consciousness - Where Seekers Become Students, Students Become Members, Members Become Leaders. Founding Members: $347 (47/50 remaining)">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-
-        @media (max-width: 768px) {
-    /* Audiobook promo mobile adjustments */
-    div[style*="grid-template-columns: 1fr 2fr"] {
-        grid-template-columns: 1fr !important;
-        text-align: center;
-    }
-    
-    /* Fix audiobook promo container on mobile */
-    .audiobook-promo {
-        margin: 2rem 1rem 0 1rem !important;
-        padding: 1.5rem !important;
-        width: calc(100% - 2rem) !important;
-        max-width: calc(100% - 2rem) !important;
-        box-sizing: border-box !important;
-    }
-    
-    .audiobook-promo > div[style*="grid"] {
-        gap: 1rem !important;
-    }
-}
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         :root {
             --bg-primary: #0A0E27;
             --accent-gold: #F59E0B;
@@ -46,12 +18,50 @@
             --glass-border: rgba(255, 255, 255, 0.1);
         }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #0A0E27 0%, #1a1f3a 50%, #0A0E27 100%);
             color: var(--text-primary);
             line-height: 1.6;
             min-height: 100vh;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(600px at 20% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(600px at 80% 70%, rgba(245, 158, 11, 0.15) 0%, transparent 50%),
+                radial-gradient(400px at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(1deg); }
+            66% { transform: translate(-20px, 20px) rotate(-1deg); }
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
         }
 
         .container {
@@ -83,15 +93,11 @@
             padding: 1.5rem 2rem;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-
         /* Hero Section */
         .hero {
             text-align: center;
             padding: 6rem 0 4rem;
+            position: relative;
         }
 
         .badge {
@@ -99,6 +105,736 @@
             padding: 0.5rem 1.5rem;
             background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
             border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #F59E0B, #8B5CF6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .hero-values {
+            max-width: 700px;
+            margin: 3rem auto;
+            text-align: left;
+            font-size: 1.1rem;
+        }
+
+        .hero-values div {
+            margin: 0.75rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .hero-values div:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-gold);
+            font-weight: bold;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1.25rem 3rem;
+            background: linear-gradient(135deg, var(--accent-gold), #F97316);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+            margin: 1rem;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.6);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 4rem 0 2rem;
+            color: var(--accent-gold);
+        }
+
+        /* Vision Section */
+        .vision-section {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(245, 158, 11, 0.15));
+            border: 2px solid var(--accent-purple);
+            border-radius: 24px;
+            text-align: center;
+        }
+
+        .vision-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+        }
+
+        .vision-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin: 1rem 0;
+        }
+
+        /* Three-Column Section Layout */
+        .three-column-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin: 6rem 0;
+        }
+
+        .column-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .column-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 40px rgba(245, 158, 11, 0.2);
+        }
+
+        .column-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .column-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .column-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .column-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--accent-gold);
+        }
+
+        .column-description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        /* Membership Paths Grid */
+        .paths-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .path-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .path-card.featured {
+            border: 2px solid var(--accent-gold);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(139, 92, 246, 0.1));
+            transform: scale(1.05);
+        }
+
+        .path-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .path-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .path-features {
+            text-align: left;
+            margin: 1.5rem 0;
+        }
+
+        .path-features div {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .path-features div:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-gold);
+            font-weight: bold;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .three-column-section {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .hero {
+                padding: 4rem 0 2rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .vision-section {
+                padding: 2rem;
+                margin: 2rem auto;
+            }
+
+            .cta-button {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+                margin: 0.5rem;
+            }
+        }
+
+        /* Special Elements */
+        .urgency-badge {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 1rem 0;
+            display: inline-block;
+        }
+
+        .testimonial-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(245, 158, 11, 0.15));
+            border: 2px solid var(--accent-gold);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 3rem auto;
+            max-width: 800px;
+        }
+
+        .stars {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 2rem;
+            color: var(--accent-gold);
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Divine Frequency Music Player -->
+    <div id="divine-frequency-player">
+        <div id="player-collapsed" onclick="expandPlayer()">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="width: 12px; height: 12px; background: var(--accent-gold); border-radius: 50%; animation: pulse 2s infinite;"></div>
+                <span style="font-weight: 600; color: var(--accent-gold);">🎵 Divine Frequency Player</span>
+                <span style="font-size: 0.9rem; color: var(--text-secondary);">• 432Hz Healing Frequencies</span>
+            </div>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">Click to expand ▼</span>
+        </div>
+        
+        <div id="player-expanded">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="color: var(--accent-gold); font-size: 1.2rem;">Divine Frequency Experience</h3>
+                <button onclick="collapsePlayer()" style="background: none; border: none; color: var(--text-secondary); cursor: pointer;">▲ Collapse</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                <div style="text-align: center;">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">432Hz Divine Healing</div>
+                    <iframe width="100%" height="120" src="https://www.youtube.com/embed/NDbicVxyzBY?autoplay=0&controls=1" frameborder="0" allowfullscreen style="border-radius: 8px;"></iframe>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Cosmic Vibration</div>
+                    <iframe width="100%" height="120" src="https://www.youtube.com/embed/wruBHYjnNks?autoplay=0&controls=1" frameborder="0" allowfullscreen style="border-radius: 8px;"></iframe>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Sacred Meditation</div>
+                    <iframe width="100%" height="120" src="https://www.youtube.com/embed/1ZYbU82GVz4?autoplay=0&controls=1" frameborder="0" allowfullscreen style="border-radius: 8px;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="badge">🏛️ Eden Consciousness Spiritual Development Center</div>
+            <h1>Where Seekers Become<br>Leaders</h1>
+            <p class="subtitle">Break free from the matrix. Build the Temple. Transform reality.</p>
+            
+            <div class="hero-values">
+                <div>Direct spiritual experience over institutional doctrine</div>
+                <div>Ancient wisdom meets modern consciousness technology</div>
+                <div>Community of builders creating the new paradigm</div>
+                <div>Leadership pathway from student to licensed teacher</div>
+            </div>
+
+            <div class="urgency-badge">
+                🔥 47 of 50 Founding Member spots remaining
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <a href="#paths" class="cta-button">EXPLORE MEMBERSHIP PATHS</a>
+                <a href="#divine-temple" class="cta-button" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));">🏛️ ENTER DIVINE TEMPLE</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Three-Column Value Proposition -->
+    <section>
+        <div class="container">
+            <div class="three-column-section">
+                <!-- Break Free -->
+                <div class="column-card">
+                    <span class="column-icon">🔓</span>
+                    <h3 class="column-title">Break Free</h3>
+                    <p class="column-description">
+                        Escape the matrix of institutional programming. Question everything. 
+                        Direct observation over accepted narratives. Your consciousness is 
+                        the ultimate authority.
+                    </p>
+                    <div style="font-size: 0.9rem; color: var(--accent-gold); font-weight: 600;">
+                        → Move from seeker to sovereign
+                    </div>
+                </div>
+
+                <!-- Build the Temple -->
+                <div class="column-card">
+                    <span class="column-icon">🏛️</span>
+                    <h3 class="column-title">Build the Temple</h3>
+                    <p class="column-description">
+                        Access 20+ sacred spiritual tools. Meditation systems, manifestation 
+                        labs, Enoch Calendar, healing circles, and advanced consciousness 
+                        technologies.
+                    </p>
+                    <div style="font-size: 0.9rem; color: var(--accent-gold); font-weight: 600;">
+                        → Practical spirituality for real results
+                    </div>
+                </div>
+
+                <!-- Transform Reality -->
+                <div class="column-card">
+                    <span class="column-icon">⚡</span>
+                    <h3 class="column-title">Transform Reality</h3>
+                    <p class="column-description">
+                        Become a licensed facilitator and teacher. Lead Eden Consciousness 
+                        circles. Build generational wealth while serving consciousness evolution.
+                    </p>
+                    <div style="font-size: 0.9rem; color: var(--accent-gold); font-weight: 600;">
+                        → Impact + Income through divine work
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vision Statement -->
+    <section>
+        <div class="container">
+            <div class="vision-section">
+                <h2>You Never Left Eden.<br>You're Building the Temple.</h2>
+                <p>
+                    Eden Consciousness isn't about escaping the world—it's about 
+                    transforming it. We're building the infrastructure for a new 
+                    paradigm where consciousness, community, and prosperity align.
+                </p>
+                <p>
+                    This is more than membership. This is leadership development. 
+                    This is building a spiritual business. This is creating impact 
+                    while generating income.
+                </p>
+                <div style="margin-top: 2rem;">
+                    <strong style="color: var(--accent-gold); font-size: 1.2rem;">
+                        "Ya Heard Me" - The Foundational Text
+                    </strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Membership Paths -->
+    <section id="paths">
+        <div class="container">
+            <h2 class="section-title">Choose Your Path</h2>
+            <p style="text-align: center; color: var(--text-secondary); max-width: 700px; margin: 0 auto 3rem; font-size: 1.1rem;">
+                Every journey starts with a single step. Every leader was once a seeker.
+            </p>
+
+            <div class="paths-grid">
+                <!-- Seeker -->
+                <div class="path-card">
+                    <div class="path-price">FREE</div>
+                    <h3 class="path-title">SEEKER</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                        Begin your awakening journey
+                    </p>
+                    <div class="path-features">
+                        <div>Weekly wisdom emails</div>
+                        <div>Access to free content</div>
+                        <div>Community updates</div>
+                        <div>Introduction to concepts</div>
+                    </div>
+                    <a href="#email-capture" class="cta-button" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(59, 130, 246, 0.5));">START FREE</a>
+                </div>
+
+                <!-- Student -->
+                <div class="path-card">
+                    <div class="path-price">$47</div>
+                    <h3 class="path-title">STUDENT</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                        Deep dive into the teachings
+                    </p>
+                    <div class="path-features">
+                        <div>"Ya Heard Me" complete book</div>
+                        <div>60+ page workbook</div>
+                        <div>Meditation practice system</div>
+                        <div>Enoch Calendar implementation</div>
+                        <div>Monthly Q&A access</div>
+                    </div>
+                    <a href="https://square.link/u/qodANI9O" target="_blank" class="cta-button" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));">BECOME STUDENT</a>
+                </div>
+
+                <!-- Member -->
+                <div class="path-card">
+                    <div class="path-price">$27<span style="font-size: 1rem;">/month</span></div>
+                    <h3 class="path-title">MEMBER</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                        Ongoing spiritual development
+                    </p>
+                    <div class="path-features">
+                        <div>Everything in Student</div>
+                        <div>Monthly live sessions</div>
+                        <div>Community forum access</div>
+                        <div>Advanced practice modules</div>
+                        <div>Progress tracking tools</div>
+                    </div>
+                    <a href="https://square.link/u/g8CFT019" target="_blank" class="cta-button" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));">JOIN COMMUNITY</a>
+                </div>
+
+                <!-- Founding Member -->
+                <div class="path-card featured">
+                    <div style="background: var(--accent-gold); color: black; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 1rem;">
+                        LIMITED TIME - 47 SPOTS LEFT
+                    </div>
+                    <div class="path-price">$347</div>
+                    <h3 class="path-title">FOUNDING MEMBER</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                        <strong>Leadership pathway + lifetime access</strong>
+                    </p>
+                    <div class="path-features">
+                        <div>Everything in all tiers</div>
+                        <div>Lifetime Divine Temple access</div>
+                        <div>Facilitator training INCLUDED ($497 value)</div>
+                        <div>Licensed to teach & earn</div>
+                        <div>Revenue sharing opportunities</div>
+                        <div>Direct mentorship access</div>
+                        <div>Legacy builder status</div>
+                    </div>
+                    <a href="https://square.link/u/xuKzAPeA" target="_blank" class="cta-button" style="position: relative; overflow: hidden;">
+                        <span style="position: relative; z-index: 2;">🏛️ CLAIM FOUNDING STATUS</span>
+                        <div style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: shimmer 2s infinite;"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Divine Temple Portal -->
+    <section id="divine-temple">
+        <div class="container">
+            <div style="max-width: 1000px; margin: 6rem auto; padding: 3rem; background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(139, 92, 246, 0.1)); border-radius: 2rem; border: 2px solid var(--accent-gold); text-align: center;">
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--accent-gold); margin-bottom: 1rem;">
+                    🏛️ Divine Temple Portal
+                </h2>
+                <p style="font-size: 1.3rem; color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.8;">
+                    Access 20+ Sacred Spiritual Tools including Soul Journey, Healing Circle, 
+                    Mystic Arts, Sacred Sound, Light Language, Earth Medicine, Ascension Gateway, 
+                    and Sacred Geometry practices.
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 3rem 0;">
+                    <div style="padding: 1rem; background: rgba(139, 92, 246, 0.1); border-radius: 12px;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🧘</div>
+                        <div style="font-weight: 600;">Spiritual Tools</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">7 Daily Practices</div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(139, 92, 246, 0.1); border-radius: 12px;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📚</div>
+                        <div style="font-weight: 600;">Sacred Knowledge</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">4 Wisdom Resources</div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(139, 92, 246, 0.1); border-radius: 12px;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
+                        <div style="font-weight: 600;">Personal Growth</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">5 Development Tools</div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(139, 92, 246, 0.1); border-radius: 12px;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🤝</div>
+                        <div style="font-weight: 600;">Community</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">2 Connection Platforms</div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(139, 92, 246, 0.1); border-radius: 12px;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📅</div>
+                        <div style="font-weight: 600;">Sacred Calendar</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">Enoch System</div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(139, 92, 246, 0.1); border-radius: 12px;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">✨</div>
+                        <div style="font-weight: 600;">Advanced Practices</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">6 Master Techniques</div>
+                    </div>
+                </div>
+
+                <div style="margin: 3rem 0;">
+                    <a href="https://nazarite777.github.io/divine-temple/members.html" class="cta-button" style="background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple)); font-size: 1.2rem; padding: 1.5rem 3rem; position: relative; overflow: hidden;">
+                        <span style="position: relative; z-index: 2;">✨ ENTER DIVINE TEMPLE ✨</span>
+                        <div style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: shimmer 2s infinite;"></div>
+                    </a>
+                </div>
+                
+                <p style="font-size: 0.9rem; color: var(--text-secondary); font-style: italic;">
+                    🔐 Members-only access with Divine Credentials required
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Email Capture Section -->
+    <section id="email-capture">
+        <div class="container">
+            <div style="max-width: 600px; margin: 6rem auto; padding: 3rem; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 24px; text-align: center;">
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 1rem; color: var(--accent-gold);">
+                    Begin Your Journey
+                </h3>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.1rem; line-height: 1.8;">
+                    Get weekly wisdom, updates on new spiritual tools, and notifications when new paths open. 
+                    No spam. Just truth. Unsubscribe anytime.
+                </p>
+
+                <!-- Mailchimp Integration -->
+                <style>
+                    #mc_embed_signup {
+                        max-width: 500px !important;
+                        margin: 0 auto !important;
+                        background: transparent !important;
+                    }
+                    #mc_embed_signup input[type="email"] {
+                        width: 100% !important;
+                        padding: 1rem !important;
+                        background: rgba(255,255,255,0.05) !important;
+                        border: 1px solid rgba(255,255,255,0.1) !important;
+                        border-radius: 8px !important;
+                        color: white !important;
+                        font-size: 1rem !important;
+                    }
+                    #mc_embed_signup input[type="submit"] {
+                        width: 100% !important;
+                        padding: 1rem !important;
+                        background: linear-gradient(135deg, #8B5CF6, #3B82F6) !important;
+                        border: none !important;
+                        border-radius: 8px !important;
+                        color: white !important;
+                        font-weight: 700 !important;
+                        cursor: pointer !important;
+                        margin-top: 1rem !important;
+                    }
+                </style>
+
+                <div id="mc_embed_signup">
+                    <form action="https://gmail.us9.list-manage.com/subscribe/post?u=53f0baf84fb1bc8c515e6f731&amp;id=0005a32626&amp;f_id=007053e1f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+                        <div id="mc_embed_signup_scroll">
+                            <h2 style="color: var(--accent-gold); margin-bottom: 1rem;">Subscribe</h2>
+                            <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+                            <div class="mc-field-group">
+                                <label for="mce-EMAIL">Email Address <span class="asterisk">*</span></label>
+                                <input type="email" name="EMAIL" class="required email" id="mce-EMAIL" required="" value="">
+                            </div>
+                            <div aria-hidden="true" style="position: absolute; left: -5000px;">
+                                <input type="text" name="b_53f0baf84fb1bc8c515e6f731_0005a32626" tabindex="-1" value="">
+                            </div>
+                            <div class="clear">
+                                <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="button" value="Begin Journey">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final Call to Action -->
+    <section>
+        <div class="container">
+            <div style="padding: 4rem 0; text-align: center;">
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 1rem; color: var(--accent-gold);">
+                    YA HEARD ME.
+                </h2>
+                <p style="font-size: 1.3rem; color: var(--text-secondary); margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    It's time to remember who you are.
+                </p>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-bottom: 2rem;">
+                    <a href="https://square.link/u/xuKzAPeA" target="_blank" class="cta-button">FOUNDING MEMBER - $347</a>
+                    <a href="https://square.link/u/g8CFT019" target="_blank" class="cta-button" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));">MEMBER - $27/MONTH</a>
+                    <a href="https://square.link/u/qodANI9O" target="_blank" class="cta-button" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));">STUDENT - $47</a>
+                </div>
+                
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 2rem;">
+                    🔥 <strong style="color: var(--accent-gold);">47 of 50</strong> Founding Member spots remaining
+                </p>
+                
+                <p style="font-size: 1.2rem; margin-top: 3rem; font-style: italic;">
+                    You never left Eden.<br>
+                    You're building the Temple.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: rgba(0,0,0,0.5); border-top: 1px solid var(--glass-border); padding: 3rem 0; margin-top: 4rem;">
+        <div class="container" style="text-align: center;">
+            <div style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent-gold);">
+                🏛️ EDEN CONSCIOUSNESS
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                Spiritual Development Center
+            </p>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; margin: 2rem 0; font-size: 0.9rem;">
+                <a href="#paths" style="color: var(--text-secondary); text-decoration: none;">Paths</a>
+                <a href="#divine-temple" style="color: var(--text-secondary); text-decoration: none;">Divine Temple</a>
+                <a href="#email-capture" style="color: var(--text-secondary); text-decoration: none;">Contact</a>
+            </div>
+            
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 1rem 0;">
+                Questions? Email: <a href="mailto:edenconsciousnesssdt@gmail.com" style="color: var(--accent-gold); text-decoration: none;">edenconsciousnesssdt@gmail.com</a>
+            </p>
+            
+            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 2rem;">
+                © 2025 Eden Consciousness Spiritual Development Center • Created by Nazir El
+            </p>
+            
+            <p style="color: var(--accent-gold); font-size: 0.9rem; margin-top: 1rem; font-style: italic;">
+                Building the Temple. One conscious soul at a time.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Music Player Functions
+        function expandPlayer() {
+            document.getElementById('player-collapsed').style.display = 'none';
+            document.getElementById('player-expanded').style.display = 'block';
+        }
+
+        function collapsePlayer() {
+            document.getElementById('player-collapsed').style.display = 'flex';
+            document.getElementById('player-expanded').style.display = 'none';
+        }
+
+        // Smooth Scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add entrance animations
+        window.addEventListener('load', function() {
+            const sections = document.querySelectorAll('section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            sections.forEach(section => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(30px)';
+                section.style.transition = 'all 0.8s ease';
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
             font-size: 0.85rem;
             font-weight: 700;
             letter-spacing: 0.5px;

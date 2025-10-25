@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Growth - Divine Temple</title>
+    <style>
+        :root {
+            --accent-gold: #d4af37;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+        .section-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .growth-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .growth-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            cursor: pointer;
+            transition: all 0.4s;
+            text-align: center;
+        }
+        
+        .growth-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--accent-gold);
+        }
+        
+        .growth-card:active {
+            transform: translateY(-5px) scale(1.01);
+        }
+        
+        .growth-card.implemented {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        
+        .growth-card.implemented:hover {
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.2), 0 0 0 1px var(--accent-gold);
+        }
+        
+        .growth-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        .growth-info {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .feature-item {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .tool-status {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-complete {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .status-placeholder {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 2.5rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.6s;
+        }
+        
+        .back-btn:hover::before {
+            left: 100%;
+        }
+        
+        .back-btn:hover {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            border-color: var(--accent-gold);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .back-btn .back-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+        
+        .back-btn:hover .back-icon {
+            transform: translateX(-3px);
+        }
+    </style>
+</head>
+<body>
+    <div class="section-container">
+        <button class="back-btn" onclick="goBackToDashboard()">
+            <span class="back-icon">←</span>
+            <span>Back to Dashboard</span>
+        </button>
+        
+        <div class="section-header">
+            <h1>📈 Personal Growth</h1>
+            <p>Track your spiritual evolution and soul development journey</p>
+        </div>
+        
+        <div class="growth-info">
+            <h3>🌱 Spiritual Evolution Tracking</h3>
+            <p>Comprehensive tools for monitoring your divine growth, setting spiritual goals, and measuring your ascension progress across all dimensions.</p>
+            
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <strong>📊 Progress Tracking</strong><br>
+                    Monitor your evolution
+                </div>
+                <div class="feature-item">
+                    <strong>🎯 Goal Setting</strong><br>
+                    Spiritual objectives
+                </div>
+                <div class="feature-item">
+                    <strong>🏛️ Chamber Work</strong><br>
+                    Nine sacred chambers
+                </div>
+                <div class="feature-item">
+                    <strong>✨ Manifestation</strong><br>
+                    Reality creation
+                </div>
+            </div>
+        </div>
+        
+        <div class="growth-grid">
+            <div class="growth-card implemented" onclick="openGoalTracker()">
+                <div class="growth-icon">📊</div>
+                <h3>Goal & Progress Tracker</h3>
+                <p>Set spiritual goals, track your evolution, and measure your divine growth across all chambers</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    🎯 Goal creation • 📈 Progress tracking • 🏛️ Chamber integration • 📊 Analytics
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="growth-card implemented" onclick="openSoulJourney()">
+                <div class="growth-icon">🛤️</div>
+                <h3>Soul Journey</h3>
+                <p>Past life exploration, soul contracts, karmic patterns, life purpose discovery</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    🔮 Past lives • 📜 Soul contracts • ⚖️ Karma patterns • 🎯 Life purpose
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="growth-card implemented" onclick="openManifestationLab()">
+                <div class="growth-icon">✨</div>
+                <h3>Manifestation Lab</h3>
+                <p>Vision boarding, sacred geometry, abundance practices, reality creation</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    🎨 Vision boards • 🔺 Sacred geometry • 💰 Abundance • ⚡ Reality creation
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="growth-card implemented" onclick="openSacredChambers()">
+                <div class="growth-icon">🏛️</div>
+                <h3>Sacred Chambers</h3>
+                <p>Nine chambers of reflection and inner guidance based on divine discernment principles</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    🏛️ Nine chambers • 🤔 Reflection • 💡 Inner guidance • ⚖️ Discernment
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="growth-card implemented" onclick="openAscensionGateway()">
+                <div class="growth-icon">🌌</div>
+                <h3>Ascension Gateway</h3>
+                <p>Quantum healing, dimensional travel, cosmic consciousness, divine integration</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    ⚛️ Quantum healing • 🌌 Dimensions • 🧠 Consciousness • 🌟 Integration
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Enhanced back navigation with feedback
+        function goBackToDashboard() {
+            try {
+                if (window.parent && window.parent.showSection) {
+                    window.parent.showSection('dashboard');
+                } else {
+                    window.location.href = '../members.html';
+                }
+            } catch (error) {
+                console.error('Navigation error:', error);
+                window.location.href = '../members.html';
+            }
+        }
+        
+        // Enhanced tool opening functions with loading feedback
+        function openTool(toolName, fallbackFunction) {
+            try {
+                if (window.parent && window.parent[fallbackFunction]) {
+                    window.parent[fallbackFunction]();
+                } else {
+                    console.warn(`${toolName} function not found in parent window`);
+                }
+            } catch (error) {
+                console.error(`Error opening ${toolName}:`, error);
+            }
+        }
+        
+        function openGoalTracker() {
+            openTool('Goal Tracker', 'openGoalTracker');
+        }
+        
+        function openSoulJourney() {
+            openTool('Soul Journey', 'openSoulJourney');
+        }
+        
+        function openManifestationLab() {
+            openTool('Manifestation Lab', 'openManifestationLab');
+        }
+        
+        function openSacredChambers() {
+            openTool('Sacred Chambers', 'openSacredChambers');
+        }
+        
+        function openAscensionGateway() {
+            openTool('Ascension Gateway', 'openAscensionGateway');
+        }
+        
+        // Add loading animation when tools are clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            const growthCards = document.querySelectorAll('.growth-card');
+            
+            growthCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Add visual feedback for tool activation
+                    this.style.transform = 'translateY(-5px) scale(1.01)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+                
+                // Add special hover effects for growth cards
+                card.addEventListener('mouseenter', function() {
+                    const icon = this.querySelector('.growth-icon');
+                    icon.style.transform = 'scale(1.1) rotate(3deg)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    const icon = this.querySelector('.growth-icon');
+                    icon.style.transform = 'scale(1) rotate(0deg)';
+                });
+            });
+            
+            // Add growth milestone animation
+            setTimeout(() => {
+                const cards = document.querySelectorAll('.growth-card.implemented');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.animation = 'pulse 1s ease-in-out';
+                    }, index * 200);
+                });
+            }, 1000);
+        });
+        
+        // Add CSS for pulse animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+                70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

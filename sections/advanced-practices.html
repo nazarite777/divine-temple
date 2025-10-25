@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Practices - Divine Temple</title>
+    <style>
+        :root {
+            --accent-gold: #d4af37;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+        .section-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .practice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .practice-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            cursor: pointer;
+            transition: all 0.4s;
+            text-align: center;
+        }
+        
+        .practice-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--accent-gold);
+        }
+        
+        .practice-card:active {
+            transform: translateY(-5px) scale(1.01);
+        }
+        
+        .practice-card.implemented {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        
+        .practice-card.implemented:hover {
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.2), 0 0 0 1px var(--accent-gold);
+        }
+        
+        .practice-card.advanced {
+            border-color: rgba(139, 92, 246, 0.3);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(255, 255, 255, 0.02));
+        }
+        
+        .practice-card.advanced:hover {
+            border-color: var(--accent-purple);
+            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.3), 0 0 0 1px var(--accent-purple);
+        }
+        
+        .practice-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        .status-complete {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .status-advanced {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+        
+        .tool-status {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-placeholder {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 2.5rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.6s;
+        }
+        
+        .back-btn:hover::before {
+            left: 100%;
+        }
+        
+        .back-btn:hover {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            border-color: var(--accent-gold);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .back-btn .back-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+        
+        .back-btn:hover .back-icon {
+            transform: translateX(-3px);
+        }
+        
+        .practice-info {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+            text-align: left;
+        }
+        
+        .feature-list div {
+            background: rgba(255,255,255,0.05);
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .development-note {
+            background: linear-gradient(135deg, rgba(251,191,36,0.2), rgba(245,158,11,0.2));
+            border: 1px solid rgba(251,191,36,0.3);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-top: 2rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="section-container">
+        <button class="back-btn" onclick="goBackToDashboard()">
+            <span class="back-icon">←</span>
+            <span>Back to Dashboard</span>
+        </button>
+        
+        <div class="section-header">
+            <h1>🧙‍♂️ Advanced Practices</h1>
+            <p>Master the deeper mysteries and advanced spiritual techniques</p>
+        </div>
+        
+        <div class="practice-info">
+            <h3>⚡ Master-Level Spiritual Techniques</h3>
+            <p>These advanced practices are for experienced members who have mastered the foundational tools and are ready for the deepest mysteries of spiritual work.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+                <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px;">
+                    <strong>🎓 Prerequisites</strong><br>
+                    <small>Foundation work complete</small>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px;">
+                    <strong>🛡️ Safety Protocols</strong><br>
+                    <small>Built-in protection</small>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px;">
+                    <strong>👥 Mentorship</strong><br>
+                    <small>Guided progression</small>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px;">
+                    <strong>📈 Progressive</strong><br>
+                    <small>Skill-building modules</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="practice-grid">
+            <div class="practice-card advanced" onclick="openEnergyWork()">
+                <div class="practice-icon">⚡</div>
+                <h3>Energy Work</h3>
+                <p>Advanced techniques for manipulating and directing spiritual energy flows</p>
+                <div class="feature-list">
+                    <div>🌊 Energy manipulation</div>
+                    <div>⚡ Power amplification</div>
+                    <div>🔮 Visualization mastery</div>
+                    <div>🎯 Focused intention</div>
+                </div>
+                <div class="tool-status status-advanced">� Advanced Level</div>
+            </div>
+            
+            <div class="practice-card advanced" onclick="openRitualCrafting()">
+                <div class="practice-icon">🕯️</div>
+                <h3>Ritual Crafting</h3>
+                <p>Create and perform powerful ceremonial work for transformation</p>
+                <div class="feature-list">
+                    <div>📜 Sacred ritual design</div>
+                    <div>🕯️ Sacred space creation</div>
+                    <div>🎭 Ceremonial mastery</div>
+                    <div>👥 Group ritual leading</div>
+                </div>
+                <div class="tool-status status-advanced">� Advanced Level</div>
+            </div>
+            
+            <div class="practice-card advanced" onclick="openDivination()">
+                <div class="practice-icon">🔮</div>
+                <h3>Divination Arts</h3>
+                <p>Master prophetic practices and unlock the secrets of divine timing</p>
+                <div class="feature-list">
+                    <div>🃏 Tarot mastery</div>
+                    <div>🌟 Astrological wisdom</div>
+                    <div>🔮 Scrying techniques</div>
+                    <div>📊 Numerological work</div>
+                </div>
+                <div class="tool-status status-advanced">� Advanced Level</div>
+            </div>
+            
+            <div class="practice-card advanced" onclick="openAstralWork()">
+                <div class="practice-icon">🌌</div>
+                <h3>Astral Practices</h3>
+                <p>Explore consciousness beyond physical limitations and dimensions</p>
+                <div class="feature-list">
+                    <div>✈️ Astral projection</div>
+                    <div>💫 Lucid dreaming</div>
+                    <div>🌊 Consciousness travel</div>
+                    <div>🔗 Spirit communication</div>
+                </div>
+                <div class="tool-status status-advanced">� Advanced Level</div>
+            </div>
+            
+            <div class="practice-card advanced" onclick="openAlchemy()">
+                <div class="practice-icon">⚗️</div>
+                <h3>Spiritual Alchemy</h3>
+                <p>Transform consciousness through ancient hermetic principles</p>
+                <div class="feature-list">
+                    <div>🔄 Soul transmutation</div>
+                    <div>🧪 Inner laboratory</div>
+                    <div>💎 Purification work</div>
+                    <div>👑 Spiritual mastery</div>
+                </div>
+                <div class="tool-status status-advanced">� Advanced Level</div>
+            </div>
+            
+            <div class="practice-card implemented" onclick="openMysticArts()">
+                <div class="practice-icon">🎭</div>
+                <h3>Mystic Arts</h3>
+                <p>Esoteric practices and hidden knowledge systems for the initiated</p>
+                <div class="feature-list">
+                    <div>📚 Secret wisdom traditions</div>
+                    <div>🗝️ Hidden knowledge keys</div>
+                    <div>🎪 Sacred theater work</div>
+                    <div>🌈 Light body activation</div>
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+        </div>
+        
+        <div class="development-note">
+            <h3>🌟 The Path to Mastery</h3>
+            <p>Advanced practices require dedication, wisdom, and spiritual maturity. Each practice builds upon the foundations you've established through consistent work with the basic tools.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                <div style="background: rgba(139, 92, 246, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.2);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎓</div>
+                    <strong>Prerequisites Met</strong><br>
+                    <small>Complete foundational chamber work and demonstrate spiritual stability</small>
+                </div>
+                <div style="background: rgba(139, 92, 246, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.2);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🛡️</div>
+                    <strong>Safety First</strong><br>
+                    <small>Built-in protection protocols and guidance for safe exploration</small>
+                </div>
+                <div style="background: rgba(139, 92, 246, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.2);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">👥</div>
+                    <strong>Mentorship Available</strong><br>
+                    <small>Experienced practitioners guide your journey into advanced work</small>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem; padding: 1rem; background: rgba(212, 175, 55, 0.1); border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.2);">
+                <strong>✨ Ready to Begin?</strong> Continue your daily practice with the foundational tools. As you demonstrate consistency and wisdom, these advanced practices will naturally become available to you.
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Enhanced back navigation with feedback
+        function goBackToDashboard() {
+            try {
+                if (window.parent && window.parent.showSection) {
+                    window.parent.showSection('dashboard');
+                } else {
+                    window.location.href = '../members.html';
+                }
+            } catch (error) {
+                console.error('Navigation error:', error);
+                window.location.href = '../members.html';
+            }
+        }
+        
+        // Enhanced tool opening functions with advanced practice feedback
+        function openTool(toolName, fallbackFunction) {
+            try {
+                if (window.parent && window.parent[fallbackFunction]) {
+                    window.parent[fallbackFunction]();
+                } else {
+                    console.warn(`${toolName} function not found in parent window`);
+                    showAdvancedPlaceholder(toolName);
+                }
+            } catch (error) {
+                console.error(`Error opening ${toolName}:`, error);
+            }
+        }
+        
+        function openEnergyWork() {
+            openTool('Energy Work', 'openEnergyWork');
+        }
+        
+        function openRitualCrafting() {
+            openTool('Ritual Crafting', 'openRitualCrafting');
+        }
+        
+        function openDivination() {
+            openTool('Divination Arts', 'openDivination');
+        }
+        
+        function openAstralWork() {
+            openTool('Astral Practices', 'openAstralWork');
+        }
+        
+        function openAlchemy() {
+            openTool('Spiritual Alchemy', 'openAlchemy');
+        }
+        
+        function openMysticArts() {
+            openTool('Mystic Arts', 'openMysticArts');
+        }
+        
+        function showAdvancedPlaceholder(toolName) {
+            // Create advanced practice notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+                color: white;
+                padding: 1.5rem 2rem;
+                border-radius: 15px;
+                box-shadow: 0 15px 40px rgba(139, 92, 246, 0.3);
+                z-index: 1000;
+                font-family: Inter, sans-serif;
+                max-width: 350px;
+                border: 1px solid rgba(139, 92, 246, 0.3);
+            `;
+            notification.innerHTML = `
+                <strong>🔮 ${toolName}</strong><br>
+                <small>Advanced practice preparing for activation. Mastery level required.</small>
+                <div style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.8;">
+                    Complete foundational work to unlock this practice.
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(-20px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+        
+        // Add loading animation when advanced practices are clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            const practiceCards = document.querySelectorAll('.practice-card');
+            
+            practiceCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Add visual feedback for tool activation
+                    this.style.transform = 'translateY(-5px) scale(1.01)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+                
+                // Add special hover effects for practice cards
+                card.addEventListener('mouseenter', function() {
+                    const icon = this.querySelector('.practice-icon');
+                    if (this.classList.contains('advanced')) {
+                        icon.style.transform = 'scale(1.1) rotate(-5deg)';
+                        icon.style.filter = 'drop-shadow(0 0 10px rgba(139, 92, 246, 0.5))';
+                    } else {
+                        icon.style.transform = 'scale(1.1) rotate(5deg)';
+                        icon.style.filter = 'drop-shadow(0 0 10px rgba(16, 185, 129, 0.5))';
+                    }
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    const icon = this.querySelector('.practice-icon');
+                    icon.style.transform = 'scale(1) rotate(0deg)';
+                    icon.style.filter = 'none';
+                });
+            });
+            
+            // Add advanced practice mystical animation
+            setTimeout(() => {
+                const advancedCards = document.querySelectorAll('.practice-card.advanced');
+                const implementedCards = document.querySelectorAll('.practice-card.implemented');
+                
+                advancedCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.animation = 'mysticalPulse 3s ease-in-out infinite';
+                    }, index * 400);
+                });
+                
+                implementedCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.animation = 'implementedGlow 2s ease-in-out';
+                    }, (advancedCards.length * 400) + (index * 300));
+                });
+            }, 1500);
+        });
+        
+        // Add CSS for advanced practice animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes mysticalPulse {
+                0%, 100% { 
+                    border-color: rgba(139, 92, 246, 0.3);
+                    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4);
+                }
+                50% { 
+                    border-color: rgba(139, 92, 246, 0.8);
+                    box-shadow: 0 0 0 10px rgba(139, 92, 246, 0);
+                }
+            }
+            
+            @keyframes implementedGlow {
+                0% { 
+                    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+                    border-color: rgba(16, 185, 129, 0.3);
+                }
+                70% { 
+                    box-shadow: 0 0 0 20px rgba(16, 185, 129, 0);
+                    border-color: rgba(16, 185, 129, 0.8);
+                }
+                100% { 
+                    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+                    border-color: rgba(16, 185, 129, 0.3);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
