@@ -3724,37 +3724,73 @@
     <!-- Authentication Overlay -->
     <div id="auth-overlay">
         <div class="auth-container">
-            <h1 class="auth-title">🏛️ Divine Temple</h1>
-            <p class="auth-subtitle">Sacred Members Portal - Enter Your Divine Credentials</p>
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="showAuthTab('login')">Sacred Login</button>
+                <button class="auth-tab" onclick="showAuthTab('register')">Temple Registration</button>
+            </div>
             
-            <form class="auth-form" onsubmit="authenticateUser(event)">
-                <div class="auth-input-group">
-                    <input type="text" id="divine-name" class="auth-input" placeholder="Divine Name" required>
+            <!-- Login Form -->
+            <div id="login-form" class="auth-form active">
+                <div class="auth-header">
+                    <h2>🏛️ Enter the Divine Temple</h2>
+                    <p>Access your sacred portals with Divine Credentials</p>
                 </div>
-                <div class="auth-input-group">
-                    <input type="password" id="sacred-key" class="auth-input" placeholder="Sacred Key" required>
+                
+                <form onsubmit="authenticateUser(event)">
+                    <div class="form-group">
+                        <label for="login-divine-name">Divine Name</label>
+                        <input type="text" id="login-divine-name" name="divine-name" required 
+                               placeholder="Enter your Divine Name" class="auth-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-sacred-key">Sacred Key</label>
+                        <input type="password" id="login-sacred-key" name="sacred-key" required 
+                               placeholder="Enter your Sacred Key" class="auth-input">
+                    </div>
+                    
+                    <button type="submit" class="auth-btn">✨ Enter Sacred Portal ✨</button>
+                </form>
+                
+                <div id="login-error" class="auth-error"></div>
+                <div id="login-success" class="auth-success"></div>
+                
+                <p>New to the Temple? <a href="#" onclick="showAuthTab('register')">Join the Sacred Journey</a></p>
+            </div>
+            
+            <!-- Registration Form -->
+            <div id="register-form" class="auth-form">
+                <div class="auth-header">
+                    <h2>🌟 Join the Divine Temple</h2>
+                    <p>Begin your sacred spiritual journey</p>
                 </div>
-                <button type="submit" class="auth-btn">✨ Enter Sacred Portal ✨</button>
-            </form>
-            
-            <div id="auth-error" class="auth-error"></div>
-            <div id="auth-success" class="auth-success"></div>
-            
-            <div class="membership-info">
-                <h4>🌟 Divine Temple Membership Benefits:</h4>
-                <ul>
-                    <li>Access to 18 Sacred Spiritual Portals</li>
-                    <li>Soul Journey & Past Life Exploration</li>
-                    <li>Healing Circle & Trauma Recovery</li>
-                    <li>Mystic Arts & Divination Tools</li>
-                    <li>Sacred Sound & Frequency Healing</li>
-                    <li>Light Language & DNA Activation</li>
-                    <li>Earth Medicine & Nature Connection</li>
-                    <li>Ascension Gateway & Quantum Healing</li>
-                    <li>Sacred Geometry & Cosmic Patterns</li>
-                    <li>Personal Progress Tracking & Goals</li>
-                    <li>Eternal Spiritual Development Journey</li>
-                </ul>
+                
+                <form onsubmit="registerNewMember(event)">
+                    <div class="form-group">
+                        <label for="reg-divine-name">Choose Divine Name</label>
+                        <input type="text" id="reg-divine-name" required 
+                               placeholder="Your spiritual identity" class="auth-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg-sacred-key">Create Sacred Key</label>
+                        <input type="password" id="reg-sacred-key" required 
+                               placeholder="Secure password" class="auth-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reg-email">Email Address</label>
+                        <input type="email" id="reg-email" required 
+                               placeholder="your@email.com" class="auth-input">
+                    </div>
+                    
+                    <button type="submit" class="auth-btn">🌟 Begin Sacred Journey 🌟</button>
+                </form>
+                
+                <div id="register-error" class="auth-error"></div>
+                <div id="register-success" class="auth-success"></div>
+                
+                <p>Already a member? <a href="#" onclick="showAuthTab('login')">Sacred Login</a></p>
             </div>
         </div>
     </div>
@@ -17624,19 +17660,33 @@ Signature: ________________"></textarea>
             event.preventDefault();
             console.log('🔐 Authentication attempt started...');
             
-            const divineName = document.getElementById('divine-name').value.trim();
-            const sacredKey = document.getElementById('sacred-key').value;
+            // Try to get credentials from login form first, then fallback to old IDs
+            let divineName = '';
+            let sacredKey = '';
+            
+            const loginDivineNameEl = document.getElementById('login-divine-name');
+            const loginSacredKeyEl = document.getElementById('login-sacred-key');
+            const divineNameEl = document.getElementById('divine-name');
+            const sacredKeyEl = document.getElementById('sacred-key');
+            
+            if (loginDivineNameEl && loginSacredKeyEl) {
+                divineName = loginDivineNameEl.value.trim();
+                sacredKey = loginSacredKeyEl.value;
+            } else if (divineNameEl && sacredKeyEl) {
+                divineName = divineNameEl.value.trim();
+                sacredKey = sacredKeyEl.value;
+            }
             
             console.log('📝 Divine Name entered:', divineName);
             console.log('🔑 Sacred Key entered:', sacredKey);
             console.log('🔑 Sacred Key length:', sacredKey.length);
             
-            const errorDiv = document.getElementById('auth-error');
-            const successDiv = document.getElementById('auth-success');
+            const errorDiv = document.getElementById('login-error') || document.getElementById('auth-error');
+            const successDiv = document.getElementById('login-success') || document.getElementById('auth-success');
             
             // Hide previous messages
-            errorDiv.style.display = 'none';
-            successDiv.style.display = 'none';
+            if (errorDiv) errorDiv.style.display = 'none';
+            if (successDiv) successDiv.style.display = 'none';
             
             // Simple direct check first
             if (divineName === 'nazir777' && sacredKey === 'Cjanimal23$') {
