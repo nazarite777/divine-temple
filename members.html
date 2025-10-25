@@ -43,7 +43,7 @@
                 rgba(26, 31, 58, 0.98) 50%,
                 rgba(15, 15, 35, 0.98) 100%);
             z-index: 10000;
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
             backdrop-filter: blur(15px);
@@ -17651,14 +17651,18 @@ Signature: ________________"></textarea>
                 
                 setTimeout(() => {
                     console.log('🏛️ Entering temple...');
-                    const authOverlay = document.getElementById('auth-overlay');
-                    authOverlay.style.display = 'none';
-                    authOverlay.classList.remove('show');
-                    document.body.classList.remove('auth-active');
+                    hideAuthOverlay();
                     
                     // Update member info in UI
                     updateMemberInfo(member);
-                }, 2000);
+                    
+                    // Show main content
+                    const mainContent = document.getElementById('main-content');
+                    if (mainContent) {
+                        mainContent.style.display = 'block';
+                        mainContent.classList.add('authenticated');
+                    }
+                }, 1500);
             } else {
                 console.log('❌ Authentication failed');
                 errorDiv.textContent = '❌ Invalid Divine Credentials. Please check your Divine Name and Sacred Key.';
@@ -17686,7 +17690,10 @@ Signature: ________________"></textarea>
             const authTimestamp = localStorage.getItem('authTimestamp');
             const currentMember = localStorage.getItem('currentMember');
             
+            console.log('🔍 Checking authentication...', {isAuthenticated, authTimestamp, currentMember: !!currentMember});
+            
             if (!isAuthenticated || !authTimestamp || !currentMember) {
+                console.log('❌ No valid authentication found');
                 showAuthOverlay();
                 return false;
             }
@@ -17696,14 +17703,25 @@ Signature: ________________"></textarea>
             const maxAge = 24 * 60 * 60 * 1000; // 24 hours
             
             if (sessionAge > maxAge) {
+                console.log('⏰ Session expired');
                 // Session expired
                 logoutUser();
                 return false;
             }
             
-            // Valid session - update member info
+            console.log('✅ Valid authentication found - hiding overlay');
+            // Valid session - hide overlay and update member info
+            hideAuthOverlay();
             const member = JSON.parse(currentMember);
             updateMemberInfo(member);
+            
+            // Show main content
+            const mainContent = document.getElementById('main-content');
+            if (mainContent) {
+                mainContent.style.display = 'block';
+                mainContent.classList.add('authenticated');
+            }
+            
             return true;
         }
 
@@ -17713,6 +17731,14 @@ Signature: ________________"></textarea>
             authOverlay.style.display = 'flex';
             authOverlay.classList.add('show');
             document.body.classList.add('auth-active');
+        }
+
+        function hideAuthOverlay() {
+            console.log('🚪 Hiding authentication overlay...');
+            const authOverlay = document.getElementById('auth-overlay');
+            authOverlay.style.display = 'none';
+            authOverlay.classList.remove('show');
+            document.body.classList.remove('auth-active');
         }
 
         function logoutUser() {
