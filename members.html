@@ -17705,41 +17705,27 @@ Signature: ________________"></textarea>
                 localStorage.setItem('currentMember', JSON.stringify(member));
                 localStorage.setItem('authTimestamp', Date.now().toString());
                 
-                successDiv.innerHTML = `✨ Welcome back to the Divine Temple, Nazir! ✨`;
+                successDiv.innerHTML = `
+                    ✨ Welcome back to the Divine Temple, Nazir! ✨
+                    <br><br>
+                    <button onclick="enterTempleNow()" class="auth-btn" style="margin-top: 1rem;">
+                        🏛️ Enter Temple Now 🏛️
+                    </button>
+                `;
                 successDiv.style.display = 'block';
                 
+                // Set flag to prevent race condition
+                window.templeEntryPending = true;
+                
                 setTimeout(() => {
-                    console.log('🏛️ Entering temple...');
-                    
-                    // Force hide overlay with multiple methods
-                    const authOverlay = document.getElementById('auth-overlay');
-                    if (authOverlay) {
-                        authOverlay.style.display = 'none !important';
-                        authOverlay.style.visibility = 'hidden';
-                        authOverlay.style.opacity = '0';
-                        authOverlay.style.zIndex = '-1';
-                        authOverlay.classList.add('hidden');
-                        console.log('✅ Overlay hidden');
+                    // Only auto-enter if user hasn't manually entered yet
+                    if (window.templeEntryPending) {
+                        console.log('🏛️ Auto-entering temple after timeout...');
+                        enterTempleNow();
+                    } else {
+                        console.log('⏭️ Temple entry already completed manually');
                     }
-                    
-                    // Force show main content with multiple methods
-                    const mainContent = document.getElementById('main-content');
-                    if (mainContent) {
-                        mainContent.style.display = 'block !important';
-                        mainContent.style.visibility = 'visible';
-                        mainContent.style.opacity = '1';
-                        mainContent.classList.add('authenticated');
-                        console.log('✅ Main content shown');
-                    }
-                    
-                    // Remove auth-active class from body
-                    document.body.classList.remove('auth-active');
-                    
-                    // Update member info
-                    updateMemberInfo(member);
-                    
-                    console.log('🎉 Temple entry complete!');
-                }, 2000);
+                }, 3000); // Give user time to click button
                 
                 return;
             }
@@ -17899,6 +17885,45 @@ Signature: ________________"></textarea>
                 document.body.classList.remove('auth-active');
                 console.log('✅ Auth overlay hidden successfully');
             }
+        }
+
+        function enterTempleNow() {
+            console.log('🏛️ Entering temple immediately...');
+            
+            // Prevent race condition with setTimeout
+            window.templeEntryPending = false;
+            
+            // Force hide overlay with multiple methods
+            const authOverlay = document.getElementById('auth-overlay');
+            if (authOverlay) {
+                authOverlay.style.setProperty('display', 'none', 'important');
+                authOverlay.style.visibility = 'hidden';
+                authOverlay.style.opacity = '0';
+                authOverlay.style.zIndex = '-1';
+                authOverlay.classList.add('hidden');
+                console.log('✅ Overlay hidden immediately');
+            }
+            
+            // Force show main content with multiple methods
+            const mainContent = document.getElementById('main-content');
+            if (mainContent) {
+                mainContent.style.setProperty('display', 'block', 'important');
+                mainContent.style.visibility = 'visible';
+                mainContent.style.opacity = '1';
+                mainContent.classList.add('authenticated');
+                console.log('✅ Main content shown immediately');
+            }
+            
+            // Remove auth-active class from body
+            document.body.classList.remove('auth-active');
+            
+            // Get current member and update display
+            const currentMember = JSON.parse(localStorage.getItem('currentMember'));
+            if (currentMember) {
+                updateMemberInfo(currentMember);
+            }
+            
+            console.log('🎉 Temple entry complete immediately!');
         }
 
         function logoutUser() {
