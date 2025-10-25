@@ -321,6 +321,78 @@
             margin-top: 2rem;
         }
 
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .category-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            cursor: pointer;
+            transition: all 0.4s;
+            position: relative;
+            text-align: center;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .category-count {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .dashboard-section {
+            display: none;
+        }
+
+        .dashboard-section.active {
+            display: block;
+        }
+
+        .section-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            border-color: var(--accent-blue);
+        }
+
         .portal-card {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
@@ -3832,11 +3904,56 @@
 
     <div class="portal-container" id="portal-container">
         <div style="text-align: center; margin-bottom: 3rem;">
-            <h1 style="font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">Choose Your Path</h1>
-            <p style="color: var(--text-secondary); font-size: 1.1rem;" id="portal-subtitle">Loading sacred calendar...</p>
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">Divine Temple Dashboard</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;" id="portal-subtitle">Welcome to your sacred spiritual journey</p>
         </div>
 
-        <div class="portal-grid">
+        <!-- Navigation Sections -->
+        <div id="dashboard-view" class="dashboard-section active">
+            <div class="category-grid">
+                <div class="category-card" onclick="showSection('spiritual-tools')">
+                    <div class="category-icon">🔮</div>
+                    <h3>Spiritual Tools</h3>
+                    <p>Oracle cards, meditation, energy healing</p>
+                    <div class="category-count">7 Tools</div>
+                </div>
+
+                <div class="category-card" onclick="showSection('sacred-knowledge')">
+                    <div class="category-icon">📚</div>
+                    <h3>Sacred Knowledge</h3>
+                    <p>Library, wisdom, ancient teachings</p>
+                    <div class="category-count">4 Resources</div>
+                </div>
+
+                <div class="category-card" onclick="showSection('personal-growth')">
+                    <div class="category-icon">📈</div>
+                    <h3>Personal Growth</h3>
+                    <p>Goals, progress, soul journey</p>
+                    <div class="category-count">5 Trackers</div>
+                </div>
+
+                <div class="category-card" onclick="showSection('community')">
+                    <div class="category-icon">🤝</div>
+                    <h3>Community</h3>
+                    <p>Hub, healing circles, connection</p>
+                    <div class="category-count">3 Areas</div>
+                </div>
+
+                <div class="category-card" onclick="showSection('calendar-time')">
+                    <div class="category-icon">📅</div>
+                    <h3>Sacred Calendar</h3>
+                    <p>Enoch calendar, daily devotions</p>
+                    <div class="category-count">View Now</div>
+                </div>
+
+                <div class="category-card" onclick="showSection('advanced-practices')">
+                    <div class="category-icon">⚡</div>
+                    <h3>Advanced Practices</h3>
+                    <p>Light language, sacred geometry</p>
+                    <div class="category-count">6 Practices</div>
+                </div>
+            </div>
+        </div>
             <div class="portal-card" onclick="openCalendar()">
                 <div class="portal-icon">📅</div>
                 <h3>Sacred Calendar</h3>
@@ -17984,6 +18101,12 @@ Signature: ________________"></textarea>
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🏛️ Initializing Divine Temple Authentication...');
             
+            // CLEAR AUTHENTICATION FOR TESTING - REMOVE THIS LATER
+            localStorage.removeItem('divineAuthenticated');
+            localStorage.removeItem('authTimestamp');
+            localStorage.removeItem('currentMember');
+            console.log('🧹 Cleared authentication for fresh login test');
+            
             // Initialize authentication system first
             const authOverlay = document.getElementById('auth-overlay');
             if (authOverlay) {
@@ -18510,6 +18633,34 @@ Signature: ________________"></textarea>
         function processRegistration(event) {
             event.preventDefault();
             proceedToPayment();
+        }
+
+        // SECTION NAVIGATION SYSTEM
+        function showSection(sectionName) {
+            console.log('🧭 Navigating to section:', sectionName);
+            
+            // Hide all sections
+            const sections = document.querySelectorAll('.dashboard-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show requested section
+            if (sectionName === 'dashboard') {
+                document.getElementById('dashboard-view').classList.add('active');
+            } else {
+                const targetSection = document.getElementById(sectionName + '-section');
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                } else {
+                    console.error('❌ Section not found:', sectionName);
+                    // Fallback to dashboard
+                    document.getElementById('dashboard-view').classList.add('active');
+                }
+            }
+            
+            // Scroll to top for better UX
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
     
