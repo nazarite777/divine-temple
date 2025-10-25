@@ -43,10 +43,14 @@
                 rgba(26, 31, 58, 0.98) 50%,
                 rgba(15, 15, 35, 0.98) 100%);
             z-index: 10000;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             backdrop-filter: blur(15px);
+        }
+
+        #auth-overlay.show {
+            display: flex;
         }
 
         .auth-container {
@@ -17544,6 +17548,8 @@ Signature: ________________"></textarea>
         }
 
         function validateMemberCredentials(divineName, sacredKey) {
+            console.log('🔍 Starting credential validation...');
+            
             // Ensure admin account is always available
             const adminAccount = {
                 id: 'admin001',
@@ -17559,6 +17565,7 @@ Signature: ________________"></textarea>
             // Start with admin account
             REGISTERED_MEMBERS.length = 0;
             REGISTERED_MEMBERS.push(adminAccount);
+            console.log('✅ Admin account loaded');
             
             // Load additional members from localStorage
             const savedMembers = localStorage.getItem('registeredMembers');
@@ -17568,19 +17575,28 @@ Signature: ________________"></textarea>
                     // Add all saved members except admin (to avoid duplicates)
                     const nonAdminMembers = members.filter(m => m.id !== 'admin001');
                     REGISTERED_MEMBERS.push(...nonAdminMembers);
+                    console.log(`📂 Loaded ${nonAdminMembers.length} additional members from storage`);
                 } catch (e) {
                     console.log('Error loading saved members:', e);
                 }
             }
             
+            console.log('👥 Total registered members:', REGISTERED_MEMBERS.length);
+            console.log('🔍 Looking for:', divineName.toLowerCase(), 'with key length:', sacredKey.length);
+            
             // Find matching member
-            const member = REGISTERED_MEMBERS.find(m => 
-                m.divineName.toLowerCase() === divineName.toLowerCase() && 
-                m.sacredKey === sacredKey &&
-                m.status === 'active'
-            );
+            const member = REGISTERED_MEMBERS.find(m => {
+                const nameMatch = m.divineName.toLowerCase() === divineName.toLowerCase();
+                const keyMatch = m.sacredKey === sacredKey;
+                const statusMatch = m.status === 'active';
+                
+                console.log(`Checking ${m.divineName}: name=${nameMatch}, key=${keyMatch}, status=${statusMatch}`);
+                
+                return nameMatch && keyMatch && statusMatch;
+            });
             
             if (member) {
+                console.log('✅ Member found:', member.divineName);
                 // Update login statistics
                 member.loginCount = (member.loginCount || 0) + 1;
                 member.lastLogin = new Date().toISOString();
@@ -17589,6 +17605,8 @@ Signature: ________________"></textarea>
                 localStorage.setItem('registeredMembers', JSON.stringify(REGISTERED_MEMBERS));
                 
                 return member;
+            } else {
+                console.log('❌ No matching member found');
             }
             
             return null;
@@ -17596,9 +17614,13 @@ Signature: ________________"></textarea>
 
         function authenticateUser(event) {
             event.preventDefault();
+            console.log('🔐 Authentication attempt started...');
             
             const divineName = document.getElementById('divine-name').value.trim();
             const sacredKey = document.getElementById('sacred-key').value;
+            
+            console.log('📝 Divine Name:', divineName);
+            console.log('🔑 Sacred Key length:', sacredKey.length);
             
             const errorDiv = document.getElementById('auth-error');
             const successDiv = document.getElementById('auth-success');
@@ -17608,9 +17630,12 @@ Signature: ________________"></textarea>
             successDiv.style.display = 'none';
             
             // Validate credentials against member database
+            console.log('🔍 Validating credentials...');
             const member = validateMemberCredentials(divineName, sacredKey);
             
             if (member) {
+                console.log('✅ Authentication successful!', member);
+                
                 // Success - store authentication and show portal
                 localStorage.setItem('divineAuthenticated', 'true');
                 localStorage.setItem('currentMember', JSON.stringify(member));
@@ -17625,13 +17650,17 @@ Signature: ________________"></textarea>
                 }
                 
                 setTimeout(() => {
-                    document.getElementById('auth-overlay').style.display = 'none';
+                    console.log('🏛️ Entering temple...');
+                    const authOverlay = document.getElementById('auth-overlay');
+                    authOverlay.style.display = 'none';
+                    authOverlay.classList.remove('show');
                     document.body.classList.remove('auth-active');
                     
                     // Update member info in UI
                     updateMemberInfo(member);
                 }, 2000);
             } else {
+                console.log('❌ Authentication failed');
                 errorDiv.textContent = '❌ Invalid Divine Credentials. Please check your Divine Name and Sacred Key.';
                 errorDiv.style.display = 'block';
             }
@@ -17679,7 +17708,10 @@ Signature: ________________"></textarea>
         }
 
         function showAuthOverlay() {
-            document.getElementById('auth-overlay').style.display = 'flex';
+            console.log('👁️ Showing authentication overlay...');
+            const authOverlay = document.getElementById('auth-overlay');
+            authOverlay.style.display = 'flex';
+            authOverlay.classList.add('show');
             document.body.classList.add('auth-active');
         }
 
@@ -17726,9 +17758,22 @@ Signature: ________________"></textarea>
 
         // Check authentication on page load
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🏛️ Initializing Divine Temple Authentication...');
+            
             // Initialize authentication system
-            if (!checkAuthentication()) {
-                showAuthOverlay();
+            const authOverlay = document.getElementById('auth-overlay');
+            if (authOverlay) {
+                console.log('✅ Auth overlay found');
+                
+                // Check if user is already authenticated
+                if (!checkAuthentication()) {
+                    console.log('🔐 No valid authentication found, showing login');
+                    showAuthOverlay();
+                } else {
+                    console.log('✅ User already authenticated');
+                }
+            } else {
+                console.error('❌ Auth overlay not found!');
             }
         });
 
