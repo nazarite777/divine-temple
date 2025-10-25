@@ -212,6 +212,140 @@
 </head>
 <body>
 
+    <!-- Immediate Authentication Overlay Display Script -->
+    <script>
+        // Create and display authentication overlay immediately
+        function createAuthOverlay() {
+            const overlay = document.createElement('div');
+            overlay.id = 'auth-overlay-immediate';
+            overlay.innerHTML = `
+                <div style="background: linear-gradient(135deg, rgba(10, 14, 39, 0.98), rgba(26, 31, 58, 0.98)); border: 2px solid #F59E0B; border-radius: 20px; padding: 3rem; max-width: 500px; width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8); position: relative; z-index: 1000000;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🏛️</div>
+                    <h2 style="font-family: 'Playfair Display', serif; color: #F59E0B; margin-bottom: 1rem; font-size: 2rem;">Sacred Login</h2>
+                    <p style="color: #A1A1AA; margin-bottom: 2rem;">Enter your Divine Credentials to access the Temple</p>
+                    
+                    <div style="display: flex; margin-bottom: 2rem; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 0.5rem;">
+                        <button onclick="showLogin()" style="flex: 1; padding: 0.75rem; background: linear-gradient(135deg, #F59E0B, #8B5CF6); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">Login</button>
+                        <button onclick="showRegister()" style="flex: 1; padding: 0.75rem; background: transparent; border: none; border-radius: 8px; color: #A1A1AA; font-weight: 600; cursor: pointer;">Join Temple</button>
+                    </div>
+
+                    <div id="login-section">
+                        <form onsubmit="handleLogin(event)">
+                            <div style="margin-bottom: 1.5rem;">
+                                <input type="text" id="auth-username" placeholder="Divine Username" required style="width: 100%; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: white; font-size: 1rem;">
+                            </div>
+                            <div style="margin-bottom: 2rem;">
+                                <input type="password" id="auth-password" placeholder="Sacred Password" required style="width: 100%; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: white; font-size: 1rem;">
+                            </div>
+                            <button type="submit" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #F59E0B, #8B5CF6); border: none; border-radius: 8px; color: white; font-weight: 700; font-size: 1.1rem; cursor: pointer;">✨ Enter Temple ✨</button>
+                        </form>
+                        <div id="auth-error" style="color: #ff6b6b; margin-top: 1rem; display: none;"></div>
+                    </div>
+                </div>
+            `;
+            
+            overlay.style.cssText = `
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                background: rgba(0, 0, 0, 0.98) !important;
+                backdrop-filter: blur(10px) !important;
+                z-index: 999999 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            `;
+            
+            document.body.appendChild(overlay);
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('auth-username').value;
+            const password = document.getElementById('auth-password').value;
+            const errorDiv = document.getElementById('auth-error');
+            
+            if (username === 'nazir777' && password === 'Cjanimal23$') {
+                localStorage.setItem('divineAuth', 'true');
+                localStorage.setItem('currentUser', username);
+                window.location.href = 'members.html';
+            } else {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Invalid Divine Credentials. Please try again.';
+            }
+        }
+        
+        // Create overlay immediately
+        createAuthOverlay();
+    </script>
+
+    <!-- Authentication Overlay -->
+    <div id="auth-overlay" style="position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.98) !important; backdrop-filter: blur(10px) !important; z-index: 999999 !important; display: flex !important; align-items: center !important; justify-content: center !important; visibility: visible !important; opacity: 1 !important;">
+        <div style="background: linear-gradient(135deg, rgba(10, 14, 39, 0.98), rgba(26, 31, 58, 0.98)) !important; border: 2px solid #F59E0B !important; border-radius: 20px !important; padding: 3rem !important; max-width: 500px !important; width: 90% !important; text-align: center !important; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8) !important; position: relative !important; z-index: 1000000 !important;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🏛️</div>
+            <h2 style="font-family: 'Playfair Display', serif; color: #F59E0B; margin-bottom: 1rem; font-size: 2rem;">Sacred Login</h2>
+            <p style="color: #A1A1AA; margin-bottom: 2rem;">Enter your Divine Credentials to access the Temple</p>
+            
+            <!-- Tab Navigation -->
+            <div style="display: flex !important; margin-bottom: 2rem !important; background: rgba(255, 255, 255, 0.05) !important; border-radius: 12px !important; padding: 0.5rem !important;">
+                <button id="login-tab" onclick="showAuthTab('login')" style="flex: 1 !important; padding: 0.75rem !important; background: linear-gradient(135deg, #F59E0B, #8B5CF6) !important; border: none !important; border-radius: 8px !important; color: white !important; font-weight: 600 !important; cursor: pointer !important;">Login</button>
+                <button id="register-tab" onclick="showAuthTab('register')" style="flex: 1 !important; padding: 0.75rem !important; background: transparent !important; border: none !important; border-radius: 8px !important; color: #A1A1AA !important; font-weight: 600 !important; cursor: pointer !important;">Join Temple</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form" style="display: block !important;">
+                <form id="auth-form" onsubmit="authenticateUser(event)">
+                    <div style="margin-bottom: 1.5rem !important;">
+                        <input type="text" id="username" placeholder="Divine Username" required style="width: 100% !important; padding: 1rem !important; background: rgba(255, 255, 255, 0.1) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; border-radius: 8px !important; color: white !important; font-size: 1rem !important;">
+                    </div>
+                    <div style="margin-bottom: 2rem !important;">
+                        <input type="password" id="password" placeholder="Sacred Password" required style="width: 100% !important; padding: 1rem !important; background: rgba(255, 255, 255, 0.1) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; border-radius: 8px !important; color: white !important; font-size: 1rem !important;">
+                    </div>
+                    <button type="submit" style="width: 100% !important; padding: 1rem !important; background: linear-gradient(135deg, #F59E0B, #8B5CF6) !important; border: none !important; border-radius: 8px !important; color: white !important; font-weight: 700 !important; font-size: 1.1rem !important; cursor: pointer !important;">✨ Enter Temple ✨</button>
+                </form>
+                <div id="login-error" style="color: #ff6b6b !important; margin-top: 1rem !important; display: none !important;"></div>
+            </div>
+
+            <!-- Registration Form -->
+            <div id="register-form" style="display: none;">
+                <div style="margin-bottom: 1.5rem; text-align: left;">
+                    <label style="color: var(--accent-gold); font-weight: 600; margin-bottom: 0.5rem; display: block;">Choose Your Path:</label>
+                    <select id="membership-type" onchange="updatePricing()" style="width: 100%; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 1px solid var(--glass-border); border-radius: 8px; color: white; font-size: 1rem;">
+                        <option value="founding" style="background: #1a1f3a;">🏛️ Founding Member - $347 (Lifetime)</option>
+                        <option value="monthly" style="background: #1a1f3a;">🌟 Monthly Member - $27/month</option>
+                        <option value="student" style="background: #1a1f3a;">📚 Student Package - $47 (Book + Audio + Workbook)</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <input type="text" id="reg-username" placeholder="Choose Divine Username" required style="width: 100%; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 1px solid var(--glass-border); border-radius: 8px; color: white; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <input type="email" id="reg-email" placeholder="Sacred Email" required style="width: 100%; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 1px solid var(--glass-border); border-radius: 8px; color: white; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <input type="password" id="reg-password" placeholder="Create Sacred Password" required style="width: 100%; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 1px solid var(--glass-border); border-radius: 8px; color: white; font-size: 1rem;">
+                </div>
+
+                <div id="pricing-display" style="background: rgba(245, 158, 11, 0.1); border: 1px solid var(--accent-gold); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+                    <div style="color: var(--accent-gold); font-weight: 700; font-size: 1.3rem;">$347 - One Time</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Lifetime Temple Access + Leadership Path</div>
+                </div>
+
+                <button type="button" onclick="proceedToPayment()" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple)); border: none; border-radius: 8px; color: white; font-weight: 700; font-size: 1.1rem; cursor: pointer; margin-bottom: 1rem;">💳 Proceed to Sacred Payment</button>
+                
+                <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">
+                    After payment completion, return here to create your account and receive your Divine Credentials.
+                </div>
+                <div id="registration-error" style="color: #ff6b6b; margin-top: 1rem; display: none;"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Divine Frequency Music Player -->
     <div id="divine-frequency-player">
         <div id="player-collapsed" onclick="expandPlayer()">
@@ -1462,6 +1596,18 @@
 
     <!-- JavaScript -->
     <script>
+        // Force authentication overlay to display immediately
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.getElementById('auth-overlay');
+            if (overlay) {
+                overlay.style.display = 'flex';
+                overlay.style.visibility = 'visible';
+                overlay.style.opacity = '1';
+                overlay.style.zIndex = '999999';
+                console.log('Authentication overlay forced to display');
+            }
+        });
+
         // Music// Music Player Functions
         const tracks = [
             { id: 'NDbicVxyzBY', name: '432Hz Divine Healing', desc: 'Frequency #1 • Healing & Restoration' },
