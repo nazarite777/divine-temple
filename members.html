@@ -43,14 +43,16 @@
                 rgba(26, 31, 58, 0.98) 50%,
                 rgba(15, 15, 35, 0.98) 100%);
             z-index: 10000;
-            display: flex;
+            display: flex !important;
             align-items: center;
             justify-content: center;
             backdrop-filter: blur(15px);
+            visibility: visible !important;
+            opacity: 1 !important;
         }
 
         #auth-overlay.show {
-            display: flex;
+            display: flex !important;
         }
 
         .auth-container {
@@ -17803,17 +17805,27 @@ Signature: ________________"></textarea>
         function showAuthOverlay() {
             console.log('👁️ Showing authentication overlay...');
             const authOverlay = document.getElementById('auth-overlay');
-            authOverlay.style.display = 'flex';
-            authOverlay.classList.add('show');
-            document.body.classList.add('auth-active');
+            if (authOverlay) {
+                authOverlay.style.display = 'flex';
+                authOverlay.style.visibility = 'visible';
+                authOverlay.style.opacity = '1';
+                authOverlay.classList.add('show');
+                document.body.classList.add('auth-active');
+                console.log('✅ Auth overlay displayed successfully');
+            } else {
+                console.error('❌ Auth overlay element not found!');
+            }
         }
 
         function hideAuthOverlay() {
             console.log('🚪 Hiding authentication overlay...');
             const authOverlay = document.getElementById('auth-overlay');
-            authOverlay.style.display = 'none';
-            authOverlay.classList.remove('show');
-            document.body.classList.remove('auth-active');
+            if (authOverlay) {
+                authOverlay.style.display = 'none';
+                authOverlay.classList.remove('show');
+                document.body.classList.remove('auth-active');
+                console.log('✅ Auth overlay hidden successfully');
+            }
         }
 
         function logoutUser() {
@@ -17861,7 +17873,7 @@ Signature: ________________"></textarea>
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🏛️ Initializing Divine Temple Authentication...');
             
-            // Initialize authentication system
+            // Initialize authentication system first
             const authOverlay = document.getElementById('auth-overlay');
             if (authOverlay) {
                 console.log('✅ Auth overlay found');
@@ -17876,6 +17888,9 @@ Signature: ________________"></textarea>
             } else {
                 console.error('❌ Auth overlay not found!');
             }
+            
+            // Then initialize temple features
+            initialize();
         });
 
         // ============================================
@@ -18144,8 +18159,6 @@ Signature: ________________"></textarea>
             }
         }
 
-        window.addEventListener('DOMContentLoaded', initialize);
-        
         // ============================================
         // ADDITIONAL AUTHENTICATION FUNCTIONS FOR REGISTRATION
         // ============================================
