@@ -17652,18 +17652,36 @@ Signature: ________________"></textarea>
                 
                 setTimeout(() => {
                     console.log('🏛️ Entering temple...');
-                    hideAuthOverlay();
                     
-                    // Update member info in UI
-                    updateMemberInfo(member);
+                    // Force hide overlay with multiple methods
+                    const authOverlay = document.getElementById('auth-overlay');
+                    if (authOverlay) {
+                        authOverlay.style.display = 'none !important';
+                        authOverlay.style.visibility = 'hidden';
+                        authOverlay.style.opacity = '0';
+                        authOverlay.style.zIndex = '-1';
+                        authOverlay.classList.add('hidden');
+                        console.log('✅ Overlay hidden');
+                    }
                     
-                    // Show main content
+                    // Force show main content with multiple methods
                     const mainContent = document.getElementById('main-content');
                     if (mainContent) {
-                        mainContent.style.display = 'block';
+                        mainContent.style.display = 'block !important';
+                        mainContent.style.visibility = 'visible';
+                        mainContent.style.opacity = '1';
                         mainContent.classList.add('authenticated');
+                        console.log('✅ Main content shown');
                     }
-                }, 3000);
+                    
+                    // Remove auth-active class from body
+                    document.body.classList.remove('auth-active');
+                    
+                    // Update member info
+                    updateMemberInfo(member);
+                    
+                    console.log('🎉 Temple entry complete!');
+                }, 2000);
                 
                 return;
             }
@@ -17690,18 +17708,36 @@ Signature: ________________"></textarea>
                 
                 setTimeout(() => {
                     console.log('🏛️ Entering temple...');
-                    hideAuthOverlay();
                     
-                    // Update member info in UI
-                    updateMemberInfo(member);
+                    // Force hide overlay with multiple methods
+                    const authOverlay = document.getElementById('auth-overlay');
+                    if (authOverlay) {
+                        authOverlay.style.display = 'none !important';
+                        authOverlay.style.visibility = 'hidden';
+                        authOverlay.style.opacity = '0';
+                        authOverlay.style.zIndex = '-1';
+                        authOverlay.classList.add('hidden');
+                        console.log('✅ Overlay hidden');
+                    }
                     
-                    // Show main content
+                    // Force show main content with multiple methods
                     const mainContent = document.getElementById('main-content');
                     if (mainContent) {
-                        mainContent.style.display = 'block';
+                        mainContent.style.display = 'block !important';
+                        mainContent.style.visibility = 'visible';
+                        mainContent.style.opacity = '1';
                         mainContent.classList.add('authenticated');
+                        console.log('✅ Main content shown');
                     }
-                }, 4000); // Increased from 1500 to 4000ms
+                    
+                    // Remove auth-active class from body
+                    document.body.classList.remove('auth-active');
+                    
+                    // Update member info
+                    updateMemberInfo(member);
+                    
+                    console.log('🎉 Temple entry complete!');
+                }, 2000);
             } else {
                 console.log('❌ Authentication failed');
                 errorDiv.textContent = '❌ Invalid Divine Credentials. Please check your Divine Name and Sacred Key.';
@@ -18353,16 +18389,8 @@ Signature: ________________"></textarea>
         }
     </script>
     
-    <!-- Authentication Overlay with Registration -->
-    <div id="auth-overlay" class="auth-overlay">
-        <div class="auth-container">
-            <div class="auth-tabs">
-                <button class="auth-tab active" onclick="showAuthTab('login')">Sacred Login</button>
-                <button class="auth-tab" onclick="showAuthTab('register')">Temple Registration</button>
-            </div>
-            
-            <!-- Login Form -->
-            <div id="login-form" class="auth-form active">
+</body>
+</html>
                 <div class="auth-header">
                     <h2>🏛️ Enter the Divine Temple</h2>
                     <p>Access your sacred portals with Divine Credentials</p>
@@ -18589,8 +18617,7 @@ Signature: ________________"></textarea>
     
     </div> <!-- End Main Content -->
 
-    <!-- Authentication Overlay with Registration -->
-    <div id="auth-overlay" class="auth-overlay">
+
         <div class="auth-container">
             <div class="auth-tabs">
                 <button class="auth-tab active" onclick="showAuthTab('login')">Sacred Login</button>
