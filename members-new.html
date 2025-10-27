@@ -733,6 +733,65 @@
     </style>
 </head>
 <body>
+    <!-- Divine Authentication Overlay -->
+    <div id="auth-overlay" class="auth-overlay">
+        <div class="auth-container">
+            <div class="auth-header">
+                <div class="divine-symbol">🏛️</div>
+                <h2>Divine Temple Access</h2>
+                <p>Enter your Sacred Credentials to access the Divine Portal</p>
+            </div>
+            
+            <div class="divine-quote">
+                "You never left Eden. Remember who you truly are."
+            </div>
+            
+            <form class="auth-form" onsubmit="authenticateUser(event)">
+                <div class="input-group">
+                    <label for="divine-name">Divine Sacred Name</label>
+                    <input 
+                        type="text" 
+                        id="divine-name" 
+                        class="auth-input" 
+                        placeholder="Enter your Divine Sacred Name"
+                        required 
+                        autocomplete="username"
+                    >
+                </div>
+                
+                <div class="input-group">
+                    <label for="sacred-key">Sacred Key</label>
+                    <input 
+                        type="password" 
+                        id="sacred-key" 
+                        class="auth-input" 
+                        placeholder="Enter your Sacred Key"
+                        required 
+                        autocomplete="current-password"
+                    >
+                </div>
+                
+                <div id="auth-error" class="auth-error"></div>
+                <div id="auth-success" class="auth-success"></div>
+                
+                <button type="submit" class="auth-btn">
+                    🔮 Enter Divine Temple
+                </button>
+            </form>
+            
+            <div class="credential-example">
+                <h4>📖 Example Credentials Format:</h4>
+                <code>Divine Name: EdenSeeker777</code>
+                <code>Sacred Key: Light@Divine2025</code>
+            </div>
+            
+            <div class="auth-footer">
+                <p>Don't have Divine Credentials? <a href="index.html#temple">Purchase Temple Access</a></p>
+                <p>Need help? <a href="contact.html">Contact Divine Support</a></p>
+            </div>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="header">
         <div class="header-content">
@@ -1140,6 +1199,209 @@
                 errorDiv.style.display = 'block';
             }
         }
+
+        // Enhanced Authentication System
+        function authenticateUser(event) {
+            event.preventDefault();
+            
+            const divineName = document.getElementById('divine-name').value.trim();
+            const sacredKey = document.getElementById('sacred-key').value;
+            
+            const errorDiv = document.getElementById('auth-error');
+            const successDiv = document.getElementById('auth-success');
+            
+            // Hide previous messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            
+            // Validate credentials
+            if (!divineName || !sacredKey) {
+                showAuthError('Please enter both Divine Name and Sacred Key');
+                return;
+            }
+            
+            // Check against member database
+            const member = validateMemberCredentials(divineName, sacredKey);
+            
+            if (member) {
+                // Success - store authentication
+                localStorage.setItem('divineAuthenticated', 'true');
+                localStorage.setItem('currentMember', JSON.stringify(member));
+                localStorage.setItem('authTimestamp', Date.now().toString());
+                
+                // Update login count
+                const loginCount = getLoginCount(divineName) + 1;
+                localStorage.setItem(`loginCount_${divineName}`, loginCount.toString());
+                
+                // Show success message
+                successDiv.innerHTML = `✨ Welcome back to the Divine Temple, ${member.firstName || member.divineName}! ✨`;
+                successDiv.style.display = 'block';
+                
+                // Hide overlay after delay
+                setTimeout(() => {
+                    hideAuthOverlay();
+                    updateWelcomeMessage(member);
+                    addActivityFeed(`🏛️ ${member.divineName} entered the Divine Temple`, 'login');
+                }, 2000);
+            } else {
+                showAuthError('Invalid Divine Credentials. Please check your Divine Name and Sacred Key.');
+            }
+        }
+        
+        function showAuthError(message) {
+            const errorDiv = document.getElementById('auth-error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            // Add shake animation
+            const authContainer = document.querySelector('.auth-container');
+            authContainer.style.animation = 'shake 0.5s ease-in-out';
+            setTimeout(() => {
+                authContainer.style.animation = '';
+            }, 500);
+        }
+        
+        // Add shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        function validateMemberCredentials(divineName, sacredKey) {
+            // Enhanced member database with various credential patterns
+            const memberDatabase = [
+                // Founding Members (777, 888, 999 series)
+                { divineName: 'EdenSeeker777', sacredKey: 'Light@Divine2025', firstName: 'Sacred', membershipType: 'Founding Member', joinDate: '2024-01-15' },
+                { divineName: 'LightWorker888', sacredKey: 'Unity@Consciousness', firstName: 'Divine', membershipType: 'Founding Member', joinDate: '2024-02-01' },
+                { divineName: 'SoulMaster999', sacredKey: 'Awakening@Eden777', firstName: 'Awakened', membershipType: 'Founding Member', joinDate: '2024-01-10' },
+                { divineName: 'CosmicSeer777', sacredKey: 'Infinite@Love2025', firstName: 'Cosmic', membershipType: 'Founding Member', joinDate: '2024-03-15' },
+                
+                // Monthly Members (333, 444, 555 series)
+                { divineName: 'SpiritWalker333', sacredKey: 'Journey@Sacred333', firstName: 'Spirit', membershipType: 'Monthly Member', joinDate: '2024-06-01' },
+                { divineName: 'DivineStudent444', sacredKey: 'Learning@Growth444', firstName: 'Student', membershipType: 'Monthly Member', joinDate: '2024-07-15' },
+                { divineName: 'TruthSeeker555', sacredKey: 'Wisdom@Path555', firstName: 'Truth', membershipType: 'Monthly Member', joinDate: '2024-08-01' },
+                
+                // Student Members (111, 222 series)
+                { divineName: 'Beginner111', sacredKey: 'Start@Journey111', firstName: 'Beginner', membershipType: 'Student Member', joinDate: '2024-09-01' },
+                { divineName: 'NewAwakening222', sacredKey: 'Fresh@Start222', firstName: 'Awakening', membershipType: 'Student Member', joinDate: '2024-09-15' },
+                
+                // Demo/Test accounts
+                { divineName: 'DemoMember', sacredKey: 'demo123', firstName: 'Demo', membershipType: 'Demo Access', joinDate: '2024-01-01' },
+                { divineName: 'TestUser', sacredKey: 'test123', firstName: 'Test', membershipType: 'Test Access', joinDate: '2024-01-01' }
+            ];
+            
+            // Check exact match first
+            let member = memberDatabase.find(m => 
+                m.divineName === divineName && m.sacredKey === sacredKey
+            );
+            
+            if (member) {
+                return { ...member };
+            }
+            
+            // Check pattern-based authentication for dynamic credentials
+            if (validateDynamicCredentials(divineName, sacredKey)) {
+                return generateDynamicMember(divineName, sacredKey);
+            }
+            
+            return null;
+        }
+        
+        function validateDynamicCredentials(divineName, sacredKey) {
+            // Pattern validation for dynamic member creation
+            const namePattern = /^[A-Za-z][A-Za-z0-9]{3,19}$/; // 4-20 chars, alphanumeric
+            const keyPattern = /^[A-Za-z0-9@#$!%&*]{8,30}$/; // 8-30 chars with special chars
+            
+            return namePattern.test(divineName) && keyPattern.test(sacredKey);
+        }
+        
+        function generateDynamicMember(divineName, sacredKey) {
+            // Determine membership type based on divine name patterns
+            let membershipType = 'Student Member';
+            if (divineName.includes('777') || divineName.includes('888') || divineName.includes('999')) {
+                membershipType = 'Founding Member';
+            } else if (divineName.includes('333') || divineName.includes('444') || divineName.includes('555')) {
+                membershipType = 'Monthly Member';
+            }
+            
+            return {
+                divineName: divineName,
+                sacredKey: sacredKey,
+                firstName: divineName.replace(/[0-9]/g, ''),
+                membershipType: membershipType,
+                joinDate: new Date().toISOString().split('T')[0],
+                dynamicMember: true
+            };
+        }
+
+        function checkAuthentication() {
+            const isAuthenticated = localStorage.getItem('divineAuthenticated');
+            const authTimestamp = localStorage.getItem('authTimestamp');
+            
+            if (isAuthenticated === 'true' && authTimestamp) {
+                // Check if authentication is still valid (24 hours)
+                const twentyFourHours = 24 * 60 * 60 * 1000;
+                const now = Date.now();
+                
+                if (now - parseInt(authTimestamp) < twentyFourHours) {
+                    const memberData = JSON.parse(localStorage.getItem('currentMember') || '{}');
+                    updateWelcomeMessage(memberData);
+                    return true;
+                } else {
+                    // Authentication expired
+                    logout();
+                    return false;
+                }
+            }
+            
+            return false;
+        }
+
+        function addActivityFeed(message, type = 'general') {
+            const activities = JSON.parse(localStorage.getItem('memberActivities') || '[]');
+            const activity = {
+                id: Date.now(),
+                message: message,
+                type: type,
+                timestamp: new Date().toISOString(),
+                date: new Date().toLocaleDateString()
+            };
+            
+            activities.unshift(activity);
+            activities.splice(10); // Keep only last 10 activities
+            localStorage.setItem('memberActivities', JSON.stringify(activities));
+        }
+
+        // Initialize authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkAuthentication()) {
+                showAuthOverlay();
+            } else {
+                // User is already authenticated
+                const memberData = JSON.parse(localStorage.getItem('currentMember') || '{}');
+                console.log('Authenticated member:', memberData.divineName);
+            }
+            
+            // Add welcome animation
+            setTimeout(() => {
+                const welcomeCard = document.querySelector('.welcome-card');
+                if (welcomeCard) {
+                    welcomeCard.style.opacity = '0';
+                    welcomeCard.style.transform = 'translateY(30px)';
+                    welcomeCard.style.transition = 'all 0.8s ease';
+                    
+                    setTimeout(() => {
+                        welcomeCard.style.opacity = '1';
+                        welcomeCard.style.transform = 'translateY(0)';
+                    }, 100);
+                }
+            }, 200);
+        });
 
         function getMembershipType(divineName) {
             if (divineName.includes('777') || divineName.includes('888') || divineName.includes('999')) {
