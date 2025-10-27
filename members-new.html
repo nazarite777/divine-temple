@@ -901,6 +901,276 @@
             }
         }
 
+        /* Progressive Loading & Skeleton Screens */
+        .skeleton {
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0.1) 25%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                rgba(255, 255, 255, 0.1) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 2s infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .skeleton-text {
+            height: 1rem;
+            margin: 0.5rem 0;
+            width: 100%;
+        }
+
+        .skeleton-text.short {
+            width: 60%;
+        }
+
+        .skeleton-text.medium {
+            width: 80%;
+        }
+
+        .skeleton-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        .skeleton-card {
+            height: 200px;
+            border-radius: 20px;
+            margin: 1rem 0;
+        }
+
+        .skeleton-stat {
+            height: 3rem;
+            width: 4rem;
+            border-radius: 8px;
+            margin: 0.5rem auto;
+        }
+
+        /* Loading States */
+        .loading-state {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-state::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 39, 0.7);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .loading-spinner-small {
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--glass-border);
+            border-top: 3px solid var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Smooth Transitions */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.5s ease;
+        }
+
+        .slide-in-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: all 0.5s ease;
+        }
+
+        .slide-in-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.4s ease;
+        }
+
+        .scale-in.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Dashboard Loading Skeleton */
+        .dashboard-skeleton {
+            display: none;
+        }
+
+        .dashboard-skeleton.active {
+            display: block;
+        }
+
+        .skeleton-dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        /* Progress Bar Loading */
+        .progress-bar-loading {
+            background: linear-gradient(90deg, 
+                rgba(139, 92, 246, 0.3) 0%, 
+                rgba(245, 158, 11, 0.3) 50%, 
+                rgba(139, 92, 246, 0.3) 100%);
+            background-size: 200% 100%;
+            animation: progress-shimmer 1.5s infinite;
+        }
+
+        @keyframes progress-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Section Loading */
+        .section-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section-loading.active {
+            opacity: 1;
+        }
+
+        .loading-content {
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .loading-spinner-large {
+            width: 80px;
+            height: 80px;
+            border: 4px solid var(--glass-border);
+            border-top: 4px solid var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+            margin: 0 auto 2rem;
+        }
+
+        .loading-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .loading-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .loading-progress {
+            width: 100%;
+            height: 4px;
+            background: var(--glass-bg);
+            border-radius: 2px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold));
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Interactive Loading States */
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+        }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* Stagger Animation */
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .stagger-item.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Loading */
+        @media (max-width: 768px) {
+            .skeleton-dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .loading-spinner-large {
+                width: 60px;
+                height: 60px;
+            }
+
+            .loading-title {
+                font-size: 1.2rem;
+            }
+        }
+
         /* Enhanced Authentication Overlay Styles */
         .auth-overlay {
             position: fixed;
@@ -1425,12 +1695,6 @@
                 </div>
             </form>
             
-            <div class="credential-example">
-                <h4>📖 Your Access Credentials:</h4>
-                <code>Divine Name: nazir23</code>
-                <code>Sacred Key: Nazir777</code>
-            </div>
-            
             <div class="auth-footer">
                 <p>Don't have Divine Credentials? <a href="index.html#temple">Purchase Temple Access</a></p>
                 <p>Need help? <a href="mailto:edenconsciousnesssdt@gmail.com">Contact Divine Support</a></p>
@@ -1498,11 +1762,68 @@
         <!-- Member Activity Dashboard -->
         <section class="activity-dashboard">
             <div class="dashboard-container">
-                <h2 class="dashboard-title">📊 Your Divine Journey Dashboard</h2>
+                <h2 class="dashboard-title fade-in">📊 Your Divine Journey Dashboard</h2>
                 
-                <div class="dashboard-grid">
+                <!-- Dashboard Skeleton (shown while loading) -->
+                <div class="dashboard-skeleton" id="dashboard-skeleton">
+                    <div class="skeleton-dashboard-grid">
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <div class="skeleton skeleton-text short"></div>
+                                <div class="skeleton skeleton-avatar"></div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="skeleton skeleton-stat"></div>
+                                <div class="skeleton skeleton-stat"></div>
+                                <div class="skeleton skeleton-stat"></div>
+                                <div class="skeleton skeleton-stat"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <div class="skeleton skeleton-text short"></div>
+                                <div class="skeleton skeleton-avatar"></div>
+                            </div>
+                            <div>
+                                <div class="skeleton skeleton-text"></div>
+                                <div class="skeleton skeleton-text medium"></div>
+                                <div class="skeleton skeleton-text short"></div>
+                                <div class="skeleton skeleton-text"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <div class="skeleton skeleton-text short"></div>
+                                <div class="skeleton skeleton-avatar"></div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="skeleton skeleton-card"></div>
+                                <div class="skeleton skeleton-card"></div>
+                                <div class="skeleton skeleton-card"></div>
+                                <div class="skeleton skeleton-card"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="skeleton skeleton-card"></div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="skeleton skeleton-card"></div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="skeleton skeleton-card"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actual Dashboard Content -->
+                <div class="dashboard-grid" id="dashboard-content">
                     <!-- Personal Stats Card -->
-                    <div class="dashboard-card personal-stats">
+                    <div class="dashboard-card personal-stats stagger-item">
                         <div class="card-header">
                             <h3>✨ Your Sacred Statistics</h3>
                             <span class="card-icon">👤</span>
@@ -1528,7 +1849,7 @@
                     </div>
 
                     <!-- Recent Activity Feed -->
-                    <div class="dashboard-card activity-feed">
+                    <div class="dashboard-card activity-feed stagger-item">
                         <div class="card-header">
                             <h3>🕒 Recent Divine Activities</h3>
                             <span class="card-icon">📜</span>
@@ -1546,25 +1867,25 @@
                     </div>
 
                     <!-- Quick Access Tools -->
-                    <div class="dashboard-card quick-access">
+                    <div class="dashboard-card quick-access stagger-item">
                         <div class="card-header">
                             <h3>⚡ Quick Access</h3>
                             <span class="card-icon">🎯</span>
                         </div>
                         <div class="quick-tools-grid">
-                            <div class="quick-tool" onclick="showSection('spiritual-tools')">
+                            <div class="quick-tool" onclick="showSectionWithLoading('spiritual-tools')">
                                 <div class="tool-icon">🧘</div>
                                 <div class="tool-name">Daily Meditation</div>
                             </div>
-                            <div class="quick-tool" onclick="showSection('calendar')">
+                            <div class="quick-tool" onclick="showSectionWithLoading('calendar')">
                                 <div class="tool-icon">📅</div>
                                 <div class="tool-name">Sacred Calendar</div>
                             </div>
-                            <div class="quick-tool" onclick="showSection('spiritual-tools')">
+                            <div class="quick-tool" onclick="showSectionWithLoading('spiritual-tools')">
                                 <div class="tool-icon">🔮</div>
                                 <div class="tool-name">Oracle Cards</div>
                             </div>
-                            <div class="quick-tool" onclick="showSection('personal-growth')">
+                            <div class="quick-tool" onclick="showSectionWithLoading('personal-growth')">
                                 <div class="tool-icon">📊</div>
                                 <div class="tool-name">Goal Tracker</div>
                             </div>
@@ -1572,7 +1893,7 @@
                     </div>
 
                     <!-- Login History -->
-                    <div class="dashboard-card login-history">
+                    <div class="dashboard-card login-history stagger-item">
                         <div class="card-header">
                             <h3>📈 Login History</h3>
                             <span class="card-icon">🕐</span>
@@ -1593,7 +1914,7 @@
                     </div>
 
                     <!-- Spiritual Progress -->
-                    <div class="dashboard-card spiritual-progress">
+                    <div class="dashboard-card spiritual-progress stagger-item">
                         <div class="card-header">
                             <h3>🌱 Spiritual Growth</h3>
                             <span class="card-icon">📈</span>
@@ -1602,36 +1923,36 @@
                             <div class="progress-item">
                                 <div class="progress-label">Meditation Mastery</div>
                                 <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 75%"></div>
+                                    <div class="progress-fill" style="width: 0%"></div>
                                 </div>
-                                <div class="progress-percent">75%</div>
+                                <div class="progress-percent">0%</div>
                             </div>
                             <div class="progress-item">
                                 <div class="progress-label">Divine Connection</div>
                                 <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 60%"></div>
+                                    <div class="progress-fill" style="width: 0%"></div>
                                 </div>
-                                <div class="progress-percent">60%</div>
+                                <div class="progress-percent">0%</div>
                             </div>
                             <div class="progress-item">
                                 <div class="progress-label">Sacred Knowledge</div>
                                 <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 85%"></div>
+                                    <div class="progress-fill" style="width: 0%"></div>
                                 </div>
-                                <div class="progress-percent">85%</div>
+                                <div class="progress-percent">0%</div>
                             </div>
                         </div>
-                        <button class="view-details-btn" onclick="showSection('personal-growth')">View Detailed Progress</button>
+                        <button class="view-details-btn" onclick="showSectionWithLoading('personal-growth')">View Detailed Progress</button>
                     </div>
 
                     <!-- Favorite Tools -->
-                    <div class="dashboard-card favorite-tools">
+                    <div class="dashboard-card favorite-tools stagger-item">
                         <div class="card-header">
                             <h3>⭐ Favorite Tools</h3>
                             <span class="card-icon">💎</span>
                         </div>
                         <div class="favorite-list" id="favorite-tools-list">
-                            <div class="favorite-item" onclick="showSection('spiritual-tools')">
+                            <div class="favorite-item" onclick="showSectionWithLoading('spiritual-tools')">
                                 <span class="fav-icon">🧘</span>
                                 <div class="fav-content">
                                     <div class="fav-name">Meditation Center</div>
@@ -1639,7 +1960,7 @@
                                 </div>
                                 <span class="fav-arrow">→</span>
                             </div>
-                            <div class="favorite-item" onclick="showSection('calendar')">
+                            <div class="favorite-item" onclick="showSectionWithLoading('calendar')">
                                 <span class="fav-icon">📅</span>
                                 <div class="fav-content">
                                     <div class="fav-name">Sacred Calendar</div>
@@ -1647,7 +1968,7 @@
                                 </div>
                                 <span class="fav-arrow">→</span>
                             </div>
-                            <div class="favorite-item" onclick="showSection('spiritual-tools')">
+                            <div class="favorite-item" onclick="showSectionWithLoading('spiritual-tools')">
                                 <span class="fav-icon">🔮</span>
                                 <div class="fav-content">
                                     <div class="fav-name">Oracle Cards</div>
@@ -1666,7 +1987,7 @@
             <h2 class="section-title">Explore Your Divine Tools</h2>
             <div class="nav-grid">
                 <!-- Spiritual Tools -->
-                <div class="nav-card" onclick="showSection('spiritual-tools')">
+                <div class="nav-card scale-in" onclick="showSectionWithLoading('spiritual-tools')">
                     <span class="nav-icon">🧘</span>
                     <h3 class="nav-title">Spiritual Tools</h3>
                     <p class="nav-description">
@@ -1684,7 +2005,7 @@
                 </div>
 
                 <!-- Sacred Knowledge -->
-                <div class="nav-card" onclick="showSection('sacred-knowledge')">
+                <div class="nav-card scale-in" onclick="showSectionWithLoading('sacred-knowledge')">
                     <span class="nav-icon">📚</span>
                     <h3 class="nav-title">Sacred Knowledge</h3>
                     <p class="nav-description">
@@ -1702,7 +2023,7 @@
                 </div>
 
                 <!-- Personal Growth -->
-                <div class="nav-card" onclick="showSection('personal-growth')">
+                <div class="nav-card scale-in" onclick="showSectionWithLoading('personal-growth')">
                     <span class="nav-icon">📊</span>
                     <h3 class="nav-title">Personal Growth</h3>
                     <p class="nav-description">
@@ -1720,7 +2041,7 @@
                 </div>
 
                 <!-- Community -->
-                <div class="nav-card" onclick="showSection('community')">
+                <div class="nav-card scale-in" onclick="showSectionWithLoading('community')">
                     <span class="nav-icon">🤝</span>
                     <h3 class="nav-title">Community & Service</h3>
                     <p class="nav-description">
@@ -1738,7 +2059,7 @@
                 </div>
 
                 <!-- Calendar -->
-                <div class="nav-card" onclick="showSection('calendar')">
+                <div class="nav-card scale-in" onclick="showSectionWithLoading('calendar')">
                     <span class="nav-icon">📅</span>
                     <h3 class="nav-title">Sacred Calendar</h3>
                     <p class="nav-description">
@@ -1756,7 +2077,7 @@
                 </div>
 
                 <!-- Advanced Practices -->
-                <div class="nav-card" onclick="showSection('advanced-practices')">
+                <div class="nav-card scale-in" onclick="showSectionWithLoading('advanced-practices')">
                     <span class="nav-icon">✨</span>
                     <h3 class="nav-title">Advanced Practices</h3>
                     <p class="nav-description">
@@ -2494,6 +2815,9 @@
 
         // Smooth scrolling and card animations
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize all animations
+            initializeAnimations();
+            
             // Add click animation to nav cards
             document.querySelectorAll('.nav-card').forEach(card => {
                 card.addEventListener('click', function() {
@@ -2503,7 +2827,9 @@
                     }, 150);
                 });
             });
+        });
 
+        function initializeAnimations() {
             // Welcome card entrance animation
             setTimeout(() => {
                 const welcomeCard = document.querySelector('.welcome-card');
@@ -2519,6 +2845,14 @@
                 }
             }, 200);
 
+            // Dashboard title animation
+            setTimeout(() => {
+                const dashboardTitle = document.querySelector('.dashboard-title');
+                if (dashboardTitle) {
+                    dashboardTitle.classList.add('visible');
+                }
+            }, 400);
+
             // Stagger animation for nav cards
             const navCards = document.querySelectorAll('.nav-card');
             navCards.forEach((card, index) => {
@@ -2529,9 +2863,48 @@
                     card.style.transition = 'all 0.6s ease';
                     card.style.opacity = '1';
                     card.style.transform = 'translateY(0)';
-                }, 300 + (index * 100));
+                    
+                    // Add scale-in class after initial animation
+                    setTimeout(() => {
+                        card.classList.add('visible');
+                    }, 300);
+                }, 600 + (index * 100));
             });
-        });
+
+            // Instructions panel animation
+            setTimeout(() => {
+                const instructionsPanel = document.querySelector('.instructions-panel');
+                if (instructionsPanel) {
+                    instructionsPanel.style.opacity = '0';
+                    instructionsPanel.style.transform = 'translateY(30px)';
+                    instructionsPanel.style.transition = 'all 0.8s ease';
+                    
+                    setTimeout(() => {
+                        instructionsPanel.style.opacity = '1';
+                        instructionsPanel.style.transform = 'translateY(0)';
+                    }, 100);
+                }
+            }, 1200);
+
+            // Fade in observer for scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe fade-in elements
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+            document.querySelectorAll('.slide-in-left').forEach(el => observer.observe(el));
+            document.querySelectorAll('.slide-in-right').forEach(el => observer.observe(el));
+        }
 
         // Keyboard shortcuts
         document.addEventListener('keydown', function(e) {
@@ -2584,11 +2957,150 @@
         // MEMBER ACTIVITY DASHBOARD FUNCTIONS
         
         function populateDashboard(memberData) {
-            updatePersonalStats(memberData);
-            updateActivityFeed();
-            updateLoginHistory(memberData);
-            updateSpirituralProgress(memberData);
-            updateFavoriteTools(memberData);
+            // Show skeleton while loading
+            showDashboardSkeleton();
+            
+            // Simulate loading time and populate with data
+            setTimeout(() => {
+                updatePersonalStats(memberData);
+                updateActivityFeed();
+                updateLoginHistory(memberData);
+                updateSpirituralProgress(memberData);
+                updateFavoriteTools(memberData);
+                hideDashboardSkeleton();
+                triggerStaggerAnimation();
+            }, 1500);
+        }
+
+        function showDashboardSkeleton() {
+            const skeleton = document.getElementById('dashboard-skeleton');
+            const content = document.getElementById('dashboard-content');
+            
+            if (skeleton && content) {
+                skeleton.classList.add('active');
+                content.style.opacity = '0';
+            }
+        }
+
+        function hideDashboardSkeleton() {
+            const skeleton = document.getElementById('dashboard-skeleton');
+            const content = document.getElementById('dashboard-content');
+            
+            if (skeleton && content) {
+                skeleton.classList.remove('active');
+                content.style.opacity = '1';
+            }
+        }
+
+        function triggerStaggerAnimation() {
+            const staggerItems = document.querySelectorAll('.stagger-item');
+            staggerItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.add('animate');
+                }, index * 100);
+            });
+        }
+
+        // Enhanced section loading with progress
+        function showSectionWithLoading(sectionId) {
+            if (!sectionMap[sectionId]) return;
+            
+            // Create and show loading overlay
+            const loadingOverlay = createLoadingOverlay(sectionTitles[sectionId]);
+            document.body.appendChild(loadingOverlay);
+            
+            // Simulate progress updates
+            let progress = 0;
+            const progressBar = loadingOverlay.querySelector('.loading-progress-bar');
+            
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 20;
+                progress = Math.min(progress, 90);
+                progressBar.style.width = `${progress}%`;
+                
+                if (progress >= 90) {
+                    clearInterval(progressInterval);
+                }
+            }, 200);
+            
+            // Hide current view
+            const dashboard = document.getElementById('dashboard');
+            const sectionContainer = document.getElementById('section-container');
+            const sectionFrame = document.getElementById('section-frame');
+            const sectionTitle = document.getElementById('section-title');
+
+            // Set up the section
+            dashboard.style.display = 'none';
+            sectionContainer.style.display = 'block';
+            sectionTitle.textContent = sectionTitles[sectionId];
+            
+            // Handle frame loading
+            sectionFrame.onload = function() {
+                // Complete progress
+                clearInterval(progressInterval);
+                progressBar.style.width = '100%';
+                
+                // Hide loading overlay after brief delay
+                setTimeout(() => {
+                    loadingOverlay.remove();
+                    addActivityFeed(`📂 Opened ${sectionTitles[sectionId]}`, 'navigation');
+                }, 800);
+            };
+            
+            sectionFrame.onerror = function() {
+                clearInterval(progressInterval);
+                loadingOverlay.remove();
+                showNotification('⚠️ Failed to load section. Please try again.', 'error');
+                showDashboard();
+            };
+            
+            // Load section with delay for smooth UX
+            setTimeout(() => {
+                sectionFrame.src = sectionMap[sectionId];
+            }, 500);
+        }
+
+        function createLoadingOverlay(sectionTitle) {
+            const overlay = document.createElement('div');
+            overlay.className = 'section-loading active';
+            
+            const loadingMessages = [
+                'Preparing your divine tools...',
+                'Connecting to sacred wisdom...',
+                'Loading spiritual resources...',
+                'Initializing cosmic interface...',
+                'Activating divine frequencies...'
+            ];
+            
+            const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+            
+            overlay.innerHTML = `
+                <div class="loading-content">
+                    <div class="loading-spinner-large"></div>
+                    <div class="loading-title">🔮 Loading ${sectionTitle}</div>
+                    <div class="loading-subtitle">${randomMessage}</div>
+                    <div class="loading-progress">
+                        <div class="loading-progress-bar"></div>
+                    </div>
+                </div>
+            `;
+            
+            return overlay;
+        }
+
+        // Enhanced button loading states
+        function addButtonLoading(button) {
+            const originalText = button.textContent;
+            button.classList.add('btn-loading');
+            button.disabled = true;
+            
+            return {
+                remove: () => {
+                    button.classList.remove('btn-loading');
+                    button.disabled = false;
+                    button.textContent = originalText;
+                }
+            };
         }
 
         function updatePersonalStats(memberData) {
@@ -2750,25 +3262,47 @@
             ).length;
             const knowledgeProgress = Math.min(Math.floor((knowledgeActivities * 12) + (daysMember * 3)), 100);
             
-            // Update progress bars with animation
-            setTimeout(() => {
-                const meditationBar = document.querySelector('.progress-item:nth-child(1) .progress-fill');
-                const connectionBar = document.querySelector('.progress-item:nth-child(2) .progress-fill');
-                const knowledgeBar = document.querySelector('.progress-item:nth-child(3) .progress-fill');
-                
-                if (meditationBar) {
-                    meditationBar.style.width = `${meditationProgress}%`;
-                    meditationBar.parentElement.nextElementSibling.textContent = `${meditationProgress}%`;
+            // Animate progress bars with loading effect
+            const progressBars = [
+                { element: '.progress-item:nth-child(1)', progress: meditationProgress },
+                { element: '.progress-item:nth-child(2)', progress: connectionProgress },
+                { element: '.progress-item:nth-child(3)', progress: knowledgeProgress }
+            ];
+            
+            progressBars.forEach((bar, index) => {
+                setTimeout(() => {
+                    const progressItem = document.querySelector(bar.element);
+                    if (progressItem) {
+                        const progressFill = progressItem.querySelector('.progress-fill');
+                        const progressPercent = progressItem.querySelector('.progress-percent');
+                        
+                        // Add loading shimmer effect
+                        progressFill.classList.add('progress-bar-loading');
+                        
+                        // Animate to final progress
+                        setTimeout(() => {
+                            progressFill.classList.remove('progress-bar-loading');
+                            progressFill.style.width = `${bar.progress}%`;
+                            
+                            // Animate the percentage counter
+                            animateCounter(progressPercent, bar.progress);
+                        }, 1000);
+                    }
+                }, index * 200);
+            });
+        }
+
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 30; // 30 steps
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
                 }
-                if (connectionBar) {
-                    connectionBar.style.width = `${connectionProgress}%`;
-                    connectionBar.parentElement.nextElementSibling.textContent = `${connectionProgress}%`;
-                }
-                if (knowledgeBar) {
-                    knowledgeBar.style.width = `${knowledgeProgress}%`;
-                    knowledgeBar.parentElement.nextElementSibling.textContent = `${knowledgeProgress}%`;
-                }
-            }, 500);
+                element.textContent = `${Math.floor(current)}%`;
+            }, 50);
         }
 
         function updateFavoriteTools(memberData) {
