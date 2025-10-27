@@ -433,7 +433,7 @@
             font-size: 0.9rem;
         }
 
-        /* Authentication Overlay Styles */
+        /* Enhanced Authentication Overlay Styles */
         .auth-overlay {
             position: fixed;
             top: 0;
@@ -451,8 +451,19 @@
         }
 
         @keyframes authFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         .auth-container {
@@ -461,11 +472,13 @@
             border: 2px solid var(--glass-border);
             border-radius: 30px;
             padding: 3rem;
-            max-width: 500px;
+            max-width: 520px;
             width: 90%;
             position: relative;
             overflow: hidden;
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            transform: translateY(0);
+            transition: all 0.3s ease;
         }
 
         .auth-container::before {
@@ -476,6 +489,12 @@
             right: 0;
             height: 3px;
             background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold), var(--accent-blue));
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
         }
 
         .auth-header {
@@ -483,24 +502,32 @@
             margin-bottom: 2rem;
         }
 
-        .auth-logo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
+        .divine-symbol {
+            font-size: 3rem;
             margin-bottom: 1rem;
+            display: block;
+            animation: float 3s ease-in-out infinite;
         }
 
-        .auth-logo img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: 2px solid var(--accent-gold);
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .divine-quote {
+            font-style: italic;
+            color: var(--accent-gold);
+            margin: 1.5rem 0;
+            padding: 1rem;
+            border-left: 3px solid var(--accent-gold);
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 0 10px 10px 0;
+            font-size: 0.95rem;
         }
 
         .auth-header h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 700;
             background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
             background-clip: text;
@@ -514,45 +541,13 @@
             font-size: 0.95rem;
         }
 
-        .auth-tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 15px;
-            padding: 0.5rem;
-        }
-
-        .auth-tab {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            border: none;
-            border-radius: 10px;
-            background: transparent;
-            color: var(--text-secondary);
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
-
-        .auth-tab.active {
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
-        }
-
         .auth-form {
-            display: none;
-        }
-
-        .auth-form.active {
             display: block;
         }
 
         .input-group {
             margin-bottom: 1.5rem;
+            position: relative;
         }
 
         .input-group label {
@@ -563,8 +558,11 @@
             font-size: 0.95rem;
         }
 
-        .input-group input,
-        .input-group select {
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-group input {
             width: 100%;
             padding: 1rem;
             border: 1px solid var(--glass-border);
@@ -574,18 +572,95 @@
             font-size: 0.95rem;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
+            padding-right: 3rem;
         }
 
-        .input-group input:focus,
-        .input-group select:focus {
+        .input-group input:focus {
             outline: none;
             border-color: var(--accent-gold);
             box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
             background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
         }
 
         .input-group input::placeholder {
             color: rgba(255, 255, 255, 0.5);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--accent-gold);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .input-validation {
+            display: none;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        .input-validation.show {
+            display: block;
+        }
+
+        .input-validation.error {
+            color: #FCA5A5;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .input-validation.success {
+            color: #86EFAC;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            accent-color: var(--accent-gold);
+        }
+
+        .forgot-link {
+            color: var(--accent-gold);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-link:hover {
+            color: var(--accent-purple);
+            text-decoration: underline;
         }
 
         .auth-btn {
@@ -601,11 +676,41 @@
             transition: all 0.3s ease;
             margin-top: 1rem;
             box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+            position: relative;
+            overflow: hidden;
         }
 
-        .auth-btn:hover {
+        .auth-btn:hover:not(:disabled) {
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6);
+        }
+
+        .auth-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .auth-btn.loading {
+            color: transparent;
+        }
+
+        .auth-btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid var(--dark-bg);
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .auth-message {
@@ -614,6 +719,23 @@
             margin-top: 1rem;
             text-align: center;
             font-weight: 500;
+            display: none;
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        .auth-message.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .auth-message.error {
@@ -652,29 +774,40 @@
             color: var(--accent-purple);
         }
 
-        .price-info {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
+        .credential-example {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
             border-radius: 15px;
             padding: 1.5rem;
             margin: 1.5rem 0;
         }
 
-        .price-info h4 {
-            color: var(--accent-gold);
+        .credential-example h4 {
+            color: var(--accent-blue);
             margin-bottom: 1rem;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
-        .price-info ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .price-info li {
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
+        .credential-example code {
+            display: block;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            color: var(--accent-gold);
             font-size: 0.9rem;
+        }
+
+        .session-info {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
         }
 
         .member-badge {
@@ -720,14 +853,119 @@
             .auth-container {
                 padding: 2rem;
                 margin: 1rem;
+                max-width: 95%;
             }
 
-            .auth-tabs {
+            .auth-header h2 {
+                font-size: 1.8rem;
+            }
+
+            .divine-symbol {
+                font-size: 2.5rem;
+            }
+
+            .credential-example {
+                padding: 1rem;
+            }
+
+            .credential-example code {
+                font-size: 0.8rem;
+                padding: 0.4rem;
+            }
+
+            .input-group {
+                margin-bottom: 1.2rem;
+            }
+
+            .remember-forgot {
                 flex-direction: column;
+                gap: 0.5rem;
+                align-items: flex-start;
             }
 
-            .auth-tab {
-                text-align: center;
+            .password-toggle {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 1.5rem;
+                border-radius: 20px;
+            }
+
+            .auth-header h2 {
+                font-size: 1.6rem;
+            }
+
+            .divine-quote {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+
+            .input-group input {
+                padding: 0.9rem;
+                font-size: 0.9rem;
+            }
+
+            .auth-btn {
+                padding: 0.9rem 1.5rem;
+                font-size: 0.95rem;
+            }
+
+            .credential-example h4 {
+                font-size: 0.9rem;
+            }
+
+            .session-info {
+                font-size: 0.8rem;
+                padding: 0.6rem;
+            }
+        }
+
+        /* High DPI / Retina displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .divine-symbol {
+                image-rendering: -webkit-optimize-contrast;
+                image-rendering: crisp-edges;
+            }
+        }
+
+        /* Dark mode preference */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --glass-bg: rgba(255, 255, 255, 0.08);
+                --glass-border: rgba(255, 255, 255, 0.15);
+            }
+        }
+
+        /* Reduced motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus styles for accessibility */
+        .auth-btn:focus-visible,
+        .input-group input:focus-visible,
+        .password-toggle:focus-visible,
+        .forgot-link:focus-visible {
+            outline: 2px solid var(--accent-gold);
+            outline-offset: 2px;
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .auth-container {
+                border: 3px solid var(--accent-gold);
+                background: rgba(0, 0, 0, 0.8);
+            }
+            
+            .input-group input {
+                border: 2px solid var(--accent-gold);
             }
         }
     </style>
@@ -739,44 +977,70 @@
             <div class="auth-header">
                 <div class="divine-symbol">🏛️</div>
                 <h2>Divine Temple Access</h2>
-                <p>Enter your Sacred Credentials to access the Divine Portal</p>
+                <p class="auth-subtitle">Enter your Sacred Credentials to access the Divine Portal</p>
             </div>
             
             <div class="divine-quote">
                 "You never left Eden. Remember who you truly are."
             </div>
             
-            <form class="auth-form" onsubmit="authenticateUser(event)">
+            <form class="auth-form" id="divine-auth-form" onsubmit="authenticateUser(event)">
                 <div class="input-group">
-                    <label for="divine-name">Divine Sacred Name</label>
-                    <input 
-                        type="text" 
-                        id="divine-name" 
-                        class="auth-input" 
-                        placeholder="Enter your Divine Sacred Name"
-                        required 
-                        autocomplete="username"
-                    >
+                    <label for="divine-name">🌟 Divine Sacred Name</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="divine-name" 
+                            class="auth-input" 
+                            placeholder="Enter your Divine Sacred Name"
+                            required 
+                            autocomplete="username"
+                            oninput="validateInput(this)"
+                        >
+                    </div>
+                    <div class="input-validation" id="name-validation"></div>
                 </div>
                 
                 <div class="input-group">
-                    <label for="sacred-key">Sacred Key</label>
-                    <input 
-                        type="password" 
-                        id="sacred-key" 
-                        class="auth-input" 
-                        placeholder="Enter your Sacred Key"
-                        required 
-                        autocomplete="current-password"
-                    >
+                    <label for="sacred-key">🔐 Sacred Key</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            id="sacred-key" 
+                            class="auth-input" 
+                            placeholder="Enter your Sacred Key"
+                            required 
+                            autocomplete="current-password"
+                            oninput="validateInput(this)"
+                        >
+                        <button 
+                            type="button" 
+                            class="password-toggle" 
+                            onclick="togglePassword('sacred-key')"
+                            title="Show/Hide Password"
+                        >👁️</button>
+                    </div>
+                    <div class="input-validation" id="key-validation"></div>
+                </div>
+
+                <div class="remember-forgot">
+                    <label class="remember-me">
+                        <input type="checkbox" id="remember-me" name="remember">
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-link" onclick="showForgotPassword()">Forgot credentials?</a>
                 </div>
                 
-                <div id="auth-error" class="auth-error"></div>
-                <div id="auth-success" class="auth-success"></div>
-                
-                <button type="submit" class="auth-btn">
+                <button type="submit" class="auth-btn" id="login-btn">
                     🔮 Enter Divine Temple
                 </button>
+                
+                <div id="auth-error" class="auth-message error"></div>
+                <div id="auth-success" class="auth-message success"></div>
+
+                <div class="session-info">
+                    🔒 Your session will remain active for 24 hours
+                </div>
             </form>
             
             <div class="credential-example">
@@ -787,7 +1051,7 @@
             
             <div class="auth-footer">
                 <p>Don't have Divine Credentials? <a href="index.html#temple">Purchase Temple Access</a></p>
-                <p>Need help? <a href="contact.html">Contact Divine Support</a></p>
+                <p>Need help? <a href="mailto:edenconsciousnesssdt@gmail.com">Contact Divine Support</a></p>
             </div>
         </div>
     </div>
@@ -1138,18 +1402,82 @@
         function checkAuthenticationStatus() {
             const isAuthenticated = localStorage.getItem('divineAuthenticated');
             const authTimestamp = localStorage.getItem('authTimestamp');
+            const sessionDuration = parseInt(localStorage.getItem('sessionDuration') || '86400000'); // 24h default
             const currentTime = Date.now();
-            const sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
 
             if (isAuthenticated && authTimestamp && (currentTime - parseInt(authTimestamp)) < sessionDuration) {
                 // Valid session exists
                 hideAuthOverlay();
                 const memberData = JSON.parse(localStorage.getItem('currentMember') || '{}');
                 updateWelcomeMessage(memberData);
+                
+                // Show session info
+                showSessionStatus(memberData, sessionDuration - (currentTime - parseInt(authTimestamp)));
+                return true;
             } else {
                 // No valid session, show auth overlay
                 showAuthOverlay();
+                return false;
             }
+        }
+
+        function showSessionStatus(member, timeRemaining) {
+            if (timeRemaining < 3600000) { // Less than 1 hour remaining
+                const hours = Math.floor(timeRemaining / 3600000);
+                const minutes = Math.floor((timeRemaining % 3600000) / 60000);
+                
+                const warning = document.createElement('div');
+                warning.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    left: 20px;
+                    background: rgba(245, 158, 11, 0.2);
+                    border: 1px solid var(--accent-gold);
+                    border-radius: 15px;
+                    padding: 1rem;
+                    color: var(--accent-gold);
+                    z-index: 10001;
+                    backdrop-filter: blur(20px);
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                    max-width: 300px;
+                `;
+                
+                warning.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <span>⏰</span>
+                        <strong>Session Expiring Soon</strong>
+                    </div>
+                    <div style="font-size: 0.9rem; margin-bottom: 1rem;">
+                        Your session expires in ${hours}h ${minutes}m
+                    </div>
+                    <button onclick="extendSession(); this.parentElement.remove();" 
+                            style="background: var(--accent-gold); color: var(--dark-bg); border: none; border-radius: 8px; padding: 0.5rem 1rem; cursor: pointer; font-weight: 600;">
+                        Extend Session
+                    </button>
+                `;
+                
+                document.body.appendChild(warning);
+                
+                // Auto-remove after 10 seconds
+                setTimeout(() => {
+                    if (warning.parentElement) warning.remove();
+                }, 10000);
+            }
+        }
+
+        function extendSession() {
+            const currentMember = JSON.parse(localStorage.getItem('currentMember') || '{}');
+            const rememberMe = localStorage.getItem('rememberLogin') === 'true';
+            const sessionDuration = rememberMe ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+            
+            localStorage.setItem('authTimestamp', Date.now().toString());
+            localStorage.setItem('sessionDuration', sessionDuration.toString());
+            
+            // Show confirmation
+            showWelcomeNotification({ 
+                ...currentMember, 
+                divineName: 'Session Extended ✨' 
+            });
         }
 
         function setupAuthForm() {
@@ -1200,77 +1528,306 @@
             }
         }
 
-        // Enhanced Authentication System
+        // Enhanced Authentication System with Modern UX
         function authenticateUser(event) {
             event.preventDefault();
             
             const divineName = document.getElementById('divine-name').value.trim();
             const sacredKey = document.getElementById('sacred-key').value;
+            const rememberMe = document.getElementById('remember-me').checked;
+            const loginBtn = document.getElementById('login-btn');
             
             const errorDiv = document.getElementById('auth-error');
             const successDiv = document.getElementById('auth-success');
             
-            // Hide previous messages
-            errorDiv.style.display = 'none';
-            successDiv.style.display = 'none';
+            // Reset messages
+            hideMessages();
             
-            // Validate credentials
-            if (!divineName || !sacredKey) {
-                showAuthError('Please enter both Divine Name and Sacred Key');
+            // Validate inputs
+            if (!validateForm()) {
                 return;
             }
             
-            // Check against member database
-            const member = validateMemberCredentials(divineName, sacredKey);
+            // Show loading state
+            showLoadingState(loginBtn, true);
             
-            if (member) {
-                // Success - store authentication
-                localStorage.setItem('divineAuthenticated', 'true');
-                localStorage.setItem('currentMember', JSON.stringify(member));
-                localStorage.setItem('authTimestamp', Date.now().toString());
+            // Simulate network delay for better UX
+            setTimeout(() => {
+                // Check against member database
+                const member = validateMemberCredentials(divineName, sacredKey);
                 
-                // Update login count
-                const loginCount = getLoginCount(divineName) + 1;
-                localStorage.setItem(`loginCount_${divineName}`, loginCount.toString());
-                
-                // Show success message
-                successDiv.innerHTML = `✨ Welcome back to the Divine Temple, ${member.firstName || member.divineName}! ✨`;
-                successDiv.style.display = 'block';
-                
-                // Hide overlay after delay
-                setTimeout(() => {
-                    hideAuthOverlay();
-                    updateWelcomeMessage(member);
-                    addActivityFeed(`🏛️ ${member.divineName} entered the Divine Temple`, 'login');
-                }, 2000);
-            } else {
-                showAuthError('Invalid Divine Credentials. Please check your Divine Name and Sacred Key.');
-            }
+                if (member) {
+                    // Success flow
+                    handleSuccessfulLogin(member, rememberMe, successDiv, loginBtn);
+                } else {
+                    // Error flow
+                    handleFailedLogin(errorDiv, loginBtn);
+                }
+            }, 1500); // Realistic loading time
         }
-        
-        function showAuthError(message) {
-            const errorDiv = document.getElementById('auth-error');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
+
+        function handleSuccessfulLogin(member, rememberMe, successDiv, loginBtn) {
+            // Store authentication
+            const sessionDuration = rememberMe ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000; // 30 days vs 24 hours
             
-            // Add shake animation
+            localStorage.setItem('divineAuthenticated', 'true');
+            localStorage.setItem('currentMember', JSON.stringify(member));
+            localStorage.setItem('authTimestamp', Date.now().toString());
+            localStorage.setItem('sessionDuration', sessionDuration.toString());
+            localStorage.setItem('rememberLogin', rememberMe.toString());
+            
+            // Update login count
+            const loginCount = getLoginCount(member.divineName) + 1;
+            localStorage.setItem(`loginCount_${member.divineName}`, loginCount.toString());
+            
+            // Success animation
+            showMessage(successDiv, `✨ Welcome back, ${member.firstName || member.divineName}! ✨`, 'success');
+            
+            // Celebrate animation
+            celebrateLogin();
+            
+            setTimeout(() => {
+                showLoadingState(loginBtn, false);
+                hideAuthOverlay();
+                updateWelcomeMessage(member);
+                addActivityFeed(`🏛️ ${member.divineName} entered the Divine Temple`, 'login');
+                
+                // Show welcome back notification
+                showWelcomeNotification(member);
+            }, 2000);
+        }
+
+        function handleFailedLogin(errorDiv, loginBtn) {
+            showLoadingState(loginBtn, false);
+            showMessage(errorDiv, '❌ Invalid Divine Credentials. Please check your Divine Name and Sacred Key.', 'error');
+            
+            // Shake animation for error
             const authContainer = document.querySelector('.auth-container');
             authContainer.style.animation = 'shake 0.5s ease-in-out';
             setTimeout(() => {
                 authContainer.style.animation = '';
             }, 500);
+            
+            // Clear password for security
+            document.getElementById('sacred-key').value = '';
+            document.getElementById('sacred-key').focus();
         }
-        
-        // Add shake animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-10px); }
-                75% { transform: translateX(10px); }
+
+        function showLoadingState(btn, loading) {
+            if (loading) {
+                btn.classList.add('loading');
+                btn.disabled = true;
+            } else {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        }
+
+        function showMessage(element, message, type) {
+            element.textContent = message;
+            element.className = `auth-message ${type} show`;
+        }
+
+        function hideMessages() {
+            const errorDiv = document.getElementById('auth-error');
+            const successDiv = document.getElementById('auth-success');
+            errorDiv.classList.remove('show');
+            successDiv.classList.remove('show');
+        }
+
+        function celebrateLogin() {
+            // Add sparkle effect
+            const container = document.querySelector('.auth-container');
+            for (let i = 0; i < 20; i++) {
+                createSparkle(container);
+            }
+        }
+
+        function createSparkle(container) {
+            const sparkle = document.createElement('div');
+            sparkle.style.cssText = `
+                position: absolute;
+                width: 4px;
+                height: 4px;
+                background: var(--accent-gold);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 1000;
+                left: ${Math.random() * container.offsetWidth}px;
+                top: ${Math.random() * container.offsetHeight}px;
+                animation: sparkle 2s ease-out forwards;
+            `;
+            
+            container.appendChild(sparkle);
+            
+            setTimeout(() => {
+                sparkle.remove();
+            }, 2000);
+        }
+
+        // Add sparkle animation CSS
+        const sparkleStyle = document.createElement('style');
+        sparkleStyle.textContent = `
+            @keyframes sparkle {
+                0% {
+                    opacity: 1;
+                    transform: scale(0) rotate(0deg);
+                }
+                100% {
+                    opacity: 0;
+                    transform: scale(1) rotate(180deg);
+                }
             }
         `;
-        document.head.appendChild(style);
+        document.head.appendChild(sparkleStyle);
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const toggle = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.textContent = '🙈';
+                toggle.title = 'Hide Password';
+            } else {
+                input.type = 'password';
+                toggle.textContent = '👁️';
+                toggle.title = 'Show Password';
+            }
+        }
+
+        function validateInput(input) {
+            const validationDiv = document.getElementById(input.id.replace('-', '-') + '-validation');
+            if (!validationDiv) return;
+            
+            const value = input.value.trim();
+            let isValid = false;
+            let message = '';
+            
+            if (input.id === 'divine-name') {
+                isValid = value.length >= 4 && /^[A-Za-z0-9_]+$/.test(value);
+                message = isValid ? 
+                    '✅ Valid divine name format' : 
+                    'Divine name must be at least 4 characters (letters, numbers, underscore only)';
+            } else if (input.id === 'sacred-key') {
+                isValid = value.length >= 8;
+                message = isValid ? 
+                    '✅ Sacred key strength acceptable' : 
+                    'Sacred key must be at least 8 characters';
+            }
+            
+            if (value.length > 0) {
+                validationDiv.textContent = message;
+                validationDiv.className = `input-validation ${isValid ? 'success' : 'error'} show`;
+            } else {
+                validationDiv.classList.remove('show');
+            }
+            
+            return isValid;
+        }
+
+        function validateForm() {
+            const divineName = document.getElementById('divine-name').value.trim();
+            const sacredKey = document.getElementById('sacred-key').value;
+            
+            let isValid = true;
+            
+            if (!divineName) {
+                showMessage(document.getElementById('auth-error'), '❌ Please enter your Divine Sacred Name', 'error');
+                isValid = false;
+            } else if (!sacredKey) {
+                showMessage(document.getElementById('auth-error'), '❌ Please enter your Sacred Key', 'error');
+                isValid = false;
+            } else if (divineName.length < 4) {
+                showMessage(document.getElementById('auth-error'), '❌ Divine name must be at least 4 characters', 'error');
+                isValid = false;
+            } else if (sacredKey.length < 8) {
+                showMessage(document.getElementById('auth-error'), '❌ Sacred key must be at least 8 characters', 'error');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
+        function showForgotPassword() {
+            const container = document.querySelector('.auth-container');
+            container.innerHTML = `
+                <div class="auth-header">
+                    <div class="divine-symbol">🔑</div>
+                    <h2>Forgot Your Credentials?</h2>
+                    <p class="auth-subtitle">We'll help you recover access to the Divine Temple</p>
+                </div>
+                
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 15px; padding: 2rem; margin: 1rem 0;">
+                        <h4 style="color: var(--accent-blue); margin-bottom: 1rem;">📧 Contact Divine Support</h4>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                            Our divine support team will help you recover your credentials within 24 hours.
+                        </p>
+                        <a href="mailto:edenconsciousnesssdt@gmail.com?subject=Divine%20Credentials%20Recovery" 
+                           class="auth-btn" style="display: inline-block; text-decoration: none; margin: 1rem 0;">
+                            📧 Contact Support
+                        </a>
+                    </div>
+                    
+                    <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 15px; padding: 1.5rem; margin: 1rem 0;">
+                        <h4 style="color: var(--accent-gold); margin-bottom: 1rem;">💡 Recovery Tips</h4>
+                        <ul style="text-align: left; color: var(--text-secondary); line-height: 1.6;">
+                            <li>Check your welcome email for original credentials</li>
+                            <li>Try common variations of your chosen divine name</li>
+                            <li>Verify you're using the correct sacred key format</li>
+                            <li>Contact support with your registered email address</li>
+                        </ul>
+                    </div>
+                    
+                    <button onclick="location.reload()" class="auth-btn" style="margin-top: 1rem; background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));">
+                        ← Back to Login
+                    </button>
+                </div>
+            `;
+        }
+
+        function showWelcomeNotification(member) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--glass-bg);
+                border: 1px solid var(--accent-gold);
+                border-radius: 15px;
+                padding: 1rem 1.5rem;
+                color: var(--text-primary);
+                z-index: 10001;
+                backdrop-filter: blur(20px);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                transform: translateX(400px);
+                transition: transform 0.5s ease;
+            `;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 1.2rem;">✨</span>
+                    <div>
+                        <div style="font-weight: 600; color: var(--accent-gold);">Welcome Back!</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">${member.divineName}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Slide in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Slide out and remove
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => notification.remove(), 500);
+            }, 4000);
+        }
 
         function validateMemberCredentials(divineName, sacredKey) {
             // Enhanced member database with various credential patterns
