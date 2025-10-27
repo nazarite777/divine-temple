@@ -433,6 +433,268 @@
             font-size: 0.9rem;
         }
 
+        /* Authentication Overlay Styles */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            animation: authFadeIn 0.5s ease forwards;
+        }
+
+        @keyframes authFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .auth-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            border: 2px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold), var(--accent-blue));
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .auth-logo img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-gold);
+        }
+
+        .auth-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            padding: 0.5rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 10px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .auth-tab.active {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--accent-gold), #FBBF24);
+            color: var(--dark-bg);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6);
+        }
+
+        .auth-message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .auth-message.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #FCA5A5;
+        }
+
+        .auth-message.success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86EFAC;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .auth-footer p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-footer a {
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .auth-footer a:hover {
+            color: var(--accent-purple);
+        }
+
+        .price-info {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .price-info h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .price-info ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .price-info li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .member-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.25rem;
+        }
+
+        .member-name {
+            color: var(--accent-gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .member-type {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .nav-grid {
@@ -453,6 +715,19 @@
             
             .welcome-title {
                 font-size: 2rem;
+            }
+
+            .auth-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .auth-tabs {
+                flex-direction: column;
+            }
+
+            .auth-tab {
+                text-align: center;
             }
         }
     </style>
@@ -677,7 +952,242 @@
         </p>
     </footer>
 
+    <!-- Authentication Overlay -->
+    <div id="auth-overlay" class="auth-overlay">
+        <div class="auth-container">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <img src="https://github.com/nazarite777/divine-temple/blob/main/logoyogabg.png?raw=true" alt="Eden Consciousness">
+                    <h2>🏛️ Divine Temple</h2>
+                </div>
+                <p class="auth-subtitle">Enter your Divine Credentials to access sacred portals</p>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="showAuthTab('login')">🔑 Divine Login</button>
+                <button class="auth-tab" onclick="showAuthTab('register')">✨ Sacred Registration</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form" class="auth-form active">
+                <form onsubmit="authenticateUser(event)">
+                    <div class="input-group">
+                        <label for="divine-name">🌟 Divine Sacred Name</label>
+                        <input type="text" id="divine-name" name="divine-name" placeholder="Enter your sacred divine name" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="sacred-key">🔐 Sacred Key</label>
+                        <input type="password" id="sacred-key" name="sacred-key" placeholder="Enter your sacred key" required>
+                    </div>
+
+                    <button type="submit" class="auth-btn">🏛️ Enter Divine Temple</button>
+                    
+                    <div id="auth-error" class="auth-message error" style="display: none;"></div>
+                    <div id="auth-success" class="auth-message success" style="display: none;"></div>
+                </form>
+
+                <div class="auth-footer">
+                    <p>New to the Divine Temple? <a href="#" onclick="showAuthTab('register')">Create Sacred Account</a></p>
+                    <p><a href="mailto:edenconsciousnesssdt@gmail.com">Forgot your Divine Credentials?</a></p>
+                </div>
+            </div>
+
+            <!-- Registration Form -->
+            <div id="register-form" class="auth-form">
+                <form onsubmit="processRegistration(event)">
+                    <div class="input-group">
+                        <label for="reg-firstname">✨ First Name</label>
+                        <input type="text" id="reg-firstname" name="firstname" placeholder="Your first name" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="reg-lastname">✨ Last Name</label>
+                        <input type="text" id="reg-lastname" name="lastname" placeholder="Your last name" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="reg-email">📧 Sacred Email</label>
+                        <input type="email" id="reg-email" name="email" placeholder="your@email.com" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="membership-type">👑 Temple Membership</label>
+                        <select id="membership-type" name="membership" onchange="updatePricing()" required>
+                            <option value="">Choose your sacred path...</option>
+                            <option value="founding" data-price="347">Founding Member - $347 (Lifetime)</option>
+                            <option value="monthly" data-price="27">Monthly Temple Access - $27/month</option>
+                            <option value="student" data-price="97">Student Access - $97 (6 months)</option>
+                        </select>
+                    </div>
+
+                    <div id="pricing-display" class="price-info" style="display: none;">
+                        <h4>✨ Sacred Investment: <span id="price-amount">$0</span></h4>
+                        <ul>
+                            <li>🏛️ Full access to 6 Sacred Portals</li>
+                            <li>🧘 18+ Spiritual Tools & Practices</li>
+                            <li>📚 Sacred Knowledge Library</li>
+                            <li>🤝 Divine Community Access</li>
+                            <li>📅 Enoch Calendar System</li>
+                            <li>📧 Direct spiritual guidance</li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" class="auth-btn">💳 Proceed to Sacred Payment</button>
+                    
+                    <div id="registration-error" class="auth-message error" style="display: none;"></div>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Already have Divine Credentials? <a href="#" onclick="showAuthTab('login')">Enter Temple</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Authentication System
+        const DIVINE_CREDENTIALS = {
+            // Founding Members
+            'Divine_Seeker_777': 'Eden2025!',
+            'Sacred_Light_888': 'Temple777#',
+            'Eternal_Flame_999': 'Divine333$',
+            'Mystic_Soul_111': 'Sacred888@',
+            'Celestial_Being_222': 'Light999%',
+            
+            // Monthly Members
+            'Awakened_One_333': 'Member2025!',
+            'Truth_Walker_444': 'Portal777#',
+            'Spirit_Guide_555': 'Access888$',
+            'Divine_Child_666': 'Temple333@',
+            'Sacred_Keeper_000': 'Sacred777%',
+            
+            // Student Members
+            'Student_Light_100': 'Study2025!',
+            'Learning_Soul_200': 'Growth777#',
+            'Seeking_Truth_300': 'Wisdom888$',
+            'Growing_Spirit_400': 'Learn333@',
+            'Divine_Student_500': 'Study777%'
+        };
+
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthenticationStatus();
+            setupAuthForm();
+        });
+
+        function checkAuthenticationStatus() {
+            const isAuthenticated = localStorage.getItem('divineAuthenticated');
+            const authTimestamp = localStorage.getItem('authTimestamp');
+            const currentTime = Date.now();
+            const sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
+
+            if (isAuthenticated && authTimestamp && (currentTime - parseInt(authTimestamp)) < sessionDuration) {
+                // Valid session exists
+                hideAuthOverlay();
+                const memberData = JSON.parse(localStorage.getItem('currentMember') || '{}');
+                updateWelcomeMessage(memberData);
+            } else {
+                // No valid session, show auth overlay
+                showAuthOverlay();
+            }
+        }
+
+        function setupAuthForm() {
+            const authForm = document.getElementById('divine-auth-form');
+            authForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                authenticateUser();
+            });
+        }
+
+        function authenticateUser() {
+            const divineName = document.getElementById('divine-name').value.trim();
+            const sacredKey = document.getElementById('sacred-key').value;
+            const errorDiv = document.getElementById('auth-error');
+            const successDiv = document.getElementById('auth-success');
+
+            // Hide previous messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            // Check credentials
+            if (DIVINE_CREDENTIALS[divineName] && DIVINE_CREDENTIALS[divineName] === sacredKey) {
+                // Valid credentials
+                const memberData = {
+                    divineName: divineName,
+                    membershipType: getMembershipType(divineName),
+                    lastLogin: new Date().toISOString(),
+                    loginCount: getLoginCount(divineName) + 1
+                };
+
+                // Store authentication
+                localStorage.setItem('divineAuthenticated', 'true');
+                localStorage.setItem('currentMember', JSON.stringify(memberData));
+                localStorage.setItem('authTimestamp', Date.now().toString());
+
+                successDiv.innerHTML = `✨ Welcome to the Divine Temple, ${divineName}! ✨`;
+                successDiv.style.display = 'block';
+
+                setTimeout(() => {
+                    hideAuthOverlay();
+                    updateWelcomeMessage(memberData);
+                }, 2000);
+
+            } else {
+                // Invalid credentials
+                errorDiv.textContent = '❌ Invalid Divine Sacred Name or Key. Please check your credentials.';
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        function getMembershipType(divineName) {
+            if (divineName.includes('777') || divineName.includes('888') || divineName.includes('999')) {
+                return 'Founding Member';
+            } else if (divineName.includes('333') || divineName.includes('444') || divineName.includes('555')) {
+                return 'Monthly Member';
+            } else {
+                return 'Student Member';
+            }
+        }
+
+        function getLoginCount(divineName) {
+            return parseInt(localStorage.getItem(`loginCount_${divineName}`) || '0');
+        }
+
+        function showAuthOverlay() {
+            document.getElementById('auth-overlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideAuthOverlay() {
+            document.getElementById('auth-overlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function updateWelcomeMessage(memberData) {
+            const welcomeTitle = document.querySelector('.welcome-title');
+            const welcomeText = document.querySelector('.welcome-text');
+            
+            if (welcomeTitle && memberData.divineName) {
+                welcomeTitle.textContent = `Welcome, ${memberData.divineName}`;
+            }
+            
+            if (welcomeText && memberData.membershipType) {
+                welcomeText.innerHTML = `
+                    <strong>${memberData.membershipType}</strong> - Access your complete spiritual growth platform with 18+ divine tools organized into 6 specialized sections. 
+                    Each section is designed to support different aspects of your spiritual development and divine connection.
+                `;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('divineAuthenticated');
+            localStorage.removeItem('currentMember');
+            localStorage.removeItem('authTimestamp');
+            location.reload();
+        }
+
         // Navigation System
         const sectionMap = {
             'spiritual-tools': 'sections/spiritual-tools.html',
