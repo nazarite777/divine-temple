@@ -1624,6 +1624,13 @@
     </style>
 </head>
 <body>
+    <!-- STATUS BAR - For debugging -->
+    <div id="status-bar" style="position: fixed; top: 0; left: 0; right: 0; background: rgba(239, 68, 68, 0.9); color: white; padding: 10px; text-align: center; z-index: 10000; font-size: 14px; font-weight: 600;">
+        🔧 AUTH STATUS: <span id="auth-status">Checking...</span> | 
+        <button onclick="adminBypass()" style="background: #fff; color: #000; border: none; padding: 3px 8px; border-radius: 4px; margin-left: 10px; cursor: pointer;">BYPASS</button>
+        <button onclick="location.reload()" style="background: #fff; color: #000; border: none; padding: 3px 8px; border-radius: 4px; margin-left: 5px; cursor: pointer;">RELOAD</button>
+    </div>
+
     <!-- Divine Authentication Overlay -->
     <div id="auth-overlay" class="auth-overlay">
         <div class="auth-container">
@@ -1687,6 +1694,11 @@
                     🔮 Enter Divine Temple
                 </button>
                 
+                <!-- ADMIN BYPASS - Instant Access -->
+                <button type="button" onclick="adminBypass()" style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, #EF4444, #DC2626); color: white; border: none; padding: 0.75rem; border-radius: 25px; font-weight: 600; cursor: pointer;">
+                    🚪 ADMIN BYPASS - Instant Access
+                </button>
+                
                 <div id="auth-error" class="auth-message error"></div>
                 <div id="auth-success" class="auth-message success"></div>
 
@@ -1698,6 +1710,39 @@
             <div class="auth-footer">
                 <p>Don't have Divine Credentials? <a href="index.html#temple">Purchase Temple Access</a></p>
                 <p>Need help? <a href="mailto:edenconsciousnesssdt@gmail.com">Contact Divine Support</a></p>
+                
+                <!-- TEST LOGIN SECTION -->
+                <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 15px;">
+                    <h4 style="color: var(--accent-blue); margin-bottom: 1rem; text-align: center;">🧪 Test Access</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; text-align: center;">
+                        For testing purposes, click below to access the portal directly:
+                    </p>
+                    <button type="button" onclick="testLogin()" style="width: 100%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); color: white; border: none; padding: 0.75rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-bottom: 0.5rem;">
+                        🚀 Test Portal Access
+                    </button>
+                    
+                    <button type="button" onclick="debugAuth()" style="width: 100%; background: rgba(245, 158, 11, 0.2); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 0.5rem; border-radius: 8px; font-size: 0.85rem; cursor: pointer; margin-bottom: 0.5rem;">
+                        🔍 Debug Auth Status
+                    </button>
+                    
+                    <button type="button" onclick="clearAllSessions()" style="width: 100%; background: rgba(239, 68, 68, 0.2); border: 1px solid #EF4444; color: #FCA5A5; padding: 0.5rem; border-radius: 8px; font-size: 0.85rem; cursor: pointer;">
+                        🗑️ Clear All Sessions
+                    </button>
+                    
+                    <!-- Test Credentials Display -->
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.3); border-radius: 10px; font-family: monospace; font-size: 0.85rem;">
+                        <div style="color: var(--accent-gold); font-weight: 600; margin-bottom: 0.5rem;">✅ WORKING Test Credentials:</div>
+                        <div style="color: var(--text-secondary);">Username: <span style="color: white; font-weight: bold;">TestUser</span></div>
+                        <div style="color: var(--text-secondary);">Password: <span style="color: white; font-weight: bold;">test123</span></div>
+                        <div style="margin: 0.5rem 0; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 0.5rem;">
+                        <div style="color: var(--text-secondary);">Username: <span style="color: white; font-weight: bold;">DemoMember</span></div>
+                        <div style="color: var(--text-secondary);">Password: <span style="color: white; font-weight: bold;">demo123</span></div>
+                        </div>
+                        <div style="color: var(--accent-purple); font-size: 0.8rem; margin-top: 0.5rem; font-style: italic;">
+                            ⚡ Simplified login - no complex validation
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -2211,6 +2256,9 @@
         });
 
         function checkAuthenticationStatus() {
+            const statusElement = document.getElementById('auth-status');
+            if (statusElement) statusElement.textContent = 'Checking authentication...';
+            
             const isAuthenticated = sessionStorage.getItem('divineAuthenticated');
             const authTimestamp = sessionStorage.getItem('authTimestamp');
             const rememberMe = localStorage.getItem('rememberLogin') === 'true';
@@ -2224,6 +2272,7 @@
                 if (localAuth && localTimestamp && (Date.now() - parseInt(localTimestamp)) < sessionDuration) {
                     // Restore session from localStorage
                     const memberData = JSON.parse(localStorage.getItem('currentMember') || '{}');
+                    if (statusElement) statusElement.textContent = `✅ AUTHENTICATED (Local: ${memberData.username})`;
                     restoreSession(memberData);
                     return true;
                 }
@@ -2234,12 +2283,14 @@
                 const sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
                 if (Date.now() - parseInt(authTimestamp) < sessionDuration) {
                     const memberData = JSON.parse(sessionStorage.getItem('currentMember') || '{}');
+                    if (statusElement) statusElement.textContent = `✅ AUTHENTICATED (Session: ${memberData.username})`;
                     restoreSession(memberData);
                     return true;
                 }
             }
             
             // No valid session
+            if (statusElement) statusElement.textContent = '❌ NOT AUTHENTICATED - Login required';
             showAuthOverlay();
             return false;
         }
@@ -2318,8 +2369,8 @@
             showNotification('✨ Session extended successfully!', 'success');
         }
 
-        // Enhanced Authentication Function
-        async function authenticateUser(event) {
+        // SIMPLIFIED Authentication Function - No password hashing for now
+        function authenticateUser(event) {
             event.preventDefault();
             
             const username = document.getElementById('divine-name').value.trim();
@@ -2333,7 +2384,7 @@
             // Reset messages
             hideMessages();
             
-            // Validate inputs
+            // Basic validation
             if (!validateForm()) {
                 return;
             }
@@ -2341,26 +2392,49 @@
             // Show loading state
             showLoadingState(loginBtn, true);
             
-            // Hash the password and check against database
-            try {
-                const passwordHash = await hashPassword(password);
-                const member = MEMBER_DATABASE.find(m => 
-                    m.username === username && m.passwordHash === passwordHash
-                );
-                
-                // Simulate network delay
-                setTimeout(() => {
-                    if (member) {
-                        handleSuccessfulLogin(member, rememberMe, successDiv, loginBtn);
-                    } else {
-                        handleFailedLogin(errorDiv, loginBtn);
-                    }
-                }, 1500);
-                
-            } catch (error) {
-                console.error('Authentication error:', error);
-                handleFailedLogin(errorDiv, loginBtn);
+            // Simple credential check (no hashing for now)
+            let member = null;
+            
+            if (username === 'TestUser' && password === 'test123') {
+                member = {
+                    username: 'TestUser',
+                    firstName: 'Test',
+                    lastName: 'User',
+                    membershipType: 'Test Access',
+                    email: 'test@edenconsciousness.com',
+                    joinDate: '2025-01-01',
+                    memberLevel: 'Test'
+                };
+            } else if (username === 'DemoMember' && password === 'demo123') {
+                member = {
+                    username: 'DemoMember',
+                    firstName: 'Demo',
+                    lastName: 'User',
+                    membershipType: 'Demo Access',
+                    email: 'demo@edenconsciousness.com',
+                    joinDate: '2025-01-01',
+                    memberLevel: 'Demo'
+                };
+            } else if (username === 'nazir23' && password === 'Nazir777') {
+                member = {
+                    username: 'nazir23',
+                    firstName: 'Nazir',
+                    lastName: 'El',
+                    membershipType: 'Founding Member',
+                    email: 'nazir@edenconsciousness.com',
+                    joinDate: '2025-01-01',
+                    memberLevel: 'Founder'
+                };
             }
+            
+            // Simulate short delay
+            setTimeout(() => {
+                if (member) {
+                    handleSuccessfulLogin(member, rememberMe, successDiv, loginBtn);
+                } else {
+                    handleFailedLogin(errorDiv, loginBtn);
+                }
+            }, 800);
         }
 
         function handleSuccessfulLogin(member, rememberMe, successDiv, loginBtn) {
@@ -2526,15 +2600,8 @@
                 showMessage(document.getElementById('auth-error'), '❌ Please enter your password', 'error');
                 return false;
             }
-            if (username.length < 3) {
-                showMessage(document.getElementById('auth-error'), '❌ Username must be at least 3 characters', 'error');
-                return false;
-            }
-            if (password.length < 6) {
-                showMessage(document.getElementById('auth-error'), '❌ Password must be at least 6 characters', 'error');
-                return false;
-            }
             
+            // Removed length requirements - allow any length
             return true;
         }
 
@@ -2642,6 +2709,125 @@
         function hideAuthOverlay() {
             document.getElementById('auth-overlay').style.display = 'none';
             document.body.style.overflow = 'auto';
+            
+            // Update status bar
+            const statusElement = document.getElementById('auth-status');
+            if (statusElement) statusElement.textContent = '✅ ACCESS GRANTED - Portal active';
+            
+            // Hide status bar after successful login
+            setTimeout(() => {
+                const statusBar = document.getElementById('status-bar');
+                if (statusBar) statusBar.style.display = 'none';
+            }, 3000);
+        }
+
+        // ADMIN BYPASS FUNCTION - Instant portal access
+        function adminBypass() {
+            const adminMember = {
+                username: 'admin',
+                firstName: 'Admin',
+                lastName: 'User',
+                membershipType: 'Admin Access',
+                email: 'admin@edenconsciousness.com',
+                joinDate: '2025-01-01',
+                memberLevel: 'Admin',
+                lastLogin: new Date().toISOString(),
+                loginCount: 1
+            };
+            
+            // Store admin session
+            sessionStorage.setItem('divineAuthenticated', 'true');
+            sessionStorage.setItem('currentMember', JSON.stringify(adminMember));
+            sessionStorage.setItem('authTimestamp', Date.now().toString());
+            
+            // Hide overlay and show portal immediately
+            hideAuthOverlay();
+            updateWelcomeMessage(adminMember);
+            updateMemberBadge(adminMember);
+            populateDashboard(adminMember);
+            addActivityFeed('🚪 Admin bypass access granted', 'login');
+            
+            // Show success notification
+            showNotification('🚪 Admin bypass successful! Welcome to the Divine Temple!', 'success');
+        }
+
+        // TEST LOGIN FUNCTION - For development/testing
+        function testLogin() {
+            const testMember = {
+                username: 'TestUser',
+                firstName: 'Test',
+                lastName: 'User',
+                membershipType: 'Test Access',
+                email: 'test@edenconsciousness.com',
+                joinDate: '2025-01-01',
+                memberLevel: 'Test',
+                lastLogin: new Date().toISOString(),
+                loginCount: 1
+            };
+            
+            // Store test session
+            sessionStorage.setItem('divineAuthenticated', 'true');
+            sessionStorage.setItem('currentMember', JSON.stringify(testMember));
+            sessionStorage.setItem('authTimestamp', Date.now().toString());
+            
+            // Hide overlay and show portal
+            hideAuthOverlay();
+            updateWelcomeMessage(testMember);
+            updateMemberBadge(testMember);
+            populateDashboard(testMember);
+            addActivityFeed('🧪 Test user accessed portal', 'login');
+            
+            // Show success notification
+            showNotification('🧪 Test access granted! Exploring the Divine Temple...', 'success');
+        }
+
+        // DEBUG FUNCTION - Check authentication status
+        function debugAuth() {
+            const sessionAuth = sessionStorage.getItem('divineAuthenticated');
+            const localAuth = localStorage.getItem('divineAuthenticated');
+            const sessionMember = sessionStorage.getItem('currentMember');
+            const localMember = localStorage.getItem('currentMember');
+            const authTimestamp = sessionStorage.getItem('authTimestamp') || localStorage.getItem('authTimestamp');
+            
+            const debugInfo = `
+AUTH DEBUG INFO:
+================
+Session Auth: ${sessionAuth || 'NOT SET'}
+Local Auth: ${localAuth || 'NOT SET'}
+Session Member: ${sessionMember ? 'SET' : 'NOT SET'}
+Local Member: ${localMember ? 'SET' : 'NOT SET'}
+Auth Timestamp: ${authTimestamp || 'NOT SET'}
+Current Time: ${Date.now()}
+Time Diff: ${authTimestamp ? (Date.now() - parseInt(authTimestamp)) / 1000 / 60 : 'N/A'} minutes
+
+Overlay Display: ${document.getElementById('auth-overlay').style.display}
+Body Overflow: ${document.body.style.overflow}
+            `;
+            
+            console.log(debugInfo);
+            alert(debugInfo);
+        }
+
+        // CLEAR ALL SESSIONS - Reset everything
+        function clearAllSessions() {
+            // Clear all authentication data
+            sessionStorage.clear();
+            localStorage.removeItem('divineAuthenticated');
+            localStorage.removeItem('currentMember');
+            localStorage.removeItem('authTimestamp');
+            localStorage.removeItem('rememberLogin');
+            localStorage.removeItem('memberActivities');
+            
+            // Clear member-specific data
+            const keys = Object.keys(localStorage);
+            keys.forEach(key => {
+                if (key.startsWith('loginCount_') || key.startsWith('loginHistory_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+            
+            alert('🗑️ All sessions and data cleared! Page will reload.');
+            location.reload();
         }
 
         function updateWelcomeMessage(memberData) {
