@@ -382,6 +382,8 @@
             justify-content: center;
             z-index: 10000;
             animation: fadeIn 0.3s ease;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .oracle-modal {
@@ -389,25 +391,29 @@
             backdrop-filter: blur(30px);
             border: 2px solid var(--glass-border);
             border-radius: 25px;
-            max-width: 95vw;
-            max-height: 95vh;
-            width: 1200px;
+            width: 100%;
+            height: 100%;
+            max-width: 1400px;
+            max-height: 900px;
             overflow-y: auto;
             box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
         }
 
         .oracle-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 2rem;
+            padding: 1.5rem 2rem;
             border-bottom: 2px solid var(--glass-border);
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(139, 92, 246, 0.1));
+            flex-shrink: 0;
         }
 
         .oracle-header h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             margin: 0;
             background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
             -webkit-background-clip: text;
@@ -420,10 +426,10 @@
             border: 1px solid #ef4444;
             color: #ef4444;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             cursor: pointer;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -437,33 +443,42 @@
 
         .oracle-content {
             padding: 2rem;
+            flex: 1;
+            overflow-y: auto;
         }
 
         .reading-types h3 {
             text-align: center;
             color: var(--accent-gold);
             font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             margin-bottom: 2rem;
         }
 
         .reading-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
             margin-bottom: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .reading-card {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
             border: 2px solid var(--glass-border);
             border-radius: 20px;
-            padding: 2rem;
+            padding: 2.5rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .reading-card:hover {
@@ -508,7 +523,7 @@
             text-align: center;
             color: var(--accent-gold);
             font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             margin-bottom: 1rem;
         }
 
@@ -516,17 +531,21 @@
             text-align: center;
             color: rgba(255, 255, 255, 0.8);
             margin-bottom: 2rem;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
         }
 
         .card-deck {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-            max-width: 800px;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+            max-width: 1000px;
             margin-left: auto;
             margin-right: auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
         }
 
         .oracle-card-back {
@@ -538,6 +557,7 @@
             position: relative;
             overflow: hidden;
             border: 2px solid var(--glass-border);
+            min-height: 120px;
         }
 
         .oracle-card-back:hover {
@@ -556,13 +576,13 @@
         }
 
         .card-symbol {
-            font-size: 2rem;
+            font-size: 2.5rem;
             margin-bottom: 0.5rem;
         }
 
         .card-pattern {
-            width: 20px;
-            height: 20px;
+            width: 25px;
+            height: 25px;
             border: 2px solid rgba(255, 255, 255, 0.5);
             border-radius: 50%;
         }
@@ -570,6 +590,7 @@
         .oracle-card-back.selected {
             background: linear-gradient(135deg, var(--accent-gold), #fbbf24);
             animation: pulse 1s infinite;
+            transform: scale(1.1);
         }
 
         .card-selected {
@@ -582,7 +603,7 @@
         }
 
         .selection-number {
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: bold;
             margin-bottom: 0.5rem;
         }
@@ -590,21 +611,31 @@
         .selection-progress {
             text-align: center;
             margin: 2rem 0;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             color: var(--accent-gold);
+            padding: 1rem;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 15px;
+            border: 1px solid var(--accent-gold);
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .oracle-btn {
             background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
             color: white;
             border: none;
-            padding: 1rem 2rem;
+            padding: 1.2rem 2.5rem;
             border-radius: 15px;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             margin: 0.5rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .oracle-btn:hover {
@@ -617,12 +648,25 @@
             border: 1px solid var(--glass-border);
         }
 
+        .reading-results {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95));
+            border-radius: 25px;
+            padding: 3rem;
+            margin: 2rem 0;
+            border: 2px solid var(--accent-gold);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
         .reading-results h3 {
             text-align: center;
-            color: var(--accent-gold);
+            color: var(--accent-purple);
             font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--accent-gold);
+            font-weight: 700;
         }
 
         .revealed-cards {
@@ -632,20 +676,26 @@
         }
 
         .revealed-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
-            border: 2px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 2rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+            border: 3px solid var(--accent-gold);
+            border-radius: 25px;
+            padding: 2.5rem;
             display: grid;
-            grid-template-columns: 1fr 150px 2fr;
-            gap: 2rem;
+            grid-template-columns: 1fr 180px 2fr;
+            gap: 2.5rem;
             align-items: start;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            margin-bottom: 2rem;
         }
 
         .card-position h4 {
             color: var(--accent-purple);
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .position-meaning {
@@ -656,45 +706,64 @@
 
         .card-reveal {
             text-align: center;
-            padding: 1rem;
+            padding: 1.5rem;
             background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
-            border-radius: 15px;
+            border-radius: 20px;
             color: white;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
         }
 
         .card-image {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 4rem;
+            margin-bottom: 1.2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .card-name {
             font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
+            font-size: 1.6rem;
             margin: 0;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         .card-message {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 2rem;
         }
 
         .message-section h5 {
             color: var(--accent-gold);
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .message-section p {
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.8;
             margin: 0;
+            font-size: 1.1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-gold);
         }
 
         .affirmation {
             font-style: italic;
             color: var(--accent-gold) !important;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 1.2rem !important;
+            text-align: center;
+            padding: 1.5rem !important;
+            background: rgba(212, 175, 55, 0.15) !important;
+            border: 2px solid var(--accent-gold) !important;
+            border-radius: 15px !important;
         }
 
         .reading-actions {
@@ -702,6 +771,239 @@
             margin-top: 3rem;
             padding-top: 2rem;
             border-top: 1px solid var(--glass-border);
+        }
+
+        /* Database Integration Styles */
+        .reading-context {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--accent-gold);
+        }
+
+        .context-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .input-group input,
+        .input-group select {
+            padding: 0.8rem;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .save-success-message,
+        .save-error-message {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 10000;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .save-success-message {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            border: 1px solid #059669;
+        }
+
+        .save-error-message {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            border: 1px solid #dc2626;
+        }
+
+        .success-content,
+        .error-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .guest-message {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
+            border: 2px solid var(--accent-gold);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .guest-notice {
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .guest-notice a {
+            color: var(--accent-purple);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .guest-notice a:hover {
+            text-decoration: underline;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .history-header h4 {
+            color: var(--accent-purple);
+            margin: 0;
+        }
+
+        .history-date {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .favorite-star {
+            font-size: 1.2rem;
+            margin-left: 0.5rem;
+        }
+
+        .history-cards,
+        .history-question {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .stat-card h3 {
+            color: var(--accent-gold);
+            font-size: 2rem;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .stat-card p {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .top-cards {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .top-cards h4 {
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+        }
+
+        .card-stat {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .card-stat:last-child {
+            border-bottom: none;
+        }
+
+        .card-stat .card-symbol {
+            font-size: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+
+        .card-stat .card-name {
+            flex: 1;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .card-stat .card-count {
+            color: var(--accent-gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         .reading-summary {
@@ -1281,6 +1583,16 @@
             
             // Add overall reading summary
             addReadingSummary();
+            
+            // Move context inputs to results and add save button for logged-in users
+            const contextInputs = document.querySelector('.reading-context');
+            const saveBtn = document.getElementById('save-reading-btn');
+            
+            if (contextInputs && saveBtn) {
+                const resultsContainer = document.getElementById('reading-results');
+                resultsContainer.appendChild(contextInputs);
+                resultsContainer.appendChild(saveBtn);
+            }
         }
         
         function getReadingPositions(type) {
@@ -1850,6 +2162,361 @@
                 document.getElementById('shadow-journal').value = '';
             }
         }
+
+        // ===========================================
+        // DATABASE INTEGRATION FOR ORACLE CARDS
+        // ===========================================
+
+        /**
+         * Save Oracle Cards reading to user's spiritual history
+         */
+        async function saveOracleReading() {
+            try {
+                if (!currentReading.selectedCards || currentReading.selectedCards.length === 0) {
+                    throw new Error('No cards selected to save');
+                }
+
+                // Prepare reading data for database
+                const readingData = {
+                    reading_type: currentReading.type,
+                    cards_drawn: currentReading.selectedCards.map((card, index) => ({
+                        position: index + 1,
+                        name: card.data.name,
+                        symbol: card.data.image,
+                        message: card.data.message,
+                        meaning: card.data.meaning,
+                        affirmation: card.data.affirmation
+                    })),
+                    reading_question: document.getElementById('reading-question')?.value || '',
+                    reading_interpretation: generateReadingInterpretation(),
+                    emotional_state: document.getElementById('emotional-state')?.value || '',
+                    life_focus: document.getElementById('life-focus')?.value || ''
+                };
+
+                const response = await fetch('/api/auth.php?action=save_reading', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(readingData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSaveSuccessMessage(result.reading_id);
+                    currentReading.savedId = result.reading_id;
+                } else {
+                    throw new Error(result.message || 'Failed to save reading');
+                }
+
+            } catch (error) {
+                console.error('Error saving reading:', error);
+                showSaveErrorMessage(error.message);
+            }
+        }
+
+        /**
+         * Generate interpretation summary for the reading
+         */
+        function generateReadingInterpretation() {
+            const cards = currentReading.selectedCards;
+            const type = currentReading.type;
+            
+            let interpretation = `Your ${type} reading reveals: `;
+            
+            if (type === 'single' || type === 'daily') {
+                interpretation += `The ${cards[0].data.name} brings a message of ${cards[0].data.meaning.toLowerCase()}. `;
+            } else if (type === 'three') {
+                interpretation += `Your past (${cards[0].data.name}) influences your present (${cards[1].data.name}) `;
+                interpretation += `and guides you toward a future of ${cards[2].data.meaning.toLowerCase()}. `;
+            } else if (type === 'celtic') {
+                interpretation += `A comprehensive journey through your spiritual landscape, `;
+                interpretation += `with ${cards[0].data.name} at the center of your current situation. `;
+            }
+            
+            interpretation += 'Trust in the divine guidance you have received.';
+            return interpretation;
+        }
+
+        /**
+         * Load user's reading history
+         */
+        async function loadReadingHistory(limit = 10, offset = 0) {
+            try {
+                const response = await fetch(`/api/auth.php?action=get_readings&limit=${limit}&offset=${offset}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayReadingHistory(result.readings);
+                } else {
+                    throw new Error(result.message || 'Failed to load reading history');
+                }
+
+            } catch (error) {
+                console.error('Error loading reading history:', error);
+            }
+        }
+
+        /**
+         * Display reading history in UI
+         */
+        function displayReadingHistory(readings) {
+            const historyContainer = document.getElementById('reading-history');
+            if (!historyContainer) return;
+
+            historyContainer.innerHTML = '';
+            
+            readings.forEach(reading => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                const date = new Date(reading.created_at).toLocaleDateString();
+                const cardNames = reading.cards_drawn.map(card => card.name).join(', ');
+                
+                historyItem.innerHTML = `
+                    <div class="history-header">
+                        <h4>${reading.reading_type} Reading</h4>
+                        <span class="history-date">${date}</span>
+                        ${reading.is_favorite ? '<span class="favorite-star">⭐</span>' : ''}
+                    </div>
+                    <div class="history-cards">Cards: ${cardNames}</div>
+                    ${reading.reading_question ? `<div class="history-question">Question: ${reading.reading_question}</div>` : ''}
+                    <div class="history-actions">
+                        <button onclick="viewReading(${reading.id})" class="oracle-btn secondary">View</button>
+                        <button onclick="toggleReadingFavorite(${reading.id})" class="oracle-btn secondary">
+                            ${reading.is_favorite ? 'Unfavorite' : 'Favorite'}
+                        </button>
+                    </div>
+                `;
+                
+                historyContainer.appendChild(historyItem);
+            });
+        }
+
+        /**
+         * Toggle reading favorite status
+         */
+        async function toggleReadingFavorite(readingId) {
+            try {
+                const response = await fetch('/api/auth.php?action=toggle_favorite', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ reading_id: readingId })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    loadReadingHistory(); // Refresh the history
+                } else {
+                    throw new Error(result.message || 'Failed to update favorite status');
+                }
+
+            } catch (error) {
+                console.error('Error toggling favorite:', error);
+            }
+        }
+
+        /**
+         * Load and display user statistics
+         */
+        async function loadUserStats() {
+            try {
+                const response = await fetch('/api/auth.php?action=get_stats');
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayUserStats(result.reading_stats, result.card_stats);
+                } else {
+                    throw new Error(result.message || 'Failed to load statistics');
+                }
+
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        /**
+         * Display user statistics
+         */
+        function displayUserStats(readingStats, cardStats) {
+            const statsContainer = document.getElementById('user-stats');
+            if (!statsContainer) return;
+
+            statsContainer.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>${readingStats.total_readings}</h3>
+                        <p>Total Readings</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>${readingStats.favorites}</h3>
+                        <p>Favorite Readings</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>${readingStats.avg_accuracy || 'N/A'}</h3>
+                        <p>Avg Accuracy</p>
+                    </div>
+                </div>
+                
+                <div class="top-cards">
+                    <h4>Your Most Drawn Cards</h4>
+                    ${cardStats.map(card => `
+                        <div class="card-stat">
+                            <span class="card-symbol">${card.card_symbol}</span>
+                            <span class="card-name">${card.card_name}</span>
+                            <span class="card-count">${card.times_drawn}x</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        /**
+         * Show success message after saving reading
+         */
+        function showSaveSuccessMessage(readingId) {
+            const message = document.createElement('div');
+            message.className = 'save-success-message';
+            message.innerHTML = `
+                <div class="success-content">
+                    ✨ Sacred reading saved to your spiritual journal! 
+                    <button onclick="this.parentElement.parentElement.remove()" class="close-btn">×</button>
+                </div>
+            `;
+            
+            document.querySelector('.reading-results').appendChild(message);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (message.parentElement) {
+                    message.remove();
+                }
+            }, 5000);
+        }
+
+        /**
+         * Show error message if saving fails
+         */
+        function showSaveErrorMessage(errorMessage) {
+            const message = document.createElement('div');
+            message.className = 'save-error-message';
+            message.innerHTML = `
+                <div class="error-content">
+                    ⚠️ Could not save reading: ${errorMessage}
+                    <button onclick="this.parentElement.parentElement.remove()" class="close-btn">×</button>
+                </div>
+            `;
+            
+            document.querySelector('.reading-results').appendChild(message);
+            
+            // Auto-remove after 7 seconds
+            setTimeout(() => {
+                if (message.parentElement) {
+                    message.remove();
+                }
+            }, 7000);
+        }
+
+        /**
+         * Check if user is logged in
+         */
+        async function checkUserSession() {
+            try {
+                const response = await fetch('/api/auth.php?action=validate_session');
+                const result = await response.json();
+                
+                if (result.valid) {
+                    enableDatabaseFeatures(result.user);
+                    return true;
+                } else {
+                    disableDatabaseFeatures();
+                    return false;
+                }
+
+            } catch (error) {
+                console.error('Error checking session:', error);
+                disableDatabaseFeatures();
+                return false;
+            }
+        }
+
+        /**
+         * Enable database features for logged-in users
+         */
+        function enableDatabaseFeatures(user) {
+            // Add save button to reading results
+            const saveBtn = document.createElement('button');
+            saveBtn.id = 'save-reading-btn';
+            saveBtn.className = 'oracle-btn';
+            saveBtn.textContent = '💾 Save to Spiritual Journal';
+            saveBtn.onclick = saveOracleReading;
+            
+            // Add spiritual context inputs
+            const contextInputs = document.createElement('div');
+            contextInputs.className = 'reading-context';
+            contextInputs.innerHTML = `
+                <div class="context-inputs">
+                    <div class="input-group">
+                        <label for="reading-question">Sacred Question (Optional):</label>
+                        <input type="text" id="reading-question" placeholder="What guidance do you seek?">
+                    </div>
+                    <div class="input-group">
+                        <label for="emotional-state">Current Emotional State:</label>
+                        <select id="emotional-state">
+                            <option value="">Select...</option>
+                            <option value="peaceful">Peaceful</option>
+                            <option value="anxious">Anxious</option>
+                            <option value="hopeful">Hopeful</option>
+                            <option value="confused">Confused</option>
+                            <option value="excited">Excited</option>
+                            <option value="contemplative">Contemplative</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="life-focus">Life Focus Area:</label>
+                        <select id="life-focus">
+                            <option value="">Select...</option>
+                            <option value="relationships">Relationships</option>
+                            <option value="career">Career</option>
+                            <option value="spirituality">Spirituality</option>
+                            <option value="health">Health</option>
+                            <option value="creativity">Creativity</option>
+                            <option value="personal-growth">Personal Growth</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+            
+            // Insert before card selection (will be moved to results when revealed)
+            const cardSelection = document.getElementById('card-selection');
+            cardSelection.insertBefore(contextInputs, cardSelection.firstChild);
+        }
+
+        /**
+         * Disable database features for guests
+         */
+        function disableDatabaseFeatures() {
+            // Show guest message
+            const guestMessage = document.createElement('div');
+            guestMessage.className = 'guest-message';
+            guestMessage.innerHTML = `
+                <div class="guest-notice">
+                    🌟 To save your readings and track your spiritual journey, 
+                    <a href="../members-new.html">please login to your Divine Temple account</a> 🌟
+                </div>
+            `;
+            
+            document.querySelector('#oracle-cards-content .oracle-intro').appendChild(guestMessage);
+        }
+
+        // Initialize database features when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            checkUserSession();
+        });
     </script>
 </body>
 </html>
