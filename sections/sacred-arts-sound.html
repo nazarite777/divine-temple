@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sacred Arts & Sound - Divine Temple</title>
+    
+    <!-- Performance optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Critical CSS -->
+    <link rel="preload" href="../css/critical.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/critical.min.css"></noscript>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    
+    <style>
+        :root {
+            --primary-bg: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            --accent-purple: #8b5fbf;
+            --accent-gold: #d4af37;
+            --accent-orange: #ff9800;
+            --accent-cyan: #00e5ff;
+            --accent-rose: #f8bbd9;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .arts-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .arts-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .arts-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: var(--text-shadow);
+        }
+
+        .arts-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .arts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .arts-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .arts-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 152, 0, 0.3);
+            border-color: var(--accent-orange);
+        }
+
+        .arts-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-cyan));
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            text-align: center;
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--accent-orange);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .card-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .card-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .card-features li {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .card-features li::before {
+            content: '🎨';
+            position: absolute;
+            left: 0;
+            color: var(--accent-cyan);
+        }
+
+        .arts-btn {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .arts-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 152, 0, 0.4);
+        }
+
+        .featured-tool {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.2), rgba(0, 229, 255, 0.2));
+            border: 2px solid var(--accent-cyan);
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent-cyan);
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Modal Styles */
+        .session-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .session-modal {
+            background: var(--primary-bg);
+            border-radius: 25px;
+            padding: 0;
+            max-width: 1200px;
+            max-height: 800px;
+            width: 100%;
+            height: 90vh;
+            position: relative;
+            border: 2px solid var(--accent-orange);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .session-header {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .session-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            text-shadow: var(--text-shadow);
+        }
+
+        .session-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .session-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .session-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        /* Sacred Canvas Styles */
+        .sacred-canvas {
+            border: 2px solid var(--accent-gold);
+            border-radius: 15px;
+            background: white;
+            cursor: crosshair;
+            margin: 1rem auto;
+            display: block;
+            max-width: 100%;
+        }
+
+        .canvas-tools {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .canvas-tools input,
+        .canvas-tools button {
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+        }
+
+        .canvas-tools button:hover {
+            background: var(--accent-orange);
+        }
+
+        /* Sound Interface Styles */
+        .sound-interface {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .sound-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sound-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .sound-card.playing {
+            border-color: var(--accent-orange);
+            background: rgba(255, 152, 0, 0.1);
+        }
+
+        .sound-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .sound-name {
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .frequency-display {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Audio Controls */
+        .audio-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .control-btn.active {
+            background: var(--accent-orange);
+        }
+
+        /* Pattern Gallery */
+        .pattern-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .pattern-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 1rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pattern-btn:hover {
+            background: var(--accent-orange);
+        }
+
+        /* Inspiration Display */
+        .inspiration-display {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1rem 0;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            font-style: italic;
+            color: var(--accent-gold);
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .arts-container {
+                padding: 1rem;
+            }
+
+            .arts-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .featured-tool {
+                grid-column: 1;
+            }
+
+            .session-modal {
+                margin: 1rem;
+                height: calc(100vh - 2rem);
+            }
+
+            .sound-interface {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .canvas-tools {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .sacred-canvas {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+
+        @keyframes soundWave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(1.2); }
+        }
+
+        .sound-wave {
+            animation: soundWave 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="arts-container">
+        <button class="back-btn" onclick="window.parent.postMessage('back', '*')">
+            ← Back to Temple
+        </button>
+
+        <div class="arts-header">
+            <div class="card-icon">🎨</div>
+            <h1 class="arts-title">Sacred Arts & Sound</h1>
+            <p class="arts-subtitle">Express your soul through divine creativity and healing vibrations</p>
+        </div>
+
+        <div class="arts-grid">
+            <!-- Mystic Arts Studio - Featured Tool -->
+            <div class="arts-card featured-tool" onclick="openMysticArts()">
+                <div class="featured-badge">Creative Studio</div>
+                <div class="card-icon">🖌️</div>
+                <h3 class="card-title">Mystic Arts Studio</h3>
+                <p class="card-description">
+                    Create sacred art with digital tools, divine inspiration, and guided artistic meditation.
+                </p>
+                <ul class="card-features">
+                    <li>Sacred digital canvas</li>
+                    <li>Divine inspiration generator</li>
+                    <li>Sacred geometry patterns</li>
+                    <li>Mandala creation tools</li>
+                    <li>Art meditation guidance</li>
+                </ul>
+                <button class="arts-btn">Enter Art Studio</button>
+            </div>
+
+            <!-- Sacred Sound Healing -->
+            <div class="arts-card" onclick="openSacredSound()">
+                <div class="card-icon">🔔</div>
+                <h3 class="card-title">Sacred Sound Healing</h3>
+                <p class="card-description">
+                    Heal and harmonize with sacred frequencies, singing bowls, and binaural beats.
+                </p>
+                <ul class="card-features">
+                    <li>Tibetan singing bowls</li>
+                    <li>Healing frequencies (528Hz, 432Hz)</li>
+                    <li>Binaural beats for focus</li>
+                    <li>Nature soundscapes</li>
+                </ul>
+                <button class="arts-btn">Experience Sound</button>
+            </div>
+
+            <!-- Mantra & Chanting -->
+            <div class="arts-card" onclick="openMantraChanting()">
+                <div class="card-icon">🕉️</div>
+                <h3 class="card-title">Mantra & Chanting</h3>
+                <p class="card-description">
+                    Sacred mantras, chanting practices, and vocal healing for spiritual elevation.
+                </p>
+                <ul class="card-features">
+                    <li>Traditional Sanskrit mantras</li>
+                    <li>Chakra healing chants</li>
+                    <li>Light language activation</li>
+                    <li>Vocal toning exercises</li>
+                </ul>
+                <button class="arts-btn">Begin Chanting</button>
+            </div>
+
+            <!-- Sound Bath Experience -->
+            <div class="arts-card" onclick="openSoundBath()">
+                <div class="card-icon">🌊</div>
+                <h3 class="card-title">Sound Bath Journey</h3>
+                <p class="card-description">
+                    Immersive sound healing sessions with multiple instruments and frequencies.
+                </p>
+                <ul class="card-features">
+                    <li>Multi-layered sound experiences</li>
+                    <li>Crystal bowl harmonics</li>
+                    <li>Gong meditation journeys</li>
+                    <li>Ambient soundscapes</li>
+                </ul>
+                <button class="arts-btn">Enter Sound Bath</button>
+            </div>
+
+            <!-- Music Meditation -->
+            <div class="arts-card" onclick="openMusicMeditation()">
+                <div class="card-icon">🎵</div>
+                <h3 class="card-title">Music Meditation</h3>
+                <p class="card-description">
+                    Meditative music compositions designed for deep relaxation and spiritual connection.
+                </p>
+                <ul class="card-features">
+                    <li>Ambient meditation tracks</li>
+                    <li>Sacred instrument music</li>
+                    <li>Frequency-based compositions</li>
+                    <li>Custom meditation playlists</li>
+                </ul>
+                <button class="arts-btn">Listen & Meditate</button>
+            </div>
+
+            <!-- Creative Expression -->
+            <div class="arts-card" onclick="openCreativeExpression()">
+                <div class="card-icon">✨</div>
+                <h3 class="card-title">Creative Expression</h3>
+                <p class="card-description">
+                    Guided creative exercises combining art, sound, and spiritual practice.
+                </p>
+                <ul class="card-features">
+                    <li>Intuitive art exercises</li>
+                    <li>Sound-guided drawing</li>
+                    <li>Color therapy practices</li>
+                    <li>Creative flow states</li>
+                </ul>
+                <button class="arts-btn">Express Freely</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Modal -->
+    <div id="session-modal" class="session-modal-overlay">
+        <div class="session-modal">
+            <div class="session-header">
+                <h2 class="session-title" id="session-title">Sacred Arts Session</h2>
+                <button class="session-close" onclick="closeSession()">×</button>
+            </div>
+            <div class="session-content" id="session-content">
+                <!-- Session content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Scripts -->
+    <script src="../js/performance.js" defer></script>
+    <script src="../js/image-optimizer.js" defer></script>
+
+    <script>
+        // Sacred Arts & Sound data and state
+        let currentSession = {
+            type: '',
+            isActive: false,
+            canvas: null,
+            context: null,
+            isDrawing: false,
+            audioContext: null,
+            currentSounds: []
+        };
+
+        const sacredSounds = [
+            { name: 'Om Mantra', frequency: '432Hz', icon: '🕉️', type: 'mantra' },
+            { name: 'Tibetan Bowl', frequency: '528Hz', icon: '🔔', type: 'bowl' },
+            { name: 'Heart Chakra', frequency: '639Hz', icon: '💚', type: 'chakra' },
+            { name: 'Forest Sounds', frequency: 'Nature', icon: '🌲', type: 'nature' },
+            { name: 'Ocean Waves', frequency: 'Nature', icon: '🌊', type: 'nature' },
+            { name: 'Rain Meditation', frequency: 'Nature', icon: '🌧️', type: 'nature' },
+            { name: 'Crystal Singing', frequency: '741Hz', icon: '💎', type: 'crystal' },
+            { name: 'Binaural Focus', frequency: '40Hz', icon: '🎧', type: 'binaural' }
+        ];
+
+        const mantras = [
+            { text: 'Om Namah Shivaya', meaning: 'I honor the Divine within', language: 'Sanskrit' },
+            { text: 'Om Mani Padme Hum', meaning: 'The jewel in the lotus', language: 'Sanskrit' },
+            { text: 'So Hum', meaning: 'I am That', language: 'Sanskrit' },
+            { text: 'Om Shanti Shanti Shanti', meaning: 'Peace of mind, body, and spirit', language: 'Sanskrit' },
+            { text: 'Gate Gate Paragate', meaning: 'Gone beyond the beyond', language: 'Sanskrit' },
+            { text: 'Lokah Samastah Sukhino Bhavantu', meaning: 'May all beings be happy and free', language: 'Sanskrit' }
+        ];
+
+        const inspirations = [
+            "Let your soul express its divine light through colors that speak your truth.",
+            "Draw from the infinite well of cosmic creativity within your being.",
+            "Channel the sacred feminine and masculine energies through your artistic expression.",
+            "Create patterns that reflect the divine geometry of your soul's blueprint.",
+            "Allow your higher self to guide each stroke, each color, each sacred symbol.",
+            "Express the unity of all creation through your divine artistic vision.",
+            "Paint your prayers, draw your dreams, create your healing.",
+            "Let divine inspiration flow through you like rivers of liquid gold."
+        ];
+
+        // Session Functions
+        function openMysticArts() {
+            showSessionModal('Mystic Arts Studio');
+            loadMysticArtsContent();
+        }
+
+        function openSacredSound() {
+            showSessionModal('Sacred Sound Healing');
+            loadSacredSoundContent();
+        }
+
+        function openMantraChanting() {
+            showSessionModal('Mantra & Chanting');
+            loadMantraContent();
+        }
+
+        function openSoundBath() {
+            showSessionModal('Sound Bath Journey');
+            loadSoundBathContent();
+        }
+
+        function openMusicMeditation() {
+            showSessionModal('Music Meditation');
+            loadMusicMeditationContent();
+        }
+
+        function openCreativeExpression() {
+            showSessionModal('Creative Expression');
+            loadCreativeExpressionContent();
+        }
+
+        function showSessionModal(title) {
+            document.getElementById('session-title').textContent = title;
+            document.getElementById('session-modal').style.display = 'flex';
+        }
+
+        function closeSession() {
+            // Stop any playing sounds
+            if (currentSession.currentSounds.length > 0) {
+                currentSession.currentSounds.forEach(sound => {
+                    if (sound.pause) sound.pause();
+                });
+                currentSession.currentSounds = [];
+            }
+            
+            document.getElementById('session-modal').style.display = 'none';
+            currentSession.isActive = false;
+        }
+
+        function loadMysticArtsContent() {
+            const content = document.getElementById('session-content');
+            content.innerHTML = `
+                <div class="mystic-arts-session">
+                    <div class="tool-section">
+                        <h3>🌟 Sacred Canvas</h3>
+                        <canvas id="sacred-canvas" class="sacred-canvas" width="600" height="400"></canvas>
+                        <div class="canvas-tools">
+                            <input type="color" id="brush-color" value="#d4af37" title="Brush Color">
+                            <input type="range" id="brush-size" min="1" max="20" value="5" title="Brush Size">
+                            <button onclick="clearCanvas()">Clear Canvas</button>
+                            <button onclick="saveArt()">Save Art</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-section">
+                        <h3>💫 Divine Inspiration</h3>
+                        <button onclick="generateInspiration()" class="arts-btn" style="width: auto; padding: 1rem 2rem;">
+                            Get Divine Inspiration
+                        </button>
+                        <div id="inspiration-text" class="inspiration-display">
+                            Click above to receive divine creative guidance...
+                        </div>
+                    </div>
+                    
+                    <div class="tool-section">
+                        <h3>🖌️ Sacred Patterns</h3>
+                        <div class="pattern-gallery">
+                            <button onclick="drawMandala()" class="pattern-btn">Draw Mandala</button>
+                            <button onclick="drawSacredGeometry()" class="pattern-btn">Sacred Geometry</button>
+                            <button onclick="drawFlowerOfLife()" class="pattern-btn">Flower of Life</button>
+                            <button onclick="drawSriYantra()" class="pattern-btn">Sri Yantra</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            setupCanvas();
+        }
+
+        function loadSacredSoundContent() {
+            const content = document.getElementById('session-content');
+            const soundElements = sacredSounds.map((sound, index) => 
+                `<div class="sound-card" onclick="playSound(${index})" data-sound="${index}">
+                    <div class="sound-icon">${sound.icon}</div>
+                    <div class="sound-name">${sound.name}</div>
+                    <div class="frequency-display">${sound.frequency}</div>
+                </div>`
+            ).join('');
+            
+            content.innerHTML = `
+                <div class="sacred-sound-session">
+                    <h3>Choose Your Sacred Sounds</h3>
+                    <div class="sound-interface">${soundElements}</div>
+                    <div class="audio-controls">
+                        <button class="control-btn" onclick="stopAllSounds()">Stop All</button>
+                        <button class="control-btn" onclick="startSoundMeditation()">Begin Meditation</button>
+                    </div>
+                    <div id="sound-guidance" class="inspiration-display">
+                        Select sounds above to create your personalized healing environment
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadMantraContent() {
+            const content = document.getElementById('session-content');
+            const mantraElements = mantras.map((mantra, index) => 
+                `<div class="sound-card" onclick="playMantra(${index})" data-mantra="${index}">
+                    <div class="sound-icon">🕉️</div>
+                    <div class="sound-name">${mantra.text}</div>
+                    <div class="frequency-display">${mantra.meaning}</div>
+                </div>`
+            ).join('');
+            
+            content.innerHTML = `
+                <div class="mantra-session">
+                    <h3>Sacred Mantras & Chanting</h3>
+                    <div class="sound-interface">${mantraElements}</div>
+                    <div class="audio-controls">
+                        <button class="control-btn" onclick="startChantingSession()">Begin Chanting</button>
+                        <button class="control-btn" onclick="guidedMantraSession()">Guided Session</button>
+                    </div>
+                    <div id="mantra-guidance" class="inspiration-display">
+                        Choose a mantra to begin your chanting practice
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadSoundBathContent() {
+            const content = document.getElementById('session-content');
+            content.innerHTML = `
+                <div class="soundbath-session">
+                    <h3>Immersive Sound Bath Experience</h3>
+                    <div class="audio-controls">
+                        <button class="control-btn" onclick="startSoundBath('gentle')">Gentle Journey</button>
+                        <button class="control-btn" onclick="startSoundBath('deep')">Deep Healing</button>
+                        <button class="control-btn" onclick="startSoundBath('chakra')">Chakra Cleansing</button>
+                    </div>
+                    <div id="soundbath-display" class="inspiration-display">
+                        Choose your sound bath journey above to begin deep healing
+                    </div>
+                    <div class="session-timer" id="session-timer" style="text-align: center; font-size: 2rem; margin: 2rem 0;">
+                        --:--
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadMusicMeditationContent() {
+            const content = document.getElementById('session-content');
+            content.innerHTML = `
+                <div class="music-meditation-session">
+                    <h3>Meditative Music Experience</h3>
+                    <div class="audio-controls">
+                        <button class="control-btn" onclick="playMeditationTrack('ambient')">Ambient Meditation</button>
+                        <button class="control-btn" onclick="playMeditationTrack('flute')">Sacred Flute</button>
+                        <button class="control-btn" onclick="playMeditationTrack('strings')">Healing Strings</button>
+                        <button class="control-btn" onclick="playMeditationTrack('frequency')">Pure Frequencies</button>
+                    </div>
+                    <div id="music-display" class="inspiration-display">
+                        Select a meditation track to enhance your spiritual practice
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadCreativeExpressionContent() {
+            const content = document.getElementById('session-content');
+            content.innerHTML = `
+                <div class="creative-expression-session">
+                    <h3>Guided Creative Expression</h3>
+                    <div class="audio-controls">
+                        <button class="control-btn" onclick="startIntuitiveArt()">Intuitive Art</button>
+                        <button class="control-btn" onclick="startSoundDrawing()">Sound-Guided Drawing</button>
+                        <button class="control-btn" onclick="startColorTherapy()">Color Therapy</button>
+                        <button class="control-btn" onclick="startCreativeFlow()">Creative Flow State</button>
+                    </div>
+                    <div id="creative-guidance" class="inspiration-display">
+                        Choose a creative practice to express your soul's truth
+                    </div>
+                </div>
+            `;
+        }
+
+        // Canvas Functions
+        function setupCanvas() {
+            const canvas = document.getElementById('sacred-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            currentSession.canvas = canvas;
+            currentSession.context = ctx;
+            
+            // Set white background
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            let isDrawing = false;
+            
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                draw(e);
+            });
+            
+            canvas.addEventListener('mousemove', (e) => {
+                if (isDrawing) draw(e);
+            });
+            
+            canvas.addEventListener('mouseup', () => {
+                isDrawing = false;
+                ctx.beginPath();
+            });
+            
+            function draw(e) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const color = document.getElementById('brush-color').value;
+                const size = document.getElementById('brush-size').value;
+                
+                ctx.lineWidth = size;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = color;
+                
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+            }
+        }
+
+        function clearCanvas() {
+            const canvas = currentSession.canvas;
+            const ctx = currentSession.context;
+            if (!canvas || !ctx) return;
+            
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function saveArt() {
+            const canvas = currentSession.canvas;
+            if (!canvas) return;
+            
+            const link = document.createElement('a');
+            link.download = 'sacred-art-' + Date.now() + '.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function generateInspiration() {
+            const randomInspiration = inspirations[Math.floor(Math.random() * inspirations.length)];
+            document.getElementById('inspiration-text').innerHTML = `<p>"${randomInspiration}"</p>`;
+        }
+
+        // Sacred Pattern Functions
+        function drawMandala() {
+            const canvas = currentSession.canvas;
+            const ctx = currentSession.context;
+            if (!canvas || !ctx) return;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            ctx.strokeStyle = '#d4af37';
+            ctx.lineWidth = 2;
+            
+            // Draw concentric circles
+            for (let r = 20; r < 150; r += 30) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Draw radial lines
+                for (let i = 0; i < 12; i++) {
+                    const angle = (i * Math.PI) / 6;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(centerX + Math.cos(angle) * r, centerY + Math.sin(angle) * r);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function drawSacredGeometry() {
+            const canvas = currentSession.canvas;
+            const ctx = currentSession.context;
+            if (!canvas || !ctx) return;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            ctx.strokeStyle = '#8b5cf6';
+            ctx.lineWidth = 2;
+            
+            // Draw hexagon
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                const x = centerX + Math.cos(angle) * 100;
+                const y = centerY + Math.sin(angle) * 100;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+            
+            // Draw inner triangles
+            for (let i = 0; i < 6; i++) {
+                const angle1 = (i * Math.PI) / 3;
+                const angle2 = ((i + 2) * Math.PI) / 3;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(centerX + Math.cos(angle1) * 100, centerY + Math.sin(angle1) * 100);
+                ctx.lineTo(centerX + Math.cos(angle2) * 100, centerY + Math.sin(angle2) * 100);
+                ctx.closePath();
+                ctx.stroke();
+            }
+        }
+
+        function drawFlowerOfLife() {
+            const canvas = currentSession.canvas;
+            const ctx = currentSession.context;
+            if (!canvas || !ctx) return;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 40;
+            
+            ctx.strokeStyle = '#00e5ff';
+            ctx.lineWidth = 2;
+            
+            // Center circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Surrounding circles
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+        }
+
+        function drawSriYantra() {
+            const canvas = currentSession.canvas;
+            const ctx = currentSession.context;
+            if (!canvas || !ctx) return;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            ctx.strokeStyle = '#ff9800';
+            ctx.lineWidth = 2;
+            
+            // Draw Sri Yantra triangles
+            const size = 80;
+            
+            // Upward triangles
+            for (let i = 0; i < 4; i++) {
+                const offset = i * 20;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY - size + offset);
+                ctx.lineTo(centerX - size + offset, centerY + size - offset);
+                ctx.lineTo(centerX + size - offset, centerY + size - offset);
+                ctx.closePath();
+                ctx.stroke();
+            }
+            
+            // Downward triangles
+            for (let i = 0; i < 5; i++) {
+                const offset = i * 15;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY + size - offset);
+                ctx.lineTo(centerX - size + offset, centerY - size + offset);
+                ctx.lineTo(centerX + size - offset, centerY - size + offset);
+                ctx.closePath();
+                ctx.stroke();
+            }
+        }
+
+        // Sound Functions
+        function playSound(index) {
+            const sound = sacredSounds[index];
+            const soundCard = document.querySelector(`[data-sound="${index}"]`);
+            
+            // Toggle playing state
+            if (soundCard.classList.contains('playing')) {
+                soundCard.classList.remove('playing');
+                // Stop sound logic here
+            } else {
+                soundCard.classList.add('playing');
+                // Play sound logic here
+                showSoundGuidance(sound);
+            }
+        }
+
+        function showSoundGuidance(sound) {
+            const guidance = document.getElementById('sound-guidance');
+            if (guidance) {
+                guidance.innerHTML = `
+                    <h4>Now Playing: ${sound.name}</h4>
+                    <p>Frequency: ${sound.frequency}</p>
+                    <p>Allow the sacred vibrations to flow through your being and restore harmony to your energy field.</p>
+                `;
+            }
+        }
+
+        function stopAllSounds() {
+            const soundCards = document.querySelectorAll('.sound-card');
+            soundCards.forEach(card => card.classList.remove('playing'));
+            
+            const guidance = document.getElementById('sound-guidance');
+            if (guidance) {
+                guidance.innerHTML = 'All sounds stopped. Choose new sounds for your healing session.';
+            }
+        }
+
+        function playMantra(index) {
+            const mantra = mantras[index];
+            const guidance = document.getElementById('mantra-guidance');
+            if (guidance) {
+                guidance.innerHTML = `
+                    <h4>${mantra.text}</h4>
+                    <p><strong>Meaning:</strong> ${mantra.meaning}</p>
+                    <p>Repeat this sacred mantra with intention and devotion.</p>
+                `;
+            }
+        }
+
+        function startSoundBath(type) {
+            const display = document.getElementById('soundbath-display');
+            const timer = document.getElementById('session-timer');
+            
+            if (display) {
+                const descriptions = {
+                    'gentle': 'Gentle healing frequencies wash over you like warm light...',
+                    'deep': 'Deep transformational sounds penetrate your cellular structure...',
+                    'chakra': 'Sacred chakra frequencies align your energy centers...'
+                };
+                
+                display.innerHTML = descriptions[type];
+            }
+            
+            // Start 20-minute timer
+            let minutes = 20;
+            let seconds = 0;
+            
+            const timerInterval = setInterval(() => {
+                timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (seconds === 0) {
+                    if (minutes === 0) {
+                        clearInterval(timerInterval);
+                        alert('🔔 Sound bath complete! How do you feel? ✨');
+                        return;
+                    }
+                    minutes--;
+                    seconds = 59;
+                } else {
+                    seconds--;
+                }
+            }, 1000);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('session-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSession();
+            }
+        });
+
+        // Handle escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSession();
+            }
+        });
+
+        // Performance tracking
+        window.addEventListener('load', () => {
+            console.log('🎨 Sacred Arts & Sound loaded successfully');
+        });
+    </script>
+</body>
+</html>

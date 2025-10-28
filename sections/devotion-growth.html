@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devotion & Growth - Divine Temple</title>
+    
+    <!-- Performance optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Critical CSS -->
+    <link rel="preload" href="../css/critical.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/critical.min.css"></noscript>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    
+    <style>
+        :root {
+            --primary-bg: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            --accent-purple: #8b5fbf;
+            --accent-gold: #d4af37;
+            --accent-rose: #f8bbd9;
+            --accent-cyan: #00e5ff;
+            --accent-warm: #ff6b6b;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .devotion-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .devotion-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .devotion-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-rose), var(--accent-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: var(--text-shadow);
+        }
+
+        .devotion-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .devotion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .devotion-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .devotion-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(248, 187, 217, 0.3);
+            border-color: var(--accent-rose);
+        }
+
+        .devotion-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-rose), var(--accent-gold));
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            text-align: center;
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--accent-rose);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .card-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .card-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .card-features li {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .card-features li::before {
+            content: '🙏';
+            position: absolute;
+            left: 0;
+            color: var(--accent-gold);
+        }
+
+        .devotion-btn {
+            background: linear-gradient(135deg, var(--accent-rose), var(--accent-gold));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .devotion-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(248, 187, 217, 0.4);
+        }
+
+        .featured-tool {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(248, 187, 217, 0.2), rgba(212, 175, 55, 0.2));
+            border: 2px solid var(--accent-gold);
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent-gold);
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Modal Styles */
+        .session-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .session-modal {
+            background: var(--primary-bg);
+            border-radius: 25px;
+            padding: 0;
+            max-width: 1200px;
+            max-height: 800px;
+            width: 100%;
+            height: 90vh;
+            position: relative;
+            border: 2px solid var(--accent-rose);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .session-header {
+            background: linear-gradient(135deg, var(--accent-rose), var(--accent-gold));
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .session-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            text-shadow: var(--text-shadow);
+        }
+
+        .session-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .session-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .session-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        /* Prayer & Affirmation Styles */
+        .prayer-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1rem 0;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .prayer-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .affirmation {
+            font-style: italic;
+            font-size: 1.2rem;
+            color: var(--accent-gold);
+            margin: 1rem 0;
+            line-height: 1.8;
+        }
+
+        .prayer-text {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            margin: 1rem 0;
+        }
+
+        /* Journal Styles */
+        .journal-entry {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .journal-entry textarea {
+            width: 100%;
+            min-height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 1rem;
+            color: white;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .journal-entry textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Progress Tracking */
+        .progress-tracker {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .progress-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .progress-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-rose);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Devotional Categories */
+        .devotion-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .category-card.selected {
+            border-color: var(--accent-rose);
+            background: rgba(248, 187, 217, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .devotion-container {
+                padding: 1rem;
+            }
+
+            .devotion-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .featured-tool {
+                grid-column: 1;
+            }
+
+            .session-modal {
+                margin: 1rem;
+                height: calc(100vh - 2rem);
+            }
+
+            .devotion-categories {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @keyframes prayerGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(248, 187, 217, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(248, 187, 217, 0.6); }
+        }
+
+        .active-prayer {
+            animation: prayerGlow 3s infinite;
+        }
+
+        .timer-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            text-align: center;
+            margin: 2rem 0;
+            text-shadow: var(--text-shadow);
+        }
+
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .control-btn.active {
+            background: var(--accent-rose);
+        }
+    </style>
+</head>
+<body>
+    <div class="devotion-container">
+        <button class="back-btn" onclick="window.parent.postMessage('back', '*')">
+            ← Back to Temple
+        </button>
+
+        <div class="devotion-header">
+            <div class="card-icon">🙏</div>
+            <h1 class="devotion-title">Devotion & Growth</h1>
+            <p class="devotion-subtitle">Cultivate your sacred practice and spiritual development</p>
+        </div>
+
+        <div class="devotion-grid">
+            <!-- Daily Devotions - Featured Tool -->
+            <div class="devotion-card featured-tool" onclick="openDailyDevotions()">
+                <div class="featured-badge">Daily Practice</div>
+                <div class="card-icon">🌅</div>
+                <h3 class="card-title">Daily Devotions</h3>
+                <p class="card-description">
+                    Start and end each day with sacred prayers, reflections, and divine connection.
+                </p>
+                <ul class="card-features">
+                    <li>Morning prayers & gratitude</li>
+                    <li>Evening reflections</li>
+                    <li>Sacred affirmations</li>
+                    <li>Divine guidance requests</li>
+                    <li>Blessing practices</li>
+                </ul>
+                <button class="devotion-btn">Begin Daily Practice</button>
+            </div>
+
+            <!-- Spiritual Journaling -->
+            <div class="devotion-card" onclick="openSpiritualJournal()">
+                <div class="card-icon">📖</div>
+                <h3 class="card-title">Spiritual Journal</h3>
+                <p class="card-description">
+                    Record your spiritual journey, insights, dreams, and divine messages.
+                </p>
+                <ul class="card-features">
+                    <li>Daily reflection prompts</li>
+                    <li>Dream journal</li>
+                    <li>Gratitude entries</li>
+                    <li>Spiritual insights</li>
+                </ul>
+                <button class="devotion-btn">Open Journal</button>
+            </div>
+
+            <!-- Sacred Affirmations -->
+            <div class="devotion-card" onclick="openAffirmations()">
+                <div class="card-icon">✨</div>
+                <h3 class="card-title">Sacred Affirmations</h3>
+                <p class="card-description">
+                    Transform your reality with powerful divine affirmations and positive declarations.
+                </p>
+                <ul class="card-features">
+                    <li>20 sacred affirmations</li>
+                    <li>Category-based selection</li>
+                    <li>Daily affirmation practice</li>
+                    <li>Personal affirmation creator</li>
+                </ul>
+                <button class="devotion-btn">Affirm & Transform</button>
+            </div>
+
+            <!-- Growth Tracker -->
+            <div class="devotion-card" onclick="openGrowthTracker()">
+                <div class="card-icon">📈</div>
+                <h3 class="card-title">Growth Tracker</h3>
+                <p class="card-description">
+                    Monitor your spiritual progress, set sacred goals, and celebrate your evolution.
+                </p>
+                <ul class="card-features">
+                    <li>Progress visualization</li>
+                    <li>Spiritual milestone tracking</li>
+                    <li>Goal setting & achievement</li>
+                    <li>Growth insights</li>
+                </ul>
+                <button class="devotion-btn">Track Progress</button>
+            </div>
+
+            <!-- Prayer Garden -->
+            <div class="devotion-card" onclick="openPrayerGarden()">
+                <div class="card-icon">🌸</div>
+                <h3 class="card-title">Prayer Garden</h3>
+                <p class="card-description">
+                    A beautiful space for various prayer practices, intentions, and divine communion.
+                </p>
+                <ul class="card-features">
+                    <li>Traditional prayers</li>
+                    <li>Personal prayer creation</li>
+                    <li>Intention setting</li>
+                    <li>Healing prayers</li>
+                </ul>
+                <button class="devotion-btn">Enter Garden</button>
+            </div>
+
+            <!-- Gratitude Practice -->
+            <div class="devotion-card" onclick="openGratitudePractice()">
+                <div class="card-icon">💖</div>
+                <h3 class="card-title">Gratitude Practice</h3>
+                <p class="card-description">
+                    Cultivate appreciation and thankfulness through structured gratitude exercises.
+                </p>
+                <ul class="card-features">
+                    <li>Daily gratitude lists</li>
+                    <li>Appreciation meditations</li>
+                    <li>Gratitude letter writing</li>
+                    <li>Thankfulness rituals</li>
+                </ul>
+                <button class="devotion-btn">Practice Gratitude</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Modal -->
+    <div id="session-modal" class="session-modal-overlay">
+        <div class="session-modal">
+            <div class="session-header">
+                <h2 class="session-title" id="session-title">Devotional Practice</h2>
+                <button class="session-close" onclick="closeSession()">×</button>
+            </div>
+            <div class="session-content" id="session-content">
+                <!-- Session content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Scripts -->
+    <script src="../js/performance.js" defer></script>
+    <script src="../js/image-optimizer.js" defer></script>
+
+    <script>
+        // Devotion & Growth data and state
+        let currentSession = {
+            type: '',
+            isActive: false,
+            timer: null,
+            startTime: null,
+            journalEntries: JSON.parse(localStorage.getItem('divineJournal') || '[]'),
+            growthData: JSON.parse(localStorage.getItem('spiritualGrowth') || '{}')
+        };
+
+        const sacredAffirmations = [
+            { text: "I am a beacon of divine light, guided by infinite wisdom.", category: "Light" },
+            { text: "I trust my sacred path and walk with divine confidence.", category: "Trust" },
+            { text: "I trust my inner wisdom and divine knowing.", category: "Wisdom" },
+            { text: "My heart is open to divine love and infinite compassion.", category: "Love" },
+            { text: "My third eye is open and I see with divine clarity.", category: "Clarity" },
+            { text: "I am one with the divine source of all creation.", category: "Unity" },
+            { text: "I am surrounded by loving angels who guide my every step.", category: "Angels" },
+            { text: "I am grounded in Earth's wisdom and draw strength from nature.", category: "Earth" },
+            { text: "I flow with life's currents and trust in divine timing.", category: "Flow" },
+            { text: "I embrace transformation and rise like a phoenix from the ashes.", category: "Transformation" },
+            { text: "My mind is clear and filled with divine inspiration.", category: "Clarity" },
+            { text: "I honor my natural rhythms and trust in divine timing.", category: "Timing" },
+            { text: "I shine my divine light brightly and illuminate the world.", category: "Light" },
+            { text: "I remember my star origin and fulfill my cosmic purpose.", category: "Purpose" },
+            { text: "I grow steadily in wisdom, rooted in love, reaching for light.", category: "Growth" },
+            { text: "I cross the rainbow bridge into my beautiful new life.", category: "Transformation" },
+            { text: "I am a precious diamond, clear and strong, shaped by divine love.", category: "Strength" },
+            { text: "I spread my wings and soar into my transformed life.", category: "Freedom" },
+            { text: "I rise from every challenge more beautiful and powerful than before.", category: "Resilience" },
+            { text: "I hold the golden key to my infinite potential and possibilities.", category: "Potential" }
+        ];
+
+        const morningPrayers = [
+            {
+                title: "Divine Light Prayer",
+                text: "Divine Creator, as I awaken to this new day, fill me with Your sacred light. Guide my thoughts, words, and actions so that I may serve Your highest purpose. Let Your love flow through me to bless all I encounter. May I walk in wisdom, speak with compassion, and act with divine integrity. Thank You for this gift of life and the opportunity to grow closer to You today. Amen."
+            },
+            {
+                title: "Gratitude Morning Prayer",
+                text: "Beloved Divine Source, I begin this day with a heart overflowing with gratitude. Thank You for the breath in my lungs, the love in my heart, and the countless blessings that surround me. Open my eyes to see Your miracles in every moment, and help me to be a vessel of Your love and light in this world. Guide me to serve others with joy and to find You in every experience today. Blessed be."
+            },
+            {
+                title: "Protection & Guidance Prayer",
+                text: "Holy Spirit, I place this day in Your loving hands. Surround me with Your divine protection and fill me with Your wisdom. Clear my path of obstacles and illuminate the way forward. Help me to trust in Your perfect plan and to remain centered in Your peace, no matter what challenges may arise. Let Your angels walk beside me and Your love be my constant companion. In divine love and light, Amen."
+            }
+        ];
+
+        const eveningPrayers = [
+            {
+                title: "Evening Reflection Prayer",
+                text: "Divine Creator, as this day comes to a close, I offer You my gratitude for all the experiences, lessons, and blessings I have received. Forgive me for any moments when I fell short of Your love, and help me to forgive others as You forgive me. Let Your peace wash over me as I release this day and prepare for rest. Thank You for Your constant presence and unwavering love. May I dream of Your beauty tonight. Amen."
+            },
+            {
+                title: "Release & Surrender Prayer",
+                text: "Beloved God, I surrender to You all my worries, fears, and concerns from this day. I release any negative energy I may have absorbed and ask You to transmute it into love and light. Fill me with Your divine peace and wrap me in Your healing embrace. Help me to sleep deeply, knowing that You are watching over me and my loved ones. I trust completely in Your perfect love. Sweet dreams in Your arms, Divine One."
+            },
+            {
+                title: "Blessing Prayer",
+                text: "Sacred Source of All, I send blessings to everyone I encountered today - those who brought me joy and those who challenged me to grow. May all beings be happy, peaceful, and free from suffering. I ask Your special protection over my family, friends, and all souls seeking Your light. Thank You for another day to love, learn, and serve. May Your blessings flow abundantly to all creation. In love and light, Amen."
+            }
+        ];
+
+        // Session Functions
+        function openDailyDevotions() {
+            showSessionModal('Daily Devotions');
+            loadDailyDevotionsContent();
+        }
+
+        function openSpiritualJournal() {
+            showSessionModal('Spiritual Journal');
+            loadJournalContent();
+        }
+
+        function openAffirmations() {
+            showSessionModal('Sacred Affirmations');
+            loadAffirmationsContent();
+        }
+
+        function openGrowthTracker() {
+            showSessionModal('Growth Tracker');
+            loadGrowthTrackerContent();
+        }
+
+        function openPrayerGarden() {
+            showSessionModal('Prayer Garden');
+            loadPrayerGardenContent();
+        }
+
+        function openGratitudePractice() {
+            showSessionModal('Gratitude Practice');
+            loadGratitudePracticeContent();
+        }
+
+        function showSessionModal(title) {
+            document.getElementById('session-title').textContent = title;
+            document.getElementById('session-modal').style.display = 'flex';
+        }
+
+        function closeSession() {
+            document.getElementById('session-modal').style.display = 'none';
+            currentSession.isActive = false;
+            if (currentSession.timer) {
+                clearInterval(currentSession.timer);
+                currentSession.timer = null;
+            }
+        }
+
+        function loadDailyDevotionsContent() {
+            const content = document.getElementById('session-content');
+            const currentHour = new Date().getHours();
+            const timeOfDay = currentHour < 12 ? 'morning' : currentHour < 18 ? 'afternoon' : 'evening';
+            
+            content.innerHTML = `
+                <div class="daily-devotions-session">
+                    <div class="devotion-categories">
+                        <div class="category-card ${timeOfDay === 'morning' ? 'selected' : ''}" 
+                             onclick="showDevotions('morning')">
+                            <h4>🌅 Morning Devotions</h4>
+                            <p>Start your day with divine connection</p>
+                        </div>
+                        <div class="category-card ${timeOfDay === 'evening' ? 'selected' : ''}" 
+                             onclick="showDevotions('evening')">
+                            <h4>🌙 Evening Devotions</h4>
+                            <p>End your day with gratitude and peace</p>
+                        </div>
+                        <div class="category-card" onclick="showDevotions('affirmations')">
+                            <h4>✨ Daily Affirmations</h4>
+                            <p>Transform your reality with sacred words</p>
+                        </div>
+                    </div>
+                    <div id="devotion-content">
+                        <!-- Devotion content will load here -->
+                    </div>
+                </div>
+            `;
+            
+            showDevotions(timeOfDay);
+        }
+
+        function showDevotions(type) {
+            const contentDiv = document.getElementById('devotion-content');
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.category-card').classList.add('selected');
+            
+            if (type === 'morning') {
+                const prayers = morningPrayers.map(prayer => 
+                    `<div class="prayer-card">
+                        <h4>${prayer.title}</h4>
+                        <div class="prayer-text">${prayer.text}</div>
+                        <button class="control-btn" onclick="startPrayerReading('${prayer.title}')">
+                            🔊 Listen to Prayer
+                        </button>
+                    </div>`
+                ).join('');
+                
+                contentDiv.innerHTML = `
+                    <h3>🌅 Morning Blessings</h3>
+                    <p>Begin your day with sacred prayers and divine connection</p>
+                    ${prayers}
+                    <div class="control-buttons">
+                        <button class="control-btn" onclick="startMorningRoutine()">
+                            Begin Full Morning Routine
+                        </button>
+                    </div>
+                `;
+            } else if (type === 'evening') {
+                const prayers = eveningPrayers.map(prayer => 
+                    `<div class="prayer-card">
+                        <h4>${prayer.title}</h4>
+                        <div class="prayer-text">${prayer.text}</div>
+                        <button class="control-btn" onclick="startPrayerReading('${prayer.title}')">
+                            🔊 Listen to Prayer
+                        </button>
+                    </div>`
+                ).join('');
+                
+                contentDiv.innerHTML = `
+                    <h3>🌙 Evening Reflections</h3>
+                    <p>Close your day with gratitude, forgiveness, and divine peace</p>
+                    ${prayers}
+                    <div class="control-buttons">
+                        <button class="control-btn" onclick="startEveningRoutine()">
+                            Begin Full Evening Routine
+                        </button>
+                    </div>
+                `;
+            } else if (type === 'affirmations') {
+                const randomAffirmation = sacredAffirmations[Math.floor(Math.random() * sacredAffirmations.length)];
+                contentDiv.innerHTML = `
+                    <h3>✨ Daily Affirmation</h3>
+                    <div class="prayer-card active-prayer">
+                        <div class="affirmation">"${randomAffirmation.text}"</div>
+                        <p>Category: ${randomAffirmation.category}</p>
+                    </div>
+                    <div class="control-buttons">
+                        <button class="control-btn" onclick="getNewAffirmation()">
+                            Get New Affirmation
+                        </button>
+                        <button class="control-btn" onclick="startAffirmationPractice()">
+                            21-Day Affirmation Practice
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function loadJournalContent() {
+            const content = document.getElementById('session-content');
+            content.innerHTML = `
+                <div class="journal-session">
+                    <h3>📖 Sacred Journal</h3>
+                    <div class="journal-entry">
+                        <h4>Today's Reflection - ${new Date().toLocaleDateString()}</h4>
+                        <textarea id="daily-reflection" 
+                                  placeholder="What has your soul experienced today? Write about your spiritual insights, dreams, synchronicities, and divine messages..."></textarea>
+                        <button class="control-btn" onclick="saveJournalEntry('reflection')">
+                            Save Reflection
+                        </button>
+                    </div>
+                    <div class="journal-entry">
+                        <h4>Gratitude List</h4>
+                        <textarea id="gratitude-list" 
+                                  placeholder="List at least 5 things you're grateful for today..."></textarea>
+                        <button class="control-btn" onclick="saveJournalEntry('gratitude')">
+                            Save Gratitude
+                        </button>
+                    </div>
+                    <div class="journal-entry">
+                        <h4>Divine Messages & Dreams</h4>
+                        <textarea id="divine-messages" 
+                                  placeholder="Record any divine messages, dreams, visions, or spiritual insights you've received..."></textarea>
+                        <button class="control-btn" onclick="saveJournalEntry('messages')">
+                            Save Messages
+                        </button>
+                    </div>
+                    <div class="control-buttons">
+                        <button class="control-btn" onclick="viewJournalHistory()">
+                            View Journal History
+                        </button>
+                        <button class="control-btn" onclick="exportJournal()">
+                            Export Journal
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadAffirmationsContent() {
+            const content = document.getElementById('session-content');
+            const categories = [...new Set(sacredAffirmations.map(a => a.category))];
+            
+            const categoryButtons = categories.map(cat => 
+                `<button class="control-btn" onclick="showAffirmationsByCategory('${cat}')">${cat}</button>`
+            ).join('');
+            
+            content.innerHTML = `
+                <div class="affirmations-session">
+                    <h3>✨ Sacred Affirmations</h3>
+                    <div class="control-buttons">
+                        ${categoryButtons}
+                        <button class="control-btn" onclick="showRandomAffirmation()">Random</button>
+                    </div>
+                    <div id="affirmation-display" class="prayer-card">
+                        <div class="affirmation">Choose a category above to begin your affirmation practice</div>
+                    </div>
+                    <div class="control-buttons">
+                        <button class="control-btn" onclick="startAffirmationTimer()">
+                            🕐 5-Minute Practice
+                        </button>
+                        <button class="control-btn" onclick="createPersonalAffirmation()">
+                            Create Personal Affirmation
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadGrowthTrackerContent() {
+            const content = document.getElementById('session-content');
+            const today = new Date();
+            const startDate = new Date(currentSession.growthData.startDate || today);
+            const daysOfJourney = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+            
+            content.innerHTML = `
+                <div class="growth-tracker-session">
+                    <h3>📈 Spiritual Growth Journey</h3>
+                    <div class="progress-tracker">
+                        <div class="progress-item">
+                            <div class="progress-number">${daysOfJourney}</div>
+                            <div class="progress-label">Days of Journey</div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-number">${currentSession.journalEntries.length}</div>
+                            <div class="progress-label">Journal Entries</div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-number">${currentSession.growthData.meditationSessions || 0}</div>
+                            <div class="progress-label">Meditation Sessions</div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-number">${currentSession.growthData.prayerDays || 0}</div>
+                            <div class="progress-label">Prayer Days</div>
+                        </div>
+                    </div>
+                    <div class="journal-entry">
+                        <h4>Weekly Growth Reflection</h4>
+                        <textarea placeholder="How have you grown spiritually this week? What insights have you gained? What challenges have you overcome?"></textarea>
+                        <button class="control-btn" onclick="saveGrowthReflection()">
+                            Save Reflection
+                        </button>
+                    </div>
+                    <div class="control-buttons">
+                        <button class="control-btn" onclick="setGrowthGoals()">
+                            Set Sacred Goals
+                        </button>
+                        <button class="control-btn" onclick="celebrateProgress()">
+                            Celebrate Progress
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadPrayerGardenContent() {
+            const content = document.getElementById('session-content');
+            content.innerHTML = `
+                <div class="prayer-garden-session">
+                    <h3>🌸 Sacred Prayer Garden</h3>
+                    <div class="devotion-categories">
+                        <div class="category-card" onclick="showPrayerType('healing')">
+                            <h4>🌿 Healing Prayers</h4>
+                            <p>For physical, emotional, and spiritual healing</p>
+                        </div>
+                        <div class="category-card" onclick="showPrayerType('protection')">
+                            <h4>🛡️ Protection Prayers</h4>
+                            <p>For safety, guidance, and divine protection</p>
+                        </div>
+                        <div class="category-card" onclick="showPrayerType('abundance')">
+                            <h4>💎 Abundance Prayers</h4>
+                            <p>For prosperity, love, and spiritual richness</p>
+                        </div>
+                        <div class="category-card" onclick="showPrayerType('peace')">
+                            <h4>☮️ Peace Prayers</h4>
+                            <p>For inner peace and world harmony</p>
+                        </div>
+                    </div>
+                    <div id="prayer-display">
+                        <div class="prayer-card">
+                            <div class="affirmation">Welcome to the Sacred Prayer Garden</div>
+                            <p>Choose a prayer category above to begin your sacred communion</p>
+                        </div>
+                    </div>
+                    <div class="control-buttons">
+                        <button class="control-btn" onclick="createPersonalPrayer()">
+                            Create Personal Prayer
+                        </button>
+                        <button class="control-btn" onclick="prayForOthers()">
+                            Pray for Others
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadGratitudePracticeContent() {
+            const content = document.getElementById('session-content');
+            content.innerHTML = `
+                <div class="gratitude-session">
+                    <h3>💖 Sacred Gratitude Practice</h3>
+                    <div class="journal-entry">
+                        <h4>Today's Gratitude (5-10 items)</h4>
+                        <textarea id="gratitude-today" rows="8" 
+                                  placeholder="1. I am grateful for...
+2. I appreciate...
+3. I give thanks for...
+4. I am blessed by...
+5. My heart is full because..."></textarea>
+                        <button class="control-btn" onclick="saveGratitudeList()">
+                            Save Today's Gratitude
+                        </button>
+                    </div>
+                    <div class="devotion-categories">
+                        <div class="category-card" onclick="gratitudeMeditation()">
+                            <h4>🧘‍♀️ Gratitude Meditation</h4>
+                            <p>5-minute guided gratitude practice</p>
+                        </div>
+                        <div class="category-card" onclick="gratitudeLetter()">
+                            <h4>💌 Gratitude Letter</h4>
+                            <p>Write a thank you letter to someone special</p>
+                        </div>
+                        <div class="category-card" onclick="gratitudeRitual()">
+                            <h4>🕯️ Gratitude Ritual</h4>
+                            <p>Sacred ceremony of appreciation</p>
+                        </div>
+                    </div>
+                    <div class="timer-display" id="gratitude-timer" style="display: none;">
+                        05:00
+                    </div>
+                </div>
+            `;
+        }
+
+        // Utility Functions
+        function getNewAffirmation() {
+            const randomAffirmation = sacredAffirmations[Math.floor(Math.random() * sacredAffirmations.length)];
+            const display = document.querySelector('.active-prayer .affirmation');
+            if (display) {
+                display.textContent = `"${randomAffirmation.text}"`;
+                display.parentNode.querySelector('p').textContent = `Category: ${randomAffirmation.category}`;
+            }
+        }
+
+        function showRandomAffirmation() {
+            const display = document.getElementById('affirmation-display');
+            const randomAffirmation = sacredAffirmations[Math.floor(Math.random() * sacredAffirmations.length)];
+            display.innerHTML = `
+                <div class="affirmation">"${randomAffirmation.text}"</div>
+                <p>Category: ${randomAffirmation.category}</p>
+            `;
+        }
+
+        function showAffirmationsByCategory(category) {
+            const affirmations = sacredAffirmations.filter(a => a.category === category);
+            const randomAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
+            const display = document.getElementById('affirmation-display');
+            display.innerHTML = `
+                <div class="affirmation">"${randomAffirmation.text}"</div>
+                <p>Category: ${randomAffirmation.category}</p>
+                <p>${affirmations.length} affirmations in this category</p>
+            `;
+        }
+
+        function saveJournalEntry(type) {
+            const textarea = document.getElementById(`${type === 'reflection' ? 'daily-reflection' : type === 'gratitude' ? 'gratitude-list' : 'divine-messages'}`);
+            const entry = {
+                type: type,
+                content: textarea.value,
+                date: new Date().toISOString(),
+                timestamp: Date.now()
+            };
+            
+            currentSession.journalEntries.push(entry);
+            localStorage.setItem('divineJournal', JSON.stringify(currentSession.journalEntries));
+            
+            textarea.value = '';
+            alert(`✨ Your ${type} has been saved to your sacred journal! ✨`);
+        }
+
+        function startPrayerReading(prayerTitle) {
+            alert(`🔊 Beginning guided reading of "${prayerTitle}". Close your eyes and listen with your heart.`);
+        }
+
+        function startMorningRoutine() {
+            alert('🌅 Beginning your complete morning devotional routine. This will include prayer, gratitude, and intention setting.');
+        }
+
+        function startEveningRoutine() {
+            alert('🌙 Beginning your complete evening devotional routine. This will include reflection, forgiveness, and blessing practice.');
+        }
+
+        function gratitudeMeditation() {
+            const timer = document.getElementById('gratitude-timer');
+            timer.style.display = 'block';
+            startTimer(5 * 60, timer, () => {
+                alert('💖 Your gratitude meditation is complete. Feel the love and appreciation flowing through your being.');
+            });
+        }
+
+        function startTimer(seconds, display, callback) {
+            let remaining = seconds;
+            
+            currentSession.timer = setInterval(() => {
+                const minutes = Math.floor(remaining / 60);
+                const secs = remaining % 60;
+                display.textContent = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                
+                if (remaining <= 0) {
+                    clearInterval(currentSession.timer);
+                    callback();
+                    return;
+                }
+                remaining--;
+            }, 1000);
+        }
+
+        // Local Storage Functions
+        function saveGrowthData() {
+            localStorage.setItem('spiritualGrowth', JSON.stringify(currentSession.growthData));
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('session-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSession();
+            }
+        });
+
+        // Handle escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSession();
+            }
+        });
+
+        // Initialize growth data if first visit
+        if (!currentSession.growthData.startDate) {
+            currentSession.growthData.startDate = new Date().toISOString();
+            currentSession.growthData.meditationSessions = 0;
+            currentSession.growthData.prayerDays = 0;
+            saveGrowthData();
+        }
+
+        // Performance tracking
+        window.addEventListener('load', () => {
+            console.log('🙏 Devotion & Growth loaded successfully');
+        });
+    </script>
+</body>
+</html>

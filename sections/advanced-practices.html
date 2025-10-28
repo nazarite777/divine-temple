@@ -4,92 +4,138 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advanced Practices - Divine Temple</title>
+    
+    <!-- Performance optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Critical CSS -->
+    <link rel="preload" href="../css/critical.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/critical.min.css"></noscript>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    
     <style>
         :root {
+            --primary-bg: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            --accent-purple: #8b5fbf;
             --accent-gold: #d4af37;
-            --accent-purple: #8b5cf6;
-            --accent-blue: #3b82f6;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent-dark: #2d1b69;
+            --accent-mystic: #9d4edd;
+            --accent-shadow: #6c5ce7;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
-        
-        body {
-            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-            min-height: 100vh;
+
+        * {
             margin: 0;
-            font-family: 'Inter', sans-serif;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
             color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
-        .section-container {
-            padding: 2rem;
-            max-width: 1200px;
+
+        .advanced-container {
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 2rem;
         }
-        
-        .section-header {
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .advanced-header {
             text-align: center;
             margin-bottom: 3rem;
+            padding: 3rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
         }
-        
-        .section-header h1 {
+
+        .advanced-title {
             font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
+            font-size: clamp(2.5rem, 5vw, 4rem);
             font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
-            -webkit-background-clip: text;
+            background: linear-gradient(135deg, var(--accent-mystic), var(--accent-gold));
             background-clip: text;
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: var(--text-shadow);
         }
-        
-        .practice-grid {
+
+        .advanced-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .advanced-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 2rem;
-            margin-top: 2rem;
+            margin-bottom: 3rem;
         }
-        
-        .practice-card {
+
+        .advanced-card {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 2.5rem 2rem;
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
             cursor: pointer;
-            transition: all 0.4s;
-            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .practice-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: var(--accent-gold);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--accent-gold);
+
+        .advanced-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(139, 95, 191, 0.3);
+            border-color: var(--accent-mystic);
         }
-        
-        .practice-card:active {
-            transform: translateY(-5px) scale(1.01);
+
+        .advanced-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-mystic), var(--accent-gold));
         }
-        
-        .practice-card.implemented {
-            border-color: rgba(16, 185, 129, 0.3);
-        }
-        
-        .practice-card.implemented:hover {
-            border-color: var(--accent-gold);
-            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.2), 0 0 0 1px var(--accent-gold);
-        }
-        
-        .practice-card.advanced {
-            border-color: rgba(139, 92, 246, 0.3);
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(255, 255, 255, 0.02));
-        }
-        
-        .practice-card.advanced:hover {
-            border-color: var(--accent-purple);
-            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.3), 0 0 0 1px var(--accent-purple);
-        }
-        
-        .practice-icon {
+
+        .card-icon {
             font-size: 4rem;
             margin-bottom: 2rem;
             display: block;

@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy & Healing - Divine Temple</title>
+    
+    <!-- Performance optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Critical CSS -->
+    <link rel="preload" href="../css/critical.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/critical.min.css"></noscript>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    
+    <style>
+        :root {
+            --primary-bg: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            --accent-purple: #8b5fbf;
+            --accent-gold: #d4af37;
+            --accent-pink: #ff6b9d;
+            --accent-teal: #4ecdc4;
+            --accent-green: #66bb6a;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .energy-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .energy-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .energy-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-teal));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: var(--text-shadow);
+        }
+
+        .energy-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .energy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .energy-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .energy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 107, 157, 0.3);
+            border-color: var(--accent-pink);
+        }
+
+        .energy-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-pink), var(--accent-teal));
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            text-align: center;
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--accent-pink);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .card-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .card-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .card-features li {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .card-features li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+            color: var(--accent-teal);
+        }
+
+        .energy-btn {
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-teal));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .energy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 157, 0.4);
+        }
+
+        .featured-tool {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(78, 205, 196, 0.2));
+            border: 2px solid var(--accent-teal);
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent-teal);
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Energy Session Modal */
+        .session-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .session-modal {
+            background: var(--primary-bg);
+            border-radius: 25px;
+            padding: 0;
+            max-width: 1000px;
+            max-height: 700px;
+            width: 100%;
+            height: 85vh;
+            position: relative;
+            border: 2px solid var(--accent-pink);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .session-header {
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-teal));
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .session-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            text-shadow: var(--text-shadow);
+        }
+
+        .session-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .session-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .session-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        /* Chakra System */
+        .chakra-system {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .chakra {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .chakra:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
+
+        .chakra.active {
+            animation: chakraGlow 2s infinite alternate;
+            box-shadow: 0 0 40px currentColor;
+        }
+
+        .chakra-info {
+            text-align: center;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            min-height: 120px;
+        }
+
+        /* Aura Visualization */
+        .aura-canvas {
+            width: 300px;
+            height: 400px;
+            margin: 2rem auto;
+            position: relative;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, 
+                transparent 20%, 
+                rgba(255, 107, 157, 0.2) 40%, 
+                rgba(78, 205, 196, 0.2) 60%, 
+                rgba(102, 187, 106, 0.2) 80%, 
+                transparent 100%);
+            animation: auraFlow 4s infinite ease-in-out;
+        }
+
+        .body-silhouette {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 200px;
+            background: linear-gradient(to bottom, #333, #555);
+            border-radius: 40px 40px 20px 20px;
+        }
+
+        /* Crystal Grid */
+        .crystal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .crystal-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .crystal-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .crystal-card.selected {
+            border-color: var(--accent-pink);
+            background: rgba(255, 107, 157, 0.1);
+        }
+
+        .crystal-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .crystal-name {
+            font-weight: 600;
+            color: var(--accent-teal);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Energy Scanner */
+        .energy-scanner {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .scan-button {
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-teal));
+            color: white;
+            border: none;
+            padding: 1.5rem 3rem;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .scan-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+        }
+
+        .energy-reading {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 1rem 0;
+            border: 1px solid var(--glass-border);
+        }
+
+        .energy-levels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .energy-meter {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .meter-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.5rem;
+        }
+
+        .meter-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .meter-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 2s ease-in-out;
+            background: linear-gradient(90deg, var(--accent-pink), var(--accent-teal));
+        }
+
+        .meter-value {
+            font-weight: 600;
+            color: var(--accent-teal);
+            margin-top: 0.5rem;
+        }
+
+        /* Reiki Symbols */
+        .reiki-symbols {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .reiki-symbol {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--glass-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reiki-symbol:hover {
+            border-color: var(--accent-pink);
+            background: rgba(255, 107, 157, 0.1);
+            transform: scale(1.1);
+        }
+
+        .reiki-symbol.active {
+            animation: symbolPulse 2s infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .energy-container {
+                padding: 1rem;
+            }
+
+            .energy-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .featured-tool {
+                grid-column: 1;
+            }
+
+            .session-modal {
+                margin: 1rem;
+                height: calc(100vh - 2rem);
+            }
+
+            .chakra-system {
+                gap: 0.5rem;
+            }
+
+            .chakra {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .crystal-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .reiki-symbols {
+                gap: 1rem;
+            }
+
+            .reiki-symbol {
+                width: 80px;
+                height: 80px;
+                font-size: 1.5rem;
+            }
+        }
+
+        @keyframes chakraGlow {
+            0% { box-shadow: 0 0 20px currentColor; }
+            100% { box-shadow: 0 0 40px currentColor, 0 0 60px currentColor; }
+        }
+
+        @keyframes auraFlow {
+            0%, 100% { 
+                background: radial-gradient(ellipse at center, 
+                    transparent 20%, 
+                    rgba(255, 107, 157, 0.2) 40%, 
+                    rgba(78, 205, 196, 0.2) 60%, 
+                    rgba(102, 187, 106, 0.2) 80%, 
+                    transparent 100%);
+            }
+            50% { 
+                background: radial-gradient(ellipse at center, 
+                    transparent 20%, 
+                    rgba(78, 205, 196, 0.3) 40%, 
+                    rgba(102, 187, 106, 0.3) 60%, 
+                    rgba(255, 107, 157, 0.3) 80%, 
+                    transparent 100%);
+            }
+        }
+
+        @keyframes symbolPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+    <div class="energy-container">
+        <button class="back-btn" onclick="window.parent.postMessage('back', '*')">
+            ← Back to Temple
+        </button>
+
+        <div class="energy-header">
+            <div class="card-icon">⚡</div>
+            <h1 class="energy-title">Energy & Healing</h1>
+            <p class="energy-subtitle">Balance your energy centers and activate your natural healing abilities</p>
+        </div>
+
+        <div class="energy-grid">
+            <!-- Chakra Balancing - Featured Tool -->
+            <div class="energy-card featured-tool" onclick="openChakraBalancing()">
+                <div class="featured-badge">Most Powerful</div>
+                <div class="card-icon">💎</div>
+                <h3 class="card-title">Chakra Balancing</h3>
+                <p class="card-description">
+                    Align and balance your seven energy centers with interactive chakra healing and visualization.
+                </p>
+                <ul class="card-features">
+                    <li>Interactive 7-chakra system</li>
+                    <li>Real-time energy visualization</li>
+                    <li>Chakra-specific healing tones</li>
+                    <li>Guided balancing meditations</li>
+                    <li>Energy flow assessments</li>
+                </ul>
+                <button class="energy-btn">Balance Chakras</button>
+            </div>
+
+            <!-- Aura Cleansing -->
+            <div class="energy-card" onclick="openAuraCleansing()">
+                <div class="card-icon">🌈</div>
+                <h3 class="card-title">Aura Cleansing</h3>
+                <p class="card-description">
+                    Cleanse and strengthen your energetic field with visualization and intention techniques.
+                </p>
+                <ul class="card-features">
+                    <li>Aura visualization tools</li>
+                    <li>Energy field scanning</li>
+                    <li>Protective light meditation</li>
+                    <li>Aura color interpretation</li>
+                </ul>
+                <button class="energy-btn">Cleanse Aura</button>
+            </div>
+
+            <!-- Crystal Healing -->
+            <div class="energy-card" onclick="openCrystalHealing()">
+                <div class="card-icon">💎</div>
+                <h3 class="card-title">Crystal Healing</h3>
+                <p class="card-description">
+                    Work with crystal energies for healing, manifestation, and spiritual enhancement.
+                </p>
+                <ul class="card-features">
+                    <li>Crystal selection guide</li>
+                    <li>Healing layouts and grids</li>
+                    <li>Crystal meditation practices</li>
+                    <li>Energy programming techniques</li>
+                </ul>
+                <button class="energy-btn">Work with Crystals</button>
+            </div>
+
+            <!-- Reiki Healing -->
+            <div class="energy-card" onclick="openReikiHealing()">
+                <div class="card-icon">🙏</div>
+                <h3 class="card-title">Reiki Healing</h3>
+                <p class="card-description">
+                    Channel universal life force energy for healing yourself and others through Reiki practices.
+                </p>
+                <ul class="card-features">
+                    <li>Traditional Reiki symbols</li>
+                    <li>Self-healing techniques</li>
+                    <li>Distance healing methods</li>
+                    <li>Energy attunement guides</li>
+                </ul>
+                <button class="energy-btn">Practice Reiki</button>
+            </div>
+
+            <!-- Energy Scanner -->
+            <div class="energy-card" onclick="openEnergyScanner()">
+                <div class="card-icon">📡</div>
+                <h3 class="card-title">Energy Assessment</h3>
+                <p class="card-description">
+                    Scan and analyze your current energy levels across physical, emotional, and spiritual dimensions.
+                </p>
+                <ul class="card-features">
+                    <li>Multi-dimensional energy scan</li>
+                    <li>Vitality level assessment</li>
+                    <li>Energy blockage detection</li>
+                    <li>Personalized healing recommendations</li>
+                </ul>
+                <button class="energy-btn">Scan Energy</button>
+            </div>
+
+            <!-- Pranic Healing -->
+            <div class="energy-card" onclick="openPranicHealing()">
+                <div class="card-icon">🌀</div>
+                <h3 class="card-title">Pranic Healing</h3>
+                <p class="card-description">
+                    Work with life force energy (prana) to cleanse, energize, and heal the energy body.
+                </p>
+                <ul class="card-features">
+                    <li>Prana breathing techniques</li>
+                    <li>Energy cleansing protocols</li>
+                    <li>Chakra energizing methods</li>
+                    <li>Healing visualization</li>
+                </ul>
+                <button class="energy-btn">Channel Prana</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Energy Session Modal -->
+    <div id="session-modal" class="session-modal-overlay">
+        <div class="session-modal">
+            <div class="session-header">
+                <h2 class="session-title" id="session-title">Energy Healing Session</h2>
+                <button class="session-close" onclick="closeSession()">×</button>
+            </div>
+            <div class="session-content" id="session-content">
+                <!-- Session content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Scripts -->
+    <script src="../js/performance.js" defer></script>
+    <script src="../js/image-optimizer.js" defer></script>
+
+    <script>
+        // Energy and healing data
+        const chakraData = [
+            { 
+                name: 'Root Chakra', 
+                color: '#ff0000', 
+                location: 'Base of spine',
+                element: 'Earth',
+                symbol: '🔴',
+                frequency: 396,
+                affirmation: 'I am grounded, safe, and secure in my being.',
+                description: 'Foundation, survival, stability, grounding'
+            },
+            { 
+                name: 'Sacral Chakra', 
+                color: '#ff8c00', 
+                location: 'Lower abdomen',
+                element: 'Water',
+                symbol: '🟠',
+                frequency: 417,
+                affirmation: 'I embrace my creativity and emotional flow.',
+                description: 'Creativity, sexuality, emotion, pleasure'
+            },
+            { 
+                name: 'Solar Plexus', 
+                color: '#ffd700', 
+                location: 'Upper abdomen',
+                element: 'Fire',
+                symbol: '🟡',
+                frequency: 528,
+                affirmation: 'I am confident in my personal power.',
+                description: 'Personal power, confidence, will, transformation'
+            },
+            { 
+                name: 'Heart Chakra', 
+                color: '#00ff00', 
+                location: 'Center of chest',
+                element: 'Air',
+                symbol: '💚',
+                frequency: 639,
+                affirmation: 'I give and receive love freely and openly.',
+                description: 'Love, compassion, connection, healing'
+            },
+            { 
+                name: 'Throat Chakra', 
+                color: '#00bfff', 
+                location: 'Throat area',
+                element: 'Sound',
+                symbol: '🔵',
+                frequency: 741,
+                affirmation: 'I speak my truth with clarity and confidence.',
+                description: 'Communication, truth, expression, authenticity'
+            },
+            { 
+                name: 'Third Eye', 
+                color: '#4b0082', 
+                location: 'Between eyebrows',
+                element: 'Light',
+                symbol: '🟣',
+                frequency: 852,
+                affirmation: 'I see clearly with divine wisdom and intuition.',
+                description: 'Intuition, wisdom, spiritual insight, clairvoyance'
+            },
+            { 
+                name: 'Crown Chakra', 
+                color: '#9400d3', 
+                location: 'Top of head',
+                element: 'Thought',
+                symbol: '⚪',
+                frequency: 963,
+                affirmation: 'I am connected to divine consciousness.',
+                description: 'Spirituality, enlightenment, cosmic consciousness'
+            }
+        ];
+
+        const crystalData = [
+            { name: 'Amethyst', icon: '💜', property: 'Spiritual protection and intuition' },
+            { name: 'Rose Quartz', icon: '💗', property: 'Unconditional love and heart healing' },
+            { name: 'Clear Quartz', icon: '🤍', property: 'Amplification and clarity' },
+            { name: 'Citrine', icon: '💛', property: 'Abundance and personal power' },
+            { name: 'Black Tourmaline', icon: '🖤', property: 'Grounding and protection' },
+            { name: 'Selenite', icon: '🤍', property: 'Cleansing and high vibration' },
+            { name: 'Labradorite', icon: '🌈', property: 'Transformation and magic' },
+            { name: 'Hematite', icon: '⚫', property: 'Grounding and strength' }
+        ];
+
+        const reikiSymbols = [
+            { name: 'Cho Ku Rei', symbol: '⚡', meaning: 'Power symbol - increases energy' },
+            { name: 'Sei He Ki', symbol: '🌊', meaning: 'Harmony symbol - emotional healing' },
+            { name: 'Hon Sha Ze Sho Nen', symbol: '🔗', meaning: 'Distance symbol - transcends time/space' },
+            { name: 'Dai Ko Myo', symbol: '👑', meaning: 'Master symbol - enlightenment' }
+        ];
+
+        let currentSession = {
+            type: '',
+            isActive: false,
+            selectedChakra: null,
+            selectedCrystals: [],
+            energyLevels: {}
+        };
+
+        // Session Functions
+        function openChakraBalancing() {
+            showSessionModal('Chakra Balancing');
+            loadChakraContent();
+        }
+
+        function openAuraCleansing() {
+            showSessionModal('Aura Cleansing');
+            loadAuraContent();
+        }
+
+        function openCrystalHealing() {
+            showSessionModal('Crystal Healing');
+            loadCrystalContent();
+        }
+
+        function openReikiHealing() {
+            showSessionModal('Reiki Healing');
+            loadReikiContent();
+        }
+
+        function openEnergyScanner() {
+            showSessionModal('Energy Assessment');
+            loadScannerContent();
+        }
+
+        function openPranicHealing() {
+            showSessionModal('Pranic Healing');
+            loadPranicContent();
+        }
+
+        function showSessionModal(title) {
+            document.getElementById('session-title').textContent = title;
+            document.getElementById('session-modal').style.display = 'flex';
+        }
+
+        function closeSession() {
+            document.getElementById('session-modal').style.display = 'none';
+            currentSession.isActive = false;
+        }
+
+        function loadChakraContent() {
+            const content = document.getElementById('session-content');
+            const chakraElements = chakraData.map((chakra, index) => 
+                `<div class="chakra" style="background: ${chakra.color}; color: white;" 
+                      onclick="selectChakra(${index})" data-chakra="${index}">
+                    ${chakra.symbol}
+                </div>`
+            ).join('');
+            
+            content.innerHTML = `
+                <div class="chakra-session">
+                    <h3>Interactive Chakra Balancing</h3>
+                    <p>Click on each chakra to focus and balance your energy centers</p>
+                    <div class="chakra-system">${chakraElements}</div>
+                    <div class="chakra-info" id="chakra-info">
+                        <h4>Select a chakra to begin</h4>
+                        <p>Click on any chakra above to learn about it and start balancing</p>
+                    </div>
+                    <div class="session-controls">
+                        <button class="energy-btn" onclick="startChakraSequence()" style="width: auto; padding: 1rem 2rem;">
+                            🌟 Start Full Sequence
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadAuraContent() {
+            const content = document.getElementById('session-content');
+            content.innerHTML = `
+                <div class="aura-session">
+                    <h3>Aura Visualization & Cleansing</h3>
+                    <div class="aura-canvas">
+                        <div class="body-silhouette"></div>
+                    </div>
+                    <div class="session-controls">
+                        <button class="energy-btn" onclick="startAuraCleansing()" style="width: auto; padding: 1rem 2rem;">
+                            🌈 Begin Cleansing
+                        </button>
+                        <button class="energy-btn" onclick="scanAura()" style="width: auto; padding: 1rem 2rem;">
+                            👁️ Scan Aura
+                        </button>
+                    </div>
+                    <div id="aura-reading" class="energy-reading" style="display: none;">
+                        <h4>Your Aura Reading</h4>
+                        <div id="aura-details"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadCrystalContent() {
+            const content = document.getElementById('session-content');
+            const crystalElements = crystalData.map((crystal, index) => 
+                `<div class="crystal-card" onclick="selectCrystal(${index})" data-crystal="${index}">
+                    <div class="crystal-icon">${crystal.icon}</div>
+                    <div class="crystal-name">${crystal.name}</div>
+                    <div class="crystal-property">${crystal.property}</div>
+                </div>`
+            ).join('');
+            
+            content.innerHTML = `
+                <div class="crystal-session">
+                    <h3>Crystal Healing & Selection</h3>
+                    <p>Choose crystals that resonate with your current needs</p>
+                    <div class="crystal-grid">${crystalElements}</div>
+                    <div class="session-controls">
+                        <button class="energy-btn" onclick="createCrystalGrid()" style="width: auto; padding: 1rem 2rem;">
+                            💎 Create Healing Grid
+                        </button>
+                        <button class="energy-btn" onclick="startCrystalMeditation()" style="width: auto; padding: 1rem 2rem;">
+                            🧘 Crystal Meditation
+                        </button>
+                    </div>
+                    <div id="crystal-guidance" class="energy-reading">
+                        <h4>Crystal Guidance</h4>
+                        <p>Select crystals above to receive personalized guidance for your healing journey.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadReikiContent() {
+            const content = document.getElementById('session-content');
+            const symbolElements = reikiSymbols.map((symbol, index) => 
+                `<div class="reiki-symbol" onclick="activateSymbol(${index})" data-symbol="${index}">
+                    ${symbol.symbol}
+                </div>`
+            ).join('');
+            
+            content.innerHTML = `
+                <div class="reiki-session">
+                    <h3>Reiki Healing Practice</h3>
+                    <p>Work with traditional Reiki symbols for healing and energy work</p>
+                    <div class="reiki-symbols">${symbolElements}</div>
+                    <div id="symbol-info" class="energy-reading">
+                        <h4>Reiki Symbol Information</h4>
+                        <p>Click on any symbol above to learn about its meaning and application.</p>
+                    </div>
+                    <div class="session-controls">
+                        <button class="energy-btn" onclick="startReikiSession()" style="width: auto; padding: 1rem 2rem;">
+                            🙏 Begin Healing Session
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadScannerContent() {
+            const content = document.getElementById('session-content');
+            content.innerHTML = `
+                <div class="scanner-session">
+                    <h3>Comprehensive Energy Assessment</h3>
+                    <div class="energy-scanner">
+                        <button class="scan-button" onclick="performEnergyScan()">
+                            🔍 Start Energy Scan
+                        </button>
+                    </div>
+                    <div id="scan-results" class="energy-reading" style="display: none;">
+                        <h4>Your Energy Assessment</h4>
+                        <div class="energy-levels" id="energy-levels">
+                            <!-- Energy levels will be populated here -->
+                        </div>
+                        <div id="recommendations"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadPranicContent() {
+            const content = document.getElementById('session-content');
+            content.innerHTML = `
+                <div class="pranic-session">
+                    <h3>Pranic Healing Practice</h3>
+                    <div class="session-controls">
+                        <button class="energy-btn" onclick="startPranicBreathing()" style="width: auto; padding: 1rem 2rem;">
+                            🌬️ Prana Breathing
+                        </button>
+                        <button class="energy-btn" onclick="startEnergyCleansing()" style="width: auto; padding: 1rem 2rem;">
+                            ✨ Energy Cleansing
+                        </button>
+                        <button class="energy-btn" onclick="startChakraEnergizing()" style="width: auto; padding: 1rem 2rem;">
+                            ⚡ Chakra Energizing
+                        </button>
+                    </div>
+                    <div id="pranic-guidance" class="energy-reading">
+                        <h4>Pranic Healing Guidance</h4>
+                        <p>Select a technique above to begin working with life force energy for healing and vitalization.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Interactive Functions
+        function selectChakra(index) {
+            const chakras = document.querySelectorAll('.chakra');
+            chakras.forEach(c => c.classList.remove('active'));
+            chakras[index].classList.add('active');
+            
+            const chakra = chakraData[index];
+            currentSession.selectedChakra = index;
+            
+            document.getElementById('chakra-info').innerHTML = `
+                <h4>${chakra.name} ${chakra.symbol}</h4>
+                <p><strong>Location:</strong> ${chakra.location}</p>
+                <p><strong>Element:</strong> ${chakra.element}</p>
+                <p><strong>Frequency:</strong> ${chakra.frequency} Hz</p>
+                <p><strong>Focus:</strong> ${chakra.description}</p>
+                <p><strong>Affirmation:</strong> "${chakra.affirmation}"</p>
+                <button class="energy-btn" onclick="balanceChakra(${index})" style="width: auto; padding: 0.8rem 1.5rem; margin-top: 1rem;">
+                    Balance This Chakra
+                </button>
+            `;
+        }
+
+        function selectCrystal(index) {
+            const crystalCard = document.querySelector(`[data-crystal="${index}"]`);
+            const crystal = crystalData[index];
+            
+            if (crystalCard.classList.contains('selected')) {
+                crystalCard.classList.remove('selected');
+                currentSession.selectedCrystals = currentSession.selectedCrystals.filter(c => c !== index);
+            } else {
+                crystalCard.classList.add('selected');
+                currentSession.selectedCrystals.push(index);
+            }
+            
+            updateCrystalGuidance();
+        }
+
+        function updateCrystalGuidance() {
+            const guidance = document.getElementById('crystal-guidance');
+            if (currentSession.selectedCrystals.length === 0) {
+                guidance.innerHTML = `
+                    <h4>Crystal Guidance</h4>
+                    <p>Select crystals above to receive personalized guidance for your healing journey.</p>
+                `;
+                return;
+            }
+            
+            const selectedCrystals = currentSession.selectedCrystals.map(i => crystalData[i]);
+            guidance.innerHTML = `
+                <h4>Your Crystal Selection</h4>
+                <p>You have chosen ${selectedCrystals.length} crystal(s) for your healing:</p>
+                <ul>
+                    ${selectedCrystals.map(crystal => 
+                        `<li><strong>${crystal.name}</strong> - ${crystal.property}</li>`
+                    ).join('')}
+                </ul>
+                <p><em>This combination is perfect for creating a balanced energy field that supports both grounding and spiritual elevation.</em></p>
+            `;
+        }
+
+        function performEnergyScan() {
+            const resultsDiv = document.getElementById('scan-results');
+            const levelsDiv = document.getElementById('energy-levels');
+            
+            resultsDiv.style.display = 'block';
+            
+            // Simulate energy scan with random but realistic values
+            const energyTypes = [
+                { name: 'Physical Vitality', level: Math.floor(Math.random() * 40) + 60 },
+                { name: 'Emotional Balance', level: Math.floor(Math.random() * 40) + 50 },
+                { name: 'Mental Clarity', level: Math.floor(Math.random() * 40) + 55 },
+                { name: 'Spiritual Connection', level: Math.floor(Math.random() * 40) + 65 },
+                { name: 'Chakra Alignment', level: Math.floor(Math.random() * 40) + 45 },
+                { name: 'Aura Strength', level: Math.floor(Math.random() * 40) + 60 }
+            ];
+            
+            levelsDiv.innerHTML = energyTypes.map(energy => `
+                <div class="energy-meter">
+                    <div class="meter-label">${energy.name}</div>
+                    <div class="meter-bar">
+                        <div class="meter-fill" style="width: ${energy.level}%"></div>
+                    </div>
+                    <div class="meter-value">${energy.level}%</div>
+                </div>
+            `).join('');
+            
+            // Add recommendations
+            const recommendations = document.getElementById('recommendations');
+            recommendations.innerHTML = `
+                <h4>Healing Recommendations</h4>
+                <ul>
+                    <li>Focus on ${energyTypes.sort((a, b) => a.level - b.level)[0].name.toLowerCase()} through targeted energy work</li>
+                    <li>Practice daily chakra balancing meditation</li>
+                    <li>Work with grounding crystals to stabilize your energy field</li>
+                    <li>Incorporate breathwork to enhance your life force energy</li>
+                </ul>
+            `;
+        }
+
+        function balanceChakra(index) {
+            const chakra = chakraData[index];
+            alert(`🌟 Balancing ${chakra.name}...\n\nVisualize ${chakra.color} light spinning clockwise at your ${chakra.location}. \n\nRepeat: "${chakra.affirmation}"\n\nFeel the healing energy flowing through this center. ✨`);
+        }
+
+        function startChakraSequence() {
+            alert('🌈 Starting full chakra sequence...\n\nThis will guide you through balancing all 7 chakras in sequence. \n\nFind a comfortable position and prepare for a 20-minute journey through your energy centers. ✨');
+        }
+
+        function scanAura() {
+            const auraReading = document.getElementById('aura-reading');
+            const auraDetails = document.getElementById('aura-details');
+            
+            auraReading.style.display = 'block';
+            
+            const auraColors = [
+                { color: 'Golden', meaning: 'Spiritual wisdom and divine connection' },
+                { color: 'Blue', meaning: 'Calm communication and truth' },
+                { color: 'Green', meaning: 'Healing energy and heart-centered love' },
+                { color: 'Purple', meaning: 'Psychic abilities and intuition' },
+                { color: 'Pink', meaning: 'Compassion and emotional healing' }
+            ];
+            
+            const dominantColor = auraColors[Math.floor(Math.random() * auraColors.length)];
+            
+            auraDetails.innerHTML = `
+                <p><strong>Dominant Aura Color:</strong> ${dominantColor.color}</p>
+                <p><strong>Meaning:</strong> ${dominantColor.meaning}</p>
+                <p><strong>Energy State:</strong> Your aura shows balanced energy flow with strong spiritual connection.</p>
+                <p><strong>Recommendations:</strong> Continue your current spiritual practices and trust your intuitive abilities.</p>
+            `;
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('session-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSession();
+            }
+        });
+
+        // Handle escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSession();
+            }
+        });
+
+        // Performance tracking
+        window.addEventListener('load', () => {
+            console.log('⚡ Energy & Healing center loaded successfully');
+        });
+    </script>
+</body>
+</html>
