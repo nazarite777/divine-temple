@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oracle & Divination - Divine Temple</title>
+    
+    <!-- Performance optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Critical CSS -->
+    <link rel="preload" href="../css/critical.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/critical.min.css"></noscript>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    
+    <style>
+        :root {
+            --primary-bg: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            --accent-purple: #8b5fbf;
+            --accent-gold: #d4af37;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .oracle-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .oracle-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .oracle-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: var(--text-shadow);
+        }
+
+        .oracle-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .oracle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .divination-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .divination-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(139, 95, 191, 0.3);
+            border-color: var(--accent-purple);
+        }
+
+        .divination-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold));
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            text-align: center;
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .card-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .card-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .card-features li {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .card-features li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+            color: var(--accent-gold);
+        }
+
+        .oracle-btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .oracle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+        }
+
+        .featured-tool {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(139, 95, 191, 0.2), rgba(212, 175, 55, 0.2));
+            border: 2px solid var(--accent-gold);
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent-gold);
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Oracle Cards Modal Styles */
+        .oracle-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .oracle-modal {
+            background: var(--primary-bg);
+            border-radius: 25px;
+            padding: 0;
+            max-width: 1400px;
+            max-height: 900px;
+            width: 100%;
+            height: 90vh;
+            position: relative;
+            border: 2px solid var(--accent-gold);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .oracle-modal-header {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .oracle-modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            text-shadow: var(--text-shadow);
+        }
+
+        .oracle-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .oracle-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .oracle-modal-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        /* Reading interface styles */
+        .reading-types h3 {
+            text-align: center;
+            color: var(--accent-gold);
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .reading-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .reading-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+            border: 2px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .reading-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3);
+        }
+
+        .reading-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .reading-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .reading-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .reading-card h4 {
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .reading-card p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .card-selection h3 {
+            text-align: center;
+            color: var(--accent-gold);
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-selection p {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .card-deck {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .oracle-card-back {
+            aspect-ratio: 2/3;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--glass-border);
+            min-height: 120px;
+        }
+
+        .oracle-card-back:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .card-back-design {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-symbol {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-pattern {
+            width: 25px;
+            height: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+        }
+
+        .oracle-card-back.selected {
+            background: linear-gradient(135deg, var(--accent-gold), #fbbf24);
+            animation: pulse 1s infinite;
+            transform: scale(1.1);
+        }
+
+        .card-selected {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #0f3460;
+        }
+
+        .selection-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .selection-progress {
+            text-align: center;
+            margin: 2rem 0;
+            font-size: 1.4rem;
+            color: var(--accent-gold);
+            padding: 1rem;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 15px;
+            border: 1px solid var(--accent-gold);
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .reading-results {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95));
+            border-radius: 25px;
+            padding: 3rem;
+            margin: 2rem 0;
+            border: 2px solid var(--accent-gold);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .reading-results h3 {
+            text-align: center;
+            color: var(--accent-purple);
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--accent-gold);
+            font-weight: 700;
+        }
+
+        .revealed-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .revealed-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+            border: 3px solid var(--accent-gold);
+            border-radius: 25px;
+            padding: 2.5rem;
+            display: grid;
+            grid-template-columns: 1fr 180px 2fr;
+            gap: 2.5rem;
+            align-items: start;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            margin-bottom: 2rem;
+        }
+
+        .card-position h4 {
+            color: var(--accent-purple);
+            margin-bottom: 0.8rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .position-meaning {
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        .card-reveal {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            border-radius: 20px;
+            color: white;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .card-image {
+            font-size: 4rem;
+            margin-bottom: 1.2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            margin: 0;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-message {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .message-section h5 {
+            color: var(--accent-gold);
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .message-section p {
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.8;
+            margin: 0;
+            font-size: 1.1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-gold);
+        }
+
+        .affirmation {
+            font-style: italic;
+            color: var(--accent-gold) !important;
+            font-weight: 600;
+            font-size: 1.2rem !important;
+            text-align: center;
+            padding: 1.5rem !important;
+            background: rgba(212, 175, 55, 0.15) !important;
+            border: 2px solid var(--accent-gold) !important;
+            border-radius: 15px !important;
+        }
+
+        .reading-actions {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .reading-summary {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--accent-gold);
+        }
+
+        .summary-header h3 {
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+        }
+
+        .reading-type {
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .reading-date {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .summary-content p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .meditation-prompt h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .meditation-prompt ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .meditation-prompt li {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .meditation-prompt li::before {
+            content: '🌟';
+            position: absolute;
+            left: 0;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .oracle-container {
+                padding: 1rem;
+            }
+
+            .oracle-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .oracle-modal {
+                margin: 1rem;
+                height: calc(100vh - 2rem);
+            }
+
+            .oracle-modal-header {
+                padding: 1.5rem;
+            }
+
+            .oracle-modal-title {
+                font-size: 2rem;
+            }
+
+            .oracle-modal-content {
+                padding: 1rem;
+            }
+
+            .revealed-card {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .card-deck {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .reading-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .featured-tool {
+                grid-column: 1;
+            }
+        }
+
+        /* Loading animation */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(212, 175, 55, 0.3);
+            border-top: 4px solid var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="oracle-container">
+        <button class="back-btn" onclick="window.parent.postMessage('back', '*')">
+            ← Back to Temple
+        </button>
+
+        <div class="oracle-header">
+            <div class="card-icon">🔮</div>
+            <h1 class="oracle-title">Oracle & Divination</h1>
+            <p class="oracle-subtitle">Divine guidance through sacred divination practices</p>
+        </div>
+
+        <div class="oracle-grid">
+            <!-- Oracle Cards - Featured Tool -->
+            <div class="divination-card featured-tool" onclick="openOracleCards()">
+                <div class="featured-badge">Most Popular</div>
+                <div class="card-icon">🃏</div>
+                <h3 class="card-title">Sacred Oracle Cards</h3>
+                <p class="card-description">
+                    Connect with divine wisdom through our comprehensive Oracle Cards system featuring 20 sacred cards with four reading types.
+                </p>
+                <ul class="card-features">
+                    <li>20 Sacred Oracle Cards with divine messages</li>
+                    <li>Single, Three-Card, Celtic Cross & Daily readings</li>
+                    <li>Personal reading history and statistics</li>
+                    <li>Interactive card selection experience</li>
+                    <li>Save and share meaningful readings</li>
+                </ul>
+                <button class="oracle-btn">Begin Oracle Reading</button>
+            </div>
+
+            <!-- Tarot Cards -->
+            <div class="divination-card" onclick="openTarotCards()">
+                <div class="card-icon">🌟</div>
+                <h3 class="card-title">Tarot Wisdom</h3>
+                <p class="card-description">
+                    Explore the ancient wisdom of Tarot with traditional and modern interpretations for deep spiritual insight.
+                </p>
+                <ul class="card-features">
+                    <li>Full 78-card Tarot deck</li>
+                    <li>Multiple spread options</li>
+                    <li>Detailed card meanings</li>
+                    <li>Intuitive guidance system</li>
+                </ul>
+                <button class="oracle-btn">Draw Tarot Cards</button>
+            </div>
+
+            <!-- Rune Casting -->
+            <div class="divination-card" onclick="openRuneCasting()">
+                <div class="card-icon">ᚱ</div>
+                <h3 class="card-title">Ancient Runes</h3>
+                <p class="card-description">
+                    Cast the sacred Norse runes to receive ancient wisdom and guidance from the old ways.
+                </p>
+                <ul class="card-features">
+                    <li>24 Elder Futhark runes</li>
+                    <li>Traditional casting methods</li>
+                    <li>Historical meanings</li>
+                    <li>Modern interpretations</li>
+                </ul>
+                <button class="oracle-btn">Cast Runes</button>
+            </div>
+
+            <!-- Pendulum Divination -->
+            <div class="divination-card" onclick="openPendulum()">
+                <div class="card-icon">🔮</div>
+                <h3 class="card-title">Pendulum Guidance</h3>
+                <p class="card-description">
+                    Use the sacred pendulum to receive yes/no answers and divine guidance for your questions.
+                </p>
+                <ul class="card-features">
+                    <li>Virtual pendulum interface</li>
+                    <li>Question guidance system</li>
+                    <li>Session recording</li>
+                    <li>Accuracy tracking</li>
+                </ul>
+                <button class="oracle-btn">Use Pendulum</button>
+            </div>
+
+            <!-- I Ching -->
+            <div class="divination-card" onclick="openIChing()">
+                <div class="card-icon">☯</div>
+                <h3 class="card-title">I Ching Oracle</h3>
+                <p class="card-description">
+                    Consult the ancient Chinese Book of Changes for profound wisdom and life guidance.
+                </p>
+                <ul class="card-features">
+                    <li>64 hexagrams with interpretations</li>
+                    <li>Traditional coin method</li>
+                    <li>Changing lines guidance</li>
+                    <li>Personal reading journal</li>
+                </ul>
+                <button class="oracle-btn">Consult I Ching</button>
+            </div>
+
+            <!-- Numerology -->
+            <div class="divination-card" onclick="openNumerology()">
+                <div class="card-icon">🔢</div>
+                <h3 class="card-title">Sacred Numerology</h3>
+                <p class="card-description">
+                    Discover the hidden meanings in numbers and their influence on your spiritual path.
+                </p>
+                <ul class="card-features">
+                    <li>Life path number calculation</li>
+                    <li>Name numerology analysis</li>
+                    <li>Daily number guidance</li>
+                    <li>Compatibility readings</li>
+                </ul>
+                <button class="oracle-btn">Explore Numbers</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Oracle Cards Modal -->
+    <div id="oracle-modal" class="oracle-modal-overlay">
+        <div class="oracle-modal">
+            <div class="oracle-modal-header">
+                <h2 class="oracle-modal-title">Sacred Oracle Cards</h2>
+                <button class="oracle-close" onclick="closeOracleModal()">×</button>
+            </div>
+            <div class="oracle-modal-content">
+                <div class="loading-spinner"></div>
+                <p style="text-align: center; margin-top: 1rem;">Loading sacred Oracle Cards experience...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Scripts -->
+    <script src="../js/performance.js" defer></script>
+    <script src="../js/image-optimizer.js" defer></script>
+
+    <script>
+        // Oracle Cards functionality
+        function openOracleCards() {
+            const modal = document.getElementById('oracle-modal');
+            modal.style.display = 'flex';
+            
+            // Load the Oracle Cards content
+            setTimeout(() => {
+                loadOracleCardsContent();
+            }, 500);
+        }
+
+        function closeOracleModal() {
+            document.getElementById('oracle-modal').style.display = 'none';
+        }
+
+        let currentReading = {
+            type: '',
+            selectedCards: [],
+            revealedCards: []
+        };
+
+        const oracleCardDatabase = [
+            {
+                name: "Divine Light",
+                image: "🌟",
+                message: "You are surrounded by divine light and protection. Trust in the guidance that flows through you.",
+                meaning: "A time of spiritual awakening and divine connection. Your intuition is heightened.",
+                affirmation: "I am a beacon of divine light, guided by infinite wisdom."
+            },
+            {
+                name: "Sacred Path",
+                image: "🛤️",
+                message: "Your path is divinely ordained. Every step leads you closer to your highest purpose.",
+                meaning: "Trust your journey. You are exactly where you need to be for your soul's growth.",
+                affirmation: "I trust my sacred path and walk with divine confidence."
+            },
+            {
+                name: "Inner Wisdom",
+                image: "🧠",
+                message: "The answers you seek lie within. Quiet your mind and listen to your inner voice.",
+                meaning: "A time for meditation and inner reflection. Your wisdom is greater than you know.",
+                affirmation: "I trust my inner wisdom and divine knowing."
+            },
+            {
+                name: "Heart Chakra",
+                image: "💚",
+                message: "Open your heart to love and compassion. Healing begins with self-acceptance.",
+                meaning: "Focus on matters of the heart. Love is your greatest teacher and healer.",
+                affirmation: "My heart is open to divine love and infinite compassion."
+            },
+            {
+                name: "Third Eye",
+                image: "👁️",
+                message: "Your psychic abilities are awakening. Pay attention to visions and dreams.",
+                meaning: "Heightened intuition and spiritual sight. Trust what you see beyond the physical.",
+                affirmation: "My third eye is open and I see with divine clarity."
+            },
+            {
+                name: "Crown Connection",
+                image: "👑",
+                message: "You are connected to the divine source. Feel the energy flowing through you.",
+                meaning: "A strong spiritual connection. You are receiving divine downloads and guidance.",
+                affirmation: "I am one with the divine source of all creation."
+            },
+            {
+                name: "Angel Guidance",
+                image: "👼",
+                message: "Your angels are near. Call upon them for support and guidance in all matters.",
+                meaning: "Divine helpers surround you. You are loved and supported beyond measure.",
+                affirmation: "I am surrounded by loving angels who guide my every step."
+            },
+            {
+                name: "Earth Connection",
+                image: "🌍",
+                message: "Ground yourself in nature. The Earth provides healing and stability.",
+                meaning: "Reconnect with the natural world. Find peace in simplicity and natural beauty.",
+                affirmation: "I am grounded in Earth's wisdom and draw strength from nature."
+            },
+            {
+                name: "Water Flow",
+                image: "🌊",
+                message: "Emotions are flowing. Allow them to cleanse and purify your spirit.",
+                meaning: "Emotional healing and release. Let your feelings flow without resistance.",
+                affirmation: "I flow with life's currents and trust in divine timing."
+            },
+            {
+                name: "Fire Transformation",
+                image: "🔥",
+                message: "Old patterns are burning away. Embrace the transformation happening within you.",
+                meaning: "Powerful transformation and rebirth. Release what no longer serves you.",
+                affirmation: "I embrace transformation and rise like a phoenix from the ashes."
+            },
+            {
+                name: "Air Clarity",
+                image: "💨",
+                message: "Clear thinking and divine inspiration are coming to you. Breathe deeply.",
+                meaning: "Mental clarity and inspired ideas. Your mind is attuned to higher wisdom.",
+                affirmation: "My mind is clear and filled with divine inspiration."
+            },
+            {
+                name: "Moon Cycles",
+                image: "🌙",
+                message: "Honor the natural rhythms of life. Rest, release, and renew.",
+                meaning: "Divine feminine wisdom and intuitive cycles. Trust in perfect timing.",
+                affirmation: "I honor my natural rhythms and trust in divine timing."
+            },
+            {
+                name: "Sun Power",
+                image: "☀️",
+                message: "Your inner light is shining brightly. Share your gifts with the world.",
+                meaning: "Vitality, joy, and self-expression. It's time to shine your light.",
+                affirmation: "I shine my divine light brightly and illuminate the world."
+            },
+            {
+                name: "Star Wisdom",
+                image: "⭐",
+                message: "You are a child of the stars. Remember your cosmic heritage and purpose.",
+                meaning: "Higher purpose and cosmic connection. You have important work to do.",
+                affirmation: "I remember my star origin and fulfill my cosmic purpose."
+            },
+            {
+                name: "Tree of Life",
+                image: "🌳",
+                message: "Growth happens slowly but surely. Your roots are strong, reach for the sky.",
+                meaning: "Steady spiritual growth and deep wisdom. You are becoming who you're meant to be.",
+                affirmation: "I grow steadily in wisdom, rooted in love, reaching for light."
+            },
+            {
+                name: "Rainbow Bridge",
+                image: "🌈",
+                message: "After every storm comes beauty. You are crossing into a new phase of life.",
+                meaning: "Transition and hope. Beautiful new beginnings await you.",
+                affirmation: "I cross the rainbow bridge into my beautiful new life."
+            },
+            {
+                name: "Crystal Clarity",
+                image: "💎",
+                message: "Your inner diamond is shining. Pressure has created something beautiful in you.",
+                meaning: "Inner strength and clarity formed through challenges. You are precious and strong.",
+                affirmation: "I am a precious diamond, clear and strong, shaped by divine love."
+            },
+            {
+                name: "Butterfly Rebirth",
+                image: "🦋",
+                message: "Your metamorphosis is complete. Spread your wings and fly to new heights.",
+                meaning: "Transformation completed. You are ready for a new phase of life.",
+                affirmation: "I spread my wings and soar into my transformed life."
+            },
+            {
+                name: "Phoenix Rising",
+                image: "🔥🦅",
+                message: "From the ashes of the old, you rise more magnificent than before.",
+                meaning: "Powerful rebirth and renewal. What seemed like an ending is actually a beginning.",
+                affirmation: "I rise from every challenge more beautiful and powerful than before."
+            },
+            {
+                name: "Golden Key",
+                image: "🗝️",
+                message: "You hold the key to unlock your highest potential. The door is opening.",
+                meaning: "New opportunities and access to higher levels of consciousness.",
+                affirmation: "I hold the golden key to my infinite potential and possibilities."
+            }
+        ];
+
+        function loadOracleCardsContent() {
+            const content = document.querySelector('#oracle-modal .oracle-modal-content');
+            
+            content.innerHTML = `
+                <!-- Reading Type Selection -->
+                <div class="reading-types" id="reading-types">
+                    <h3>Choose Your Sacred Reading</h3>
+                    <div class="reading-grid">
+                        <div class="reading-card" onclick="startReading('single')">
+                            <div class="reading-icon">🌟</div>
+                            <h4>Single Card Guidance</h4>
+                            <p>Receive clear divine guidance for your current situation</p>
+                        </div>
+                        
+                        <div class="reading-card" onclick="startReading('three')">
+                            <div class="reading-icon">🔮</div>
+                            <h4>Three Card Spread</h4>
+                            <p>Past • Present • Future or Mind • Body • Spirit</p>
+                        </div>
+                        
+                        <div class="reading-card" onclick="startReading('celtic')">
+                            <div class="reading-icon">✨</div>
+                            <h4>Celtic Cross</h4>
+                            <p>Comprehensive 10-card reading for deep insight</p>
+                        </div>
+                        
+                        <div class="reading-card" onclick="startReading('daily')">
+                            <div class="reading-icon">🌅</div>
+                            <h4>Daily Guidance</h4>
+                            <p>One card for today's spiritual message</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card Selection Interface -->
+                <div class="card-selection" id="card-selection" style="display: none;">
+                    <h3 id="selection-title">Select Your Cards</h3>
+                    <p id="selection-instruction">Take a deep breath and choose the cards that call to you</p>
+                    
+                    <div class="card-deck" id="card-deck">
+                        <!-- Cards will be generated here -->
+                    </div>
+                    
+                    <div class="selection-progress">
+                        <span id="cards-selected">0</span> / <span id="cards-needed">1</span> cards selected
+                    </div>
+                    
+                    <button id="reveal-cards" onclick="revealSelectedCards()" style="display: none;" class="oracle-btn">
+                        ✨ Reveal Divine Messages ✨
+                    </button>
+                </div>
+                
+                <!-- Reading Results -->
+                <div class="reading-results" id="reading-results" style="display: none;">
+                    <h3>Your Divine Reading</h3>
+                    <div id="revealed-cards" class="revealed-cards">
+                        <!-- Revealed cards will appear here -->
+                    </div>
+                    
+                    <div class="reading-actions">
+                        <button onclick="saveReading()" class="oracle-btn secondary">📖 Save Reading</button>
+                        <button onclick="shareReading()" class="oracle-btn secondary">🤝 Share Insight</button>
+                        <button onclick="newReading()" class="oracle-btn">🔮 New Reading</button>
+                    </div>
+                </div>
+            `;
+            
+            generateCardDeck();
+        }
+
+        function generateCardDeck() {
+            const deck = document.getElementById('card-deck');
+            if (!deck) return;
+            
+            deck.innerHTML = '';
+            
+            // Create shuffled deck
+            const shuffledCards = [...oracleCardDatabase].sort(() => Math.random() - 0.5);
+            
+            // Generate 21 cards in a sacred arrangement
+            for (let i = 0; i < 21; i++) {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'oracle-card-back';
+                cardElement.onclick = () => selectCard(i, shuffledCards[i]);
+                cardElement.innerHTML = `
+                    <div class="card-back-design">
+                        <div class="card-symbol">🔮</div>
+                        <div class="card-pattern"></div>
+                    </div>
+                `;
+                deck.appendChild(cardElement);
+            }
+        }
+
+        function startReading(type) {
+            currentReading.type = type;
+            currentReading.selectedCards = [];
+            currentReading.revealedCards = [];
+            
+            document.getElementById('reading-types').style.display = 'none';
+            document.getElementById('card-selection').style.display = 'block';
+            
+            const titles = {
+                'single': 'Select One Card',
+                'three': 'Select Three Cards',
+                'celtic': 'Select Ten Cards',
+                'daily': 'Select Your Daily Card'
+            };
+            
+            const instructions = {
+                'single': 'Choose the card that calls to your heart for divine guidance',
+                'three': 'Choose three cards for Past • Present • Future insight',
+                'celtic': 'Choose ten cards for a comprehensive Celtic Cross reading',
+                'daily': 'Choose one card for today\'s spiritual message and guidance'
+            };
+            
+            const cardsNeeded = {
+                'single': 1,
+                'three': 3,
+                'celtic': 10,
+                'daily': 1
+            };
+            
+            document.getElementById('selection-title').textContent = titles[type];
+            document.getElementById('selection-instruction').textContent = instructions[type];
+            document.getElementById('cards-needed').textContent = cardsNeeded[type];
+            
+            generateCardDeck();
+        }
+
+        function selectCard(index, cardData) {
+            const cardElement = document.querySelectorAll('.oracle-card-back')[index];
+            const neededCards = parseInt(document.getElementById('cards-needed').textContent);
+            
+            if (currentReading.selectedCards.length >= neededCards) {
+                return; // Max cards selected
+            }
+            
+            // Add selection visual
+            cardElement.classList.add('selected');
+            cardElement.innerHTML = `
+                <div class="card-selected">
+                    <div class="selection-number">${currentReading.selectedCards.length + 1}</div>
+                    <div class="card-symbol">✨</div>
+                </div>
+            `;
+            
+            currentReading.selectedCards.push({
+                index: index,
+                data: cardData,
+                element: cardElement
+            });
+            
+            document.getElementById('cards-selected').textContent = currentReading.selectedCards.length;
+            
+            if (currentReading.selectedCards.length === neededCards) {
+                document.getElementById('reveal-cards').style.display = 'block';
+            }
+        }
+
+        function revealSelectedCards() {
+            document.getElementById('card-selection').style.display = 'none';
+            document.getElementById('reading-results').style.display = 'block';
+            
+            const revealedContainer = document.getElementById('revealed-cards');
+            revealedContainer.innerHTML = '';
+            
+            const positions = getReadingPositions(currentReading.type);
+            
+            currentReading.selectedCards.forEach((card, index) => {
+                const cardReveal = document.createElement('div');
+                cardReveal.className = 'revealed-card';
+                
+                const position = positions[index] || { name: `Card ${index + 1}`, meaning: 'General guidance' };
+                
+                cardReveal.innerHTML = `
+                    <div class="card-position">
+                        <h4>${position.name}</h4>
+                        <p class="position-meaning">${position.meaning}</p>
+                    </div>
+                    
+                    <div class="card-reveal">
+                        <div class="card-image">${card.data.image}</div>
+                        <h3 class="card-name">${card.data.name}</h3>
+                    </div>
+                    
+                    <div class="card-message">
+                        <div class="message-section">
+                            <h5>💫 Divine Message</h5>
+                            <p>${card.data.message}</p>
+                        </div>
+                        
+                        <div class="message-section">
+                            <h5>🔍 Meaning</h5>
+                            <p>${card.data.meaning}</p>
+                        </div>
+                        
+                        <div class="message-section">
+                            <h5>🌟 Affirmation</h5>
+                            <p class="affirmation">"${card.data.affirmation}"</p>
+                        </div>
+                    </div>
+                `;
+                
+                revealedContainer.appendChild(cardReveal);
+            });
+            
+            // Add overall reading summary
+            addReadingSummary();
+        }
+
+        function getReadingPositions(type) {
+            const positions = {
+                'single': [
+                    { name: 'Divine Guidance', meaning: 'Your main message for this moment' }
+                ],
+                'three': [
+                    { name: 'Past Influences', meaning: 'What brought you to this moment' },
+                    { name: 'Present Situation', meaning: 'Where you are right now' },
+                    { name: 'Future Potential', meaning: 'Where you are heading' }
+                ],
+                'daily': [
+                    { name: 'Today\'s Guidance', meaning: 'Your spiritual message for today' }
+                ],
+                'celtic': [
+                    { name: 'Present Situation', meaning: 'Your current state' },
+                    { name: 'Challenge/Cross', meaning: 'What challenges or helps you' },
+                    { name: 'Distant Past', meaning: 'Foundation of the situation' },
+                    { name: 'Recent Past', meaning: 'Recent events affecting you' },
+                    { name: 'Possible Future', meaning: 'Potential outcome' },
+                    { name: 'Immediate Future', meaning: 'What\'s coming next' },
+                    { name: 'Your Approach', meaning: 'How you\'re handling things' },
+                    { name: 'External Influences', meaning: 'Others\' impact on you' },
+                    { name: 'Inner Feelings', meaning: 'Your deepest emotions' },
+                    { name: 'Final Outcome', meaning: 'The ultimate result' }
+                ]
+            };
+            
+            return positions[type] || [];
+        }
+
+        function addReadingSummary() {
+            const summary = document.createElement('div');
+            summary.className = 'reading-summary';
+            
+            const readingTypes = {
+                'single': 'Single Card Reading',
+                'three': 'Three Card Spread',
+                'daily': 'Daily Guidance',
+                'celtic': 'Celtic Cross Reading'
+            };
+            
+            summary.innerHTML = `
+                <div class="summary-header">
+                    <h3>✨ Reading Summary</h3>
+                    <p class="reading-type">${readingTypes[currentReading.type]}</p>
+                    <p class="reading-date">${new Date().toLocaleDateString()}</p>
+                </div>
+                
+                <div class="summary-content">
+                    <p>Your divine oracle reading reveals important guidance for your spiritual journey. Meditate on these messages and allow their wisdom to integrate into your consciousness.</p>
+                    
+                    <div class="meditation-prompt">
+                        <h4>🧘 Reflection Questions</h4>
+                        <ul>
+                            <li>How do these messages resonate with my current life situation?</li>
+                            <li>What actions can I take based on this guidance?</li>
+                            <li>Which affirmation speaks most strongly to my heart?</li>
+                            <li>How can I apply this wisdom in my daily spiritual practice?</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('revealed-cards').appendChild(summary);
+        }
+
+        function saveReading() {
+            const readingData = {
+                type: currentReading.type,
+                date: new Date().toISOString(),
+                cards: currentReading.selectedCards.map(card => ({
+                    name: card.data.name,
+                    message: card.data.message,
+                    meaning: card.data.meaning,
+                    affirmation: card.data.affirmation
+                }))
+            };
+            
+            const savedReadings = JSON.parse(localStorage.getItem('oracleReadings') || '[]');
+            savedReadings.push(readingData);
+            localStorage.setItem('oracleReadings', JSON.stringify(savedReadings));
+            
+            alert('🔮 Reading saved to your spiritual journal! ✨');
+        }
+
+        function shareReading() {
+            const readingText = currentReading.selectedCards.map(card => 
+                `${card.data.name}: ${card.data.message}`
+            ).join('\n\n');
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Divine Oracle Reading',
+                    text: `My Oracle Card Reading:\n\n${readingText}`,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(readingText).then(() => {
+                    alert('🤝 Reading copied to clipboard for sharing! ✨');
+                });
+            }
+        }
+
+        function newReading() {
+            document.getElementById('reading-results').style.display = 'none';
+            document.getElementById('reading-types').style.display = 'block';
+            currentReading = { type: '', selectedCards: [], revealedCards: [] };
+        }
+
+        function openTarotCards() {
+            alert('🌟 Tarot Wisdom coming soon! Stay tuned for this powerful divination tool.');
+        }
+
+        function openRuneCasting() {
+            alert('ᚱ Ancient Runes coming soon! The old wisdom awaits.');
+        }
+
+        function openPendulum() {
+            alert('🔮 Pendulum Guidance coming soon! Divine answers await.');
+        }
+
+        function openIChing() {
+            alert('☯ I Ching Oracle coming soon! Ancient Chinese wisdom will be available.');
+        }
+
+        function openNumerology() {
+            alert('🔢 Sacred Numerology coming soon! Discover your numbers\' power.');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('oracle-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeOracleModal();
+            }
+        });
+
+        // Handle escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeOracleModal();
+            }
+        });
+
+        // Performance tracking
+        window.addEventListener('load', () => {
+            console.log('🔮 Oracle & Divination tools loaded successfully');
+        });
+    </script>
+</body>
+</html>

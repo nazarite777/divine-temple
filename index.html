@@ -13,8 +13,29 @@
     <meta property="og:image" content="https://i.imgur.com/LYVHJr5.jpeg">
     <meta property="og:url" content="https://nazarite777.github.io/divine-temple">
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Performance optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//i.imgur.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Critical CSS -->
+    <link rel="preload" href="css/critical.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/critical.min.css"></noscript>
+    
+    <!-- Fonts with optimal loading -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+    
+    <!-- Preload hero image -->
+    <link rel="preload" href="https://i.imgur.com/LYVHJr5.jpeg" as="image">
+    
+    <!-- Performance tracking -->
+    <script>
+        window.performanceStart = performance.now();
+        window.edenMetrics = { start: window.performanceStart };
+    </script>
     
     <style>
         :root {
@@ -1004,6 +1025,77 @@
             // Clear any previous messages
             document.getElementById('mce-success-response').style.display = 'none';
             document.getElementById('mce-error-response').style.display = 'none';
+        });
+    </script>
+    
+    <!-- Performance Optimization Scripts -->
+    <script src="js/performance.js" defer></script>
+    <script src="js/image-optimizer.js" defer></script>
+    
+    <!-- Service Worker and Performance Monitoring -->
+    <script>
+        // Service Worker registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('🌟 Eden Consciousness Service Worker registered');
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+        
+        // Performance monitoring for Eden Consciousness
+        window.addEventListener('load', () => {
+            if (window.edenMetrics) {
+                window.edenMetrics.loadComplete = performance.now() - window.edenMetrics.start;
+                console.log(`🚀 Eden Consciousness loaded in ${Math.round(window.edenMetrics.loadComplete)}ms`);
+                
+                // Track Core Web Vitals
+                if ('PerformanceObserver' in window) {
+                    const perfObserver = new PerformanceObserver((entryList) => {
+                        const entries = entryList.getEntries();
+                        entries.forEach(entry => {
+                            if (entry.name === 'first-contentful-paint') {
+                                console.log(`🎨 First Contentful Paint: ${Math.round(entry.startTime)}ms`);
+                            }
+                            if (entry.name === 'largest-contentful-paint') {
+                                console.log(`🖼️ Largest Contentful Paint: ${Math.round(entry.startTime)}ms`);
+                            }
+                        });
+                    });
+                    
+                    try {
+                        perfObserver.observe({ entryTypes: ['paint', 'largest-contentful-paint'] });
+                    } catch (e) {
+                        // Fallback for older browsers
+                        console.log('Performance Observer not fully supported');
+                    }
+                }
+            }
+        });
+        
+        // Optimize images on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add lazy loading to images that don't have it
+            document.querySelectorAll('img:not([loading])').forEach(img => {
+                img.setAttribute('loading', 'lazy');
+            });
+            
+            // Preload critical images
+            const criticalImages = [
+                'https://i.imgur.com/LYVHJr5.jpeg'
+            ];
+            
+            criticalImages.forEach(src => {
+                const link = document.createElement('link');
+                link.rel = 'preload';
+                link.as = 'image';
+                link.href = src;
+                document.head.appendChild(link);
+            });
         });
     </script>
 </body>

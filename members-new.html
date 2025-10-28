@@ -4,7 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Divine Temple - Member Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Critical CSS for immediate rendering -->
+    <link rel="preload" href="css/critical.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/critical.min.css"></noscript>
+    
+    <!-- Resource hints for performance -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="js/performance.js" as="script">
+    <link rel="preload" href="js/image-optimizer.js" as="script">
+    
+    <!-- Non-critical CSS loaded asynchronously -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    
+    <!-- Performance monitoring script (inline for immediate execution) -->
+    <script>
+        // Start performance tracking immediately
+        window.performanceStart = performance.now();
+        
+        // Critical performance metrics
+        window.divineTempleMetrics = {
+            navigationStart: performance.timing.navigationStart,
+            loadEventStart: 0,
+            domContentLoaded: 0,
+            firstPaint: 0,
+            firstContentfulPaint: 0
+        };
+        
+        // Track DOM Content Loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            window.divineTempleMetrics.domContentLoaded = performance.now() - window.performanceStart;
+        });
+        
+        // Track load event
+        window.addEventListener('load', function() {
+            window.divineTempleMetrics.loadEventStart = performance.now() - window.performanceStart;
+        });
+    </script>
     <style>
         :root {
             --primary-gold: #D4AF37;
@@ -1479,37 +1520,37 @@
                 <p class="guide-subtitle">New to spiritual practice? Start with these recommended pathways:</p>
                 
                 <div class="quick-start-grid">
-                    <div class="quick-start-card recommended" onclick="showSectionWithLoading('spiritual-tools')">
-                        <div class="recommended-badge">✨ RECOMMENDED</div>
+                    <div class="quick-start-card recommended" onclick="showSectionWithLoading('oracle-divination')">
+                        <div class="recommended-badge">✨ FEATURED</div>
                         <div class="quick-icon">🔮</div>
-                        <h4>Spiritual Tools</h4>
-                        <p>Begin with foundational practices like Oracle Cards, Meditation, and Energy Healing</p>
+                        <h4>Oracle & Divination</h4>
+                        <p>Start your journey with divine guidance through our comprehensive Oracle Cards system</p>
                         <div class="pathway-preview">
                             <span class="preview-tool">🃏 Oracle Cards</span>
+                            <span class="preview-tool">🌟 Tarot Wisdom</span>
+                            <span class="preview-tool">ᚱ Rune Casting</span>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-start-card" onclick="showSectionWithLoading('spiritual-tools')">
+                        <div class="quick-icon">🧘</div>
+                        <h4>Spiritual Tools</h4>
+                        <p>Essential daily practices for meditation, energy healing, and spiritual growth</p>
+                        <div class="pathway-preview">
                             <span class="preview-tool">🧘‍♂️ Meditation Center</span>
                             <span class="preview-tool">⚡ Energy Healing</span>
+                            <span class="preview-tool">🎵 Sacred Sound</span>
                         </div>
                     </div>
                     
                     <div class="quick-start-card" onclick="showSectionWithLoading('personal-growth')">
-                        <div class="quick-icon">📊</div>
+                        <div class="quick-icon">�</div>
                         <h4>Personal Growth</h4>
                         <p>Track your progress and set intentions for your spiritual development</p>
                         <div class="pathway-preview">
-                            <span class="preview-tool">📈 Progress Tracking</span>
+                            <span class="preview-tool">� Progress Tracking</span>
                             <span class="preview-tool">🎯 Goal Setting</span>
-                            <span class="preview-tool">📝 Journaling</span>
-                        </div>
-                    </div>
-                    
-                    <div class="quick-start-card" onclick="showSectionWithLoading('sacred-knowledge')">
-                        <div class="quick-icon">📚</div>
-                        <h4>Sacred Knowledge</h4>
-                        <p>Explore ancient wisdom and modern consciousness teachings</p>
-                        <div class="pathway-preview">
-                            <span class="preview-tool">📖 Wisdom Library</span>
-                            <span class="preview-tool">🔍 Study Materials</span>
-                            <span class="preview-tool">💡 Insights</span>
+                            <span class="preview-tool">� Journaling</span>
                         </div>
                     </div>
                 </div>
@@ -1519,6 +1560,21 @@
         <section class="navigation-section">
             <h2 class="section-title">Explore Divine Tools</h2>
             <div class="nav-grid">
+                <div class="nav-card" onclick="showSectionWithLoading('oracle-divination')">
+                    <div class="recommended-badge">🔮 FEATURED</div>
+                    <span class="nav-icon">🃏</span>
+                    <h3 class="nav-title">Oracle & Divination</h3>
+                    <p class="nav-description">
+                        Divine guidance through sacred Oracle Cards and divination practices.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Oracle Cards</span>
+                        <span class="feature-tag">Tarot Wisdom</span>
+                        <span class="feature-tag">Rune Casting</span>
+                    </div>
+                    <div class="status-badge">✅ Fully Implemented</div>
+                </div>
+
                 <div class="nav-card" onclick="showSectionWithLoading('spiritual-tools')">
                     <div class="recommended-badge">🌟 START HERE</div>
                     <span class="nav-icon">🧘</span>
@@ -1528,8 +1584,8 @@
                     </p>
                     <div class="nav-features">
                         <span class="feature-tag">Meditation Center</span>
-                        <span class="feature-tag">Oracle Cards</span>
                         <span class="feature-tag">Energy Healing</span>
+                        <span class="feature-tag">Sacred Sound</span>
                     </div>
                     <div class="status-badge">✅ 7 Tools Ready</div>
                 </div>
@@ -2858,6 +2914,44 @@ Body Overflow: ${document.body.style.overflow}
         console.log('%c🏛️ Divine Temple Administrator Portal', 'font-size: 24px; font-weight: bold; color: #F59E0B;');
         console.log('%c✨ Eden Consciousness - Nazir El', 'font-size: 16px; color: #8B5CF6;');
         console.log('%c🔐 Secure Administrator Access', 'font-size: 14px; color: #10B981; font-weight: bold;');
+    </script>
+    
+    <!-- Performance Optimization Scripts -->
+    <script src="js/performance.js" defer></script>
+    <script src="js/image-optimizer.js" defer></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        // Register service worker for caching and offline support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('🌟 Divine Temple Service Worker registered successfully');
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+        
+        // Performance metrics reporting
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const metrics = window.divineTempleMetrics;
+                console.log('🚀 Divine Temple Performance Metrics:');
+                console.log(`  DOM Ready: ${Math.round(metrics.domContentLoaded)}ms`);
+                console.log(`  Fully Loaded: ${Math.round(metrics.loadEventStart)}ms`);
+                
+                // Report to analytics (if implemented)
+                if (window.gtag) {
+                    gtag('event', 'timing_complete', {
+                        name: 'load',
+                        value: Math.round(metrics.loadEventStart)
+                    });
+                }
+            }, 1000);
+        });
     </script>
 </body>
 </html>
