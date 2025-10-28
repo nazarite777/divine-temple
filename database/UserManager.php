@@ -104,6 +104,10 @@ class UserManager {
                 throw new Exception("Your account has been temporarily suspended from the sacred realm.");
             }
             
+            if (!$user['is_verified']) {
+                throw new Exception("Please verify your email address before entering the Divine Temple. Check your inbox for the verification email.");
+            }
+            
             // Verify password
             if (!password_verify($password, $user['password_hash'])) {
                 throw new Exception("The sacred password does not align with your soul's essence.");
@@ -216,6 +220,118 @@ class UserManager {
         $sql = "UPDATE user_sessions SET is_active = 0 WHERE session_token = :session_token";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute(['session_token' => $sessionToken]);
+    }
+    
+    /**
+     * Verify user email with token
+     */
+    public function verifyEmail($token) {
+        try {
+            // Find user by verification token
+            $sql = "SELECT id, username, email, full_name, spiritual_name, is_verified 
+                    FROM users WHERE verification_token = :token AND is_active = 1";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(['token' => $token]);
+            $user = $stmt->fetch();
+            
+            if (!$user) {
+                throw new Exception("Invalid or expired verification token");
+            }
+            
+            if ($user['is_verified']) {
+                throw new Exception("Account is already verified");
+            }
+            
+            // Update user as verified and clear token
+            $updateSql = "UPDATE users 
+                         SET is_verified = 1, verification_token = NULL, updated_at = NOW() 
+                         WHERE id = :user_id";
+            
+            $updateStmt = $this->db->prepare($updateSql);
+            $result = $updateStmt->execute(['user_id' => $user['id']]);
+            
+            if ($result) {
+                return [
+                    'success' => true,
+                    'message' => 'Your divine account has been successfully verified!',
+                    'user' => [
+                        'id' => $user['id'],
+                        'username' => $user['username'],
+                        'email' => $user['email'],
+                        'full_name' => $user['full_name'],
+                        'spiritual_name' => $user['spiritual_name']
+                    ]
+                ];
+            }
+            
+            throw new Exception("Failed to verify your account");
+            
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+    
+    /**
+     * Resend verification email
+     */
+    public function resendVerification($token = '', $email = '') {
+        try {
+            $sql = '';
+            $params = [];
+            
+            if ($token) {
+                $sql = "SELECT id, username, email, full_name, spiritual_name, is_verified 
+                       FROM users WHERE verification_token = :token";
+                $params = ['token' => $token];
+            } else if ($email) {
+                $sql = "SELECT id, username, email, full_name, spiritual_name, is_verified 
+                       FROM users WHERE email = :email";
+                $params = ['email' => strtolower($email)];
+            } else {
+                throw new Exception("Token or email is required");
+            }
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($params);
+            $user = $stmt->fetch();
+            
+            if (!$user) {
+                throw new Exception("User not found");
+            }
+            
+            if ($user['is_verified']) {
+                throw new Exception("Account is already verified");
+            }
+            
+            // Generate new verification token
+            $newToken = bin2hex(random_bytes(32));
+            
+            // Update user with new token
+            $updateSql = "UPDATE users SET verification_token = :token WHERE id = :user_id";
+            $updateStmt = $this->db->prepare($updateSql);
+            $updateStmt->execute(['token' => $newToken, 'user_id' => $user['id']]);
+            
+            return [
+                'success' => true,
+                'message' => 'New verification email has been sent',
+                'user' => [
+                    'email' => $user['email'],
+                    'full_name' => $user['full_name'],
+                    'spiritual_name' => $user['spiritual_name']
+                ],
+                'new_token' => $newToken
+            ];
+            
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        }
     }
     
     /**

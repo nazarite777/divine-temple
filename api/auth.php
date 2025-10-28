@@ -7,6 +7,7 @@ header('Access-Control-Allow-Headers: Content-Type');
 
 require_once '../database/UserManager.php';
 require_once '../database/OracleReadingManager.php';
+require_once '../database/EmailService.php';
 
 // Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -15,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $userManager = new UserManager();
 $oracleManager = new OracleReadingManager();
+$emailService = new EmailService();
 
 $action = $_GET['action'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
@@ -53,6 +55,81 @@ try {
             
             $input = json_decode(file_get_contents('php://input'), true);
             $result = $userManager->registerUser($input);
+            
+            if ($result['success']) {
+                // Send verification email
+                $emailSent = $emailService->sendVerificationEmail(
+                    $input['email'],
+                    $input['full_name'],
+                    $result['verification_token']
+                );
+                
+                if ($emailSent) {
+                    $result['email_sent'] = true;
+                    $result['message'] .= ' A verification email has been sent to your sacred inbox.';
+                } else {
+                    $result['email_sent'] = false;
+                    $result['message'] .= ' However, there was an issue sending the verification email. Please contact support.';
+                }
+            }
+            
+            echo json_encode($result);
+            break;
+            
+        case 'verify_email':
+            if ($method !== 'POST') {
+                throw new Exception('Invalid request method');
+            }
+            
+            $input = json_decode(file_get_contents('php://input'), true);
+            $token = $input['token'] ?? '';
+            
+            if (!$token) {
+                throw new Exception('Verification token is required');
+            }
+            
+            $result = $userManager->verifyEmail($token);
+            
+            if ($result['success']) {
+                // Send welcome email after successful verification
+                $emailService->sendWelcomeEmail(
+                    $result['user']['email'],
+                    $result['user']['full_name'],
+                    $result['user']['spiritual_name']
+                );
+            }
+            
+            echo json_encode($result);
+            break;
+            
+        case 'resend_verification':
+            if ($method !== 'POST') {
+                throw new Exception('Invalid request method');
+            }
+            
+            $input = json_decode(file_get_contents('php://input'), true);
+            $token = $input['token'] ?? '';
+            $email = $input['email'] ?? '';
+            
+            if (!$token && !$email) {
+                throw new Exception('Token or email is required');
+            }
+            
+            $result = $userManager->resendVerification($token, $email);
+            
+            if ($result['success']) {
+                $emailSent = $emailService->sendVerificationEmail(
+                    $result['user']['email'],
+                    $result['user']['full_name'],
+                    $result['new_token']
+                );
+                
+                if (!$emailSent) {
+                    $result['success'] = false;
+                    $result['message'] = 'Failed to send verification email';
+                }
+            }
+            
             echo json_encode($result);
             break;
             
