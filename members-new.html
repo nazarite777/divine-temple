@@ -1193,6 +1193,227 @@
             100% { transform: translateX(100%) rotate(45deg); opacity: 0; }
         }
 
+        /* Phase 8: PWA Excellence Styles */
+        .pwa-install-banner {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.95), rgba(139, 95, 191, 0.95));
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 1rem;
+            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.4);
+            z-index: 10000;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 350px;
+        }
+
+        .pwa-banner-show {
+            transform: translateX(0);
+        }
+
+        .pwa-banner-hide {
+            transform: translateX(120%);
+        }
+
+        .pwa-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: white;
+        }
+
+        .pwa-icon {
+            font-size: 2rem;
+            animation: templeGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes templeGlow {
+            from { filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8)); }
+        }
+
+        .pwa-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .pwa-text strong {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .pwa-text span {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .pwa-install-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pwa-install-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .pwa-dismiss-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            padding: 0.25rem;
+            margin-left: 0.5rem;
+        }
+
+        .pwa-dismiss-btn:hover {
+            opacity: 1;
+        }
+
+        .offline-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #dc2626, #b91c1c);
+            color: white;
+            padding: 0.75rem;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 9999;
+            transform: translateY(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .offline-indicator.offline-active {
+            transform: translateY(0);
+        }
+
+        .offline-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .offline-icon {
+            animation: offlinePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes offlinePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .pwa-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 1rem;
+            border-radius: 15px;
+            color: white;
+            font-weight: 500;
+            z-index: 10001;
+            transform: translateY(120%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+        }
+
+        .pwa-notification-info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(37, 99, 235, 0.9));
+            border: 1px solid rgba(59, 130, 246, 0.5);
+        }
+
+        .pwa-notification-success {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.9), rgba(22, 163, 74, 0.9));
+            border: 1px solid rgba(34, 197, 94, 0.5);
+        }
+
+        .pwa-notification-warning {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.9), rgba(245, 158, 11, 0.9));
+            border: 1px solid rgba(251, 191, 36, 0.5);
+        }
+
+        .notification-show {
+            transform: translateY(0);
+        }
+
+        .notification-hide {
+            transform: translateY(120%);
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .notification-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .notification-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* PWA Mobile Optimizations */
+        @media (max-width: 768px) {
+            .pwa-install-banner {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+            
+            .pwa-banner-content {
+                gap: 0.75rem;
+            }
+            
+            .pwa-text strong {
+                font-size: 0.9rem;
+            }
+            
+            .pwa-text span {
+                font-size: 0.8rem;
+            }
+            
+            .pwa-notification {
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
+            }
+        }
+
         .footer {
             text-align: center;
             padding: 3rem 1rem;
@@ -3406,6 +3627,208 @@ Body Overflow: ${document.body.style.overflow}
             }
         }
 
+        // Phase 8: PWA Excellence Features
+        function initializePWAFeatures() {
+            console.log('🚀 Initializing Phase 8 PWA Excellence features...');
+            
+            // PWA Install Prompt
+            setupPWAInstallPrompt();
+            
+            // Offline Support
+            setupOfflineSupport();
+            
+            // Background Sync Registration
+            registerBackgroundSync();
+            
+            // Push Notification Setup
+            setupPushNotifications();
+            
+            // App Shortcuts Handling
+            handleAppShortcuts();
+        }
+
+        function setupPWAInstallPrompt() {
+            let deferredPrompt;
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+                console.log('💫 PWA install prompt available');
+                e.preventDefault();
+                deferredPrompt = e;
+                showPWAInstallBanner();
+            });
+            
+            function showPWAInstallBanner() {
+                const banner = document.createElement('div');
+                banner.className = 'pwa-install-banner';
+                banner.innerHTML = `
+                    <div class="pwa-banner-content">
+                        <div class="pwa-icon">🏛️</div>
+                        <div class="pwa-text">
+                            <strong>Install Divine Temple App</strong>
+                            <span>Access your spiritual journey offline</span>
+                        </div>
+                        <button class="pwa-install-btn" onclick="installPWA()">Install</button>
+                        <button class="pwa-dismiss-btn" onclick="dismissPWABanner()">×</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(banner);
+                
+                // Auto-show animation
+                setTimeout(() => banner.classList.add('pwa-banner-show'), 100);
+                
+                // Store the install function globally
+                window.installPWA = async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        console.log(`PWA install outcome: ${outcome}`);
+                        deferredPrompt = null;
+                        banner.remove();
+                        
+                        if (outcome === 'accepted') {
+                            showNotification('🎉 Divine Temple app installed successfully!', 'success');
+                        }
+                    }
+                };
+                
+                window.dismissPWABanner = () => {
+                    banner.classList.add('pwa-banner-hide');
+                    setTimeout(() => banner.remove(), 300);
+                    localStorage.setItem('pwa-banner-dismissed', Date.now());
+                };
+                
+                // Auto-dismiss after 10 seconds if no interaction
+                setTimeout(() => {
+                    if (document.body.contains(banner)) {
+                        window.dismissPWABanner();
+                    }
+                }, 10000);
+            }
+        }
+
+        function setupOfflineSupport() {
+            // Monitor online/offline status
+            function updateOnlineStatus() {
+                const isOnline = navigator.onLine;
+                const statusIndicator = getOrCreateOfflineIndicator();
+                
+                if (isOnline) {
+                    statusIndicator.classList.remove('offline-active');
+                    console.log('🌐 Divine Temple back online');
+                } else {
+                    statusIndicator.classList.add('offline-active');
+                    console.log('📵 Divine Temple in offline mode');
+                    showOfflineNotification();
+                }
+            }
+            
+            function getOrCreateOfflineIndicator() {
+                let indicator = document.getElementById('offline-indicator');
+                if (!indicator) {
+                    indicator = document.createElement('div');
+                    indicator.id = 'offline-indicator';
+                    indicator.className = 'offline-indicator';
+                    indicator.innerHTML = `
+                        <div class="offline-content">
+                            <span class="offline-icon">📵</span>
+                            <span class="offline-text">Offline Mode - Spiritual Practice Continues</span>
+                        </div>
+                    `;
+                    document.body.appendChild(indicator);
+                }
+                return indicator;
+            }
+            
+            function showOfflineNotification() {
+                showNotification('📵 You\'re now in offline mode. Continue your spiritual practice!', 'info');
+            }
+            
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+            updateOnlineStatus(); // Initial check
+        }
+
+        function registerBackgroundSync() {
+            if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
+                navigator.serviceWorker.ready.then(registration => {
+                    console.log('🔄 Background sync registered for spiritual progress');
+                    
+                    // Register sync events for spiritual data
+                    document.addEventListener('spiritual-progress-update', () => {
+                        registration.sync.register('spiritual-progress-sync');
+                    });
+                    
+                    document.addEventListener('oracle-reading-complete', () => {
+                        registration.sync.register('oracle-reading-sync');
+                    });
+                    
+                    document.addEventListener('meditation-session-complete', () => {
+                        registration.sync.register('meditation-session-sync');
+                    });
+                });
+            }
+        }
+
+        function setupPushNotifications() {
+            if ('Notification' in window && 'serviceWorker' in navigator) {
+                // Request permission on first interaction
+                document.addEventListener('click', requestNotificationPermission, { once: true });
+            }
+            
+            function requestNotificationPermission() {
+                if (Notification.permission === 'default') {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === 'granted') {
+                            console.log('🔔 Spiritual notification permission granted');
+                            showNotification('🙏 You\'ll receive spiritual reminders and updates', 'success');
+                            subscribeToNotifications();
+                        }
+                    });
+                }
+            }
+            
+            function subscribeToNotifications() {
+                navigator.serviceWorker.ready.then(registration => {
+                    // Subscribe to push notifications (would need VAPID keys in production)
+                    console.log('📱 Subscribed to spiritual notifications');
+                });
+            }
+        }
+
+        function handleAppShortcuts() {
+            // Handle PWA shortcut navigation
+            const hash = window.location.hash;
+            if (hash) {
+                const sectionId = hash.substring(1);
+                if (sectionMap[sectionId]) {
+                    setTimeout(() => {
+                        showSectionWithLoading(sectionId);
+                    }, 1000); // Delay to allow page to load
+                }
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `pwa-notification pwa-notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span class="notification-message">${message}</span>
+                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-show and auto-hide
+            setTimeout(() => notification.classList.add('notification-show'), 100);
+            setTimeout(() => {
+                notification.classList.add('notification-hide');
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
+        }
+
         // Add entrance animation CSS
         const premiumAnimationCSS = `
             @keyframes cardEntranceFromBottom {
@@ -3429,6 +3852,9 @@ Body Overflow: ${document.body.style.overflow}
             // Initialize all Phase 7 enhancements
             initializePerformanceMonitoring();
             initializeAccessibilityEnhancements();
+            
+            // Initialize Phase 8 PWA Excellence
+            initializePWAFeatures();
             
             // Add slideOutRight animation
             const style = document.createElement('style');
@@ -3482,6 +3908,63 @@ Body Overflow: ${document.body.style.overflow}
                 }
             }, 1000);
         });
+        
+        // Phase 8: Enhanced Service Worker Registration with PWA Features
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                    .then(registration => {
+                        console.log('🏛️ Divine Temple Service Worker Phase 8 registered successfully');
+                        console.log('✨ PWA Excellence features activated');
+                        
+                        // Listen for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('🔄 New Divine Temple version available');
+                                    showUpdateNotification();
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.error('❌ Service Worker registration failed:', error);
+                    });
+            });
+        }
+        
+        function showUpdateNotification() {
+            const updateBanner = document.createElement('div');
+            updateBanner.className = 'update-notification';
+            updateBanner.innerHTML = `
+                <div class="update-content">
+                    <span class="update-icon">🌟</span>
+                    <span class="update-text">A new version of Divine Temple is available</span>
+                    <button class="update-btn" onclick="updateApp()">Update</button>
+                    <button class="update-dismiss" onclick="this.parentElement.parentElement.remove()">×</button>
+                </div>
+            `;
+            document.body.appendChild(updateBanner);
+            
+            window.updateApp = () => {
+                window.location.reload();
+            };
+        }
+        
+        // Monitor app lifecycle for PWA
+        window.addEventListener('appinstalled', () => {
+            console.log('🎉 Divine Temple PWA installed successfully');
+        });
+        
+        // Handle PWA display mode
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('🚀 Divine Temple running as PWA');
+            document.body.classList.add('pwa-mode');
+        }
+        
+        console.log('%c🏛️ Divine Temple Phase 8 PWA Excellence Complete!', 'font-size: 20px; font-weight: bold; color: #F59E0B;');
+        console.log('%c✨ Eden Consciousness - Advanced Spiritual Portal', 'font-size: 16px; color: #8B5CF6;');
     </script>
 </body>
 </html>

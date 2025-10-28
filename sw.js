@@ -3,17 +3,24 @@
  * Sacred caching for offline spiritual practice
  */
 
-const CACHE_NAME = 'divine-temple-v1.0';
-const STATIC_CACHE = 'divine-temple-static-v1.0';
-const DYNAMIC_CACHE = 'divine-temple-dynamic-v1.0';
+const CACHE_NAME = 'divine-temple-v8.0';
+const STATIC_CACHE = 'divine-temple-static-v8.0';
+const DYNAMIC_CACHE = 'divine-temple-dynamic-v8.0';
+const OFFLINE_PAGE = '/offline.html';
 
-// Resources to cache immediately
+// Enhanced resources for Phase 8 PWA Excellence
 const STATIC_ASSETS = [
     '/',
     '/index.html',
     '/members-new.html',
     '/register.html',
     '/verify-email.html',
+    '/sections/oracle-divination.html',
+    '/sections/meditation-mindfulness.html',
+    '/sections/energy-healing.html',
+    '/sections/sacred-arts-sound.html',
+    '/sections/devotion-growth.html',
+    '/sections/advanced-practices.html',
     '/sections/spiritual-tools.html',
     '/sections/meditation-corner.html',
     '/sections/astrology-insights.html',
@@ -21,23 +28,29 @@ const STATIC_ASSETS = [
     '/sections/dream-journal.html',
     '/sections/manifestation-board.html',
     '/js/performance.js',
+    '/js/image-optimizer.js',
     '/api/auth.php',
+    '/manifest.json',
+    OFFLINE_PAGE,
     'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'
 ];
 
-// Install event - cache static assets
+// Install event - cache static assets with enhanced error handling
 self.addEventListener('install', event => {
-    console.log('🌟 Divine Temple Service Worker Installing...');
+    console.log('🌟 Divine Temple Service Worker Installing - Phase 8 PWA Excellence...');
     
     event.waitUntil(
         caches.open(STATIC_CACHE)
             .then(cache => {
-                console.log('📦 Caching static assets for offline spiritual practice');
-                return cache.addAll(STATIC_ASSETS);
+                console.log('📦 Caching enhanced spiritual resources for offline practice');
+                return cache.addAll(STATIC_ASSETS).catch(err => {
+                    console.warn('⚠️ Some resources failed to cache:', err);
+                    // Continue installation even if some resources fail
+                });
             })
             .then(() => {
-                console.log('✨ Divine Temple Service Worker Installed Successfully');
+                console.log('✨ Divine Temple Service Worker Phase 8 Installed Successfully');
                 return self.skipWaiting();
             })
             .catch(error => {
@@ -385,21 +398,178 @@ self.addEventListener('push', event => {
                 {
                     action: 'open',
                     title: '🏛️ Enter Temple',
-                    icon: '/icons/temple-action.png'
+                    icon: '/icons/action-temple.png'
                 },
                 {
-                    action: 'close',
-                    title: '✨ Later',
-                    icon: '/icons/close-action.png'
+                    action: 'meditate',
+                    title: '🧘 Meditate Now',
+                    icon: '/icons/action-meditate.png'
+                },
+                {
+                    action: 'oracle',
+                    title: '🔮 Draw Oracle Card',
+                    icon: '/icons/action-oracle.png'
                 }
-            ]
+            ],
+            tag: 'divine-temple-notification'
         };
         
         event.waitUntil(
-            self.registration.showNotification('Divine Temple', options)
+            self.registration.showNotification('Divine Temple 🏛️', options)
         );
     }
 });
+
+// Enhanced notification click handling for Phase 8
+self.addEventListener('notificationclick', event => {
+    event.notification.close();
+    
+    const { action, data } = event;
+    let targetUrl = data?.url || '/members-new.html';
+    
+    // Handle specific actions
+    if (action === 'meditate') {
+        targetUrl = '/members-new.html#meditation-mindfulness';
+    } else if (action === 'oracle') {
+        targetUrl = '/members-new.html#oracle-divination';
+    } else if (action === 'open') {
+        targetUrl = '/members-new.html';
+    }
+    
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+            // Check if Divine Temple is already open
+            for (let client of clientList) {
+                if (client.url.includes('divine-temple') && 'focus' in client) {
+                    client.navigate(targetUrl);
+                    return client.focus();
+                }
+            }
+            
+            // Open new window
+            if (clients.openWindow) {
+                return clients.openWindow(targetUrl);
+            }
+        })
+    );
+});
+
+// Background sync for spiritual progress tracking
+self.addEventListener('sync', event => {
+    console.log('🔄 Background sync triggered:', event.tag);
+    
+    if (event.tag === 'spiritual-progress-sync') {
+        event.waitUntil(syncSpiritualProgress());
+    } else if (event.tag === 'oracle-reading-sync') {
+        event.waitUntil(syncOracleReadings());
+    } else if (event.tag === 'meditation-session-sync') {
+        event.waitUntil(syncMeditationSessions());
+    } else if (event.tag === 'divine-temple-sync') {
+        event.waitUntil(syncData());
+    }
+});
+
+// Enhanced sync functions for Phase 8
+async function syncSpiritualProgress() {
+    try {
+        const progressData = await getOfflineData('spiritual-progress');
+        if (progressData.length > 0) {
+            await fetch('/api/sync-progress.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ progress: progressData })
+            });
+            await clearOfflineData('spiritual-progress');
+            console.log('✨ Spiritual progress synced successfully');
+        }
+    } catch (error) {
+        console.log('❌ Failed to sync spiritual progress:', error);
+    }
+}
+
+async function syncOracleReadings() {
+    try {
+        const oracleData = await getOfflineData('oracle-readings');
+        if (oracleData.length > 0) {
+            await fetch('/api/sync-oracle.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ readings: oracleData })
+            });
+            await clearOfflineData('oracle-readings');
+            console.log('🔮 Oracle readings synced successfully');
+        }
+    } catch (error) {
+        console.log('❌ Failed to sync Oracle readings:', error);
+    }
+}
+
+async function syncMeditationSessions() {
+    try {
+        const meditationData = await getOfflineData('meditation-sessions');
+        if (meditationData.length > 0) {
+            await fetch('/api/sync-meditation.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sessions: meditationData })
+            });
+            await clearOfflineData('meditation-sessions');
+            console.log('🧘 Meditation sessions synced successfully');
+        }
+    } catch (error) {
+        console.log('❌ Failed to sync meditation sessions:', error);
+    }
+}
+
+// Offline data management utilities
+async function getOfflineData(type) {
+    try {
+        const data = localStorage.getItem(`divine-temple-offline-${type}`);
+        return data ? JSON.parse(data) : [];
+    } catch (error) {
+        console.error('Error reading offline data:', error);
+        return [];
+    }
+}
+
+async function clearOfflineData(type) {
+    try {
+        localStorage.removeItem(`divine-temple-offline-${type}`);
+    } catch (error) {
+        console.error('Error clearing offline data:', error);
+    }
+}
+
+// Periodic background sync for daily spiritual reminders
+self.addEventListener('periodicsync', event => {
+    if (event.tag === 'daily-spiritual-reminder') {
+        event.waitUntil(sendDailySpiritualReminder());
+    }
+});
+
+async function sendDailySpiritualReminder() {
+    const lastReminder = localStorage.getItem('last-spiritual-reminder');
+    const now = Date.now();
+    const oneDay = 24 * 60 * 60 * 1000;
+    
+    if (!lastReminder || (now - parseInt(lastReminder)) > oneDay) {
+        await self.registration.showNotification('Daily Spiritual Practice 🙏', {
+            body: 'Your daily spiritual journey awaits. Take a moment to connect with your divine nature.',
+            icon: '/icons/temple-icon-192.png',
+            badge: '/icons/temple-badge-72.png',
+            tag: 'daily-reminder',
+            data: { url: '/members-new.html' },
+            actions: [
+                { action: 'practice', title: '🌟 Start Practice', icon: '/icons/action-practice.png' },
+                { action: 'later', title: '⏰ Remind Later', icon: '/icons/action-later.png' }
+            ]
+        });
+        
+        localStorage.setItem('last-spiritual-reminder', now.toString());
+    }
+}
+
+console.log('🏛️ Divine Temple Service Worker Phase 8 - PWA Excellence fully loaded! ✨');
 
 // Notification click handling
 self.addEventListener('notificationclick', event => {
