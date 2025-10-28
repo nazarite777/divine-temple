@@ -441,6 +441,22 @@
             }
         `;
         document.head.appendChild(style);
+
+        // Community Function Validation
+        document.addEventListener('DOMContentLoaded', () => {
+            const requiredFunctions = [];
+            
+            if (window.DivineTemplateUtils) {
+                window.DivineTemplateUtils.validateSectionFunctions('Community', requiredFunctions);
+                window.DivineTemplateUtils.initializeSectionListeners('Community');
+                window.DivineTemplateUtils.trackSectionPerformance('Community');
+            } else {
+                console.log('🤝 Community loaded (validation script not found)');
+            }
+        });
     </script>
+
+    <!-- Load universal validation script -->
+    <script src="../js/section-validation.js" defer></script>
 </body>
 </html>

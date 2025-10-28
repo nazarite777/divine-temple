@@ -1656,7 +1656,24 @@
         // Performance tracking
         window.addEventListener('load', () => {
             console.log('🙏 Devotion & Growth loaded successfully');
+            
+            // Devotion & Growth Function Validation
+            const requiredFunctions = [
+                'startSession', 'setActiveTab', 'loadTabContent', 'addPrayerEntry',
+                'deletePrayerEntry', 'renderPrayerLog', 'saveGrowthData'
+            ];
+            
+            if (window.DivineTemplateUtils) {
+                window.DivineTemplateUtils.validateSectionFunctions('Devotion & Growth', requiredFunctions);
+                window.DivineTemplateUtils.initializeSectionListeners('Devotion & Growth');
+                window.DivineTemplateUtils.trackSectionPerformance('Devotion & Growth');
+            } else {
+                console.log('🙏 Devotion & Growth validation script not found');
+            }
         });
     </script>
+
+    <!-- Load universal validation script -->
+    <script src="../js/section-validation.js" defer></script>
 </body>
 </html>

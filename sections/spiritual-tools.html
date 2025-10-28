@@ -2516,7 +2516,33 @@
         // Initialize database features when page loads
         document.addEventListener('DOMContentLoaded', () => {
             checkUserSession();
+            
+            // Spiritual Tools specific validation
+            const requiredFunctions = [
+                'checkUserSession', 'disableDatabaseFeatures', 'openSacredGeometry',
+                'openEnergyCenter', 'openDreamJournal', 'openMantraCenter'
+            ];
+            
+            if (window.DivineTemplateUtils) {
+                window.DivineTemplateUtils.validateSectionFunctions('Spiritual Tools', requiredFunctions);
+                window.DivineTemplateUtils.initializeSectionListeners('Spiritual Tools');
+                window.DivineTemplateUtils.trackSectionPerformance('Spiritual Tools');
+            } else {
+                console.log('🔧 Spiritual Tools loaded (validation script not found)');
+            }
         });
+
+        // Enhanced error handling for spiritual tools
+        function handleToolError(operation, error) {
+            console.error(`🔧 Spiritual Tools Error in ${operation}:`, error);
+            
+            if (window.DivineTemplateUtils) {
+                window.DivineTemplateUtils.handleSectionError('Spiritual Tools', operation, error, '🔧');
+            }
+        }
     </script>
+
+    <!-- Load universal validation script -->
+    <script src="../js/section-validation.js" defer></script>
 </body>
 </html>

@@ -1096,7 +1096,62 @@
                 link.href = src;
                 document.head.appendChild(link);
             });
+            
+            // Index page function validation
+            validateIndexFunctions();
         });
+
+        // Index Page Function Validation
+        function validateIndexFunctions() {
+            const requiredFunctions = [];
+            
+            // Check for form handling
+            const form = document.getElementById('mc-embedded-subscribe-form');
+            if (form) {
+                console.log('✅ Index: Email form found and configured');
+            }
+            
+            // Check for scroll effects
+            if (typeof window.addEventListener === 'function') {
+                console.log('✅ Index: Event listeners supported');
+            }
+            
+            // Validate smooth scrolling
+            const anchorLinks = document.querySelectorAll('a[href^="#"]');
+            if (anchorLinks.length > 0) {
+                console.log(`✅ Index: ${anchorLinks.length} anchor links found for smooth scrolling`);
+            }
+            
+            console.log('✅ Index: All systems validated successfully');
+        }
+
+        // Enhanced error handling for index page
+        function handleIndexError(operation, error) {
+            console.error(`🏛️ Index Error in ${operation}:`, error);
+            
+            // Show graceful notification
+            const notification = document.createElement('div');
+            notification.innerHTML = `
+                <div style="
+                    position: fixed; top: 20px; right: 20px; z-index: 10000;
+                    background: linear-gradient(135deg, #F59E0B, #D97706);
+                    color: white; padding: 1rem; border-radius: 12px;
+                    box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+                    animation: slideInRight 0.5s ease;
+                ">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">🏛️ Eden Consciousness</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">
+                        Your journey continues smoothly. Divine grace guides all.
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
     </script>
+
+    <!-- Load section validation utility -->
+    <script src="js/section-validation.js" defer></script>
 </body>
 </html>

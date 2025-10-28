@@ -1800,7 +1800,22 @@
         // Performance tracking
         window.addEventListener('load', () => {
             console.log('⚡ Energy & Healing center loaded successfully');
+            
+            // Energy Healing specific validation
+            const requiredFunctions = [
+                'startSession', 'closeSession', 'loadChakraContent', 'loadReikiContent',
+                'loadPranaContent', 'loadCrystalContent', 'selectChakra', 'balanceAll'
+            ];
+            
+            if (window.DivineTemplateUtils) {
+                window.DivineTemplateUtils.validateSectionFunctions('Energy Healing', requiredFunctions);
+                window.DivineTemplateUtils.initializeSectionListeners('Energy Healing');
+                window.DivineTemplateUtils.trackSectionPerformance('Energy Healing');
+            }
         });
     </script>
+
+    <!-- Load universal validation script -->
+    <script src="../js/section-validation.js" defer></script>
 </body>
 </html>

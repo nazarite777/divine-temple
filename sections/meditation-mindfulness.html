@@ -1371,6 +1371,64 @@
         // Performance tracking
         window.addEventListener('load', () => {
             console.log('🧘 Meditation & Mindfulness center loaded successfully');
+            validateMeditationFunctions();
+        });
+
+        // Meditation Function Validation System
+        function validateMeditationFunctions() {
+            const requiredFunctions = [
+                'startSession', 'closeSession', 'loadMindfulnessContent',
+                'loadLovingKindnessContent', 'loadChakraContent', 'loadBreathworkContent',
+                'startBodyScan', 'startWalkingMeditation', 'startMindfulBreathing'
+            ];
+            
+            const missing = [];
+            requiredFunctions.forEach(funcName => {
+                if (typeof window[funcName] !== 'function') {
+                    missing.push(funcName);
+                }
+            });
+            
+            if (missing.length > 0) {
+                console.warn('⚠️ Meditation: Missing functions:', missing);
+                return false;
+            }
+            
+            console.log('✅ Meditation: All functions validated successfully');
+            return true;
+        }
+
+        // Enhanced Error Handling for Meditation Operations
+        function handleMeditationError(operation, error) {
+            console.error(`🧘 Meditation Error in ${operation}:`, error);
+            
+            // Show peaceful notification
+            const notification = document.createElement('div');
+            notification.innerHTML = `
+                <div style="
+                    position: fixed; top: 20px; right: 20px; z-index: 10000;
+                    background: linear-gradient(135deg, #059669, #047857);
+                    color: white; padding: 1rem; border-radius: 12px;
+                    box-shadow: 0 10px 30px rgba(5, 150, 105, 0.3);
+                    animation: slideInRight 0.5s ease;
+                ">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">🧘 Meditation Center</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">
+                        Peace is restored. Your practice continues smoothly.
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // Prevent duplicate event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.meditationListenersInitialized) return;
+            window.meditationListenersInitialized = true;
+            
+            console.log('🧘 Meditation enhanced listeners initialized');
         });
     </script>
 </body>

@@ -992,17 +992,31 @@
     <script>
         // Oracle Cards functionality
         function openOracleCards() {
-            const modal = document.getElementById('oracle-modal');
-            modal.style.display = 'flex';
-            
-            // Load the Oracle Cards content
-            setTimeout(() => {
-                loadOracleCardsContent();
-            }, 500);
+            try {
+                const modal = document.getElementById('oracle-modal');
+                if (!modal) {
+                    throw new Error('Oracle modal not found');
+                }
+                modal.style.display = 'flex';
+                
+                // Load the Oracle Cards content
+                setTimeout(() => {
+                    loadOracleCardsContent();
+                }, 500);
+            } catch (error) {
+                handleOracleError('opening oracle cards', error);
+            }
         }
 
         function closeOracleModal() {
-            document.getElementById('oracle-modal').style.display = 'none';
+            try {
+                const modal = document.getElementById('oracle-modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+            } catch (error) {
+                handleOracleError('closing oracle modal', error);
+            }
         }
 
         let currentReading = {
@@ -1576,7 +1590,126 @@
         // Performance tracking
         window.addEventListener('load', () => {
             console.log('🔮 Oracle & Divination tools with Phase 9 theming loaded successfully');
+            validateOracleFunctions();
         });
+
+        // Oracle Function Validation System
+        function validateOracleFunctions() {
+            const requiredFunctions = [
+                'openOracleCards', 'closeOracleModal', 'loadOracleCardsContent',
+                'generateCardDeck', 'startReading', 'selectCard', 'revealSelectedCards',
+                'saveReading', 'shareReading', 'newReading'
+            ];
+            
+            const missing = [];
+            requiredFunctions.forEach(funcName => {
+                if (typeof window[funcName] !== 'function') {
+                    missing.push(funcName);
+                }
+            });
+            
+            if (missing.length > 0) {
+                console.warn('⚠️ Oracle: Missing functions:', missing);
+                return false;
+            }
+            
+            console.log('✅ Oracle: All functions validated successfully');
+            return true;
+        }
+
+        // Enhanced Error Handling for Oracle Operations
+        function handleOracleError(operation, error) {
+            console.error(`🔮 Oracle Error in ${operation}:`, error);
+            
+            // Show user-friendly notification
+            const notification = document.createElement('div');
+            notification.className = 'oracle-error-notification';
+            notification.innerHTML = `
+                <div style="
+                    position: fixed; top: 20px; right: 20px; z-index: 10000;
+                    background: linear-gradient(135deg, #DC2626, #B91C1C);
+                    color: white; padding: 1rem; border-radius: 12px;
+                    box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
+                    animation: slideInRight 0.5s ease;
+                ">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">🔮 Oracle System Notice</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">
+                        The oracle energies are realigning. Please try again in a moment.
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove notification
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.5s ease';
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+
+        // Oracle-specific Event Listener Optimization
+        document.addEventListener('DOMContentLoaded', function() {
+            // Prevent multiple event listeners
+            if (window.oracleListenersInitialized) return;
+            window.oracleListenersInitialized = true;
+            
+            // Add enhanced keyboard shortcuts for oracle section
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const modal = document.getElementById('oracle-modal');
+                    if (modal && modal.style.display === 'flex') {
+                        closeOracleModal();
+                    }
+                }
+                
+                // Oracle-specific shortcuts
+                if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                    e.preventDefault();
+                    newReading();
+                }
+                
+                if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                    e.preventDefault();
+                    saveReading();
+                }
+            });
+            
+            console.log('🔮 Oracle enhanced event listeners initialized');
+        });
+
+        // Theme Integration with Error Recovery
+        function applyOracleTheme(themeName) {
+            try {
+                // Apply theme with fallback
+                if (!themeName || typeof themeName !== 'string') {
+                    themeName = 'sacred-sunset'; // Default theme
+                }
+                
+                document.body.className = document.body.className.replace(/theme-\w+/g, '');
+                document.body.classList.add(`theme-${themeName}`);
+                
+                console.log(`✨ Oracle section theme applied: ${themeName}`);
+                
+                // Update oracle card styling if active
+                const oracleModal = document.getElementById('oracle-modal');
+                if (oracleModal && oracleModal.style.display === 'flex') {
+                    // Refresh card styling for new theme
+                    const cards = document.querySelectorAll('.oracle-card-deck .oracle-card');
+                    cards.forEach(card => {
+                        card.style.transition = 'all 0.3s ease';
+                    });
+                }
+                
+            } catch (error) {
+                handleOracleError('theme application', error);
+            }
+        }
+
+        // Override original function with enhanced version
+        if (typeof window.applyTheme === 'function') {
+            window.applyTheme = applyOracleTheme;
+        }
     </script>
 </body>
 </html>
