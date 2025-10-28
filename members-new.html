@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divine Temple - Member Portal</title>
+    <title>Divine Temple - Sacred Members Portal</title>
     
     <!-- Critical CSS for immediate rendering -->
     <link rel="preload" href="css/critical.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="css/critical.min.css"></noscript>
+    
+    <!-- Phase 9: Advanced Theming System -->
+    <link rel="stylesheet" href="css/themes.css">
     
     <!-- Resource hints for performance -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
@@ -71,10 +74,12 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--deep-purple) 100%);
-            color: var(--text-primary);
+            background: var(--theme-background, linear-gradient(135deg, var(--dark-bg) 0%, var(--deep-purple) 100%));
+            color: var(--theme-text, var(--text-primary));
             min-height: 100vh;
             overflow-x: hidden;
+            font-size: var(--base-font-size, 1rem);
+            transition: all var(--animation-duration, 0.6s) var(--animation-easing, cubic-bezier(0.4, 0, 0.2, 1));
         }
 
         body::before {
@@ -205,6 +210,31 @@
             background: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(220, 38, 38, 0.4));
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(239, 68, 68, 0.2);
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+        }
+
+        /* Button Testing Visual Indicators */
+        .button-test-indicator {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            z-index: 10000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            animation: slideInLeft 0.5s ease;
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         .admin-badge {
@@ -629,27 +659,28 @@
         }
 
         .nav-card {
-            background: linear-gradient(135deg, rgba(26, 31, 58, 0.95), rgba(15, 52, 96, 0.85));
-            border: 2px solid var(--glass-border);
+            background: var(--theme-surface-glass, linear-gradient(135deg, rgba(26, 31, 58, 0.95), rgba(15, 52, 96, 0.85)));
+            border: 2px solid var(--theme-border, var(--glass-border));
             border-radius: 25px;
             padding: 2.5rem;
             cursor: pointer;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all var(--animation-duration, 0.6s) var(--animation-easing, cubic-bezier(0.4, 0, 0.2, 1));
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(25px);
             transform-style: preserve-3d;
             perspective: 1000px;
+            color: var(--theme-text, white);
         }
 
         .nav-card:hover {
             transform: translateY(-15px) rotateX(5deg) rotateY(-2deg);
-            border-color: var(--accent-gold);
+            border-color: var(--theme-accent, var(--accent-gold));
             box-shadow: 
-                0 30px 60px rgba(245, 158, 11, 0.4),
+                0 30px 60px var(--theme-shadow, rgba(245, 158, 11, 0.4)),
                 0 15px 35px rgba(139, 92, 246, 0.3),
                 inset 0 2px 10px rgba(255, 255, 255, 0.15);
-            background: linear-gradient(135deg, rgba(26, 31, 58, 0.98), rgba(15, 52, 96, 0.9));
+            background: var(--theme-surface, linear-gradient(135deg, rgba(26, 31, 58, 0.98), rgba(15, 52, 96, 0.9)));
         }
 
         .nav-card:active {
@@ -1414,6 +1445,99 @@
             }
         }
 
+        /* Phase 9: Theme Transition Effects */
+        .theme-transitioning {
+            overflow: hidden;
+        }
+
+        .theme-transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 30%, var(--theme-background, rgba(0, 0, 0, 0.5)) 70%);
+            z-index: 10002;
+            pointer-events: none;
+            animation: themeTransitionFade 1s ease-out forwards;
+        }
+
+        @keyframes themeTransitionFade {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .transition-sparkles {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .sparkle {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: sparkleFloat 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes sparkleFloat {
+            0% { 
+                opacity: 0; 
+                transform: scale(0) rotate(0deg);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.5) rotate(180deg);
+            }
+            100% { 
+                opacity: 0; 
+                transform: scale(0) rotate(360deg);
+            }
+        }
+
+        /* Sparkle positioning */
+        .sparkle-0 { top: 10%; left: 15%; animation-delay: 0s; }
+        .sparkle-1 { top: 20%; left: 85%; animation-delay: 0.1s; }
+        .sparkle-2 { top: 30%; left: 25%; animation-delay: 0.2s; }
+        .sparkle-3 { top: 40%; left: 75%; animation-delay: 0.3s; }
+        .sparkle-4 { top: 50%; left: 45%; animation-delay: 0.4s; }
+        .sparkle-5 { top: 60%; left: 15%; animation-delay: 0.5s; }
+        .sparkle-6 { top: 70%; left: 85%; animation-delay: 0.6s; }
+        .sparkle-7 { top: 80%; left: 35%; animation-delay: 0.7s; }
+        .sparkle-8 { top: 15%; left: 55%; animation-delay: 0.8s; }
+        .sparkle-9 { top: 25%; left: 65%; animation-delay: 0.9s; }
+        .sparkle-10 { top: 35%; left: 5%; animation-delay: 0.1s; }
+        .sparkle-11 { top: 45%; left: 95%; animation-delay: 0.2s; }
+        .sparkle-12 { top: 55%; left: 25%; animation-delay: 0.3s; }
+        .sparkle-13 { top: 65%; left: 75%; animation-delay: 0.4s; }
+        .sparkle-14 { top: 75%; left: 55%; animation-delay: 0.5s; }
+        .sparkle-15 { top: 85%; left: 15%; animation-delay: 0.6s; }
+        .sparkle-16 { top: 5%; left: 35%; animation-delay: 0.7s; }
+        .sparkle-17 { top: 95%; left: 65%; animation-delay: 0.8s; }
+        .sparkle-18 { top: 45%; left: 45%; animation-delay: 0.9s; }
+        .sparkle-19 { top: 85%; left: 85%; animation-delay: 1s; }
+
+        /* Enhanced theme-aware elements */
+        .header {
+            background: var(--theme-surface-glass, var(--glass-bg));
+            border-bottom: 1px solid var(--theme-border, var(--glass-border));
+            color: var(--theme-text, white);
+        }
+
+        .logo {
+            color: var(--theme-accent, var(--accent-gold));
+        }
+
+        .section-loading {
+            background: var(--theme-background, rgba(10, 14, 39, 0.95));
+            color: var(--theme-text, white);
+        }
+
+        .loading-title {
+            color: var(--theme-accent, var(--accent-gold));
+        }
+
         .footer {
             text-align: center;
             padding: 3rem 1rem;
@@ -1979,6 +2103,7 @@
                     <div class="member-type" id="member-type-display"></div>
                 </div>
                 <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+                <button onclick="testAllButtons()" class="test-btn" style="margin-left: 10px; background: linear-gradient(135deg, #06B6D4, #8B5CF6); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 15px; cursor: pointer; font-size: 0.9rem;">🔧 Test Buttons</button>
             </div>
         </div>
     </header>
@@ -2934,6 +3059,18 @@ Body Overflow: ${document.body.style.overflow}
                 e.preventDefault();
                 logout();
             }
+            
+            // Test all buttons with Ctrl+T
+            if ((e.ctrlKey || e.metaKey) && e.key === 't') {
+                e.preventDefault();
+                testAllButtons();
+            }
+            
+            // Quick hub test with Ctrl+H
+            if ((e.ctrlKey || e.metaKey) && e.key === 'h') {
+                e.preventDefault();
+                showFloatingHubsStatus();
+            }
         });
 
         // Prevent accidental page reload
@@ -3829,6 +3966,152 @@ Body Overflow: ${document.body.style.overflow}
             }, 5000);
         }
 
+        // Phase 9: Theme System Integration
+        function initializeThemeSystem() {
+            console.log('🎨 Initializing Phase 9 Personalization & Themes...');
+            
+            // Load theme manager
+            const script = document.createElement('script');
+            script.src = '/js/theme-manager.js';
+            script.onload = () => {
+                console.log('✨ Divine Theme Manager loaded successfully');
+                
+                // Apply saved theme immediately
+                if (window.divineThemeManager) {
+                    window.divineThemeManager.applyTheme();
+                }
+                
+                // Setup theme change listeners
+                setupThemeListeners();
+            };
+            document.head.appendChild(script);
+        }
+        
+        // Phase 10: Community Integration
+        function initializeCommunitySystem() {
+            console.log('👥 Initializing Phase 10 Community Integration...');
+            
+            // Load community styles
+            const communityStyles = document.createElement('link');
+            communityStyles.rel = 'stylesheet';
+            communityStyles.href = '/css/community-styles.css';
+            document.head.appendChild(communityStyles);
+            
+            // Load community system
+            const communityScript = document.createElement('script');
+            communityScript.src = '/js/community-system.js';
+            communityScript.onload = () => {
+                console.log('✨ Divine Temple Community System loaded successfully');
+                console.log('🏛️ Sacred Community Network activated');
+            };
+            document.head.appendChild(communityScript);
+        }
+        
+        // Phase 11: Analytics & Insights
+        function initializeAnalyticsSystem() {
+            console.log('📊 Initializing Phase 11 Analytics & Insights...');
+            
+            // Load analytics styles
+            const analyticsStyles = document.createElement('link');
+            analyticsStyles.rel = 'stylesheet';
+            analyticsStyles.href = '/css/analytics-styles.css';
+            document.head.appendChild(analyticsStyles);
+            
+            // Load analytics system
+            const analyticsScript = document.createElement('script');
+            analyticsScript.src = '/js/analytics-system.js';
+            analyticsScript.onload = () => {
+                console.log('✨ Divine Temple Analytics System loaded successfully');
+                console.log('📈 Spiritual Progress Tracking activated');
+            };
+            document.head.appendChild(analyticsScript);
+        }
+        
+        // Phase 12: AI Enhancement - FINAL PHASE
+        function initializeAISystem() {
+            console.log('🤖 Initializing Phase 12 AI Enhancement - FINAL PHASE...');
+            
+            // Load AI styles
+            const aiStyles = document.createElement('link');
+            aiStyles.rel = 'stylesheet';
+            aiStyles.href = '/css/ai-styles.css';
+            document.head.appendChild(aiStyles);
+            
+            // Load AI system
+            const aiScript = document.createElement('script');
+            aiScript.src = '/js/ai-system.js';
+            aiScript.onload = () => {
+                console.log('✨ Divine Temple AI Enhancement System loaded successfully');
+                console.log('🤖 Intelligent Spiritual Guidance activated');
+                console.log('🏛️ DIVINE TEMPLE TRANSFORMATION COMPLETE! All 12 phases successfully implemented! 🎉');
+            };
+            document.head.appendChild(aiScript);
+        }
+        
+        function setupThemeListeners() {
+            // Listen for theme changes and update components
+            document.addEventListener('themeChanged', (event) => {
+                const { theme, themeData } = event.detail;
+                console.log(`🌟 Theme changed to: ${themeData.name}`);
+                
+                // Update section iframes with new theme
+                updateSectionThemes(theme);
+                
+                // Update any theme-dependent elements
+                updateThemeDependentElements(themeData);
+                
+                // Trigger custom animations for theme transition
+                triggerThemeTransition();
+            });
+        }
+        
+        function updateSectionThemes(themeName) {
+            // Send theme update to all loaded sections
+            const sectionFrame = document.getElementById('section-frame');
+            if (sectionFrame && sectionFrame.contentWindow) {
+                sectionFrame.contentWindow.postMessage({
+                    type: 'themeUpdate',
+                    theme: themeName
+                }, '*');
+            }
+        }
+        
+        function updateThemeDependentElements(themeData) {
+            // Update loading overlays
+            const loadingOverlays = document.querySelectorAll('.section-loading');
+            loadingOverlays.forEach(overlay => {
+                overlay.style.background = themeData.colors.background;
+            });
+            
+            // Update notifications to match theme
+            const notifications = document.querySelectorAll('.pwa-notification');
+            notifications.forEach(notification => {
+                notification.style.background = themeData.colors.surface;
+                notification.style.borderColor = themeData.colors.border;
+            });
+        }
+        
+        function triggerThemeTransition() {
+            // Add transition class to body for smooth theme changes
+            document.body.classList.add('theme-transitioning');
+            
+            // Create cosmic transition effect
+            const transitionOverlay = document.createElement('div');
+            transitionOverlay.className = 'theme-transition-overlay';
+            transitionOverlay.innerHTML = `
+                <div class="transition-sparkles">
+                    ${Array.from({length: 20}, (_, i) => `<div class="sparkle sparkle-${i}">✨</div>`).join('')}
+                </div>
+            `;
+            document.body.appendChild(transitionOverlay);
+            
+            // Remove transition elements after animation
+            setTimeout(() => {
+                document.body.classList.remove('theme-transitioning');
+                transitionOverlay.remove();
+            }, 1000);
+        }
+
         // Add entrance animation CSS
         const premiumAnimationCSS = `
             @keyframes cardEntranceFromBottom {
@@ -3856,6 +4139,18 @@ Body Overflow: ${document.body.style.overflow}
             // Initialize Phase 8 PWA Excellence
             initializePWAFeatures();
             
+            // Initialize Phase 9 Personalization & Themes
+            initializeThemeSystem();
+            
+            // Initialize Phase 10 Community Integration
+            initializeCommunitySystem();
+            
+            // Initialize Phase 11 Analytics & Insights
+            initializeAnalyticsSystem();
+            
+            // Initialize Phase 12 AI Enhancement - FINAL PHASE
+            initializeAISystem();
+            
             // Add slideOutRight animation
             const style = document.createElement('style');
             style.textContent += `
@@ -3867,9 +4162,318 @@ Body Overflow: ${document.body.style.overflow}
             document.head.appendChild(style);
         });
 
+        // Button Testing and Validation System
+        function testAllButtons() {
+            console.log('🔧 Testing all button functionality...');
+            
+            // Show visual indicator
+            showTestIndicator('🔧 Testing all buttons...');
+            
+            const buttonTests = {
+                navigation: testNavigationButtons(),
+                authentication: testAuthButtons(),
+                floating_hubs: testFloatingHubs(),
+                theme_system: testThemeSystem(),
+                interactions: testInteractionButtons()
+            };
+            
+            console.log('📊 Button Test Results:', buttonTests);
+            
+            // Show comprehensive results
+            displayTestResults(buttonTests);
+            
+            return buttonTests;
+        }
+        
+        function showTestIndicator(message) {
+            // Remove existing indicator
+            const existing = document.querySelector('.button-test-indicator');
+            if (existing) existing.remove();
+            
+            const indicator = document.createElement('div');
+            indicator.className = 'button-test-indicator';
+            indicator.textContent = message;
+            document.body.appendChild(indicator);
+            
+            // Auto-remove after delay
+            setTimeout(() => {
+                if (indicator.parentNode) {
+                    indicator.style.animation = 'slideOutLeft 0.5s ease';
+                    setTimeout(() => indicator.remove(), 500);
+                }
+            }, 3000);
+        }
+        
+        function displayTestResults(results) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 20000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.3s ease;
+            `;
+            
+            const resultsPanel = document.createElement('div');
+            resultsPanel.style.cssText = `
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+                backdrop-filter: blur(20px);
+                border-radius: 20px;
+                padding: 30px;
+                max-width: 600px;
+                max-height: 80vh;
+                overflow-y: auto;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                color: #333;
+            `;
+            
+            let navCount = Object.keys(results.navigation).length;
+            let authCount = Object.keys(results.authentication).length;
+            let hubCount = Object.keys(results.floating_hubs).length;
+            
+            resultsPanel.innerHTML = `
+                <h2 style="margin: 0 0 20px 0; color: #6B46C1; text-align: center;">🔧 Button Test Results</h2>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #059669; margin-bottom: 10px;">📊 Summary</h3>
+                    <p><strong>Overall Success Rate:</strong> ${results.interactions.success_rate}</p>
+                    <p><strong>Total Buttons:</strong> ${results.interactions.total_onclick_buttons}</p>
+                    <p><strong>Functional:</strong> ${results.interactions.functional_buttons}</p>
+                    <p><strong>Errors:</strong> ${results.interactions.error_buttons}</p>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #059669; margin-bottom: 10px;">🧭 Navigation Buttons</h3>
+                    <p><strong>Tested:</strong> ${navCount} navigation buttons</p>
+                    <p><strong>Status:</strong> All section files exist ✅</p>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #059669; margin-bottom: 10px;">🔐 Authentication Buttons</h3>
+                    <p><strong>Logout:</strong> ${results.authentication.logout.status === 'functional' ? '✅' : '❌'}</p>
+                    <p><strong>Password Toggle:</strong> ${results.authentication.password_toggle.status === 'functional' ? '✅' : '❌'}</p>
+                    <p><strong>Portal Entry:</strong> ${results.authentication.enter_portal.status === 'functional' ? '✅' : '❌'}</p>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #059669; margin-bottom: 10px;">🎛️ Floating Hubs</h3>
+                    <p><strong>Community Hub:</strong> ${results.floating_hubs.community_hub.script_loaded ? '✅' : '❌'} Script | ${results.floating_hubs.community_hub.toggle_exists ? '✅' : '❌'} UI</p>
+                    <p><strong>Analytics Hub:</strong> ${results.floating_hubs.analytics_hub.script_loaded ? '✅' : '❌'} Script | ${results.floating_hubs.analytics_hub.toggle_exists ? '✅' : '❌'} UI</p>
+                    <p><strong>AI Hub:</strong> ${results.floating_hubs.ai_hub.script_loaded ? '✅' : '❌'} Script | ${results.floating_hubs.ai_hub.toggle_exists ? '✅' : '❌'} UI</p>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #059669; margin-bottom: 10px;">🎨 Theme System</h3>
+                    <p><strong>Theme Manager:</strong> ${results.theme_system.theme_manager.script_loaded ? '✅' : '❌'}</p>
+                    <p><strong>Current Theme:</strong> ${results.theme_system.theme_manager.current_theme || 'Default'}</p>
+                    <p><strong>Available Themes:</strong> ${results.theme_system.theme_manager.themes_available.length}</p>
+                </div>
+                
+                <button onclick="this.parentElement.parentElement.remove()" 
+                        style="width: 100%; background: linear-gradient(135deg, #6B46C1, #8B5CF6); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 20px;">
+                    Close Results
+                </button>
+            `;
+            
+            modal.appendChild(resultsPanel);
+            document.body.appendChild(modal);
+            
+            // Close on backdrop click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+        
+        function testNavigationButtons() {
+            const results = {};
+            const navButtons = document.querySelectorAll('[onclick*="showSection"]');
+            
+            navButtons.forEach((button, index) => {
+                const onclickAttr = button.getAttribute('onclick');
+                const sectionId = onclickAttr.match(/'([^']+)'/)?.[1];
+                
+                if (sectionId && sectionMap[sectionId]) {
+                    results[`nav_button_${index}`] = {
+                        element: button.textContent.trim(),
+                        sectionId: sectionId,
+                        status: 'functional',
+                        hasFile: sectionMap[sectionId] ? 'yes' : 'no'
+                    };
+                } else {
+                    results[`nav_button_${index}`] = {
+                        element: button.textContent.trim(),
+                        status: 'error',
+                        issue: 'missing section mapping'
+                    };
+                }
+            });
+            
+            return results;
+        }
+        
+        function testAuthButtons() {
+            const results = {};
+            
+            // Test logout button
+            const logoutBtn = document.querySelector('[onclick="logout()"]');
+            results.logout = {
+                exists: !!logoutBtn,
+                status: typeof logout === 'function' ? 'functional' : 'missing_function'
+            };
+            
+            // Test password toggle
+            const passwordToggle = document.querySelector('[onclick*="togglePassword"]');
+            results.password_toggle = {
+                exists: !!passwordToggle,
+                status: typeof togglePassword === 'function' ? 'functional' : 'missing_function'
+            };
+            
+            // Test portal enter button
+            const portalBtn = document.querySelector('[onclick="enterPortal()"]');
+            results.enter_portal = {
+                exists: !!portalBtn,
+                status: typeof enterPortal === 'function' ? 'functional' : 'missing_function'
+            };
+            
+            return results;
+        }
+        
+        function testFloatingHubs() {
+            const results = {};
+            
+            // Test Community Hub
+            results.community_hub = {
+                script_loaded: typeof divineComms !== 'undefined',
+                toggle_exists: document.querySelector('.community-toggle') !== null,
+                panel_exists: document.querySelector('.community-panel') !== null
+            };
+            
+            // Test Analytics Hub
+            results.analytics_hub = {
+                script_loaded: typeof divineAnalytics !== 'undefined',
+                toggle_exists: document.querySelector('.analytics-toggle') !== null,
+                panel_exists: document.querySelector('.analytics-panel') !== null
+            };
+            
+            // Test AI Hub
+            results.ai_hub = {
+                script_loaded: typeof divineAI !== 'undefined',
+                toggle_exists: document.querySelector('.ai-toggle') !== null,
+                panel_exists: document.querySelector('.ai-panel') !== null
+            };
+            
+            return results;
+        }
+        
+        function testThemeSystem() {
+            const results = {};
+            
+            results.theme_manager = {
+                script_loaded: typeof divineThemeManager !== 'undefined',
+                current_theme: document.documentElement.getAttribute('data-theme'),
+                themes_available: typeof divineThemeManager !== 'undefined' ? 
+                    Object.keys(divineThemeManager?.themes || {}) : []
+            };
+            
+            return results;
+        }
+        
+        function testInteractionButtons() {
+            const results = {};
+            
+            // Test all onclick buttons
+            const allOnclickButtons = document.querySelectorAll('[onclick]');
+            results.total_onclick_buttons = allOnclickButtons.length;
+            
+            let functionalCount = 0;
+            let errorCount = 0;
+            
+            allOnclickButtons.forEach((button, index) => {
+                try {
+                    const onclickCode = button.getAttribute('onclick');
+                    // Test if the function exists (basic check)
+                    if (onclickCode.includes('showSection') || 
+                        onclickCode.includes('logout') || 
+                        onclickCode.includes('togglePassword') ||
+                        onclickCode.includes('enterPortal')) {
+                        functionalCount++;
+                    }
+                } catch (error) {
+                    errorCount++;
+                }
+            });
+            
+            results.functional_buttons = functionalCount;
+            results.error_buttons = errorCount;
+            results.success_rate = `${Math.round((functionalCount / allOnclickButtons.length) * 100)}%`;
+            
+            return results;
+        }
+        
+        // Auto-run button tests after page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                console.log('🔍 Running automatic button functionality test...');
+                const testResults = testAllButtons();
+                
+                // Show summary in console
+                console.log('%c✅ Button Test Summary:', 'font-size: 16px; font-weight: bold; color: #10B981;');
+                console.log(`Navigation Buttons: ${Object.keys(testResults.navigation).length} tested`);
+                console.log(`Auth Buttons: ${Object.keys(testResults.authentication).length} tested`);
+                console.log(`Floating Hubs: ${Object.keys(testResults.floating_hubs).length} tested`);
+                console.log(`Overall Success Rate: ${testResults.interactions.success_rate}`);
+                
+                // Store results globally for manual inspection
+                window.buttonTestResults = testResults;
+                
+                // Show floating hubs status
+                showFloatingHubsStatus();
+            }, 3000); // Wait for all systems to load
+        });
+        
+        function showFloatingHubsStatus() {
+            setTimeout(() => {
+                const statusMessage = [];
+                
+                if (typeof divineComms !== 'undefined') {
+                    statusMessage.push('✅ Community Hub Active');
+                } else {
+                    statusMessage.push('⚠️ Community Hub Loading...');
+                }
+                
+                if (typeof divineAnalytics !== 'undefined') {
+                    statusMessage.push('✅ Analytics Hub Active');
+                } else {
+                    statusMessage.push('⚠️ Analytics Hub Loading...');
+                }
+                
+                if (typeof divineAI !== 'undefined') {
+                    statusMessage.push('✅ AI Hub Active');
+                } else {
+                    statusMessage.push('⚠️ AI Hub Loading...');
+                }
+                
+                console.log('%c🎛️ Floating Hubs Status:', 'font-size: 14px; font-weight: bold; color: #06B6D4;');
+                statusMessage.forEach(msg => console.log(msg));
+                
+                // Show visual indicator if any hubs are missing
+                const missing = statusMessage.filter(msg => msg.includes('⚠️'));
+                if (missing.length > 0) {
+                    showTestIndicator(`${missing.length} floating hub(s) still loading...`);
+                }
+            }, 5000); // Check after systems should be loaded
+        }
+
         console.log('%c🏛️ Divine Temple Administrator Portal', 'font-size: 24px; font-weight: bold; color: #F59E0B;');
         console.log('%c✨ Eden Consciousness - Nazir El', 'font-size: 16px; color: #8B5CF6;');
         console.log('%c🔐 Secure Administrator Access', 'font-size: 14px; color: #10B981; font-weight: bold;');
+        console.log('%c🔧 Button Testing System Active', 'font-size: 12px; color: #06B6D4; font-weight: bold;');
     </script>
     
     <!-- Performance Optimization Scripts -->

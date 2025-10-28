@@ -15,6 +15,9 @@
     <link rel="preload" href="../css/critical.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/critical.min.css"></noscript>
     
+    <!-- Phase 9: Theme System Integration -->
+    <link rel="stylesheet" href="../css/themes.css">
+    
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     
@@ -1554,9 +1557,25 @@
             }
         });
 
+        // Phase 9: Theme System Integration
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'themeUpdate') {
+                console.log(`🎨 Oracle section receiving theme update: ${event.data.theme}`);
+                applyThemeToSection(event.data.theme);
+            }
+        });
+
+        function applyThemeToSection(themeName) {
+            // Apply theme classes to body
+            document.body.className = document.body.className.replace(/theme-\w+/g, '');
+            document.body.classList.add(`theme-${themeName}`);
+            
+            console.log(`✨ Oracle section theme applied: ${themeName}`);
+        }
+
         // Performance tracking
         window.addEventListener('load', () => {
-            console.log('🔮 Oracle & Divination tools loaded successfully');
+            console.log('🔮 Oracle & Divination tools with Phase 9 theming loaded successfully');
         });
     </script>
 </body>
