@@ -98,9 +98,13 @@
         }
 
         .divination-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(139, 95, 191, 0.3);
-            border-color: var(--accent-purple);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(139, 95, 191, 0.4);
+            border-color: var(--accent-gold);
+        }
+
+        .divination-card:active {
+            transform: translateY(-5px) scale(1.01);
         }
 
         .divination-card::before {
@@ -111,6 +115,25 @@
             right: 0;
             height: 4px;
             background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold));
+            border-radius: 20px 20px 0 0;
+        }
+
+        .divination-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(139, 95, 191, 0.1), transparent);
+            animation: mysticalRotate 20s linear infinite;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .divination-card:hover::after {
+            opacity: 1;
         }
 
         .card-icon {
@@ -442,13 +465,48 @@
             align-items: center;
             justify-content: center;
             height: 100%;
-            color: #0f3460;
+            color: var(--accent-gold);
+            background: linear-gradient(135deg, rgba(139, 95, 191, 0.9), rgba(212, 175, 55, 0.8));
+            border-radius: 20px;
+            animation: cardReveal 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-selected::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                from 0deg,
+                transparent,
+                rgba(212, 175, 55, 0.3),
+                transparent,
+                rgba(139, 95, 191, 0.3),
+                transparent
+            );
+            animation: mysticalRotate 3s linear infinite;
+            z-index: -1;
         }
 
         .selection-number {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: bold;
             margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+            animation: pulseGold 2s ease-in-out infinite;
+        }
+
+        .selection-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.9;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
         }
 
         .selection-progress {
@@ -493,7 +551,7 @@
         }
 
         .revealed-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
             border: 3px solid var(--accent-gold);
             border-radius: 25px;
             padding: 2.5rem;
@@ -501,9 +559,33 @@
             grid-template-columns: 1fr 180px 2fr;
             gap: 2.5rem;
             align-items: start;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(15px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(212, 175, 55, 0.2);
+            backdrop-filter: blur(20px);
             margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .revealed-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                rgba(212, 175, 55, 0.3), 
+                rgba(139, 95, 191, 0.3), 
+                rgba(212, 175, 55, 0.3));
+            border-radius: 25px;
+            z-index: -1;
+            animation: mysticalGlow 4s ease-in-out infinite;
+        }
+
+        .revealed-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.5), 0 0 50px rgba(212, 175, 55, 0.3);
         }
 
         .card-position h4 {
@@ -713,6 +795,63 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        @keyframes mysticalRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes cardFlip {
+            0% { transform: perspective(1000px) rotateY(0deg); }
+            50% { transform: perspective(1000px) rotateY(90deg); }
+            100% { transform: perspective(1000px) rotateY(0deg); }
+        }
+
+        @keyframes mysticalGlow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(139, 95, 191, 0.3);
+                border-color: rgba(139, 95, 191, 0.5);
+            }
+            50% { 
+                box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+                border-color: var(--accent-gold);
+            }
+        }
+
+        @keyframes cardReveal {
+            0% { 
+                opacity: 0;
+                transform: scale(0.8) rotateY(180deg);
+            }
+            50% {
+                transform: scale(1.1) rotateY(90deg);
+            }
+            100% { 
+                opacity: 1;
+                transform: scale(1) rotateY(0deg);
+            }
+        }
+
+        @keyframes pulseGold {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        .card-flipping {
+            animation: cardFlip 1s ease-in-out;
+        }
+
+        .card-revealing {
+            animation: cardReveal 1.2s ease-out;
+        }
+
+        .mystical-glow {
+            animation: mysticalGlow 3s ease-in-out infinite;
+        }
+
+        .oracle-pulse {
+            animation: pulseGold 2s ease-in-out infinite;
         }
     </style>
 </head>
@@ -1150,14 +1289,25 @@
                 return; // Max cards selected
             }
             
-            // Add selection visual
-            cardElement.classList.add('selected');
-            cardElement.innerHTML = `
-                <div class="card-selected">
-                    <div class="selection-number">${currentReading.selectedCards.length + 1}</div>
-                    <div class="card-symbol">✨</div>
-                </div>
-            `;
+            // Add magical selection animation
+            cardElement.classList.add('card-flipping');
+            
+            // Play selection sound effect (visual feedback)
+            setTimeout(() => {
+                cardElement.classList.remove('card-flipping');
+                cardElement.classList.add('selected', 'mystical-glow');
+                
+                cardElement.innerHTML = `
+                    <div class="card-selected">
+                        <div class="selection-number">${currentReading.selectedCards.length + 1}</div>
+                        <div class="card-symbol">✨</div>
+                        <div class="selection-text">Selected</div>
+                    </div>
+                `;
+                
+                // Add pulse effect
+                cardElement.classList.add('oracle-pulse');
+            }, 500);
             
             currentReading.selectedCards.push({
                 index: index,
@@ -1168,59 +1318,97 @@
             document.getElementById('cards-selected').textContent = currentReading.selectedCards.length;
             
             if (currentReading.selectedCards.length === neededCards) {
-                document.getElementById('reveal-cards').style.display = 'block';
+                setTimeout(() => {
+                    const revealBtn = document.getElementById('reveal-cards');
+                    revealBtn.style.display = 'block';
+                    revealBtn.classList.add('oracle-pulse');
+                }, 800);
             }
         }
 
         function revealSelectedCards() {
-            document.getElementById('card-selection').style.display = 'none';
-            document.getElementById('reading-results').style.display = 'block';
+            // Smooth transition with fade effects
+            const cardSelection = document.getElementById('card-selection');
+            const readingResults = document.getElementById('reading-results');
+            
+            cardSelection.style.opacity = '0';
+            cardSelection.style.transform = 'translateY(-20px)';
+            
+            setTimeout(() => {
+                cardSelection.style.display = 'none';
+                readingResults.style.display = 'block';
+                readingResults.style.opacity = '0';
+                readingResults.style.transform = 'translateY(20px)';
+                
+                // Smooth fade in
+                setTimeout(() => {
+                    readingResults.style.transition = 'all 0.8s ease-out';
+                    readingResults.style.opacity = '1';
+                    readingResults.style.transform = 'translateY(0)';
+                }, 100);
+            }, 400);
             
             const revealedContainer = document.getElementById('revealed-cards');
             revealedContainer.innerHTML = '';
             
             const positions = getReadingPositions(currentReading.type);
             
+            // Staggered card reveal animation
             currentReading.selectedCards.forEach((card, index) => {
-                const cardReveal = document.createElement('div');
-                cardReveal.className = 'revealed-card';
-                
-                const position = positions[index] || { name: `Card ${index + 1}`, meaning: 'General guidance' };
-                
-                cardReveal.innerHTML = `
-                    <div class="card-position">
-                        <h4>${position.name}</h4>
-                        <p class="position-meaning">${position.meaning}</p>
-                    </div>
+                setTimeout(() => {
+                    const cardReveal = document.createElement('div');
+                    cardReveal.className = 'revealed-card';
+                    cardReveal.style.opacity = '0';
+                    cardReveal.style.transform = 'translateY(30px) scale(0.9)';
                     
-                    <div class="card-reveal">
-                        <div class="card-image">${card.data.image}</div>
-                        <h3 class="card-name">${card.data.name}</h3>
-                    </div>
+                    const position = positions[index] || { name: `Card ${index + 1}`, meaning: 'General guidance' };
                     
-                    <div class="card-message">
-                        <div class="message-section">
-                            <h5>💫 Divine Message</h5>
-                            <p>${card.data.message}</p>
+                    cardReveal.innerHTML = `
+                        <div class="card-position">
+                            <h4>${position.name}</h4>
+                            <p class="position-meaning">${position.meaning}</p>
                         </div>
                         
-                        <div class="message-section">
-                            <h5>🔍 Meaning</h5>
-                            <p>${card.data.meaning}</p>
+                        <div class="card-reveal">
+                            <div class="card-image mystical-glow">${card.data.image}</div>
+                            <h3 class="card-name">${card.data.name}</h3>
                         </div>
                         
-                        <div class="message-section">
-                            <h5>🌟 Affirmation</h5>
-                            <p class="affirmation">"${card.data.affirmation}"</p>
+                        <div class="card-message">
+                            <div class="message-section">
+                                <h5>💫 Divine Message</h5>
+                                <p>${card.data.message}</p>
+                            </div>
+                            
+                            <div class="message-section">
+                                <h5>🔍 Meaning</h5>
+                                <p>${card.data.meaning}</p>
+                            </div>
+                            
+                            <div class="message-section">
+                                <h5>🌟 Affirmation</h5>
+                                <p class="affirmation">"${card.data.affirmation}"</p>
+                            </div>
                         </div>
-                    </div>
-                `;
-                
-                revealedContainer.appendChild(cardReveal);
+                    `;
+                    
+                    revealedContainer.appendChild(cardReveal);
+                    
+                    // Animate card into view
+                    setTimeout(() => {
+                        cardReveal.style.transition = 'all 0.8s ease-out';
+                        cardReveal.style.opacity = '1';
+                        cardReveal.style.transform = 'translateY(0) scale(1)';
+                        cardReveal.classList.add('card-revealing');
+                    }, 100);
+                    
+                }, index * 600); // Stagger each card by 600ms
             });
             
-            // Add overall reading summary
-            addReadingSummary();
+            // Add overall reading summary after all cards are revealed
+            setTimeout(() => {
+                addReadingSummary();
+            }, currentReading.selectedCards.length * 600 + 800);
         }
 
         function getReadingPositions(type) {

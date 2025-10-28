@@ -113,16 +113,18 @@
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 2rem;
-            transition: all 0.3s ease;
+            transition: all 0.5s ease;
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            animation: masterfulPresence 15s ease-in-out infinite;
         }
 
         .advanced-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(139, 95, 191, 0.3);
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 30px 60px rgba(139, 95, 191, 0.5), 0 0 50px rgba(157, 78, 221, 0.4);
             border-color: var(--accent-mystic);
+            animation-play-state: paused;
         }
 
         .advanced-card::before {
@@ -133,13 +135,136 @@
             right: 0;
             height: 4px;
             background: linear-gradient(90deg, var(--accent-mystic), var(--accent-gold));
+            animation: mysticEnergyFlow 12s ease-in-out infinite;
+        }
+
+        .advanced-card::after {
+            content: '';
+            position: absolute;
+            top: -150%;
+            left: -150%;
+            width: 400%;
+            height: 400%;
+            background: conic-gradient(
+                from 0deg,
+                transparent,
+                rgba(139, 95, 191, 0.1),
+                transparent,
+                rgba(157, 78, 221, 0.1),
+                transparent,
+                rgba(108, 92, 231, 0.1),
+                transparent
+            );
+            animation: masterfulAura 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes masterfulPresence {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 15px 30px rgba(139, 95, 191, 0.2);
+            }
+            25% { 
+                transform: scale(1.01);
+                box-shadow: 0 18px 35px rgba(157, 78, 221, 0.3);
+            }
+            50% { 
+                transform: scale(1.005);
+                box-shadow: 0 20px 40px rgba(108, 92, 231, 0.25);
+            }
+            75% { 
+                transform: scale(1.02);
+                box-shadow: 0 22px 45px rgba(45, 27, 105, 0.35);
+            }
+        }
+
+        @keyframes mysticEnergyFlow {
+            0%, 100% { 
+                background: linear-gradient(90deg, var(--accent-mystic), var(--accent-gold));
+            }
+            20% { 
+                background: linear-gradient(90deg, var(--accent-gold), var(--accent-shadow));
+            }
+            40% { 
+                background: linear-gradient(90deg, var(--accent-shadow), var(--accent-dark));
+            }
+            60% { 
+                background: linear-gradient(90deg, var(--accent-dark), var(--accent-purple));
+            }
+            80% { 
+                background: linear-gradient(90deg, var(--accent-purple), var(--accent-mystic));
+            }
+        }
+
+        @keyframes masterfulAura {
+            0% { 
+                transform: rotate(0deg) scale(1);
+                opacity: 0.4;
+            }
+            33% { 
+                opacity: 0.7;
+            }
+            66% { 
+                opacity: 0.5;
+            }
+            100% { 
+                transform: rotate(360deg) scale(1.3);
+                opacity: 0.4;
+            }
         }
 
         .card-icon {
             font-size: 4rem;
             margin-bottom: 2rem;
             display: block;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
+            animation: masterIconFloat 10s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(139, 95, 191, 0.7));
+            text-align: center;
+        }
+
+        .advanced-card:hover .card-icon {
+            animation: masterIconAscension 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 35px rgba(157, 78, 221, 1));
+            transform: scale(1.2) translateY(-10px) rotate(5deg);
+        }
+
+        @keyframes masterIconFloat {
+            0%, 100% { 
+                transform: translateY(0) rotate(0deg) scale(1);
+                filter: drop-shadow(0 0 20px rgba(139, 95, 191, 0.7));
+            }
+            25% { 
+                transform: translateY(-8px) rotate(2deg) scale(1.05);
+                filter: drop-shadow(0 0 25px rgba(157, 78, 221, 0.8));
+            }
+            50% { 
+                transform: translateY(-5px) rotate(-1deg) scale(1.03);
+                filter: drop-shadow(0 0 30px rgba(108, 92, 231, 0.9));
+            }
+            75% { 
+                transform: translateY(-12px) rotate(3deg) scale(1.07);
+                filter: drop-shadow(0 0 28px rgba(45, 27, 105, 1));
+            }
+        }
+
+        @keyframes masterIconAscension {
+            0%, 100% { 
+                transform: scale(1.2) translateY(-10px) rotate(5deg);
+                filter: drop-shadow(0 0 35px rgba(157, 78, 221, 1));
+            }
+            25% { 
+                transform: scale(1.3) translateY(-15px) rotate(-3deg);
+                filter: drop-shadow(0 0 40px rgba(139, 95, 191, 1));
+            }
+            50% { 
+                transform: scale(1.25) translateY(-8px) rotate(8deg);
+                filter: drop-shadow(0 0 45px rgba(108, 92, 231, 1));
+            }
+            75% { 
+                transform: scale(1.35) translateY(-18px) rotate(0deg);
+                filter: drop-shadow(0 0 50px rgba(212, 175, 55, 1));
+            }
         }
         
         .status-complete {
@@ -161,6 +286,322 @@
         
         .status-placeholder {
             background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        /* Advanced Astral Projection Interface */
+        .astral-projection-interface {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, 
+                rgba(45, 27, 105, 0.95) 0%,
+                rgba(108, 92, 231, 0.95) 50%,
+                rgba(139, 95, 191, 0.95) 100%);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .astral-overlay {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            background: rgba(26, 26, 46, 0.9);
+            border: 3px solid var(--accent-mystic);
+            border-radius: 20px;
+            padding: 3rem;
+            backdrop-filter: blur(30px);
+        }
+
+        .consciousness-levels {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .level {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 2px solid transparent;
+            transition: all 0.5s ease;
+        }
+
+        .level.active {
+            border-color: var(--accent-gold);
+            background: rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+            transform: translateX(10px);
+        }
+
+        .level-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        .level.active .level-indicator {
+            background: var(--accent-gold);
+            box-shadow: 0 0 20px var(--accent-gold);
+            animation: levelPulse 2s ease-in-out infinite;
+        }
+
+        .consciousness-display {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .astral-body {
+            position: relative;
+            display: inline-block;
+        }
+
+        .body-outline {
+            width: 100px;
+            height: 150px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            background: linear-gradient(180deg, 
+                rgba(139, 95, 191, 0.3) 0%,
+                rgba(157, 78, 221, 0.2) 100%);
+        }
+
+        .consciousness-spark {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 15px;
+            background: radial-gradient(circle, var(--accent-gold), transparent);
+            border-radius: 50%;
+            animation: consciousnessPulse 3s ease-in-out infinite;
+            transition: all 2s ease;
+        }
+
+        /* Alchemy Laboratory Interface */
+        .alchemy-laboratory {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, 
+                rgba(45, 27, 105, 0.95) 0%,
+                rgba(139, 95, 191, 0.95) 50%,
+                rgba(212, 175, 55, 0.95) 100%);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .alchemy-overlay {
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            background: rgba(26, 26, 46, 0.9);
+            border: 3px solid var(--accent-gold);
+            border-radius: 20px;
+            padding: 3rem;
+            backdrop-filter: blur(30px);
+        }
+
+        .alchemical-apparatus {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .transmutation-circle {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border: 5px solid var(--accent-gold);
+            border-radius: 50%;
+            background: radial-gradient(circle, 
+                rgba(212, 175, 55, 0.2) 0%,
+                transparent 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .transmutation-circle.transmuting {
+            animation: circleTransmutation 3s ease-in-out;
+        }
+
+        .inner-circle {
+            width: 120px;
+            height: 120px;
+            border: 3px solid rgba(212, 175, 55, 0.6);
+            border-radius: 50%;
+            background: rgba(139, 95, 191, 0.1);
+        }
+
+        .alchemical-symbols {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .symbol {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .symbol:hover {
+            transform: scale(1.2);
+            border-color: var(--accent-gold);
+        }
+
+        .symbol.fire { top: -20px; left: 50%; transform: translateX(-50%); }
+        .symbol.water { bottom: -20px; left: 50%; transform: translateX(-50%); }
+        .symbol.earth { left: -20px; top: 50%; transform: translateY(-50%); }
+        .symbol.air { right: -20px; top: 50%; transform: translateY(-50%); }
+
+        .alchemical-vessel {
+            position: relative;
+            width: 100px;
+            height: 120px;
+            background: linear-gradient(180deg, 
+                transparent 40%,
+                rgba(139, 95, 191, 0.3) 100%);
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            border-radius: 0 0 50px 50px;
+            overflow: hidden;
+        }
+
+        .vessel-contents {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: end;
+            gap: 5px;
+            padding: 10px;
+        }
+
+        .element-essence {
+            font-size: 1.2rem;
+            animation: essenceFloat 2s ease-in-out infinite;
+        }
+
+        .transmutation-energy {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                rgba(212, 175, 55, 0.6) 0%,
+                transparent 100%);
+            opacity: 0;
+        }
+
+        .astral-controls, .alchemy-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .astral-btn, .alchemy-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(45deg, var(--accent-mystic), var(--accent-gold));
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .astral-btn:hover, .alchemy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 95, 191, 0.4);
+        }
+
+        .close-astral, .close-alchemy {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-astral:hover, .close-alchemy:hover {
+            background: rgba(255, 0, 0, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .alchemical-result {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            margin-top: 1rem;
+        }
+
+        .result-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+        }
+
+        @keyframes levelPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+
+        @keyframes consciousnessPulse {
+            0%, 100% { opacity: 0.8; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.3); }
+        }
+
+        @keyframes circleTransmutation {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+        }
+
+        @keyframes alchemicalTransmutation {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        @keyframes essenceFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
         
         .back-btn {
@@ -436,11 +877,230 @@
         }
         
         function openAstralWork() {
-            openTool('Astral Practices', 'openAstralWork');
+            showAdvancedMasterInterface('Astral Practices');
+            initializeAstralProjection();
+        }
+
+        function initializeAstralProjection() {
+            const container = document.querySelector('.advanced-container');
+            
+            // Create astral projection interface
+            const astralContainer = document.createElement('div');
+            astralContainer.className = 'astral-projection-interface';
+            astralContainer.innerHTML = `
+                <div class="astral-overlay">
+                    <div class="consciousness-levels">
+                        <div class="level physical" data-level="physical">
+                            <div class="level-indicator"></div>
+                            <span>Physical Plane</span>
+                        </div>
+                        <div class="level etheric" data-level="etheric">
+                            <div class="level-indicator"></div>
+                            <span>Etheric Plane</span>
+                        </div>
+                        <div class="level astral" data-level="astral">
+                            <div class="level-indicator"></div>
+                            <span>Astral Plane</span>
+                        </div>
+                        <div class="level mental" data-level="mental">
+                            <div class="level-indicator"></div>
+                            <span>Mental Plane</span>
+                        </div>
+                        <div class="level causal" data-level="causal">
+                            <div class="level-indicator"></div>
+                            <span>Causal Plane</span>
+                        </div>
+                    </div>
+                    <div class="astral-controls">
+                        <button class="astral-btn" onclick="beginProjection()">Begin Projection</button>
+                        <button class="astral-btn" onclick="returnToBody()">Return to Body</button>
+                    </div>
+                    <div class="consciousness-display">
+                        <div class="astral-body">
+                            <div class="body-outline"></div>
+                            <div class="consciousness-spark"></div>
+                        </div>
+                    </div>
+                    <button class="close-astral" onclick="closeAstralInterface()">×</button>
+                </div>
+            `;
+            
+            container.appendChild(astralContainer);
+        }
+
+        let currentPlane = 'physical';
+        let projectionActive = false;
+
+        function beginProjection() {
+            projectionActive = true;
+            const levels = document.querySelectorAll('.level');
+            const spark = document.querySelector('.consciousness-spark');
+            
+            // Progressive ascension through planes
+            let currentIndex = 0;
+            const planes = ['physical', 'etheric', 'astral', 'mental', 'causal'];
+            
+            const ascend = () => {
+                if (currentIndex < planes.length) {
+                    // Deactivate previous level
+                    levels.forEach(level => level.classList.remove('active'));
+                    
+                    // Activate current level
+                    const currentLevel = document.querySelector(`[data-level="${planes[currentIndex]}"]`);
+                    currentLevel.classList.add('active');
+                    
+                    // Move consciousness spark
+                    spark.style.transform = `translateY(-${currentIndex * 100}px) scale(${1 + currentIndex * 0.2})`;
+                    spark.style.filter = `brightness(${1 + currentIndex * 0.3}) hue-rotate(${currentIndex * 60}deg)`;
+                    
+                    currentPlane = planes[currentIndex];
+                    currentIndex++;
+                    
+                    if (currentIndex < planes.length) {
+                        setTimeout(ascend, 2000);
+                    }
+                }
+            };
+            
+            ascend();
+        }
+
+        function returnToBody() {
+            const levels = document.querySelectorAll('.level');
+            const spark = document.querySelector('.consciousness-spark');
+            
+            // Return to physical plane
+            levels.forEach(level => level.classList.remove('active'));
+            document.querySelector('[data-level="physical"]').classList.add('active');
+            
+            spark.style.transform = 'translateY(0) scale(1)';
+            spark.style.filter = 'brightness(1) hue-rotate(0deg)';
+            
+            currentPlane = 'physical';
+            projectionActive = false;
+        }
+
+        function closeAstralInterface() {
+            const interface = document.querySelector('.astral-projection-interface');
+            if (interface) {
+                interface.remove();
+            }
         }
         
         function openAlchemy() {
-            openTool('Spiritual Alchemy', 'openAlchemy');
+            showAdvancedMasterInterface('Spiritual Alchemy');
+            initializeAlchemicalLaboratory();
+        }
+
+        function initializeAlchemicalLaboratory() {
+            const container = document.querySelector('.advanced-container');
+            
+            // Create alchemical laboratory
+            const alchemyContainer = document.createElement('div');
+            alchemyContainer.className = 'alchemy-laboratory';
+            alchemyContainer.innerHTML = `
+                <div class="alchemy-overlay">
+                    <div class="alchemical-apparatus">
+                        <div class="transmutation-circle">
+                            <div class="inner-circle"></div>
+                            <div class="alchemical-symbols">
+                                <div class="symbol fire" onclick="addElement('fire')">🔥</div>
+                                <div class="symbol water" onclick="addElement('water')">💧</div>
+                                <div class="symbol earth" onclick="addElement('earth')">🌍</div>
+                                <div class="symbol air" onclick="addElement('air')">💨</div>
+                            </div>
+                        </div>
+                        <div class="alchemical-vessel">
+                            <div class="vessel-contents"></div>
+                            <div class="transmutation-energy"></div>
+                        </div>
+                    </div>
+                    <div class="alchemy-controls">
+                        <button class="alchemy-btn" onclick="beginTransmutation()">Begin Transmutation</button>
+                        <button class="alchemy-btn" onclick="clearVessel()">Clear Vessel</button>
+                    </div>
+                    <div class="alchemical-result">
+                        <p class="result-text">Select elements to begin the Great Work</p>
+                    </div>
+                    <button class="close-alchemy" onclick="closeAlchemyInterface()">×</button>
+                </div>
+            `;
+            
+            container.appendChild(alchemyContainer);
+        }
+
+        let selectedElements = [];
+
+        function addElement(element) {
+            if (selectedElements.length < 4) {
+                selectedElements.push(element);
+                updateVesselContents();
+            }
+        }
+
+        function updateVesselContents() {
+            const vessel = document.querySelector('.vessel-contents');
+            const resultText = document.querySelector('.result-text');
+            
+            vessel.innerHTML = selectedElements.map(element => {
+                const symbols = { fire: '🔥', water: '💧', earth: '🌍', air: '💨' };
+                return `<div class="element-essence ${element}">${symbols[element]}</div>`;
+            }).join('');
+            
+            resultText.textContent = `Elements added: ${selectedElements.join(', ')}`;
+        }
+
+        function beginTransmutation() {
+            if (selectedElements.length === 0) return;
+            
+            const circle = document.querySelector('.transmutation-circle');
+            const energy = document.querySelector('.transmutation-energy');
+            const resultText = document.querySelector('.result-text');
+            
+            // Activate transmutation
+            circle.classList.add('transmuting');
+            energy.style.animation = 'alchemicalTransmutation 3s ease-in-out';
+            
+            setTimeout(() => {
+                const result = getAlchemicalResult(selectedElements);
+                resultText.innerHTML = `<strong>✨ Transmutation Complete: ${result} ✨</strong>`;
+                circle.classList.remove('transmuting');
+                selectedElements = [];
+                updateVesselContents();
+            }, 3000);
+        }
+
+        function getAlchemicalResult(elements) {
+            const combinations = {
+                'fire,water': 'Steam of Purification',
+                'earth,air': 'Dust of Levitation', 
+                'fire,earth': 'Molten Foundation',
+                'water,air': 'Mist of Clarity',
+                'fire,air': 'Lightning of Inspiration',
+                'water,earth': 'Mud of Grounding',
+                'fire,water,earth,air': 'Philosopher\'s Stone'
+            };
+            
+            const key = elements.sort().join(',');
+            return combinations[key] || 'Mysterious Essence';
+        }
+
+        function clearVessel() {
+            selectedElements = [];
+            updateVesselContents();
+            document.querySelector('.result-text').textContent = 'Vessel cleared - ready for new transmutation';
+        }
+
+        function closeAlchemyInterface() {
+            const interface = document.querySelector('.alchemy-laboratory');
+            if (interface) {
+                interface.remove();
+            }
+        }
+
+        function showAdvancedMasterInterface(title) {
+            // Enhanced version for master practices
+            console.log(`Opening advanced interface: ${title}`);
         }
         
         function openMysticArts() {

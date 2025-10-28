@@ -113,16 +113,18 @@
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 2rem;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            animation: spiritualGrowth 12s ease-in-out infinite;
         }
 
         .devotion-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(248, 187, 217, 0.3);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(248, 187, 217, 0.4), 0 0 40px rgba(255, 107, 107, 0.3);
             border-color: var(--accent-rose);
+            animation-play-state: paused;
         }
 
         .devotion-card::before {
@@ -133,6 +135,68 @@
             right: 0;
             height: 4px;
             background: linear-gradient(90deg, var(--accent-rose), var(--accent-gold));
+            animation: devotionalFlow 10s ease-in-out infinite;
+        }
+
+        .devotion-card::after {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(
+                circle,
+                rgba(248, 187, 217, 0.1) 0%,
+                rgba(255, 107, 107, 0.05) 40%,
+                transparent 70%
+            );
+            animation: growthAura 15s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes spiritualGrowth {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 10px 20px rgba(248, 187, 217, 0.2);
+            }
+            33% { 
+                transform: scale(1.005);
+                box-shadow: 0 12px 25px rgba(255, 107, 107, 0.25);
+            }
+            66% { 
+                transform: scale(1.01);
+                box-shadow: 0 15px 30px rgba(0, 229, 255, 0.3);
+            }
+        }
+
+        @keyframes devotionalFlow {
+            0%, 100% { 
+                background: linear-gradient(90deg, var(--accent-rose), var(--accent-gold));
+            }
+            25% { 
+                background: linear-gradient(90deg, var(--accent-gold), var(--accent-warm));
+            }
+            50% { 
+                background: linear-gradient(90deg, var(--accent-warm), var(--accent-cyan));
+            }
+            75% { 
+                background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            }
+        }
+
+        @keyframes growthAura {
+            0% { 
+                transform: rotate(0deg) scale(1);
+                opacity: 0.3;
+            }
+            50% { 
+                opacity: 0.6;
+            }
+            100% { 
+                transform: rotate(360deg) scale(1.2);
+                opacity: 0.3;
+            }
         }
 
         .card-icon {
@@ -140,6 +204,49 @@
             margin-bottom: 1rem;
             display: block;
             text-align: center;
+            animation: devotionalIconGlow 8s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(248, 187, 217, 0.6));
+            transition: all 0.3s ease;
+        }
+
+        .devotion-card:hover .card-icon {
+            animation: devotionalIconBless 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 25px rgba(255, 107, 107, 0.8));
+            transform: scale(1.1) translateY(-5px);
+        }
+
+        @keyframes devotionalIconGlow {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 15px rgba(248, 187, 217, 0.6));
+            }
+            33% { 
+                transform: scale(1.03) rotate(1deg);
+                filter: drop-shadow(0 0 18px rgba(255, 107, 107, 0.7));
+            }
+            66% { 
+                transform: scale(1.05) rotate(-1deg);
+                filter: drop-shadow(0 0 20px rgba(0, 229, 255, 0.8));
+            }
+        }
+
+        @keyframes devotionalIconBless {
+            0%, 100% { 
+                transform: scale(1.1) translateY(-5px);
+                filter: drop-shadow(0 0 25px rgba(255, 107, 107, 0.8));
+            }
+            25% { 
+                transform: scale(1.15) translateY(-8px) rotate(3deg);
+                filter: drop-shadow(0 0 30px rgba(248, 187, 217, 1));
+            }
+            50% { 
+                transform: scale(1.12) translateY(-3px) rotate(-2deg);
+                filter: drop-shadow(0 0 35px rgba(212, 175, 55, 1));
+            }
+            75% { 
+                transform: scale(1.18) translateY(-7px) rotate(1deg);
+                filter: drop-shadow(0 0 32px rgba(139, 95, 191, 1));
+            }
         }
 
         .card-title {
@@ -290,6 +397,281 @@
             flex: 1;
             overflow-y: auto;
             padding: 2rem;
+        }
+
+        /* Premium Growth Tracking System */
+        .growth-tracker-system {
+            padding: 2rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, 
+                rgba(248, 187, 217, 0.1) 0%,
+                rgba(255, 107, 107, 0.1) 50%,
+                rgba(212, 175, 55, 0.1) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .spiritual-progress {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .progress-tree {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tree-trunk {
+            width: 20px;
+            height: 100px;
+            background: linear-gradient(to bottom, #8b4513, #654321);
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 20px rgba(139, 69, 19, 0.5);
+        }
+
+        .growth-rings {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .growth-ring {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ring-progress {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent, var(--accent-rose));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            opacity: 0;
+            transition: all 0.8s ease;
+        }
+
+        .ring-progress::before {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(26, 26, 46, 0.9);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .ring-progress::after {
+            content: attr(data-progress) '%';
+            position: absolute;
+            z-index: 2;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .ring-label {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .growth-ring.meditation .ring-progress { background: conic-gradient(from 0deg, transparent, #4fc3f7); }
+        .growth-ring.wisdom .ring-progress { background: conic-gradient(from 0deg, transparent, #ffd700); }
+        .growth-ring.compassion .ring-progress { background: conic-gradient(from 0deg, transparent, #ff6b9d); }
+        .growth-ring.mindfulness .ring-progress { background: conic-gradient(from 0deg, transparent, #66bb6a); }
+        .growth-ring.gratitude .ring-progress { background: conic-gradient(from 0deg, transparent, #9c27b0); }
+
+        .ring-animated {
+            animation: ringGlow 2s ease-in-out;
+        }
+
+        .ring-growing {
+            animation: ringGrowth 1s ease-out;
+        }
+
+        .tree-crown {
+            position: relative;
+            width: 100px;
+            height: 60px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.3), transparent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .enlightenment-glow {
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, var(--accent-gold), transparent);
+            border-radius: 50%;
+            animation: enlightenmentPulse 4s ease-in-out infinite;
+        }
+
+        .growth-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .growth-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .growth-btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(45deg, var(--accent-rose), var(--accent-warm));
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .growth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(248, 187, 217, 0.4);
+        }
+
+        .intention-popup {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(26, 26, 46, 0.95);
+            border: 2px solid var(--accent-gold);
+            border-radius: 15px;
+            padding: 1.5rem;
+            z-index: 10;
+            animation: intentionAppear 0.5s ease-out;
+        }
+
+        .intention-content h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .intention-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .intention-saved {
+            color: var(--accent-gold);
+            text-align: center;
+            font-weight: 600;
+            animation: intentionSaved 0.5s ease-out;
+        }
+
+        .celebration-particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            animation: celebrateParticle 3s ease-out forwards;
+            pointer-events: none;
+        }
+
+        .progress-tree.celebrating {
+            animation: treeJoy 3s ease-in-out;
+        }
+
+        @keyframes ringGlow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); box-shadow: 0 0 30px currentColor; }
+        }
+
+        @keyframes ringGrowth {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes enlightenmentPulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        @keyframes intentionAppear {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        @keyframes intentionSaved {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes celebrateParticle {
+            0% { transform: translateY(0) scale(0); opacity: 1; }
+            50% { transform: translateY(-100px) scale(1); opacity: 0.8; }
+            100% { transform: translateY(-200px) scale(0); opacity: 0; }
+        }
+
+        @keyframes treeJoy {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.05) rotate(2deg); }
+            75% { transform: scale(1.05) rotate(-2deg); }
         }
 
         /* Prayer & Affirmation Styles */
@@ -687,6 +1069,157 @@
         function openGrowthTracker() {
             showSessionModal('Growth Tracker');
             loadGrowthTrackerContent();
+            initializeGrowthVisualization();
+        }
+
+        function initializeGrowthVisualization() {
+            const modalContent = document.querySelector('.session-content');
+            
+            // Add growth tracking system
+            const growthContainer = document.createElement('div');
+            growthContainer.className = 'growth-tracker-system';
+            growthContainer.innerHTML = `
+                <div class="spiritual-progress">
+                    <div class="progress-tree">
+                        <div class="tree-trunk"></div>
+                        <div class="growth-rings">
+                            <div class="growth-ring meditation" data-skill="meditation">
+                                <div class="ring-progress" data-progress="75"></div>
+                                <div class="ring-label">Meditation</div>
+                            </div>
+                            <div class="growth-ring wisdom" data-skill="wisdom">
+                                <div class="ring-progress" data-progress="60"></div>
+                                <div class="ring-label">Wisdom</div>
+                            </div>
+                            <div class="growth-ring compassion" data-skill="compassion">
+                                <div class="ring-progress" data-progress="85"></div>
+                                <div class="ring-label">Compassion</div>
+                            </div>
+                            <div class="growth-ring mindfulness" data-skill="mindfulness">
+                                <div class="ring-progress" data-progress="70"></div>
+                                <div class="ring-label">Mindfulness</div>
+                            </div>
+                            <div class="growth-ring gratitude" data-skill="gratitude">
+                                <div class="ring-progress" data-progress="90"></div>
+                                <div class="ring-label">Gratitude</div>
+                            </div>
+                        </div>
+                        <div class="tree-crown">
+                            <div class="enlightenment-glow"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="growth-metrics">
+                    <div class="metric-card">
+                        <div class="metric-value">127</div>
+                        <div class="metric-label">Days of Practice</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">74%</div>
+                        <div class="metric-label">Overall Growth</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">42</div>
+                        <div class="metric-label">Insights Gained</div>
+                    </div>
+                </div>
+                <div class="growth-actions">
+                    <button class="growth-btn" onclick="updateProgress()">Update Progress</button>
+                    <button class="growth-btn" onclick="setIntention()">Set New Intention</button>
+                    <button class="growth-btn" onclick="celebrateGrowth()">Celebrate Growth</button>
+                </div>
+            `;
+            
+            modalContent.insertBefore(growthContainer, modalContent.firstChild);
+            
+            // Initialize progress animations
+            animateGrowthRings();
+        }
+
+        function animateGrowthRings() {
+            const rings = document.querySelectorAll('.ring-progress');
+            
+            rings.forEach((ring, index) => {
+                const progress = ring.dataset.progress;
+                
+                setTimeout(() => {
+                    ring.style.strokeDasharray = `${progress * 2.51}, 251`;
+                    ring.style.opacity = '1';
+                    ring.parentElement.classList.add('ring-animated');
+                }, index * 300);
+            });
+        }
+
+        function updateProgress() {
+            const rings = document.querySelectorAll('.growth-ring');
+            
+            rings.forEach(ring => {
+                const currentProgress = parseInt(ring.querySelector('.ring-progress').dataset.progress);
+                const newProgress = Math.min(currentProgress + Math.floor(Math.random() * 10), 100);
+                
+                ring.querySelector('.ring-progress').dataset.progress = newProgress;
+                ring.querySelector('.ring-progress').style.strokeDasharray = `${newProgress * 2.51}, 251`;
+                
+                // Visual feedback
+                ring.classList.add('ring-growing');
+                setTimeout(() => ring.classList.remove('ring-growing'), 1000);
+            });
+            
+            // Update overall growth
+            const overallMetric = document.querySelector('.metric-card .metric-value');
+            const currentOverall = parseInt(overallMetric.textContent);
+            overallMetric.textContent = Math.min(currentOverall + 2, 100) + '%';
+        }
+
+        function setIntention() {
+            const inspiration = document.querySelector('.growth-metrics');
+            const intentionDiv = document.createElement('div');
+            intentionDiv.className = 'intention-popup';
+            intentionDiv.innerHTML = `
+                <div class="intention-content">
+                    <h4>Set Your Spiritual Intention</h4>
+                    <input type="text" placeholder="I intend to..." class="intention-input">
+                    <button onclick="saveIntention(this)">Set Intention</button>
+                </div>
+            `;
+            
+            inspiration.appendChild(intentionDiv);
+            
+            setTimeout(() => {
+                if (intentionDiv.parentNode) {
+                    intentionDiv.remove();
+                }
+            }, 10000);
+        }
+
+        function saveIntention(button) {
+            const input = button.previousElementSibling;
+            const intention = input.value.trim();
+            
+            if (intention) {
+                const popup = button.closest('.intention-popup');
+                popup.innerHTML = `<div class="intention-saved">✨ Intention Set: "${intention}" ✨</div>`;
+                
+                setTimeout(() => popup.remove(), 3000);
+            }
+        }
+
+        function celebrateGrowth() {
+            const tree = document.querySelector('.progress-tree');
+            tree.classList.add('celebrating');
+            
+            // Add celebration particles
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'celebration-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                tree.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 3000);
+            }
+            
+            setTimeout(() => tree.classList.remove('celebrating'), 3000);
         }
 
         function openPrayerGarden() {
