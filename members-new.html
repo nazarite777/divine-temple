@@ -593,6 +593,89 @@
             font-weight: 600;
         }
 
+        .recommended-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, var(--accent-gold), #FBBF24);
+            color: var(--bg-primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            z-index: 2;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 5px rgba(245, 158, 11, 0.5); }
+            to { box-shadow: 0 0 15px rgba(245, 158, 11, 0.8); }
+        }
+
+        /* Instructions Panel */
+        .instructions-panel {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .instructions-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 3rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .instructions-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .instructions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .instruction-item {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .instruction-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .instruction-content h4 {
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .instruction-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Section Container */
         .section-container {
             display: none;
             max-width: 100%;
@@ -819,6 +902,22 @@
                     Full access to the Divine Temple spiritual growth platform with 18+ divine tools.
                 </p>
                 
+                <!-- Enhanced Quick Actions -->
+                <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid var(--accent-purple); border-radius: 20px; padding: 1.5rem; margin: 2rem 0;">
+                    <h3 style="color: var(--accent-purple); margin-bottom: 1rem; text-align: center;">🚀 Quick Start Recommendations</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <button onclick="showSectionWithLoading('spiritual-tools')" style="background: linear-gradient(135deg, var(--accent-gold), #FBBF24); color: var(--bg-primary); border: none; padding: 1rem; border-radius: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                            🔮 Start with Spiritual Tools
+                        </button>
+                        <button onclick="showSectionWithLoading('personal-growth')" style="background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); color: white; border: none; padding: 1rem; border-radius: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                            📊 Track Your Growth
+                        </button>
+                        <button onclick="showSectionWithLoading('sacred-knowledge')" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold)); color: white; border: none; padding: 1rem; border-radius: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                            📚 Explore Knowledge
+                        </button>
+                    </div>
+                </div>
+                
                 <div class="stats-grid">
                     <div class="stat-card">
                         <span class="stat-number">6</span>
@@ -843,7 +942,13 @@
         <section class="navigation-section">
             <h2 class="section-title">Explore Divine Tools</h2>
             <div class="nav-grid">
+<<<<<<< HEAD
+                <!-- Spiritual Tools -->
+                <div class="nav-card scale-in" onclick="showSectionWithLoading('spiritual-tools')">
+                    <div class="recommended-badge">🌟 START HERE</div>
+=======
                 <div class="nav-card" onclick="showSection('spiritual-tools')">
+>>>>>>> e2a1fa4e4b01e81ccc18f66268b25224b55ffd65
                     <span class="nav-icon">🧘</span>
                     <h3 class="nav-title">Spiritual Tools</h3>
                     <p class="nav-description">
@@ -1211,6 +1316,274 @@
         function hideAuthOverlay() {
             document.getElementById('auth-overlay').style.display = 'none';
             document.body.style.overflow = 'auto';
+            
+            // Update status bar
+            const statusElement = document.getElementById('auth-status');
+            if (statusElement) statusElement.textContent = '✅ ACCESS GRANTED - Portal active';
+            
+            // Show welcome sequence
+            showWelcomeSequence();
+            
+            // Hide status bar after successful login
+            setTimeout(() => {
+                const statusBar = document.getElementById('status-bar');
+                if (statusBar) statusBar.style.display = 'none';
+            }, 3000);
+        }
+
+        // Enhanced Welcome Sequence
+        function showWelcomeSequence() {
+            // Create welcome overlay
+            const welcomeOverlay = document.createElement('div');
+            welcomeOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, rgba(10, 14, 39, 0.95), rgba(26, 31, 58, 0.95));
+                backdrop-filter: blur(20px);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.5s ease-out;
+            `;
+            
+            welcomeOverlay.innerHTML = `
+                <div style="text-align: center; max-width: 600px; padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem; animation: bounce 1s ease-out;">🏛️</div>
+                    <h1 style="color: var(--accent-gold); font-size: 2.5rem; margin-bottom: 1rem; animation: slideUp 0.8s ease-out;">
+                        Welcome to the Divine Temple!
+                    </h1>
+                    <p style="color: var(--text-secondary); font-size: 1.2rem; margin-bottom: 2rem; animation: slideUp 1s ease-out;">
+                        Your spiritual journey begins now. Access 18+ sacred tools designed to accelerate your divine connection.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid var(--accent-gold); border-radius: 15px; padding: 1rem; animation: slideUp 1.2s ease-out;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔮</div>
+                            <div style="color: var(--accent-gold); font-weight: 600;">7 Spiritual Tools</div>
+                        </div>
+                        <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid var(--accent-purple); border-radius: 15px; padding: 1rem; animation: slideUp 1.4s ease-out;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📚</div>
+                            <div style="color: var(--accent-purple); font-weight: 600;">Sacred Knowledge</div>
+                        </div>
+                        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid var(--accent-blue); border-radius: 15px; padding: 1rem; animation: slideUp 1.6s ease-out;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
+                            <div style="color: var(--accent-blue); font-weight: 600;">Growth Tracking</div>
+                        </div>
+                    </div>
+                    <button onclick="enterPortal()" style="background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple)); color: white; border: none; padding: 1rem 2rem; border-radius: 25px; font-size: 1.1rem; font-weight: 600; cursor: pointer; animation: pulse 2s infinite;">
+                        ✨ Enter Your Sacred Space ✨
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(welcomeOverlay);
+            
+            // Add CSS animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes slideUp {
+                    from { opacity: 0; transform: translateY(30px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                @keyframes bounce {
+                    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+                    40% { transform: translateY(-10px); }
+                    60% { transform: translateY(-5px); }
+                }
+                @keyframes pulse {
+                    0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+                    70% { box-shadow: 0 0 0 20px rgba(245, 158, 11, 0); }
+                    100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+                }
+                @keyframes fadeOut {
+                    from { opacity: 1; }
+                    to { opacity: 0; }
+                }
+                @keyframes slideInRight {
+                    from { opacity: 0; transform: translateY(-50%) translateX(100px); }
+                    to { opacity: 1; transform: translateY(-50%) translateX(0); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Auto-advance after 5 seconds
+            setTimeout(() => {
+                if (document.body.contains(welcomeOverlay)) {
+                    enterPortal();
+                }
+            }, 5000);
+        }
+
+        // Enter Portal Function
+        function enterPortal() {
+            const welcomeOverlay = document.querySelector('div[style*="position: fixed"][style*="z-index: 10000"]');
+            if (welcomeOverlay) {
+                welcomeOverlay.style.animation = 'fadeOut 0.5s ease-out forwards';
+                setTimeout(() => {
+                    welcomeOverlay.remove();
+                    showFirstTimeGuidance();
+                }, 500);
+            }
+        }
+
+        // First Time Guidance
+        function showFirstTimeGuidance() {
+            const guidance = document.createElement('div');
+            guidance.style.cssText = `
+                position: fixed;
+                top: 50%;
+                right: 20px;
+                transform: translateY(-50%);
+                background: var(--glass-bg);
+                backdrop-filter: blur(20px);
+                border: 1px solid var(--accent-gold);
+                border-radius: 20px;
+                padding: 1.5rem;
+                max-width: 300px;
+                z-index: 9999;
+                animation: slideInRight 0.8s ease-out;
+            `;
+            
+            guidance.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                    <span style="font-size: 1.5rem;">🗺️</span>
+                    <strong style="color: var(--accent-gold);">Quick Start Guide</strong>
+                </div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                    <p>1. 📊 Check your dashboard stats</p>
+                    <p>2. 🔮 Try "Spiritual Tools" first</p>
+                    <p>3. 📚 Explore "Sacred Knowledge"</p>
+                    <p>4. 📈 Track progress in your journey</p>
+                </div>
+                <button onclick="this.parentElement.remove()" style="width: 100%; background: linear-gradient(135deg, var(--accent-gold), #FBBF24); color: var(--bg-primary); border: none; padding: 0.5rem; border-radius: 10px; font-weight: 600; cursor: pointer;">
+                    Got it! ✨
+                </button>
+            `;
+            
+            document.body.appendChild(guidance);
+            
+            // Auto-remove after 10 seconds
+            setTimeout(() => {
+                if (document.body.contains(guidance)) {
+                    guidance.remove();
+                }
+            }, 10000);
+        }
+
+        // ADMIN BYPASS FUNCTION - Instant portal access
+        function adminBypass() {
+            const adminMember = {
+                username: 'admin',
+                firstName: 'Admin',
+                lastName: 'User',
+                membershipType: 'Admin Access',
+                email: 'admin@edenconsciousness.com',
+                joinDate: '2025-01-01',
+                memberLevel: 'Admin',
+                lastLogin: new Date().toISOString(),
+                loginCount: 1
+            };
+            
+            // Store admin session
+            sessionStorage.setItem('divineAuthenticated', 'true');
+            sessionStorage.setItem('currentMember', JSON.stringify(adminMember));
+            sessionStorage.setItem('authTimestamp', Date.now().toString());
+            
+            // Hide overlay and show portal immediately
+            hideAuthOverlay();
+            updateWelcomeMessage(adminMember);
+            updateMemberBadge(adminMember);
+            populateDashboard(adminMember);
+            addActivityFeed('🚪 Admin bypass access granted', 'login');
+            
+            // Show success notification
+            showNotification('🚪 Admin bypass successful! Welcome to the Divine Temple!', 'success');
+        }
+
+        // TEST LOGIN FUNCTION - For development/testing
+        function testLogin() {
+            const testMember = {
+                username: 'TestUser',
+                firstName: 'Test',
+                lastName: 'User',
+                membershipType: 'Test Access',
+                email: 'test@edenconsciousness.com',
+                joinDate: '2025-01-01',
+                memberLevel: 'Test',
+                lastLogin: new Date().toISOString(),
+                loginCount: 1
+            };
+            
+            // Store test session
+            sessionStorage.setItem('divineAuthenticated', 'true');
+            sessionStorage.setItem('currentMember', JSON.stringify(testMember));
+            sessionStorage.setItem('authTimestamp', Date.now().toString());
+            
+            // Hide overlay and show portal
+            hideAuthOverlay();
+            updateWelcomeMessage(testMember);
+            updateMemberBadge(testMember);
+            populateDashboard(testMember);
+            addActivityFeed('🧪 Test user accessed portal', 'login');
+            
+            // Show success notification
+            showNotification('🧪 Test access granted! Exploring the Divine Temple...', 'success');
+        }
+
+        // DEBUG FUNCTION - Check authentication status
+        function debugAuth() {
+            const sessionAuth = sessionStorage.getItem('divineAuthenticated');
+            const localAuth = localStorage.getItem('divineAuthenticated');
+            const sessionMember = sessionStorage.getItem('currentMember');
+            const localMember = localStorage.getItem('currentMember');
+            const authTimestamp = sessionStorage.getItem('authTimestamp') || localStorage.getItem('authTimestamp');
+            
+            const debugInfo = `
+AUTH DEBUG INFO:
+================
+Session Auth: ${sessionAuth || 'NOT SET'}
+Local Auth: ${localAuth || 'NOT SET'}
+Session Member: ${sessionMember ? 'SET' : 'NOT SET'}
+Local Member: ${localMember ? 'SET' : 'NOT SET'}
+Auth Timestamp: ${authTimestamp || 'NOT SET'}
+Current Time: ${Date.now()}
+Time Diff: ${authTimestamp ? (Date.now() - parseInt(authTimestamp)) / 1000 / 60 : 'N/A'} minutes
+
+Overlay Display: ${document.getElementById('auth-overlay').style.display}
+Body Overflow: ${document.body.style.overflow}
+            `;
+            
+            console.log(debugInfo);
+            alert(debugInfo);
+        }
+
+        // CLEAR ALL SESSIONS - Reset everything
+        function clearAllSessions() {
+            // Clear all authentication data
+            sessionStorage.clear();
+            localStorage.removeItem('divineAuthenticated');
+            localStorage.removeItem('currentMember');
+            localStorage.removeItem('authTimestamp');
+            localStorage.removeItem('rememberLogin');
+            localStorage.removeItem('memberActivities');
+            
+            // Clear member-specific data
+            const keys = Object.keys(localStorage);
+            keys.forEach(key => {
+                if (key.startsWith('loginCount_') || key.startsWith('loginHistory_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+            
+            alert('🗑️ All sessions and data cleared! Page will reload.');
+            location.reload();
         }
 
         function updateWelcomeMessage(memberData) {
@@ -1352,6 +1725,562 @@
                 e.preventDefault();
                 logout();
             }
+        });
+
+        // Prevent accidental page reload
+        window.addEventListener('beforeunload', function(e) {
+            const sectionContainer = document.getElementById('section-container');
+            if (sectionContainer.style.display === 'block') {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        // Activity tracking for user engagement
+        let activityTimer;
+        function trackActivity() {
+            clearTimeout(activityTimer);
+            activityTimer = setTimeout(() => {
+                // User has been inactive for 30 minutes
+                const memberData = JSON.parse(sessionStorage.getItem('currentMember') || 
+                                            localStorage.getItem('currentMember') || '{}');
+                if (memberData.username) {
+                    addActivityFeed('💤 Session inactive for 30 minutes', 'inactivity');
+                }
+            }, 1800000); // 30 minutes
+        }
+
+        // Track user activity
+        ['mousedown', 'keydown', 'scroll', 'touchstart'].forEach(event => {
+            document.addEventListener(event, trackActivity, true);
+        });
+
+        // Initialize activity tracking
+        trackActivity();
+
+        // MEMBER ACTIVITY DASHBOARD FUNCTIONS
+        
+        function populateDashboard(memberData) {
+            // Show skeleton while loading
+            showDashboardSkeleton();
+            
+            // Simulate loading time and populate with data
+            setTimeout(() => {
+                updatePersonalStats(memberData);
+                updateActivityFeed();
+                updateLoginHistory(memberData);
+                updateSpirituralProgress(memberData);
+                updateFavoriteTools(memberData);
+                hideDashboardSkeleton();
+                triggerStaggerAnimation();
+            }, 1500);
+        }
+
+        function showDashboardSkeleton() {
+            const skeleton = document.getElementById('dashboard-skeleton');
+            const content = document.getElementById('dashboard-content');
+            
+            if (skeleton && content) {
+                skeleton.classList.add('active');
+                content.style.opacity = '0';
+            }
+        }
+
+        function hideDashboardSkeleton() {
+            const skeleton = document.getElementById('dashboard-skeleton');
+            const content = document.getElementById('dashboard-content');
+            
+            if (skeleton && content) {
+                skeleton.classList.remove('active');
+                content.style.opacity = '1';
+            }
+        }
+
+        function triggerStaggerAnimation() {
+            const staggerItems = document.querySelectorAll('.stagger-item');
+            staggerItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.add('animate');
+                }, index * 100);
+            });
+        }
+
+        // Enhanced section loading with progress
+        function showSectionWithLoading(sectionId) {
+            if (!sectionMap[sectionId]) return;
+            
+            // Track section visit
+            trackSectionVisit(sectionId);
+            
+            // Create and show loading overlay
+            const loadingOverlay = createLoadingOverlay(sectionTitles[sectionId]);
+            document.body.appendChild(loadingOverlay);
+            
+            // Simulate progress updates
+            let progress = 0;
+            const progressBar = loadingOverlay.querySelector('.loading-progress-bar');
+            
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 20;
+                progress = Math.min(progress, 90);
+                progressBar.style.width = `${progress}%`;
+                
+                if (progress >= 90) {
+                    clearInterval(progressInterval);
+                }
+            }, 200);
+            
+            // Hide current view
+            const dashboard = document.getElementById('dashboard');
+            const sectionContainer = document.getElementById('section-container');
+            const sectionFrame = document.getElementById('section-frame');
+            const sectionTitle = document.getElementById('section-title');
+
+            // Set up the section
+            dashboard.style.display = 'none';
+            sectionContainer.style.display = 'block';
+            sectionTitle.textContent = sectionTitles[sectionId];
+            
+            // Handle frame loading
+            sectionFrame.onload = function() {
+                // Complete progress
+                clearInterval(progressInterval);
+                progressBar.style.width = '100%';
+                
+                // Hide loading overlay after brief delay
+                setTimeout(() => {
+                    loadingOverlay.remove();
+                    addActivityFeed(`📂 Opened ${sectionTitles[sectionId]}`, 'navigation');
+                }, 800);
+            };
+            
+            sectionFrame.onerror = function() {
+                clearInterval(progressInterval);
+                loadingOverlay.remove();
+                showNotification('⚠️ Failed to load section. Please try again.', 'error');
+                showDashboard();
+            };
+            
+            // Load section with delay for smooth UX
+            setTimeout(() => {
+                sectionFrame.src = sectionMap[sectionId];
+            }, 500);
+        }
+
+        function createLoadingOverlay(sectionTitle) {
+            const overlay = document.createElement('div');
+            overlay.className = 'section-loading active';
+            
+            const loadingMessages = [
+                'Preparing your divine tools...',
+                'Connecting to sacred wisdom...',
+                'Loading spiritual resources...',
+                'Initializing cosmic interface...',
+                'Activating divine frequencies...'
+            ];
+            
+            const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+            
+            overlay.innerHTML = `
+                <div class="loading-content">
+                    <div class="loading-spinner-large"></div>
+                    <div class="loading-title">🔮 Loading ${sectionTitle}</div>
+                    <div class="loading-subtitle">${randomMessage}</div>
+                    <div class="loading-progress">
+                        <div class="loading-progress-bar"></div>
+                    </div>
+                </div>
+            `;
+            
+            return overlay;
+        }
+
+        // Enhanced button loading states
+        function addButtonLoading(button) {
+            const originalText = button.textContent;
+            button.classList.add('btn-loading');
+            button.disabled = true;
+            
+            return {
+                remove: () => {
+                    button.classList.remove('btn-loading');
+                    button.disabled = false;
+                    button.textContent = originalText;
+                }
+            };
+        }
+
+        function updatePersonalStats(memberData) {
+            // Calculate login streak
+            const loginStreak = calculateLoginStreak(memberData.username);
+            document.getElementById('login-streak').textContent = loginStreak;
+            
+            // Total logins
+            const totalLogins = getLoginCount(memberData.username);
+            document.getElementById('total-logins').textContent = totalLogins;
+            
+            // Days as member
+            const joinDate = new Date(memberData.joinDate);
+            const today = new Date();
+            const daysMember = Math.floor((today - joinDate) / (1000 * 60 * 60 * 24));
+            document.getElementById('days-member').textContent = daysMember;
+            
+            // Tools accessed (from activity feed)
+            const activities = JSON.parse(localStorage.getItem('memberActivities') || '[]');
+            const toolsAccessed = new Set(activities.filter(a => a.type === 'navigation').map(a => a.message)).size;
+            document.getElementById('tools-accessed').textContent = toolsAccessed;
+        }
+
+        function calculateLoginStreak(username) {
+            const streakKey = `loginStreak_${username}`;
+            const lastLoginKey = `lastLogin_${username}`;
+            
+            const today = new Date().toDateString();
+            const lastLogin = localStorage.getItem(lastLoginKey);
+            let currentStreak = parseInt(localStorage.getItem(streakKey) || '1');
+            
+            if (lastLogin) {
+                const lastLoginDate = new Date(lastLogin).toDateString();
+                const yesterday = new Date(Date.now() - 86400000).toDateString();
+                
+                if (lastLoginDate === today) {
+                    // Already logged in today, keep streak
+                } else if (lastLoginDate === yesterday) {
+                    // Logged in yesterday, increment streak
+                    currentStreak++;
+                } else {
+                    // Streak broken, reset to 1
+                    currentStreak = 1;
+                }
+            }
+            
+            // Update stored values
+            localStorage.setItem(streakKey, currentStreak.toString());
+            localStorage.setItem(lastLoginKey, today);
+            
+            return currentStreak;
+        }
+
+        function updateActivityFeed() {
+            const activities = JSON.parse(localStorage.getItem('memberActivities') || '[]');
+            const activityList = document.getElementById('activity-list');
+            
+            if (activities.length === 0) {
+                activityList.innerHTML = `
+                    <div class="activity-item">
+                        <span class="activity-icon">🌟</span>
+                        <div class="activity-content">
+                            <div class="activity-text">Start exploring to see your activities here!</div>
+                            <div class="activity-time">No activities yet</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const recentActivities = activities.slice(0, 5);
+            activityList.innerHTML = recentActivities.map(activity => {
+                const timeAgo = formatTimeAgo(new Date(activity.timestamp));
+                const iconMap = {
+                    'login': '🔐',
+                    'logout': '🚪',
+                    'navigation': '📂',
+                    'inactivity': '💤',
+                    'general': '✨'
+                };
+                
+                return `
+                    <div class="activity-item">
+                        <span class="activity-icon">${iconMap[activity.type] || '✨'}</span>
+                        <div class="activity-content">
+                            <div class="activity-text">${activity.message}</div>
+                            <div class="activity-time">${timeAgo}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function formatTimeAgo(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            
+            if (minutes < 1) return 'Just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            return `${days}d ago`;
+        }
+
+        function updateLoginHistory(memberData) {
+            // Get login history for the past 7 days
+            const loginHistory = getLoginHistoryData(memberData.username);
+            const chartBars = document.querySelectorAll('.chart-bar');
+            
+            chartBars.forEach((bar, index) => {
+                const activity = loginHistory[index] || 0;
+                const height = Math.max(20, activity * 20); // Minimum 20%, scale up
+                bar.style.height = `${Math.min(height, 100)}%`;
+                
+                // Add active class to today (last bar)
+                if (index === chartBars.length - 1) {
+                    bar.classList.add('active');
+                }
+            });
+        }
+
+        function getLoginHistoryData(username) {
+            // Simulate login activity data for the past 7 days
+            // In a real app, this would come from a backend
+            const baseActivity = [3, 4, 2, 5, 3, 5, 4]; // Sample data
+            const stored = localStorage.getItem(`loginHistory_${username}`);
+            
+            if (stored) {
+                return JSON.parse(stored);
+            } else {
+                localStorage.setItem(`loginHistory_${username}`, JSON.stringify(baseActivity));
+                return baseActivity;
+            }
+        }
+
+        function updateSpirituralProgress(memberData) {
+            // Calculate progress based on activities and membership duration
+            const activities = JSON.parse(localStorage.getItem('memberActivities') || '[]');
+            const joinDate = new Date(memberData.joinDate);
+            const daysMember = Math.floor((Date.now() - joinDate) / (1000 * 60 * 60 * 24));
+            
+            // Calculate meditation progress (based on spiritual tools usage)
+            const meditationActivities = activities.filter(a => 
+                a.message.includes('Spiritual Tools') || a.message.includes('meditation')
+            ).length;
+            const meditationProgress = Math.min(Math.floor((meditationActivities * 10) + (daysMember * 2)), 100);
+            
+            // Calculate divine connection (based on calendar and oracle usage)
+            const connectionActivities = activities.filter(a => 
+                a.message.includes('Calendar') || a.message.includes('Oracle')
+            ).length;
+            const connectionProgress = Math.min(Math.floor((connectionActivities * 15) + (daysMember * 1.5)), 100);
+            
+            // Calculate sacred knowledge (based on knowledge section usage)
+            const knowledgeActivities = activities.filter(a => 
+                a.message.includes('Knowledge') || a.message.includes('Sacred')
+            ).length;
+            const knowledgeProgress = Math.min(Math.floor((knowledgeActivities * 12) + (daysMember * 3)), 100);
+            
+            // Animate progress bars with loading effect
+            const progressBars = [
+                { element: '.progress-item:nth-child(1)', progress: meditationProgress },
+                { element: '.progress-item:nth-child(2)', progress: connectionProgress },
+                { element: '.progress-item:nth-child(3)', progress: knowledgeProgress }
+            ];
+            
+            progressBars.forEach((bar, index) => {
+                setTimeout(() => {
+                    const progressItem = document.querySelector(bar.element);
+                    if (progressItem) {
+                        const progressFill = progressItem.querySelector('.progress-fill');
+                        const progressPercent = progressItem.querySelector('.progress-percent');
+                        
+                        // Add loading shimmer effect
+                        progressFill.classList.add('progress-bar-loading');
+                        
+                        // Animate to final progress
+                        setTimeout(() => {
+                            progressFill.classList.remove('progress-bar-loading');
+                            progressFill.style.width = `${bar.progress}%`;
+                            
+                            // Animate the percentage counter
+                            animateCounter(progressPercent, bar.progress);
+                        }, 1000);
+                    }
+                }, index * 200);
+            });
+        }
+
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 30; // 30 steps
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = `${Math.floor(current)}%`;
+            }, 50);
+        }
+
+        function updateFavoriteTools(memberData) {
+            const activities = JSON.parse(localStorage.getItem('memberActivities') || '[]');
+            const toolUsage = {};
+            
+            // Count tool usage from activities
+            activities.forEach(activity => {
+                if (activity.type === 'navigation') {
+                    const toolName = activity.message.replace('📂 Opened ', '');
+                    toolUsage[toolName] = (toolUsage[toolName] || 0) + 1;
+                }
+            });
+            
+            // Sort by usage and get top 3
+            const sortedTools = Object.entries(toolUsage)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 3);
+            
+            const favoritesList = document.getElementById('favorite-tools-list');
+            
+            if (sortedTools.length === 0) {
+                favoritesList.innerHTML = `
+                    <div class="favorite-item">
+                        <span class="fav-icon">🌟</span>
+                        <div class="fav-content">
+                            <div class="fav-name">Start exploring tools</div>
+                            <div class="fav-usage">Your favorites will appear here</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const toolIcons = {
+                'Spiritual Tools & Practices': '🧘',
+                'Sacred Calendar System': '📅',
+                'Sacred Knowledge & Wisdom': '📚',
+                'Personal Growth & Development': '📊',
+                'Community & Service': '🤝',
+                'Advanced Spiritual Practices': '✨'
+            };
+            
+            favoritesList.innerHTML = sortedTools.map(([tool, count]) => {
+                const icon = toolIcons[tool] || '⭐';
+                const usage = count === 1 ? 'Used once' : `Used ${count} times`;
+                const sectionId = Object.keys(sectionTitles).find(key => sectionTitles[key] === tool) || 'spiritual-tools';
+                
+                return `
+                    <div class="favorite-item" onclick="showSection('${sectionId}')">
+                        <span class="fav-icon">${icon}</span>
+                        <div class="fav-content">
+                            <div class="fav-name">${tool}</div>
+                            <div class="fav-usage">${usage}</div>
+                        </div>
+                        <span class="fav-arrow">→</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showAllActivities() {
+            const activities = JSON.parse(localStorage.getItem('memberActivities') || '[]');
+            
+            if (activities.length === 0) {
+                showNotification('No activities to show yet. Start exploring!', 'success');
+                return;
+            }
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10002;
+                backdrop-filter: blur(10px);
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; backdrop-filter: blur(30px);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 style="color: var(--accent-gold); font-family: 'Playfair Display', serif; margin: 0;">📜 All Activities</h3>
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer;">✕</button>
+                    </div>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        ${activities.map(activity => `
+                            <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; margin-bottom: 0.5rem; background: rgba(255, 255, 255, 0.02); border-radius: 10px;">
+                                <span style="font-size: 1.2rem;">${activity.type === 'login' ? '🔐' : activity.type === 'logout' ? '🚪' : activity.type === 'navigation' ? '📂' : '✨'}</span>
+                                <div style="flex: 1;">
+                                    <div style="color: var(--text-primary); font-size: 0.9rem;">${activity.message}</div>
+                                    <div style="color: var(--text-secondary); font-size: 0.75rem;">${activity.date}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // Console welcome message
+        console.log('%c🏛️ Divine Temple Member Portal', 'font-size: 24px; font-weight: bold; color: #F59E0B;');
+        console.log('%cWelcome to Eden Consciousness', 'font-size: 16px; color: #8B5CF6;');
+        console.log('%c⚠️ Warning: Do not paste any code here unless you know what you\'re doing!', 'font-size: 14px; color: #EF4444; font-weight: bold;');
+
+        // TRACKING AND PROGRESS FUNCTIONS
+        function trackSectionVisit(sectionKey) {
+            const visited = JSON.parse(localStorage.getItem('visitedSections') || '[]');
+            if (!visited.includes(sectionKey)) {
+                visited.push(sectionKey);
+                localStorage.setItem('visitedSections', JSON.stringify(visited));
+                
+                // Show progress update
+                showNotification(`🎯 New section unlocked: ${sectionKey.replace('-', ' ')}!`, 'success');
+                
+                // Add achievement if all sections visited
+                if (visited.length >= 6) {
+                    setTimeout(() => {
+                        showAchievement('🎉 Explorer Badge Earned!', 'You have visited all sections of the Divine Temple!');
+                    }, 2000);
+                }
+            }
+        }
+
+        function showAchievement(title, message) {
+            const achievement = document.createElement('div');
+            achievement.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 10001;
+                max-width: 300px;
+                animation: slideInRight 0.8s ease-out;
+            `;
+            
+            achievement.innerHTML = `
+                <div style="font-weight: 700; margin-bottom: 0.5rem;">${title}</div>
+                <div style="font-size: 0.9rem; opacity: 0.9;">${message}</div>
+            `;
+            
+            document.body.appendChild(achievement);
+            
+            setTimeout(() => {
+                achievement.style.animation = 'slideOutRight 0.5s ease-out forwards';
+                setTimeout(() => achievement.remove(), 500);
+            }, 4000);
+        }
+
+        // Initialize progress tracking on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add slideOutRight animation
+            const style = document.createElement('style');
+            style.textContent += `
+                @keyframes slideOutRight {
+                    from { opacity: 1; transform: translateX(0); }
+                    to { opacity: 0; transform: translateX(100px); }
+                }
+            `;
+            document.head.appendChild(style);
         });
 
         console.log('%c🏛️ Divine Temple Administrator Portal', 'font-size: 24px; font-weight: bold; color: #F59E0B;');
