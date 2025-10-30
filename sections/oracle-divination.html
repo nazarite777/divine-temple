@@ -998,7 +998,11 @@
                     throw new Error('Oracle modal not found');
                 }
                 modal.style.display = 'flex';
-                
+
+                // Start sacred ambient sounds
+                playGongSound(136.1, 3);
+                setTimeout(() => startAmbientSounds(), 2000);
+
                 // Load the Oracle Cards content
                 setTimeout(() => {
                     loadOracleCardsContent();
@@ -1013,6 +1017,7 @@
                 const modal = document.getElementById('oracle-modal');
                 if (modal) {
                     modal.style.display = 'none';
+                    stopAmbientSounds();
                 }
             } catch (error) {
                 handleOracleError('closing oracle modal', error);
@@ -1403,6 +1408,281 @@
             }
         ];
 
+        // ============================================
+        // SACRED SOUND SYSTEM - Natural Outdoor Spiritual Atmosphere
+        // ============================================
+
+        let audioContext = null;
+        let backgroundSoundInterval = null;
+
+        // Initialize Web Audio API
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            return audioContext;
+        }
+
+        // Play Tibetan Singing Bowl / Gong Sound
+        function playGongSound(frequency = 136.1, duration = 2.5) {
+            const ctx = initAudioContext();
+            const now = ctx.currentTime;
+
+            // Create oscillators for rich harmonic sound
+            const oscillator1 = ctx.createOscillator();
+            const oscillator2 = ctx.createOscillator();
+            const oscillator3 = ctx.createOscillator();
+
+            const gainNode = ctx.createGain();
+            const filter = ctx.createBiquadFilter();
+
+            // Fundamental and harmonics
+            oscillator1.frequency.value = frequency;
+            oscillator2.frequency.value = frequency * 2.0;
+            oscillator3.frequency.value = frequency * 3.0;
+
+            // Sine waves for pure tone
+            oscillator1.type = 'sine';
+            oscillator2.type = 'sine';
+            oscillator3.type = 'sine';
+
+            // Low-pass filter for warmth
+            filter.type = 'lowpass';
+            filter.frequency.value = 800;
+            filter.Q.value = 1;
+
+            // Volume envelope (bell/gong decay)
+            gainNode.gain.setValueAtTime(0.4, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration);
+
+            // Connect audio graph
+            oscillator1.connect(gainNode);
+            oscillator2.connect(gainNode);
+            oscillator3.connect(gainNode);
+            gainNode.connect(filter);
+            filter.connect(ctx.destination);
+
+            // Play
+            oscillator1.start(now);
+            oscillator2.start(now);
+            oscillator3.start(now);
+
+            oscillator1.stop(now + duration);
+            oscillator2.stop(now + duration);
+            oscillator3.stop(now + duration);
+        }
+
+        // Play Wind Chime Sound
+        function playChimeSound(baseFreq = 523.25) {
+            const ctx = initAudioContext();
+            const now = ctx.currentTime;
+
+            // Multiple chime tones (like wind chimes)
+            const frequencies = [baseFreq, baseFreq * 1.5, baseFreq * 2, baseFreq * 2.5];
+            const delays = [0, 0.05, 0.1, 0.15];
+
+            frequencies.forEach((freq, index) => {
+                const oscillator = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+
+                oscillator.frequency.value = freq;
+                oscillator.type = 'sine';
+
+                // Gentle chime envelope
+                const startTime = now + delays[index];
+                gainNode.gain.setValueAtTime(0, startTime);
+                gainNode.gain.linearRampToValueAtTime(0.15, startTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 1.2);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+
+                oscillator.start(startTime);
+                oscillator.stop(startTime + 1.2);
+            });
+        }
+
+        // Play Card Flip Sound (whoosh + chime)
+        function playFlipSound() {
+            const ctx = initAudioContext();
+            const now = ctx.currentTime;
+
+            // Whoosh sound (filtered white noise)
+            const bufferSize = ctx.sampleRate * 0.3;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+
+            const noise = ctx.createBufferSource();
+            noise.buffer = buffer;
+
+            const noiseFilter = ctx.createBiquadFilter();
+            noiseFilter.type = 'bandpass';
+            noiseFilter.frequency.value = 1000;
+            noiseFilter.Q.value = 1;
+
+            const noiseGain = ctx.createGain();
+            noiseGain.gain.setValueAtTime(0.1, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+            noise.connect(noiseFilter);
+            noiseFilter.connect(noiseGain);
+            noiseGain.connect(ctx.destination);
+
+            noise.start(now);
+            noise.stop(now + 0.3);
+
+            // Add gentle chime at the end
+            setTimeout(() => playChimeSound(659.25), 150);
+        }
+
+        // Play Card Selection Sound (higher chime)
+        function playSelectSound() {
+            playChimeSound(783.99);
+        }
+
+        // Play Hover Sound (very subtle high chime)
+        function playHoverSound() {
+            const ctx = initAudioContext();
+            const now = ctx.currentTime;
+
+            const oscillator = ctx.createOscillator();
+            const gainNode = ctx.createGain();
+
+            oscillator.frequency.value = 1046.50;
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.08, now + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(ctx.destination);
+
+            oscillator.start(now);
+            oscillator.stop(now + 0.4);
+        }
+
+        // Play Card Reveal Sound (deep mystical gong)
+        function playRevealSound() {
+            playGongSound(136.1, 3);
+            setTimeout(() => playChimeSound(523.25), 300);
+        }
+
+        // Play Bird Chirp (occasional ambient)
+        function playBirdChirp() {
+            const ctx = initAudioContext();
+            const now = ctx.currentTime;
+
+            const oscillator = ctx.createOscillator();
+            const gainNode = ctx.createGain();
+            const filter = ctx.createBiquadFilter();
+
+            // Bird-like frequency modulation
+            oscillator.frequency.setValueAtTime(2000, now);
+            oscillator.frequency.exponentialRampToValueAtTime(3000, now + 0.05);
+            oscillator.frequency.exponentialRampToValueAtTime(2500, now + 0.1);
+
+            oscillator.type = 'sine';
+
+            filter.type = 'bandpass';
+            filter.frequency.value = 2500;
+            filter.Q.value = 10;
+
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.05, now + 0.01);
+            gainNode.gain.linearRampToValueAtTime(0, now + 0.1);
+
+            oscillator.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(ctx.destination);
+
+            oscillator.start(now);
+            oscillator.stop(now + 0.15);
+        }
+
+        // Play Wind Sound (soft ambient)
+        function playWindSound() {
+            const ctx = initAudioContext();
+            const now = ctx.currentTime;
+
+            const bufferSize = ctx.sampleRate * 2;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * 0.02;
+            }
+
+            const noise = ctx.createBufferSource();
+            noise.buffer = buffer;
+
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 400;
+            filter.Q.value = 1;
+
+            const gainNode = ctx.createGain();
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.08, now + 0.5);
+            gainNode.gain.setValueAtTime(0.08, now + 1.5);
+            gainNode.gain.linearRampToValueAtTime(0, now + 2);
+
+            noise.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(ctx.destination);
+
+            noise.start(now);
+            noise.stop(now + 2);
+        }
+
+        // Start ambient nature sounds when modal opens
+        function startAmbientSounds() {
+            stopAmbientSounds(); // Clear any existing
+
+            // Play gentle wind every 15-25 seconds
+            const playRandomWind = () => {
+                playWindSound();
+                const nextWind = 15000 + Math.random() * 10000;
+                setTimeout(playRandomWind, nextWind);
+            };
+
+            // Play bird chirps every 20-40 seconds
+            const playRandomBird = () => {
+                if (Math.random() > 0.3) { // 70% chance
+                    playBirdChirp();
+                    setTimeout(() => {
+                        if (Math.random() > 0.5) playBirdChirp(); // Double chirp sometimes
+                    }, 150);
+                }
+                const nextBird = 20000 + Math.random() * 20000;
+                setTimeout(playRandomBird, nextBird);
+            };
+
+            setTimeout(playRandomWind, 3000);
+            setTimeout(playRandomBird, 8000);
+        }
+
+        function stopAmbientSounds() {
+            if (backgroundSoundInterval) {
+                clearInterval(backgroundSoundInterval);
+                backgroundSoundInterval = null;
+            }
+        }
+
+        // Wrapper function for reading selection with sound
+        function playSoundAndStart(type) {
+            playGongSound(136.1, 2);
+            setTimeout(() => startReading(type), 300);
+        }
+
+        // ============================================
+        // END SOUND SYSTEM
+        // ============================================
+
         function loadOracleCardsContent() {
             const content = document.querySelector('#oracle-modal .oracle-modal-content');
             
@@ -1410,29 +1690,20 @@
                 <!-- Reading Type Selection -->
                 <div class="reading-types" id="reading-types">
                     <h3>Choose Your Sacred Reading</h3>
+                    <p style="text-align: center; color: rgba(255, 255, 255, 0.7); margin-bottom: 2rem; font-size: 1.1rem;">
+                        🌿 Close your eyes. Take a deep breath. Listen to the sacred sounds and let your spirit guide your choice.
+                    </p>
                     <div class="reading-grid">
-                        <div class="reading-card" onclick="startReading('single')">
+                        <div class="reading-card" onclick="playSoundAndStart('single')" onmouseover="playHoverSound()">
                             <div class="reading-icon">🌟</div>
                             <h4>Single Card Guidance</h4>
-                            <p>Receive clear divine guidance for your current situation</p>
+                            <p>One powerful declaration for your present moment. Clear. Direct. Transformative.</p>
                         </div>
-                        
-                        <div class="reading-card" onclick="startReading('three')">
+
+                        <div class="reading-card" onclick="playSoundAndStart('three')" onmouseover="playHoverSound()">
                             <div class="reading-icon">🔮</div>
                             <h4>Three Card Spread</h4>
-                            <p>Past • Present • Future or Mind • Body • Spirit</p>
-                        </div>
-                        
-                        <div class="reading-card" onclick="startReading('celtic')">
-                            <div class="reading-icon">✨</div>
-                            <h4>Celtic Cross</h4>
-                            <p>Comprehensive 10-card reading for deep insight</p>
-                        </div>
-                        
-                        <div class="reading-card" onclick="startReading('daily')">
-                            <div class="reading-icon">🌅</div>
-                            <h4>Daily Guidance</h4>
-                            <p>One card for today's spiritual message</p>
+                            <p>Past • Present • Future - See the flow of your spiritual journey through time.</p>
                         </div>
                     </div>
                 </div>
@@ -1487,6 +1758,8 @@
                 const cardElement = document.createElement('div');
                 cardElement.className = 'oracle-card-back';
                 cardElement.onclick = () => selectCard(i, shuffledCards[i]);
+                cardElement.onmouseover = () => playHoverSound();
+                cardElement.ontouchstart = () => playHoverSound();
                 cardElement.innerHTML = `
                     <div class="card-back-design">
                         <div class="card-symbol">🔮</div>
@@ -1507,23 +1780,17 @@
             
             const titles = {
                 'single': 'Select One Card',
-                'three': 'Select Three Cards',
-                'celtic': 'Select Ten Cards',
-                'daily': 'Select Your Daily Card'
+                'three': 'Select Three Cards'
             };
-            
+
             const instructions = {
-                'single': 'Choose the card that calls to your heart for divine guidance',
-                'three': 'Choose three cards for Past • Present • Future insight',
-                'celtic': 'Choose ten cards for a comprehensive Celtic Cross reading',
-                'daily': 'Choose one card for today\'s spiritual message and guidance'
+                'single': 'Close your eyes, breathe deeply, and choose the card that calls to your spirit',
+                'three': 'Choose three cards for Past • Present • Future insight into your journey'
             };
-            
+
             const cardsNeeded = {
                 'single': 1,
-                'three': 3,
-                'celtic': 10,
-                'daily': 1
+                'three': 3
             };
             
             document.getElementById('selection-title').textContent = titles[type];
@@ -1536,19 +1803,25 @@
         function selectCard(index, cardData) {
             const cardElement = document.querySelectorAll('.oracle-card-back')[index];
             const neededCards = parseInt(document.getElementById('cards-needed').textContent);
-            
+
             if (currentReading.selectedCards.length >= neededCards) {
                 return; // Max cards selected
             }
-            
+
+            // Play card flip sound immediately
+            playFlipSound();
+
             // Add magical selection animation
             cardElement.classList.add('card-flipping');
-            
-            // Play selection sound effect (visual feedback)
+
+            // Play selection sound after flip completes
             setTimeout(() => {
                 cardElement.classList.remove('card-flipping');
                 cardElement.classList.add('selected', 'mystical-glow');
-                
+
+                // Play selection confirmation sound
+                playSelectSound();
+
                 cardElement.innerHTML = `
                     <div class="card-selected">
                         <div class="selection-number">${currentReading.selectedCards.length + 1}</div>
@@ -1556,7 +1829,7 @@
                         <div class="selection-text">Selected</div>
                     </div>
                 `;
-                
+
                 // Add pulse effect
                 cardElement.classList.add('oracle-pulse');
             }, 500);
@@ -1579,19 +1852,22 @@
         }
 
         function revealSelectedCards() {
+            // Play deep mystical reveal sound
+            playRevealSound();
+
             // Smooth transition with fade effects
             const cardSelection = document.getElementById('card-selection');
             const readingResults = document.getElementById('reading-results');
-            
+
             cardSelection.style.opacity = '0';
             cardSelection.style.transform = 'translateY(-20px)';
-            
+
             setTimeout(() => {
                 cardSelection.style.display = 'none';
                 readingResults.style.display = 'block';
                 readingResults.style.opacity = '0';
                 readingResults.style.transform = 'translateY(20px)';
-                
+
                 // Smooth fade in
                 setTimeout(() => {
                     readingResults.style.transition = 'all 0.8s ease-out';
@@ -1666,30 +1942,15 @@
         function getReadingPositions(type) {
             const positions = {
                 'single': [
-                    { name: 'Divine Guidance', meaning: 'Your main message for this moment' }
+                    { name: 'Your Prophetic Declaration', meaning: 'Speak this word over your life NOW' }
                 ],
                 'three': [
-                    { name: 'Past Influences', meaning: 'What brought you to this moment' },
-                    { name: 'Present Situation', meaning: 'Where you are right now' },
-                    { name: 'Future Potential', meaning: 'Where you are heading' }
-                ],
-                'daily': [
-                    { name: 'Today\'s Guidance', meaning: 'Your spiritual message for today' }
-                ],
-                'celtic': [
-                    { name: 'Present Situation', meaning: 'Your current state' },
-                    { name: 'Challenge/Cross', meaning: 'What challenges or helps you' },
-                    { name: 'Distant Past', meaning: 'Foundation of the situation' },
-                    { name: 'Recent Past', meaning: 'Recent events affecting you' },
-                    { name: 'Possible Future', meaning: 'Potential outcome' },
-                    { name: 'Immediate Future', meaning: 'What\'s coming next' },
-                    { name: 'Your Approach', meaning: 'How you\'re handling things' },
-                    { name: 'External Influences', meaning: 'Others\' impact on you' },
-                    { name: 'Inner Feelings', meaning: 'Your deepest emotions' },
-                    { name: 'Final Outcome', meaning: 'The ultimate result' }
+                    { name: 'Past Foundation', meaning: 'What you\'ve spoken into existence' },
+                    { name: 'Present Power', meaning: 'The word you are speaking NOW' },
+                    { name: 'Future Manifestation', meaning: 'What your declarations are creating' }
                 ]
             };
-            
+
             return positions[type] || [];
         }
 
@@ -1698,10 +1959,8 @@
             summary.className = 'reading-summary';
             
             const readingTypes = {
-                'single': 'Single Card Reading',
-                'three': 'Three Card Spread',
-                'daily': 'Daily Guidance',
-                'celtic': 'Celtic Cross Reading'
+                'single': 'Single Card Prophetic Declaration',
+                'three': 'Three Card Power Spread'
             };
             
             summary.innerHTML = `
