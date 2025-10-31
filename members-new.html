@@ -518,6 +518,547 @@
                 height: calc(100vh - 120px);
             }
         }
+        
+        /* Universal Progress System Styles */
+        .universal-progress-section {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(245, 158, 11, 0.15));
+            border: 2px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 2.5rem;
+            margin: 2rem 0;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .universal-progress-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-gold), var(--accent-purple), var(--accent-blue));
+            animation: progressGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes progressGlow {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; box-shadow: 0 0 20px rgba(212, 175, 55, 0.5); }
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .progress-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--primary-gold);
+            margin: 0;
+        }
+
+        .progress-overview {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .level-indicator {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .level-circle {
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-gold));
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .level-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--dark-bg);
+        }
+
+        .level-label {
+            font-size: 0.8rem;
+            color: var(--dark-bg);
+            font-weight: 600;
+        }
+
+        .level-progress {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 200px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar.small {
+            height: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-gold), var(--accent-purple));
+            border-radius: 6px;
+            transition: width 2s ease-in-out;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: progressShimmer 2s linear infinite;
+        }
+
+        @keyframes progressShimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .achievement-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-purple);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 0.2rem;
+        }
+
+        /* Section Progress Grid */
+        .section-progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .section-progress-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .section-progress-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(139, 92, 246, 0.3);
+            border-color: var(--accent-purple);
+        }
+
+        .section-progress-card .section-icon {
+            font-size: 2.5rem;
+            width: 60px;
+            text-align: center;
+        }
+
+        .section-info {
+            flex: 1;
+        }
+
+        .section-info h4 {
+            color: var(--text-primary);
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+        }
+
+        .section-stats {
+            margin-bottom: 0.8rem;
+        }
+
+        .section-level {
+            font-size: 0.85rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-top: 0.3rem;
+            display: block;
+        }
+
+        .recent-achievements {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .achievement-badge {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .section-progress-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+            text-align: center;
+            min-width: 60px;
+        }
+
+        /* Achievement Gallery */
+        .achievement-gallery {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .gallery-title {
+            color: var(--primary-gold);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .achievement-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .achievement-item.earned {
+            border-color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .achievement-item.locked {
+            opacity: 0.6;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .achievement-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .achievement-icon {
+            font-size: 2.5rem;
+            width: 60px;
+            text-align: center;
+        }
+
+        .achievement-info h5 {
+            color: var(--text-primary);
+            margin: 0 0 0.3rem 0;
+            font-size: 1rem;
+        }
+
+        .achievement-info p {
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0 0 0.5rem 0;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .achievement-date,
+        .achievement-progress {
+            font-size: 0.75rem;
+            color: var(--accent-gold);
+            font-weight: 500;
+        }
+
+        /* Goal Tracking */
+        .goal-tracking {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .goal-header h4 {
+            color: var(--primary-gold);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .goal-btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            border: none;
+            border-radius: 15px;
+            padding: 0.8rem 1.5rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .goal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .active-goals {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .goal-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .goal-info h5 {
+            color: var(--text-primary);
+            margin: 0 0 0.3rem 0;
+            font-size: 1rem;
+        }
+
+        .goal-info p {
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+            font-size: 0.85rem;
+        }
+
+        .goal-progress {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+            min-width: 150px;
+        }
+
+        .goal-status {
+            font-size: 0.85rem;
+            color: var(--accent-gold);
+            font-weight: 500;
+        }
+
+        /* Analytics Dashboard */
+        .analytics-dashboard {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .analytics-title {
+            color: var(--primary-gold);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .analytics-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .analytics-icon {
+            font-size: 2rem;
+            width: 50px;
+            text-align: center;
+        }
+
+        .analytics-data {
+            flex: 1;
+        }
+
+        .analytics-number {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-blue);
+            line-height: 1;
+        }
+
+        .analytics-label {
+            display: block;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0.2rem 0 0.5rem 0;
+        }
+
+        .analytics-trend {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+        }
+
+        .analytics-trend.up {
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .analytics-trend.stable {
+            color: var(--accent-gold);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        /* Animations */
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        @keyframes progressShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .universal-progress-section {
+                padding: 1.5rem;
+                margin: 1rem 0;
+            }
+
+            .progress-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .progress-overview {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+            }
+
+            .achievement-stats {
+                gap: 1rem;
+            }
+
+            .section-progress-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .goal-item {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -572,6 +1113,202 @@
                 Access 6 sacred pathways designed to guide your spiritual journey.
                 Each section contains divine tools and practices for your transformation.
             </p>
+        </section>
+
+        <!-- Universal Progress System -->
+        <section class="universal-progress-section">
+            <div class="progress-header">
+                <h3 class="progress-title">🌟 Your Spiritual Journey Progress</h3>
+                <div class="progress-overview">
+                    <div class="level-indicator">
+                        <div class="level-circle">
+                            <span class="level-number" id="spiritual-level">7</span>
+                            <span class="level-label">Initiate</span>
+                        </div>
+                        <div class="level-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="level-progress" style="width: 68%;"></div>
+                            </div>
+                            <span class="progress-text">68% to Awakened</span>
+                        </div>
+                    </div>
+                    <div class="achievement-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="total-achievements">23</span>
+                            <span class="stat-label">Achievements</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="total-practice-time">147</span>
+                            <span class="stat-label">Practice Hours</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="enlightenment-points">2,840</span>
+                            <span class="stat-label">Light Points</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cross-Section Progress Tracking -->
+            <div class="section-progress-grid">
+                <div class="section-progress-card meditation-progress">
+                    <div class="section-icon">🧘</div>
+                    <div class="section-info">
+                        <h4>Meditation & Mindfulness</h4>
+                        <div class="section-stats">
+                            <div class="progress-bar small">
+                                <div class="progress-fill" style="width: 78%;"></div>
+                            </div>
+                            <span class="section-level">Level 8 - Advanced</span>
+                        </div>
+                        <div class="recent-achievements">
+                            <span class="achievement-badge">🏆 Chakra Master</span>
+                            <span class="achievement-badge">✨ 100 Sessions</span>
+                        </div>
+                    </div>
+                    <div class="section-progress-value">78%</div>
+                </div>
+
+                <div class="section-progress-card energy-progress">
+                    <div class="section-icon">⚡</div>
+                    <div class="section-info">
+                        <h4>Energy & Healing</h4>
+                        <div class="section-stats">
+                            <div class="progress-bar small">
+                                <div class="progress-fill" style="width: 65%;"></div>
+                            </div>
+                            <span class="section-level">Level 6 - Healer</span>
+                        </div>
+                        <div class="recent-achievements">
+                            <span class="achievement-badge">💎 Crystal Expert</span>
+                            <span class="achievement-badge">🌟 Aura Master</span>
+                        </div>
+                    </div>
+                    <div class="section-progress-value">65%</div>
+                </div>
+
+                <div class="section-progress-card arts-progress">
+                    <div class="section-icon">🎨</div>
+                    <div class="section-info">
+                        <h4>Sacred Arts & Sound</h4>
+                        <div class="section-stats">
+                            <div class="progress-bar small">
+                                <div class="progress-fill" style="width: 52%;"></div>
+                            </div>
+                            <span class="section-level">Level 5 - Creator</span>
+                        </div>
+                        <div class="recent-achievements">
+                            <span class="achievement-badge">🌸 Mandala Artist</span>
+                            <span class="achievement-badge">🎵 Sound Healer</span>
+                        </div>
+                    </div>
+                    <div class="section-progress-value">52%</div>
+                </div>
+            </div>
+
+            <!-- Achievement Gallery -->
+            <div class="achievement-gallery">
+                <h4 class="gallery-title">Recent Achievements</h4>
+                <div class="achievement-grid">
+                    <div class="achievement-item earned">
+                        <div class="achievement-icon">🏆</div>
+                        <div class="achievement-info">
+                            <h5>Sacred Geometry Master</h5>
+                            <p>Completed all geometry meditations</p>
+                            <span class="achievement-date">2 days ago</span>
+                        </div>
+                    </div>
+                    <div class="achievement-item earned">
+                        <div class="achievement-icon">✨</div>
+                        <div class="achievement-info">
+                            <h5>Chakra Harmonizer</h5>
+                            <p>Balanced all 7 chakras in one session</p>
+                            <span class="achievement-date">5 days ago</span>
+                        </div>
+                    </div>
+                    <div class="achievement-item locked">
+                        <div class="achievement-icon">🌟</div>
+                        <div class="achievement-info">
+                            <h5>Enlightened One</h5>
+                            <p>Reach level 10 in all sections</p>
+                            <span class="achievement-progress">Progress: 67%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Goal Setting & Tracking -->
+            <div class="goal-tracking">
+                <div class="goal-header">
+                    <h4>Spiritual Goals</h4>
+                    <button class="goal-btn" onclick="universalProgress.openGoalModal()">+ Set New Goal</button>
+                </div>
+                <div class="active-goals">
+                    <div class="goal-item">
+                        <div class="goal-info">
+                            <h5>Daily Meditation Practice</h5>
+                            <p>Meditate for 20 minutes daily for 30 days</p>
+                        </div>
+                        <div class="goal-progress">
+                            <div class="progress-bar small">
+                                <div class="progress-fill" style="width: 73%;"></div>
+                            </div>
+                            <span class="goal-status">22/30 days</span>
+                        </div>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-info">
+                            <h5>Create 10 Sacred Mandalas</h5>
+                            <p>Express divine creativity through mandala art</p>
+                        </div>
+                        <div class="goal-progress">
+                            <div class="progress-bar small">
+                                <div class="progress-fill" style="width: 40%;"></div>
+                            </div>
+                            <span class="goal-status">4/10 mandalas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Dashboard -->
+            <div class="analytics-dashboard">
+                <h4 class="analytics-title">Practice Analytics</h4>
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <div class="analytics-icon">📊</div>
+                        <div class="analytics-data">
+                            <span class="analytics-number">7.5</span>
+                            <span class="analytics-label">Avg Daily Practice (hrs)</span>
+                            <span class="analytics-trend up">↗ +12% this week</span>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-icon">🎯</div>
+                        <div class="analytics-data">
+                            <span class="analytics-number">89%</span>
+                            <span class="analytics-label">Goal Completion Rate</span>
+                            <span class="analytics-trend up">↗ +5% this month</span>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-icon">🌙</div>
+                        <div class="analytics-data">
+                            <span class="analytics-number">28</span>
+                            <span class="analytics-label">Day Streak</span>
+                            <span class="analytics-trend stable">→ Consistent</span>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-icon">⭐</div>
+                        <div class="analytics-data">
+                            <span class="analytics-number">3.2k</span>
+                            <span class="analytics-label">Light Points Earned</span>
+                            <span class="analytics-trend up">↗ +240 today</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Navigation -->
@@ -756,7 +1493,537 @@
         // Check auth on load
         document.addEventListener('DOMContentLoaded', function() {
             checkAuth();
+            // Initialize Universal Progress System
+            if (typeof universalProgress === 'undefined') {
+                window.universalProgress = new UniversalProgressSystem();
+            }
         });
+
+        // Universal Progress System - Cross-Section Tracking & Analytics
+        class UniversalProgressSystem {
+            constructor() {
+                this.progressData = this.loadProgressData();
+                this.achievements = this.loadAchievements();
+                this.goals = this.loadGoals();
+                this.analytics = this.loadAnalytics();
+                this.levels = this.initializeLevels();
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.updateProgressDisplay();
+                this.checkForNewAchievements();
+                this.updateAnalytics();
+            }
+
+            // Progress Data Management
+            loadProgressData() {
+                const saved = localStorage.getItem('divineTemple_universalProgress');
+                return saved ? JSON.parse(saved) : {
+                    meditation: { level: 8, experience: 2340, totalTime: 89, sessionsCompleted: 156 },
+                    energy: { level: 6, experience: 1890, totalTime: 67, healingsSessions: 78 },
+                    arts: { level: 5, experience: 1456, totalTime: 45, creationsCompleted: 34 },
+                    devotion: { level: 3, experience: 890, totalTime: 23, practicesCompleted: 45 },
+                    overall: { level: 7, totalExperience: 6576, enlightenmentPoints: 2840 }
+                };
+            }
+
+            saveProgressData() {
+                localStorage.setItem('divineTemple_universalProgress', JSON.stringify(this.progressData));
+            }
+
+            // Achievement System
+            loadAchievements() {
+                const saved = localStorage.getItem('divineTemple_achievements');
+                return saved ? JSON.parse(saved) : [
+                    { id: 'first-meditation', name: 'First Steps', description: 'Complete your first meditation', earned: true, date: '2024-10-15', category: 'meditation' },
+                    { id: 'chakra-master', name: 'Chakra Master', description: 'Balance all 7 chakras in one session', earned: true, date: '2024-10-25', category: 'energy' },
+                    { id: 'geometry-explorer', name: 'Sacred Geometry Master', description: 'Complete all geometry meditations', earned: true, date: '2024-10-28', category: 'arts' },
+                    { id: '100-sessions', name: 'Devoted Practitioner', description: 'Complete 100 meditation sessions', earned: true, date: '2024-10-26', category: 'meditation' },
+                    { id: 'mandala-artist', name: 'Mandala Artist', description: 'Create 10 sacred mandalas', earned: true, date: '2024-10-24', category: 'arts' },
+                    { id: 'sound-healer', name: 'Sound Healer', description: 'Complete 25 sound healing sessions', earned: true, date: '2024-10-22', category: 'arts' },
+                    { id: 'aura-master', name: 'Aura Master', description: 'Successfully cleanse and strengthen aura 15 times', earned: true, date: '2024-10-20', category: 'energy' },
+                    { id: 'crystal-expert', name: 'Crystal Expert', description: 'Use all crystal healing modalities', earned: true, date: '2024-10-18', category: 'energy' },
+                    { id: 'enlightened-one', name: 'Enlightened One', description: 'Reach level 10 in all sections', earned: false, progress: 67, category: 'overall' },
+                    { id: 'daily-devotee', name: 'Daily Devotee', description: 'Practice daily for 30 consecutive days', earned: false, progress: 22, category: 'devotion' }
+                ];
+            }
+
+            saveAchievements() {
+                localStorage.setItem('divineTemple_achievements', JSON.stringify(this.achievements));
+            }
+
+            // Goal System
+            loadGoals() {
+                const saved = localStorage.getItem('divineTemple_goals');
+                return saved ? JSON.parse(saved) : [
+                    {
+                        id: 'daily-meditation',
+                        title: 'Daily Meditation Practice',
+                        description: 'Meditate for 20 minutes daily for 30 days',
+                        type: 'daily',
+                        target: 30,
+                        current: 22,
+                        category: 'meditation',
+                        startDate: '2024-10-01',
+                        active: true
+                    },
+                    {
+                        id: 'mandala-creation',
+                        title: 'Create 10 Sacred Mandalas',
+                        description: 'Express divine creativity through mandala art',
+                        type: 'count',
+                        target: 10,
+                        current: 4,
+                        category: 'arts',
+                        startDate: '2024-10-15',
+                        active: true
+                    }
+                ];
+            }
+
+            saveGoals() {
+                localStorage.setItem('divineTemple_goals', JSON.stringify(this.goals));
+            }
+
+            // Analytics System
+            loadAnalytics() {
+                const saved = localStorage.getItem('divineTemple_analytics');
+                return saved ? JSON.parse(saved) : {
+                    dailyPracticeHours: 7.5,
+                    weeklyTrend: 12,
+                    goalCompletionRate: 89,
+                    monthlyTrend: 5,
+                    currentStreak: 28,
+                    streakTrend: 0,
+                    lightPointsEarned: 3200,
+                    dailyLightPoints: 240
+                };
+            }
+
+            saveAnalytics() {
+                localStorage.setItem('divineTemple_analytics', JSON.stringify(this.analytics));
+            }
+
+            // Level System
+            initializeLevels() {
+                return {
+                    1: { name: 'Seeker', minExp: 0, maxExp: 100 },
+                    2: { name: 'Student', minExp: 100, maxExp: 250 },
+                    3: { name: 'Apprentice', minExp: 250, maxExp: 500 },
+                    4: { name: 'Practitioner', minExp: 500, maxExp: 850 },
+                    5: { name: 'Creator', minExp: 850, maxExp: 1300 },
+                    6: { name: 'Healer', minExp: 1300, maxExp: 1900 },
+                    7: { name: 'Initiate', minExp: 1900, maxExp: 2600 },
+                    8: { name: 'Advanced', minExp: 2600, maxExp: 3500 },
+                    9: { name: 'Master', minExp: 3500, maxExp: 4600 },
+                    10: { name: 'Awakened', minExp: 4600, maxExp: 6000 },
+                    11: { name: 'Enlightened', minExp: 6000, maxExp: Infinity }
+                };
+            }
+
+            // Experience and Level Calculation
+            addExperience(category, amount, source = '') {
+                if (!this.progressData[category]) return;
+                
+                this.progressData[category].experience += amount;
+                this.progressData.overall.totalExperience += amount;
+                this.progressData.overall.enlightenmentPoints += Math.floor(amount * 1.2);
+                
+                // Check for level ups
+                const oldLevel = this.progressData[category].level;
+                const newLevel = this.calculateLevel(this.progressData[category].experience);
+                
+                if (newLevel > oldLevel) {
+                    this.progressData[category].level = newLevel;
+                    this.onLevelUp(category, newLevel, source);
+                }
+                
+                // Update overall level
+                const avgExp = Math.floor(this.progressData.overall.totalExperience / 4);
+                const overallLevel = this.calculateLevel(avgExp);
+                if (overallLevel > this.progressData.overall.level) {
+                    this.progressData.overall.level = overallLevel;
+                    this.onLevelUp('overall', overallLevel, 'Cross-section mastery');
+                }
+                
+                this.saveProgressData();
+                this.updateProgressDisplay();
+                this.checkForNewAchievements();
+                
+                // Dispatch event for other systems
+                this.dispatchProgressEvent(category, amount, source);
+            }
+
+            calculateLevel(experience) {
+                for (let level = 1; level <= 11; level++) {
+                    const levelData = this.levels[level];
+                    if (experience >= levelData.minExp && experience < levelData.maxExp) {
+                        return level;
+                    }
+                }
+                return 11; // Max level
+            }
+
+            getLevelProgress(experience, level) {
+                const levelData = this.levels[level];
+                if (!levelData || level >= 11) return 100;
+                
+                const progressInLevel = experience - levelData.minExp;
+                const levelRange = levelData.maxExp - levelData.minExp;
+                return Math.min(100, Math.floor((progressInLevel / levelRange) * 100));
+            }
+
+            onLevelUp(category, newLevel, source) {
+                const levelName = this.levels[newLevel]?.name || 'Master';
+                
+                // Show notification
+                this.showAchievementNotification({
+                    title: `Level Up! ${levelName}`,
+                    description: `You've reached level ${newLevel} in ${category}!`,
+                    icon: '🌟',
+                    type: 'level-up'
+                });
+                
+                // Add achievement if milestone level
+                if ([5, 10].includes(newLevel)) {
+                    this.addAchievement({
+                        id: `${category}-level-${newLevel}`,
+                        name: `${category} ${levelName}`,
+                        description: `Reached level ${newLevel} in ${category}`,
+                        category: category,
+                        earned: true,
+                        date: new Date().toISOString()
+                    });
+                }
+            }
+
+            // Achievement Management
+            addAchievement(achievement) {
+                const existing = this.achievements.find(a => a.id === achievement.id);
+                if (!existing) {
+                    this.achievements.push(achievement);
+                    this.saveAchievements();
+                    this.showAchievementNotification(achievement);
+                }
+            }
+
+            checkForNewAchievements() {
+                // Check session-based achievements
+                const meditation = this.progressData.meditation;
+                const energy = this.progressData.energy;
+                const arts = this.progressData.arts;
+                
+                // 50 meditation sessions
+                if (meditation.sessionsCompleted >= 50 && !this.hasAchievement('meditation-50-sessions')) {
+                    this.addAchievement({
+                        id: 'meditation-50-sessions',
+                        name: 'Dedicated Meditator',
+                        description: 'Complete 50 meditation sessions',
+                        category: 'meditation',
+                        earned: true,
+                        date: new Date().toISOString()
+                    });
+                }
+                
+                // 25 healing sessions
+                if (energy.healingsSessions >= 25 && !this.hasAchievement('energy-25-sessions')) {
+                    this.addAchievement({
+                        id: 'energy-25-sessions',
+                        name: 'Energy Healer',
+                        description: 'Complete 25 healing sessions',
+                        category: 'energy',
+                        earned: true,
+                        date: new Date().toISOString()
+                    });
+                }
+                
+                // 20 creative works
+                if (arts.creationsCompleted >= 20 && !this.hasAchievement('arts-20-creations')) {
+                    this.addAchievement({
+                        id: 'arts-20-creations',
+                        name: 'Sacred Artist',
+                        description: 'Complete 20 creative works',
+                        category: 'arts',
+                        earned: true,
+                        date: new Date().toISOString()
+                    });
+                }
+            }
+
+            hasAchievement(id) {
+                return this.achievements.some(a => a.id === id && a.earned);
+            }
+
+            // Goal Management
+            updateGoalProgress(category, increment = 1) {
+                const activeGoals = this.goals.filter(g => g.active && g.category === category);
+                
+                activeGoals.forEach(goal => {
+                    goal.current = Math.min(goal.target, goal.current + increment);
+                    
+                    if (goal.current >= goal.target) {
+                        this.completeGoal(goal);
+                    }
+                });
+                
+                this.saveGoals();
+                this.updateProgressDisplay();
+            }
+
+            completeGoal(goal) {
+                goal.active = false;
+                goal.completedDate = new Date().toISOString();
+                
+                // Award experience
+                const expReward = goal.target * 10;
+                this.addExperience(goal.category, expReward, `Goal: ${goal.title}`);
+                
+                // Show notification
+                this.showAchievementNotification({
+                    title: 'Goal Completed!',
+                    description: goal.title,
+                    icon: '🎯',
+                    type: 'goal-complete'
+                });
+                
+                // Add achievement
+                this.addAchievement({
+                    id: `goal-${goal.id}`,
+                    name: `Goal: ${goal.title}`,
+                    description: goal.description,
+                    category: goal.category,
+                    earned: true,
+                    date: new Date().toISOString()
+                });
+            }
+
+            openGoalModal() {
+                // Implementation for goal creation modal
+                this.showNotification('Goal creation feature coming soon! 🎯');
+            }
+
+            // Event System
+            setupEventListeners() {
+                // Listen for section activities
+                document.addEventListener('meditation-session-complete', (e) => {
+                    this.addExperience('meditation', 25, 'Meditation Session');
+                    this.updateGoalProgress('meditation');
+                    this.analytics.dailyPracticeHours += 0.33; // 20 min session
+                });
+                
+                document.addEventListener('energy-healing-complete', (e) => {
+                    this.addExperience('energy', 20, 'Energy Healing');
+                    this.updateGoalProgress('energy');
+                });
+                
+                document.addEventListener('sacred-art-created', (e) => {
+                    this.addExperience('arts', 15, 'Sacred Art Creation');
+                    this.updateGoalProgress('arts');
+                });
+                
+                document.addEventListener('mandala-completed', (e) => {
+                    this.addExperience('arts', 30, 'Mandala Creation');
+                    this.updateGoalProgress('arts');
+                });
+                
+                document.addEventListener('chakra-balanced', (e) => {
+                    this.addExperience('energy', 15, 'Chakra Balancing');
+                });
+                
+                document.addEventListener('oracle-reading-complete', (e) => {
+                    this.addExperience('devotion', 10, 'Oracle Reading');
+                });
+            }
+
+            dispatchProgressEvent(category, amount, source) {
+                const event = new CustomEvent('universal-progress-update', {
+                    detail: { category, amount, source, progress: this.progressData }
+                });
+                document.dispatchEvent(event);
+            }
+
+            // UI Updates
+            updateProgressDisplay() {
+                // Update level indicator
+                const levelElement = document.getElementById('spiritual-level');
+                const levelProgressElement = document.getElementById('level-progress');
+                if (levelElement && levelProgressElement) {
+                    const overall = this.progressData.overall;
+                    const avgExp = Math.floor(overall.totalExperience / 4);
+                    const currentLevel = this.calculateLevel(avgExp);
+                    const progressPercent = this.getLevelProgress(avgExp, currentLevel);
+                    
+                    levelElement.textContent = currentLevel;
+                    levelProgressElement.style.width = progressPercent + '%';
+                    
+                    const nextLevel = this.levels[currentLevel + 1];
+                    const progressText = levelProgressElement.nextElementSibling;
+                    if (progressText && nextLevel) {
+                        progressText.textContent = `${progressPercent}% to ${nextLevel.name}`;
+                    }
+                }
+                
+                // Update achievement stats
+                this.updateAchievementStats();
+                
+                // Update section progress
+                this.updateSectionProgress();
+                
+                // Update analytics
+                this.updateAnalyticsDisplay();
+            }
+
+            updateAchievementStats() {
+                const achievementCount = document.getElementById('total-achievements');
+                const practiceTime = document.getElementById('total-practice-time');
+                const lightPoints = document.getElementById('enlightenment-points');
+                
+                if (achievementCount) {
+                    achievementCount.textContent = this.achievements.filter(a => a.earned).length;
+                }
+                
+                if (practiceTime) {
+                    const totalHours = this.progressData.meditation.totalTime + 
+                                     this.progressData.energy.totalTime + 
+                                     this.progressData.arts.totalTime;
+                    practiceTime.textContent = totalHours;
+                }
+                
+                if (lightPoints) {
+                    lightPoints.textContent = this.progressData.overall.enlightenmentPoints.toLocaleString();
+                }
+            }
+
+            updateSectionProgress() {
+                const sections = ['meditation', 'energy', 'arts'];
+                
+                sections.forEach(section => {
+                    const data = this.progressData[section];
+                    if (!data) return;
+                    
+                    const progressPercent = this.getLevelProgress(data.experience, data.level);
+                    const levelName = this.levels[data.level]?.name || 'Master';
+                    
+                    // Update progress bars and levels
+                    const card = document.querySelector(`.${section}-progress`);
+                    if (card) {
+                        const progressBar = card.querySelector('.progress-fill');
+                        const levelElement = card.querySelector('.section-level');
+                        const progressValue = card.querySelector('.section-progress-value');
+                        
+                        if (progressBar) progressBar.style.width = progressPercent + '%';
+                        if (levelElement) levelElement.textContent = `Level ${data.level} - ${levelName}`;
+                        if (progressValue) progressValue.textContent = progressPercent + '%';
+                    }
+                });
+            }
+
+            updateAnalyticsDisplay() {
+                // This would update the analytics cards with real data
+                // For now, we'll use the sample data that's already displayed
+            }
+
+            // Notifications
+            showAchievementNotification(achievement) {
+                const notification = document.createElement('div');
+                notification.className = 'achievement-notification';
+                notification.innerHTML = `
+                    <div class="notification-icon">${achievement.icon || '🏆'}</div>
+                    <div class="notification-content">
+                        <h4>${achievement.title || achievement.name}</h4>
+                        <p>${achievement.description}</p>
+                    </div>
+                `;
+                
+                // Style the notification
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, var(--primary-gold), var(--accent-gold));
+                    color: var(--dark-bg);
+                    padding: 1rem 1.5rem;
+                    border-radius: 15px;
+                    z-index: 10000;
+                    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+                    animation: slideInRight 0.5s ease, fadeOut 0.5s ease 4.5s;
+                    max-width: 350px;
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 5000);
+            }
+
+            showNotification(message) {
+                // Simple notification for general messages
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+                    color: white;
+                    padding: 1rem 2rem;
+                    border-radius: 15px;
+                    z-index: 10000;
+                    animation: slideInRight 0.5s ease, fadeOut 0.5s ease 2.5s;
+                `;
+                
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 3000);
+            }
+
+            // Public Methods for Integration
+            recordMeditationSession(duration = 20) {
+                this.progressData.meditation.sessionsCompleted++;
+                this.progressData.meditation.totalTime += Math.round(duration / 60);
+                this.addExperience('meditation', 25, 'Meditation Session');
+                this.updateGoalProgress('meditation');
+            }
+
+            recordEnergyHealing() {
+                this.progressData.energy.healingsSessions++;
+                this.progressData.energy.totalTime += 0.5; // 30 min average
+                this.addExperience('energy', 20, 'Energy Healing');
+                this.updateGoalProgress('energy');
+            }
+
+            recordSacredArt() {
+                this.progressData.arts.creationsCompleted++;
+                this.progressData.arts.totalTime += 0.75; // 45 min average
+                this.addExperience('arts', 15, 'Sacred Art');
+                this.updateGoalProgress('arts');
+            }
+
+            recordMandalaCreation() {
+                this.progressData.arts.creationsCompleted++;
+                this.progressData.arts.totalTime += 1; // 60 min average
+                this.addExperience('arts', 30, 'Mandala Creation');
+                this.updateGoalProgress('arts');
+            }
+
+            // Get current stats for display
+            getProgressStats() {
+                return {
+                    overall: this.progressData.overall,
+                    achievements: this.achievements.filter(a => a.earned),
+                    goals: this.goals.filter(g => g.active),
+                    analytics: this.analytics
+                };
+            }
+        }
 
         function checkAuth() {
             const isAuth = sessionStorage.getItem('divineAuth');
