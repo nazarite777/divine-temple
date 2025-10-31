@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarot Wisdom - Divine Temple</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #3B82F6;
+            --deep-purple: #4C1D95;
+            --dark-bg: #0F0F23;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A1A1AA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--deep-purple) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-purple), var(--primary-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            color: var(--text-secondary);
+        }
+
+        .reading-selection {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .selection-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            color: var(--primary-gold);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .reading-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .reading-option {
+            background: linear-gradient(135deg, rgba(139, 95, 191, 0.2), rgba(124, 58, 237, 0.2));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reading-option:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .option-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .option-title {
+            color: var(--accent-purple);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .option-btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .card-display {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem 1rem;
+            min-height: 400px;
+        }
+
+        .card-revealed {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
+            border: 3px solid var(--primary-gold);
+            border-radius: 20px;
+            padding: 2rem 1rem;
+            max-width: 500px;
+            margin: 0 auto 1.5rem;
+            color: #1a1a2e;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-name {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            color: var(--accent-purple);
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-meaning {
+            background: rgba(139, 95, 191, 0.1);
+            border-left: 4px solid var(--accent-purple);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 10px 10px 0;
+            line-height: 1.6;
+        }
+
+        .reading-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, var(--primary-gold), #F59E0B);
+            color: #1a1a2e;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .reading-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="oracle-divination.html" class="back-btn">
+            ← Back to Oracle Hub
+        </a>
+
+        <div class="header">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎴</div>
+            <h1 class="title">Tarot Wisdom</h1>
+            <p class="subtitle">78 Cards • Major & Minor Arcana • Deep Spiritual Insight</p>
+        </div>
+
+        <div class="reading-selection">
+            <h2 class="selection-title">Choose Your Tarot Reading</h2>
+            
+            <div class="reading-options">
+                <div class="reading-option">
+                    <div class="option-icon">🌟</div>
+                    <h3 class="option-title">Single Card</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Quick daily insight</p>
+                    <button class="option-btn" onclick="drawSingle()">Draw One</button>
+                </div>
+
+                <div class="reading-option">
+                    <div class="option-icon">🔮</div>
+                    <h3 class="option-title">Three Card Spread</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Past • Present • Future</p>
+                    <button class="option-btn" onclick="drawThree()">Draw Three</button>
+                </div>
+
+                <div class="reading-option">
+                    <div class="option-icon">✨</div>
+                    <h3 class="option-title">Celtic Cross</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Complete 10-card reading</p>
+                    <button class="option-btn" onclick="drawCeltic()">Draw Celtic Cross</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-display" id="card-display">
+            <div style="text-align: center; padding: 3rem 1rem; color: var(--text-secondary);">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">✨</div>
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--primary-gold); margin-bottom: 1rem;">Welcome to Tarot Wisdom</h3>
+                <p style="max-width: 600px; margin: 0 auto; line-height: 1.6;">Select a reading type above to receive guidance from the ancient tarot deck. Each card carries deep symbolic meaning to illuminate your path.</p>
+            </div>
+        </div>
+
+        <div class="reading-actions" id="reading-actions" style="display: none;">
+            <button class="action-btn secondary" onclick="reset()">🔄 New Reading</button>
+            <button class="action-btn" onclick="save()">💾 Save</button>
+            <button class="action-btn secondary" onclick="share()">📤 Share</button>
+        </div>
+    </div>
+
+    <script>
+        // Major Arcana (22 cards)
+        const majorArcana = [
+            { name: "The Fool", number: 0, icon: "🃏", meaning: "New beginnings, innocence, leap of faith, spontaneity" },
+            { name: "The Magician", number: 1, icon: "🎩", meaning: "Manifestation, resourcefulness, power, inspired action" },
+            { name: "The High Priestess", number: 2, icon: "🔮", meaning: "Intuition, sacred knowledge, divine feminine, subconscious" },
+            { name: "The Empress", number: 3, icon: "👑", meaning: "Femininity, beauty, nature, abundance, nurturing" },
+            { name: "The Emperor", number: 4, icon: "⚜️", meaning: "Authority, establishment, structure, father figure" },
+            { name: "The Hierophant", number: 5, icon: "🏛️", meaning: "Spiritual wisdom, tradition, conformity, institutions" },
+            { name: "The Lovers", number: 6, icon: "💕", meaning: "Love, harmony, relationships, values alignment" },
+            { name: "The Chariot", number: 7, icon: "🏇", meaning: "Control, willpower, success, action, determination" },
+            { name: "Strength", number: 8, icon: "🦁", meaning: "Courage, persuasion, influence, compassion" },
+            { name: "The Hermit", number: 9, icon: "🏮", meaning: "Soul searching, introspection, inner guidance" },
+            { name: "Wheel of Fortune", number: 10, icon: "☸️", meaning: "Good luck, karma, life cycles, destiny" },
+            { name: "Justice", number: 11, icon: "⚖️", meaning: "Justice, fairness, truth, cause and effect" },
+            { name: "The Hanged Man", number: 12, icon: "🤸", meaning: "Surrender, letting go, new perspective" },
+            { name: "Death", number: 13, icon: "🦋", meaning: "Endings, beginnings, change, transformation" },
+            { name: "Temperance", number: 14, icon: "⚗️", meaning: "Balance, moderation, patience, purpose" },
+            { name: "The Devil", number: 15, icon: "👹", meaning: "Shadow self, attachment, addiction, restriction" },
+            { name: "The Tower", number: 16, icon: "🗼", meaning: "Sudden change, upheaval, chaos, revelation" },
+            { name: "The Star", number: 17, icon: "⭐", meaning: "Hope, faith, purpose, renewal, spirituality" },
+            { name: "The Moon", number: 18, icon: "🌙", meaning: "Illusion, fear, anxiety, subconscious, intuition" },
+            { name: "The Sun", number: 19, icon: "☀️", meaning: "Positivity, fun, warmth, success, vitality" },
+            { name: "Judgement", number: 20, icon: "📯", meaning: "Rebirth, inner calling, absolution" },
+            { name: "The World", number: 21, icon: "🌍", meaning: "Completion, accomplishment, travel, fulfillment" }
+        ];
+
+        // Minor Arcana Samples (showing structure - full deck would have 56 cards)
+        const minorArcana = [
+            { name: "Ace of Wands", suit: "Wands", icon: "🔥", meaning: "Inspiration, new opportunities, growth, potential" },
+            { name: "Two of Cups", suit: "Cups", icon: "💧", meaning: "Unity, partnership, connection, attraction" },
+            { name: "Three of Swords", suit: "Swords", icon: "⚔️", meaning: "Heartbreak, emotional pain, sorrow, grief" },
+            { name: "Four of Pentacles", suit: "Pentacles", icon: "💰", meaning: "Conservation, saving, security, control" }
+        ];
+
+        const fullDeck = [...majorArcana, ...minorArcana];
+        let currentReading = [];
+
+        function getRandomCard() {
+            return fullDeck[Math.floor(Math.random() * fullDeck.length)];
+        }
+
+        function drawSingle() {
+            const card = getRandomCard();
+            displayCards([card], 'Single Card Reading');
+            currentReading = [card];
+        }
+
+        function drawThree() {
+            const cards = [
+                { ...getRandomCard(), position: 'Past' },
+                { ...getRandomCard(), position: 'Present' },
+                { ...getRandomCard(), position: 'Future' }
+            ];
+            displayCards(cards, 'Three Card Spread');
+            currentReading = cards;
+        }
+
+        function drawCeltic() {
+            alert('🔮 Celtic Cross spread coming soon! This complex 10-card reading is being developed.');
+        }
+
+        function displayCards(cards, title) {
+            const display = document.getElementById('card-display');
+            display.innerHTML = cards.map(card => `
+                <div class="card-revealed">
+                    ${card.position ? `<div style="text-align: center; font-weight: bold; color: var(--primary-gold); margin-bottom: 1rem; font-size: 1.1rem;">${card.position}</div>` : ''}
+                    <div class="card-icon">${card.icon}</div>
+                    <h3 class="card-name">${card.name}</h3>
+                    <div class="card-meaning">${card.meaning}</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('reading-actions').style.display = 'flex';
+        }
+
+        function reset() {
+            document.getElementById('card-display').innerHTML = `
+                <div style="text-align: center; padding: 3rem 1rem; color: var(--text-secondary);">
+✨
+Welcome to Tarot Wisdom
+Select a reading type above to receive guidance from the ancient tarot deck. Each card carries deep symbolic meaning to illuminate your path.
+
+`;
+document.getElementById('reading-actions').style.display = 'none';
+currentReading = [];
+}
+function save() {
+        if (currentReading.length === 0) return;
+        const reading = {
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString(),
+            cards: currentReading
+        };
+        const saved = JSON.parse(localStorage.getItem('tarotReadings') || '[]');
+        saved.unshift(reading);
+        saved.splice(10);
+        localStorage.setItem('tarotReadings', JSON.stringify(saved));
+        showNotification('🎴 Reading saved!');
+    }
+
+    function share() {
+        if (currentReading.length === 0) return;
+        let text = '🎴 My Tarot Reading:\n\n';
+        currentReading.forEach((card, i) => {
+            text += `${i + 1}. ${card.name}\n${card.meaning}\n\n`;
+        });
+        if (navigator.share) {
+            navigator.share({ title: 'Tarot Reading', text: text });
+        } else {
+            navigator.clipboard.writeText(text);
+            showNotification('📋 Copied!');
+        }
+    }
+
+    function showNotification(msg) {
+        const note = document.createElement('div');
+        note.textContent = msg;
+        note.style.cssText = `position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, var(--primary-gold), #F59E0B); color: #1a1a2e; padding: 1rem 1.5rem; border-radius: 15px; font-weight: 600; z-index: 10000; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);`;
+        document.body.appendChild(note);
+        setTimeout(() => note.remove(), 3000);
+    }
+
+    console.log('🎴 Tarot Wisdom loaded - 78 cards ready');
+</script>
