@@ -130,14 +130,14 @@
             height: 100%;
             background: rgba(10, 14, 39, 0.95);
             backdrop-filter: blur(20px);
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
             z-index: 10000;
         }
 
-        .auth-overlay.active {
-            display: flex;
+        .auth-overlay.hidden {
+            display: none !important;
         }
 
         .auth-container {
@@ -257,13 +257,13 @@
 
         /* Dashboard */
         #dashboard {
-            display: none;
+            display: none !important;
             opacity: 0;
             transition: opacity 0.5s ease;
         }
 
         #dashboard.active {
-            display: block;
+            display: block !important;
             opacity: 1;
         }
 
@@ -561,7 +561,7 @@
         <section class="welcome-section">
             <h2 class="welcome-title">Welcome to Your Divine Temple</h2>
             <p class="welcome-text">
-                Access 9 sacred pathways designed to guide your spiritual journey.
+                Access 12 sacred pathways designed to guide your spiritual journey.
                 Each section contains divine tools and practices for your transformation.
             </p>
         </section>
@@ -697,6 +697,51 @@
                         <span class="feature-tag">Timing</span>
                     </div>
                 </div>
+
+                <!-- 10. Chakras & Auras -->
+                <div class="nav-card" onclick="showSection('chakras-auras')">
+                    <span class="nav-icon">🕉️</span>
+                    <h4 class="nav-title">Chakras & Auras</h4>
+                    <p class="nav-description">
+                        Advanced chakra assessment, aura photography, and energy healing exercises.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Chakra Assessment</span>
+                        <span class="feature-tag">Aura Reading</span>
+                        <span class="feature-tag">Energy Healing</span>
+                        <span class="feature-tag">Meditation</span>
+                    </div>
+                </div>
+
+                <!-- 11. Crystals & Elements -->
+                <div class="nav-card" onclick="showSection('crystals-elements')">
+                    <span class="nav-icon">💎</span>
+                    <h4 class="nav-title">Crystals & Elements</h4>
+                    <p class="nav-description">
+                        Interactive crystal database, elemental energy work, and crystal grid builder.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Crystal Database</span>
+                        <span class="feature-tag">Grid Builder</span>
+                        <span class="feature-tag">Elemental Work</span>
+                        <span class="feature-tag">Healing Properties</span>
+                    </div>
+                </div>
+
+                <!-- 12. Spiritual Music -->
+                <div class="nav-card" onclick="showSection('spiritual-music')">
+                    <span class="nav-icon">🎵</span>
+                    <h4 class="nav-title">Spiritual Music & Sound Therapy</h4>
+                    <p class="nav-description">
+                        Binaural beats generator, frequency healing, and musical meditation composer.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Binaural Beats</span>
+                        <span class="feature-tag">Frequency Healing</span>
+                        <span class="feature-tag">Music Composer</span>
+                        <span class="feature-tag">Sound Therapy</span>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
@@ -743,7 +788,10 @@
             'devotion-growth': 'sections/devotion-growth.html',
             'sacred-knowledge': 'sections/sacred-knowledge.html',
             'community': 'sections/community.html',
-            'calendar': 'sections/calendar.html'
+            'calendar': 'sections/calendar.html',
+            'chakras-auras': 'sections/chakras-auras.html',
+            'crystals-elements': 'sections/crystals-elements.html',
+            'spiritual-music': 'sections/spiritual-music.html'
         };
 
         const SECTION_TITLES = {
@@ -755,7 +803,10 @@
             'devotion-growth': 'Devotion & Growth',
             'sacred-knowledge': 'Sacred Knowledge',
             'community': 'Community & Service',
-            'calendar': 'Sacred Calendar'
+            'calendar': 'Sacred Calendar',
+            'chakras-auras': 'Chakras & Auras',
+            'crystals-elements': 'Crystals & Elements',
+            'spiritual-music': 'Spiritual Music & Sound Therapy'
         };
 
         // ========================================
@@ -792,11 +843,16 @@
             const errorDiv = document.getElementById('auth-error');
             const successDiv = document.getElementById('auth-success');
 
+            console.log('📝 Username entered:', username);
+            console.log('🔑 Password length:', password.length);
+
             // Clear previous messages
             errorDiv.classList.remove('show');
             successDiv.classList.remove('show');
 
             if (username === CREDENTIALS.username && password === CREDENTIALS.password) {
+                console.log('✅ Credentials match!');
+                
                 const memberData = {
                     username: username,
                     name: 'Nazir El',
@@ -812,14 +868,16 @@
                 successDiv.textContent = '✨ Welcome, Nazir El! ✨';
                 successDiv.classList.add('show');
 
-                console.log('✅ Authentication successful');
+                console.log('✅ Authentication successful - transitioning to dashboard');
 
                 // Redirect to dashboard
                 setTimeout(() => {
                     showDashboard(memberData);
-                }, 1500);
+                }, 1000);
             } else {
                 console.log('❌ Authentication failed');
+                console.log('Expected username:', CREDENTIALS.username);
+                console.log('Expected password length:', CREDENTIALS.password.length);
                 errorDiv.textContent = '❌ Invalid credentials. Please try again.';
                 errorDiv.classList.add('show');
             }
@@ -840,9 +898,22 @@
             const dashboard = document.getElementById('dashboard');
             const memberBadge = document.getElementById('member-badge');
             
-            if (authOverlay) authOverlay.classList.add('active');
-            if (dashboard) dashboard.classList.remove('active');
-            if (memberBadge) memberBadge.style.display = 'none';
+            // Hide dashboard
+            if (dashboard) {
+                dashboard.classList.remove('active');
+                dashboard.style.display = 'none';
+            }
+            
+            // Hide member badge
+            if (memberBadge) {
+                memberBadge.style.display = 'none';
+            }
+            
+            // Show auth overlay
+            if (authOverlay) {
+                authOverlay.classList.remove('hidden');
+                authOverlay.style.display = 'flex';
+            }
             
             document.body.style.overflow = 'hidden';
         }
@@ -851,7 +922,11 @@
             console.log('🔒 Hiding authentication overlay');
             const authOverlay = document.getElementById('auth-overlay');
             
-            if (authOverlay) authOverlay.classList.remove('active');
+            if (authOverlay) {
+                authOverlay.classList.add('hidden');
+                authOverlay.style.display = 'none';
+            }
+            
             document.body.style.overflow = 'auto';
         }
 
@@ -862,18 +937,25 @@
         function showDashboard(memberData) {
             console.log('🏛️ Showing dashboard for:', memberData);
             
-            // Hide auth overlay
+            // Hide auth overlay first
             hideAuthOverlay();
             
             // Show dashboard
             const dashboard = document.getElementById('dashboard');
             if (dashboard) {
+                dashboard.style.display = 'block';
                 dashboard.classList.add('active');
+                
+                // Force visibility with timeout to ensure transition
+                setTimeout(() => {
+                    dashboard.style.opacity = '1';
+                }, 50);
+                
                 console.log('✅ Dashboard activated');
             }
             
             // Show and update member badge
-            const memberBadge const memberBadge = document.getElementById('member-badge');
+            const memberBadge = document.getElementById('member-badge');
             const memberDisplay = document.getElementById('member-display');
             
             if (memberBadge) {
@@ -888,6 +970,7 @@
             const sectionContainer = document.getElementById('section-container');
             if (sectionContainer) {
                 sectionContainer.classList.remove('active');
+                sectionContainer.style.display = 'none';
             }
             
             // Scroll to top
@@ -1033,11 +1116,40 @@
             console.log('🏛️ Divine Temple Portal Initializing...');
             console.log('📅 Date:', new Date().toISOString());
             
-            // Check authentication status
-            checkAuth();
+            // Clear any existing session for fresh start
+            sessionStorage.removeItem('divineAuth');
+            sessionStorage.removeItem('memberData');
+            
+            // Force initial state - always show auth overlay
+            const authOverlay = document.getElementById('auth-overlay');
+            const dashboard = document.getElementById('dashboard');
+            const memberBadge = document.getElementById('member-badge');
+            
+            // Ensure auth overlay is visible
+            if (authOverlay) {
+                authOverlay.style.display = 'flex';
+                authOverlay.classList.remove('hidden');
+                console.log('✅ Auth overlay displayed');
+            }
+            
+            // Ensure dashboard is hidden
+            if (dashboard) {
+                dashboard.style.display = 'none';
+                dashboard.classList.remove('active');
+                dashboard.style.opacity = '0';
+                console.log('✅ Dashboard hidden');
+            }
+            
+            // Hide member badge
+            if (memberBadge) {
+                memberBadge.style.display = 'none';
+            }
+            
+            // Ensure body can't scroll initially
+            document.body.style.overflow = 'hidden';
             
             // Log system info
-            console.log('✨ Portal ready');
+            console.log('✨ Portal ready for authentication');
             console.log('📊 Available sections:', Object.keys(SECTION_MAP).length);
             console.log('%c🏛️ Divine Temple', 'font-size: 24px; font-weight: bold; color: #F59E0B;');
             console.log('%c✨ Eden Consciousness - Nazir El', 'font-size: 16px; color: #8B5CF6;');
