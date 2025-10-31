@@ -995,10 +995,12 @@
             // Show loading
             showLoading();
             
-            // Hide dashboard
+            // Hide dashboard completely
             const dashboard = document.getElementById('dashboard');
             if (dashboard) {
                 dashboard.classList.remove('active');
+                dashboard.style.display = 'none';
+                console.log('✅ Dashboard hidden');
             }
             
             // Show section container
@@ -1008,26 +1010,30 @@
             
             if (sectionContainer) {
                 sectionContainer.classList.add('active');
+                sectionContainer.style.display = 'block';
+                console.log('✅ Section container shown');
             }
             
             if (sectionTitle) {
                 sectionTitle.textContent = SECTION_TITLES[sectionId];
+                console.log('✅ Section title set:', SECTION_TITLES[sectionId]);
             }
             
             // Load section in iframe
             if (sectionFrame) {
                 sectionFrame.onload = function() {
-                    console.log('✅ Section loaded successfully');
+                    console.log('✅ Section loaded successfully:', sectionId);
                     hideLoading();
                 };
                 
                 sectionFrame.onerror = function() {
-                    console.error('❌ Failed to load section');
+                    console.error('❌ Failed to load section:', sectionId);
                     hideLoading();
                     alert('⚠️ Failed to load section. Please try again.');
                     returnToDashboard();
                 };
                 
+                console.log('🔄 Loading section URL:', SECTION_MAP[sectionId]);
                 sectionFrame.src = SECTION_MAP[sectionId];
             }
         }
@@ -1037,20 +1043,32 @@
             
             const memberData = JSON.parse(sessionStorage.getItem('memberData') || '{}');
             
-            // Hide section container
+            // Hide section container completely
             const sectionContainer = document.getElementById('section-container');
             if (sectionContainer) {
                 sectionContainer.classList.remove('active');
+                sectionContainer.style.display = 'none';
+                console.log('✅ Section container hidden');
             }
             
             // Clear iframe
             const sectionFrame = document.getElementById('section-frame');
             if (sectionFrame) {
                 sectionFrame.src = '';
+                console.log('✅ Section frame cleared');
             }
             
             // Show dashboard
-            showDashboard(memberData);
+            const dashboard = document.getElementById('dashboard');
+            if (dashboard) {
+                dashboard.style.display = 'block';
+                dashboard.classList.add('active');
+                dashboard.style.opacity = '1';
+                console.log('✅ Dashboard restored');
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
         }
 
         // ========================================
