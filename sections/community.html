@@ -3,129 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Community - Divine Temple</title>
+    <title>Sacred Community - Divine Temple</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --accent-gold: #d4af37;
             --accent-purple: #8b5cf6;
             --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-rose: #f43f5e;
             --glass-bg: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
             --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --shadow-medium: 0 16px 48px rgba(0, 0, 0, 0.2);
+            --shadow-strong: 0 24px 64px rgba(0, 0, 0, 0.3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
-            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            background: linear-gradient(135deg, #0a0a1e 0%, #1a1a2e 25%, #16213e 50%, #0f3460 100%);
             min-height: 100vh;
-            margin: 0;
             font-family: 'Inter', sans-serif;
             color: white;
+            overflow-x: hidden;
+            position: relative;
         }
-        .section-container {
-            padding: 2rem;
-            max-width: 1200px;
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 8s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 0.8;
+            }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
             margin: 0 auto;
-        }
-        
-        .section-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .section-header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .community-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .community-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 3rem 2rem;
-            cursor: pointer;
-            transition: all 0.4s;
-            text-align: center;
-        }
-        
-        .community-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: var(--accent-gold);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--accent-gold);
-        }
-        
-        .community-card:active {
-            transform: translateY(-5px) scale(1.01);
-        }
-        
-        .community-card.implemented {
-            border-color: rgba(16, 185, 129, 0.3);
-        }
-        
-        .community-card.implemented:hover {
-            border-color: var(--accent-gold);
-            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.2), 0 0 0 1px var(--accent-gold);
-        }
-        
-        .community-icon {
-            font-size: 4.5rem;
-            margin-bottom: 2rem;
-            display: block;
-            transition: all 0.3s ease;
-        }
-        
-        .community-info {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
             padding: 2rem;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-        
-        .communication-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        .comm-feature {
-            background: rgba(255,255,255,0.05);
-            padding: 1rem;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
-            text-align: center;
-        }
-        
-        .tool-status {
-            margin-top: 1rem;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-        
-        .status-complete {
-            background: linear-gradient(135deg, #10b981, #059669);
-        }
-        
-        .status-placeholder {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
         }
         
         .back-btn {
@@ -145,7 +107,7 @@
             font-family: 'Inter', sans-serif;
             font-weight: 600;
             font-size: 1rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow-soft);
             position: relative;
             overflow: hidden;
         }
@@ -172,25 +134,1092 @@
             transform: translateY(-2px);
         }
         
-        .back-btn .back-icon {
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple), var(--accent-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+        
+        .header .subtitle {
             font-size: 1.2rem;
-            transition: transform 0.3s;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
         }
         
-        .back-btn:hover .back-icon {
-            transform: translateX(-3px);
+        .community-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
         }
         
-        .feature-list {
-            text-align: left;
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+            border-color: var(--accent-gold);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+        
+        .primary-section {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .section-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-purple), var(--accent-blue));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .section-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-strong);
+            border-color: var(--accent-gold);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .section-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .tab-navigation {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            color: white;
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Forum Styles */
+        .forum-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .forum-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .forum-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--accent-gold);
+            transform: translateX(5px);
+        }
+        
+        .forum-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .forum-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .forum-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .forum-stats {
+            display: flex;
+            gap: 2rem;
             margin-top: 1rem;
-            padding-left: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
         }
         
-        .feature-list li {
-            margin: 0.5rem 0;
+        .forum-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Meditation Room Styles */
+        .meditation-rooms {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .room-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .room-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-purple));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .room-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .room-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--accent-gold);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .room-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .room-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .room-participants {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .room-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-active {
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+        }
+        
+        .status-scheduled {
+            background: linear-gradient(135deg, var(--accent-blue), #1e40af);
+        }
+        
+        .status-private {
+            background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
+        }
+        
+        /* Events Calendar Styles */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .calendar-header {
+            background: var(--accent-gold);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .calendar-day {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+            min-height: 80px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .calendar-day:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .calendar-day.has-events {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .calendar-day.has-events::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+        }
+        
+        .day-number {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .day-events {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        /* Event List */
+        .event-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .event-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .event-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--accent-gold);
+        }
+        
+        .event-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .event-time {
+            background: var(--accent-blue);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .event-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .event-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        /* Member Directory */
+        .member-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .member-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .member-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--accent-gold);
+            transform: translateY(-3px);
+        }
+        
+        .member-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .member-name {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .member-status {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .member-badges {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .badge-guide {
+            background: linear-gradient(135deg, var(--accent-gold), #b8860b);
+        }
+        
+        .badge-healer {
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+        }
+        
+        .badge-mystic {
+            background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .quick-action {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-action:hover {
+            background: var(--accent-gold);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .quick-action-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            color: white;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
             color: var(--text-secondary);
         }
+        
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .community-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tab-navigation {
+                flex-wrap: wrap;
+            }
+            
+            .meditation-rooms {
+                grid-template-columns: 1fr;
+            }
+            
+            .calendar-grid {
+                grid-template-columns: repeat(7, minmax(40px, 1fr));
+            }
+            
+            .calendar-day {
+                padding: 0.5rem;
+                min-height: 60px;
+            }
+            
+            .member-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles"></div>
+    
+    <div class="container">
+        <button class="back-btn" onclick="goBackToDashboard()">
+            <span>←</span>
+            <span>Back to Dashboard</span>
+        </button>
+        
+        <div class="header">
+            <h1>🤝 Sacred Community</h1>
+            <p class="subtitle">Connect with fellow spiritual seekers and share your divine journey together</p>
+        </div>
+        
+        <div class="community-stats">
+            <div class="stat-card">
+                <div class="stat-number">1,247</div>
+                <div class="stat-label">Active Members</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">356</div>
+                <div class="stat-label">Group Sessions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">89</div>
+                <div class="stat-label">Ongoing Discussions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">42</div>
+                <div class="stat-label">Events This Week</div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="primary-section">
+                <!-- Group Meditation Rooms -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-icon">🧘‍♀️</div>
+                        <h2 class="section-title">Group Meditation Rooms</h2>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <div class="quick-action" onclick="createMeditationRoom()">
+                            <span class="quick-action-icon">➕</span>
+                            <span>Create Room</span>
+                        </div>
+                        <div class="quick-action" onclick="joinRandomRoom()">
+                            <span class="quick-action-icon">🎲</span>
+                            <span>Join Random</span>
+                        </div>
+                        <div class="quick-action" onclick="scheduleMeditation()">
+                            <span class="quick-action-icon">📅</span>
+                            <span>Schedule Session</span>
+                        </div>
+                    </div>
+                    
+                    <div class="meditation-rooms">
+                        <div class="room-card" onclick="joinMeditationRoom('morning-peace')">
+                            <div class="room-icon">🌅</div>
+                            <div class="room-name">Morning Peace Circle</div>
+                            <div class="room-participants">12 members meditating</div>
+                            <div class="room-status status-active">🟢 Active Now</div>
+                        </div>
+                        
+                        <div class="room-card" onclick="joinMeditationRoom('chakra-alignment')">
+                            <div class="room-icon">🌈</div>
+                            <div class="room-name">Chakra Alignment</div>
+                            <div class="room-participants">8 members meditating</div>
+                            <div class="room-status status-active">🟢 Active Now</div>
+                        </div>
+                        
+                        <div class="room-card" onclick="joinMeditationRoom('sunset-gratitude')">
+                            <div class="room-icon">🌇</div>
+                            <div class="room-name">Sunset Gratitude</div>
+                            <div class="room-participants">Starting in 30 minutes</div>
+                            <div class="room-status status-scheduled">📅 Scheduled</div>
+                        </div>
+                        
+                        <div class="room-card" onclick="joinMeditationRoom('advanced-practice')">
+                            <div class="room-icon">🔮</div>
+                            <div class="room-name">Advanced Practice</div>
+                            <div class="room-participants">Invite only</div>
+                            <div class="room-status status-private">🔒 Private</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Discussion Forums -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-icon">💬</div>
+                        <h2 class="section-title">Sacred Discussions</h2>
+                    </div>
+                    
+                    <div class="tab-navigation">
+                        <button class="tab-btn active" onclick="showTab('general-discussions')">General</button>
+                        <button class="tab-btn" onclick="showTab('spiritual-guidance')">Guidance</button>
+                        <button class="tab-btn" onclick="showTab('healing-support')">Healing</button>
+                        <button class="tab-btn" onclick="showTab('study-groups')">Study Groups</button>
+                    </div>
+                    
+                    <div id="general-discussions" class="tab-content active">
+                        <div class="forum-list">
+                            <div class="forum-item" onclick="openDiscussion('daily-insights')">
+                                <div class="forum-title">💫 Daily Spiritual Insights</div>
+                                <div class="forum-description">Share your daily revelations and spiritual discoveries</div>
+                                <div class="forum-stats">
+                                    <div class="forum-stat">
+                                        <span>💬</span>
+                                        <span>234 posts</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>👥</span>
+                                        <span>89 members</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>🕒</span>
+                                        <span>2 hours ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="forum-item" onclick="openDiscussion('meditation-techniques')">
+                                <div class="forum-title">🧘‍♂️ Meditation Techniques & Tips</div>
+                                <div class="forum-description">Exchange meditation practices and deepen your understanding</div>
+                                <div class="forum-stats">
+                                    <div class="forum-stat">
+                                        <span>💬</span>
+                                        <span>156 posts</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>👥</span>
+                                        <span>67 members</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>🕒</span>
+                                        <span>5 hours ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="forum-item" onclick="openDiscussion('sacred-texts')">
+                                <div class="forum-title">📚 Sacred Text Discussions</div>
+                                <div class="forum-description">Explore ancient wisdom and modern interpretations</div>
+                                <div class="forum-stats">
+                                    <div class="forum-stat">
+                                        <span>💬</span>
+                                        <span>98 posts</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>👥</span>
+                                        <span>43 members</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>🕒</span>
+                                        <span>1 day ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="spiritual-guidance" class="tab-content">
+                        <div class="forum-list">
+                            <div class="forum-item" onclick="openDiscussion('life-purpose')">
+                                <div class="forum-title">🎯 Finding Your Life Purpose</div>
+                                <div class="forum-description">Guidance for discovering your spiritual mission</div>
+                                <div class="forum-stats">
+                                    <div class="forum-stat">
+                                        <span>💬</span>
+                                        <span>78 posts</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>👥</span>
+                                        <span>34 members</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>🕒</span>
+                                        <span>3 hours ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="forum-item" onclick="openDiscussion('spiritual-challenges')">
+                                <div class="forum-title">⚡ Overcoming Spiritual Challenges</div>
+                                <div class="forum-description">Support for navigating difficult spiritual experiences</div>
+                                <div class="forum-stats">
+                                    <div class="forum-stat">
+                                        <span>💬</span>
+                                        <span>122 posts</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>👥</span>
+                                        <span>56 members</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>🕒</span>
+                                        <span>1 hour ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="healing-support" class="tab-content">
+                        <div class="forum-list">
+                            <div class="forum-item" onclick="openDiscussion('energy-healing')">
+                                <div class="forum-title">⚡ Energy Healing Circle</div>
+                                <div class="forum-description">Share healing experiences and offer distant healing</div>
+                                <div class="forum-stats">
+                                    <div class="forum-stat">
+                                        <span>💬</span>
+                                        <span>189 posts</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>👥</span>
+                                        <span>78 members</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>🕒</span>
+                                        <span>30 minutes ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="forum-item" onclick="openDiscussion('emotional-support')">
+                                <div class="forum-title">💚 Emotional Support Network</div>
+                                <div class="forum-description">Safe space for emotional healing and support</div>
+                                <div class="forum-stats">
+                                    <div class="forum-stat">
+                                        <span>💬</span>
+                                        <span>267 posts</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>👥</span>
+                                        <span>92 members</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>🕒</span>
+                                        <span>45 minutes ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="study-groups" class="tab-content">
+                        <div class="forum-list">
+                            <div class="forum-item" onclick="openDiscussion('kabbalah-study')">
+                                <div class="forum-title">🔯 Kabbalah Study Group</div>
+                                <div class="forum-description">Weekly sessions exploring mystical Jewish wisdom</div>
+                                <div class="forum-stats">
+                                    <div class="forum-stat">
+                                        <span>💬</span>
+                                        <span>45 posts</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>👥</span>
+                                        <span>23 members</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>🕒</span>
+                                        <span>2 days ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="forum-item" onclick="openDiscussion('tarot-study')">
+                                <div class="forum-title">🔮 Tarot Study Circle</div>
+                                <div class="forum-description">Learn and practice tarot reading together</div>
+                                <div class="forum-stats">
+                                    <div class="forum-stat">
+                                        <span>💬</span>
+                                        <span>67 posts</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>👥</span>
+                                        <span>31 members</span>
+                                    </div>
+                                    <div class="forum-stat">
+                                        <span>🕒</span>
+                                        <span>6 hours ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <!-- Community Events Calendar -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-icon">📅</div>
+                        <h3 class="section-title">Sacred Calendar</h3>
+                    </div>
+                    
+                    <div class="event-list">
+                        <div class="event-item" onclick="openEvent('full-moon-ceremony')">
+                            <div class="event-header">
+                                <div class="event-time">Today 8PM</div>
+                            </div>
+                            <div class="event-title">🌕 Full Moon Ceremony</div>
+                            <div class="event-description">Group ritual for release and manifestation</div>
+                        </div>
+                        
+                        <div class="event-item" onclick="openEvent('crystal-healing-workshop')">
+                            <div class="event-header">
+                                <div class="event-time">Tomorrow 2PM</div>
+                            </div>
+                            <div class="event-title">💎 Crystal Healing Workshop</div>
+                            <div class="event-description">Learn advanced crystal therapy techniques</div>
+                        </div>
+                        
+                        <div class="event-item" onclick="openEvent('new-member-welcome')">
+                            <div class="event-header">
+                                <div class="event-time">Friday 7PM</div>
+                            </div>
+                            <div class="event-title">🤗 New Member Welcome Circle</div>
+                            <div class="event-description">Welcome newcomers to our sacred community</div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="viewFullCalendar()">
+                        View Full Calendar
+                    </button>
+                </div>
+                
+                <!-- Active Members -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-icon">👥</div>
+                        <h3 class="section-title">Active Members</h3>
+                    </div>
+                    
+                    <div class="member-grid">
+                        <div class="member-card" onclick="viewMemberProfile('sarah')">
+                            <div class="member-avatar">S</div>
+                            <div class="member-name">Sarah Light</div>
+                            <div class="member-status">🟢 Online</div>
+                            <div class="member-badges">
+                                <div class="badge badge-guide">Guide</div>
+                            </div>
+                        </div>
+                        
+                        <div class="member-card" onclick="viewMemberProfile('michael')">
+                            <div class="member-avatar">M</div>
+                            <div class="member-name">Michael Zen</div>
+                            <div class="member-status">🔴 Meditating</div>
+                            <div class="member-badges">
+                                <div class="badge badge-healer">Healer</div>
+                            </div>
+                        </div>
+                        
+                        <div class="member-card" onclick="viewMemberProfile('luna')">
+                            <div class="member-avatar">L</div>
+                            <div class="member-name">Luna Moon</div>
+                            <div class="member-status">🟡 Away</div>
+                            <div class="member-badges">
+                                <div class="badge badge-mystic">Mystic</div>
+                            </div>
+                        </div>
+                        
+                        <div class="member-card" onclick="viewMemberProfile('david')">
+                            <div class="member-avatar">D</div>
+                            <div class="member-name">David Peace</div>
+                            <div class="member-status">🟢 Online</div>
+                            <div class="member-badges">
+                                <div class="badge badge-guide">Guide</div>
+                                <div class="badge badge-healer">Healer</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;" onclick="viewAllMembers()">
+                        View All Members
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     </style>
 </head>
 <body>
@@ -297,10 +1326,600 @@
                 </div>
             </div>
         </div>
+    
+    <!-- Modals -->
+    <div id="meditationRoomModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create Meditation Room</h3>
+                <button class="close-btn" onclick="closeModal('meditationRoomModal')">&times;</button>
+            </div>
+            <form onsubmit="createNewMeditationRoom(event)">
+                <div class="form-group">
+                    <label class="form-label">Room Name</label>
+                    <input type="text" class="form-input" placeholder="Enter room name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Meditation Type</label>
+                    <select class="form-select" required>
+                        <option value="">Select type</option>
+                        <option value="mindfulness">Mindfulness</option>
+                        <option value="chakra">Chakra Balancing</option>
+                        <option value="loving-kindness">Loving Kindness</option>
+                        <option value="transcendental">Transcendental</option>
+                        <option value="guided">Guided Visualization</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Duration (minutes)</label>
+                    <select class="form-select" required>
+                        <option value="15">15 minutes</option>
+                        <option value="30">30 minutes</option>
+                        <option value="45">45 minutes</option>
+                        <option value="60">60 minutes</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Room Description</label>
+                    <textarea class="form-textarea" placeholder="Describe the meditation session..."></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary">Create Room</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('meditationRoomModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="discussionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Start New Discussion</h3>
+                <button class="close-btn" onclick="closeModal('discussionModal')">&times;</button>
+            </div>
+            <form onsubmit="createNewDiscussion(event)">
+                <div class="form-group">
+                    <label class="form-label">Discussion Title</label>
+                    <input type="text" class="form-input" placeholder="Enter discussion title" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" required>
+                        <option value="">Select category</option>
+                        <option value="general">General Discussion</option>
+                        <option value="guidance">Spiritual Guidance</option>
+                        <option value="healing">Healing Support</option>
+                        <option value="study">Study Group</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Discussion Content</label>
+                    <textarea class="form-textarea" placeholder="Share your thoughts..." required></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary">Start Discussion</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('discussionModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create Community Event</h3>
+                <button class="close-btn" onclick="closeModal('eventModal')">&times;</button>
+            </div>
+            <form onsubmit="createNewEvent(event)">
+                <div class="form-group">
+                    <label class="form-label">Event Title</label>
+                    <input type="text" class="form-input" placeholder="Enter event title" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Event Type</label>
+                    <select class="form-select" required>
+                        <option value="">Select type</option>
+                        <option value="meditation">Group Meditation</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="ceremony">Sacred Ceremony</option>
+                        <option value="discussion">Discussion Circle</option>
+                        <option value="healing">Healing Session</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date & Time</label>
+                    <input type="datetime-local" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Event Description</label>
+                    <textarea class="form-textarea" placeholder="Describe the event..." required></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary">Create Event</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('eventModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
     </div>
     
     <script>
-        // Enhanced back navigation with feedback
+        class CommunitySystem {
+            constructor() {
+                this.meditationRooms = new Map();
+                this.discussions = new Map();
+                this.events = new Map();
+                this.members = new Map();
+                this.currentUser = {
+                    id: 'user_' + Date.now(),
+                    name: 'Spiritual Seeker',
+                    status: 'online',
+                    badges: ['seeker']
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.createFloatingParticles();
+                this.loadSampleData();
+                this.updateCommunityStats();
+                this.initializeEventListeners();
+                this.startRealTimeUpdates();
+                this.trackUserProgress();
+            }
+            
+            createFloatingParticles() {
+                const particleContainer = document.querySelector('.floating-particles');
+                const particleCount = 20;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.top = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 8 + 's';
+                    particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                    particleContainer.appendChild(particle);
+                }
+            }
+            
+            loadSampleData() {
+                // Load sample meditation rooms
+                this.meditationRooms.set('morning-peace', {
+                    id: 'morning-peace',
+                    name: 'Morning Peace Circle',
+                    type: 'mindfulness',
+                    participants: 12,
+                    status: 'active',
+                    duration: 30,
+                    description: 'Start your day with mindful awareness and inner peace'
+                });
+                
+                this.meditationRooms.set('chakra-alignment', {
+                    id: 'chakra-alignment',
+                    name: 'Chakra Alignment',
+                    type: 'chakra',
+                    participants: 8,
+                    status: 'active',
+                    duration: 45,
+                    description: 'Balance and align your energy centers'
+                });
+                
+                // Load sample discussions
+                this.discussions.set('daily-insights', {
+                    id: 'daily-insights',
+                    title: 'Daily Spiritual Insights',
+                    category: 'general',
+                    posts: 234,
+                    members: 89,
+                    lastActivity: '2 hours ago',
+                    description: 'Share your daily revelations and spiritual discoveries'
+                });
+                
+                // Load sample events
+                this.events.set('full-moon-ceremony', {
+                    id: 'full-moon-ceremony',
+                    title: 'Full Moon Ceremony',
+                    type: 'ceremony',
+                    date: new Date(),
+                    time: '8:00 PM',
+                    description: 'Group ritual for release and manifestation'
+                });
+                
+                // Load sample members
+                this.members.set('sarah', {
+                    id: 'sarah',
+                    name: 'Sarah Light',
+                    status: 'online',
+                    badges: ['guide'],
+                    avatar: 'S'
+                });
+            }
+            
+            updateCommunityStats() {
+                // Update stats with real-time data
+                const stats = {
+                    activeMembers: 1247 + Math.floor(Math.random() * 10),
+                    groupSessions: 356 + Math.floor(Math.random() * 5),
+                    discussions: 89 + Math.floor(Math.random() * 3),
+                    eventsThisWeek: 42 + Math.floor(Math.random() * 2)
+                };
+                
+                // Animate stat updates
+                this.animateStatUpdate('activeMembers', stats.activeMembers);
+                this.animateStatUpdate('groupSessions', stats.groupSessions);
+                this.animateStatUpdate('discussions', stats.discussions);
+                this.animateStatUpdate('eventsThisWeek', stats.eventsThisWeek);
+            }
+            
+            animateStatUpdate(statType, newValue) {
+                const statElements = document.querySelectorAll('.stat-number');
+                statElements.forEach(element => {
+                    if (element.textContent && Math.abs(parseInt(element.textContent) - newValue) < 100) {
+                        let currentValue = parseInt(element.textContent);
+                        const increment = newValue > currentValue ? 1 : -1;
+                        const interval = setInterval(() => {
+                            currentValue += increment;
+                            element.textContent = currentValue.toLocaleString();
+                            if (currentValue === newValue) {
+                                clearInterval(interval);
+                            }
+                        }, 50);
+                    }
+                });
+            }
+            
+            initializeEventListeners() {
+                // Close modals when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('modal')) {
+                        this.closeModal(e.target.id);
+                    }
+                });
+                
+                // Handle escape key for modals
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        const openModal = document.querySelector('.modal[style*="block"]');
+                        if (openModal) {
+                            this.closeModal(openModal.id);
+                        }
+                    }
+                });
+            }
+            
+            startRealTimeUpdates() {
+                // Simulate real-time updates
+                setInterval(() => {
+                    this.updateMeditationRoomParticipants();
+                    this.updateDiscussionActivity();
+                    this.updateMemberStatuses();
+                }, 30000); // Update every 30 seconds
+            }
+            
+            updateMeditationRoomParticipants() {
+                const roomCards = document.querySelectorAll('.room-card');
+                roomCards.forEach(card => {
+                    const participantsElement = card.querySelector('.room-participants');
+                    if (participantsElement && participantsElement.textContent.includes('members meditating')) {
+                        const currentCount = parseInt(participantsElement.textContent);
+                        const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+                        const newCount = Math.max(1, currentCount + change);
+                        participantsElement.textContent = `${newCount} members meditating`;
+                    }
+                });
+            }
+            
+            updateDiscussionActivity() {
+                const forumItems = document.querySelectorAll('.forum-item');
+                forumItems.forEach(item => {
+                    const timeElement = item.querySelector('.forum-stat:last-child span:last-child');
+                    if (timeElement && Math.random() < 0.1) { // 10% chance of update
+                        const timeOptions = ['just now', '1 minute ago', '5 minutes ago', '30 minutes ago'];
+                        timeElement.textContent = timeOptions[Math.floor(Math.random() * timeOptions.length)];
+                    }
+                });
+            }
+            
+            updateMemberStatuses() {
+                const memberCards = document.querySelectorAll('.member-card');
+                memberCards.forEach(card => {
+                    const statusElement = card.querySelector('.member-status');
+                    if (statusElement && Math.random() < 0.05) { // 5% chance of status change
+                        const statuses = ['🟢 Online', '🔴 Meditating', '🟡 Away', '🔵 In Session'];
+                        statusElement.textContent = statuses[Math.floor(Math.random() * statuses.length)];
+                    }
+                });
+            }
+            
+            trackUserProgress() {
+                // Track community engagement for Universal Progress System
+                const progressData = {
+                    section: 'Community',
+                    activity: 'community_visit',
+                    timestamp: new Date().toISOString(),
+                    engagementLevel: 'active'
+                };
+                
+                this.updateUniversalProgress(progressData);
+            }
+            
+            updateUniversalProgress(data) {
+                if (window.parent && window.parent.UniversalProgressSystem) {
+                    window.parent.UniversalProgressSystem.updateProgress(data);
+                } else {
+                    // Store locally if parent system not available
+                    const communityProgress = JSON.parse(localStorage.getItem('divineTemple_communityProgress') || '[]');
+                    communityProgress.push(data);
+                    localStorage.setItem('divineTemple_communityProgress', JSON.stringify(communityProgress));
+                }
+            }
+            
+            // Modal management
+            openModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+            
+            closeModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            }
+            
+            // Tab management
+            showTab(tabId) {
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Remove active class from all tab buttons
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Show selected tab content
+                const selectedTab = document.getElementById(tabId);
+                if (selectedTab) {
+                    selectedTab.classList.add('active');
+                }
+                
+                // Add active class to clicked button
+                const clickedBtn = event.target;
+                clickedBtn.classList.add('active');
+            }
+            
+            // Meditation room functions
+            createMeditationRoom() {
+                this.openModal('meditationRoomModal');
+            }
+            
+            joinMeditationRoom(roomId) {
+                const room = this.meditationRooms.get(roomId);
+                if (room) {
+                    // Track activity
+                    this.updateUniversalProgress({
+                        section: 'Community',
+                        activity: 'meditation_room_join',
+                        roomId: roomId,
+                        timestamp: new Date().toISOString()
+                    });
+                    
+                    // Show joining notification
+                    this.showNotification(`Joining ${room.name}...`, 'success');
+                    
+                    // Simulate joining process
+                    setTimeout(() => {
+                        this.showNotification(`Welcome to ${room.name}! 🧘‍♀️`, 'success');
+                    }, 1500);
+                } else {
+                    this.showNotification('Room not found', 'error');
+                }
+            }
+            
+            joinRandomRoom() {
+                const activeRooms = Array.from(this.meditationRooms.values()).filter(room => room.status === 'active');
+                if (activeRooms.length > 0) {
+                    const randomRoom = activeRooms[Math.floor(Math.random() * activeRooms.length)];
+                    this.joinMeditationRoom(randomRoom.id);
+                } else {
+                    this.showNotification('No active rooms available. Create one!', 'info');
+                }
+            }
+            
+            scheduleMeditation() {
+                this.openModal('eventModal');
+            }
+            
+            createNewMeditationRoom(event) {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+                const roomData = {
+                    id: 'room_' + Date.now(),
+                    name: formData.get('roomName') || 'New Meditation Room',
+                    type: formData.get('meditationType'),
+                    duration: parseInt(formData.get('duration')),
+                    description: formData.get('description'),
+                    participants: 1,
+                    status: 'active',
+                    creator: this.currentUser.id
+                };
+                
+                this.meditationRooms.set(roomData.id, roomData);
+                this.closeModal('meditationRoomModal');
+                this.showNotification(`Created "${roomData.name}" successfully!`, 'success');
+                
+                // Track creation
+                this.updateUniversalProgress({
+                    section: 'Community',
+                    activity: 'meditation_room_create',
+                    roomId: roomData.id,
+                    timestamp: new Date().toISOString()
+                });
+            }
+            
+            // Discussion functions
+            openDiscussion(discussionId) {
+                const discussion = this.discussions.get(discussionId);
+                if (discussion) {
+                    this.showNotification(`Opening "${discussion.title}"...`, 'info');
+                    
+                    // Track activity
+                    this.updateUniversalProgress({
+                        section: 'Community',
+                        activity: 'discussion_view',
+                        discussionId: discussionId,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            }
+            
+            createNewDiscussion(event) {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+                const discussionData = {
+                    id: 'discussion_' + Date.now(),
+                    title: formData.get('title'),
+                    category: formData.get('category'),
+                    content: formData.get('content'),
+                    posts: 1,
+                    members: 1,
+                    lastActivity: 'just now',
+                    creator: this.currentUser.id
+                };
+                
+                this.discussions.set(discussionData.id, discussionData);
+                this.closeModal('discussionModal');
+                this.showNotification(`Discussion "${discussionData.title}" created!`, 'success');
+                
+                // Track creation
+                this.updateUniversalProgress({
+                    section: 'Community',
+                    activity: 'discussion_create',
+                    discussionId: discussionData.id,
+                    timestamp: new Date().toISOString()
+                });
+            }
+            
+            // Event functions
+            openEvent(eventId) {
+                const event = this.events.get(eventId);
+                if (event) {
+                    this.showNotification(`Viewing "${event.title}"...`, 'info');
+                    
+                    // Track activity
+                    this.updateUniversalProgress({
+                        section: 'Community',
+                        activity: 'event_view',
+                        eventId: eventId,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            }
+            
+            viewFullCalendar() {
+                this.showNotification('Opening full community calendar...', 'info');
+                
+                // Track activity
+                this.updateUniversalProgress({
+                    section: 'Community',
+                    activity: 'calendar_view',
+                    timestamp: new Date().toISOString()
+                });
+            }
+            
+            createNewEvent(event) {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+                const eventData = {
+                    id: 'event_' + Date.now(),
+                    title: formData.get('title'),
+                    type: formData.get('type'),
+                    date: new Date(formData.get('datetime')),
+                    description: formData.get('description'),
+                    creator: this.currentUser.id
+                };
+                
+                this.events.set(eventData.id, eventData);
+                this.closeModal('eventModal');
+                this.showNotification(`Event "${eventData.title}" scheduled!`, 'success');
+                
+                // Track creation
+                this.updateUniversalProgress({
+                    section: 'Community',
+                    activity: 'event_create',
+                    eventId: eventData.id,
+                    timestamp: new Date().toISOString()
+                });
+            }
+            
+            // Member functions
+            viewMemberProfile(memberId) {
+                const member = this.members.get(memberId);
+                if (member) {
+                    this.showNotification(`Viewing ${member.name}'s profile...`, 'info');
+                    
+                    // Track activity
+                    this.updateUniversalProgress({
+                        section: 'Community',
+                        activity: 'member_profile_view',
+                        memberId: memberId,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            }
+            
+            viewAllMembers() {
+                this.showNotification('Loading member directory...', 'info');
+                
+                // Track activity
+                this.updateUniversalProgress({
+                    section: 'Community',
+                    activity: 'member_directory_view',
+                    timestamp: new Date().toISOString()
+                });
+            }
+            
+            // Utility functions
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${type === 'success' ? 'linear-gradient(135deg, var(--accent-green), #059669)' : 
+                                type === 'error' ? 'linear-gradient(135deg, var(--accent-rose), #dc2626)' :
+                                'linear-gradient(135deg, var(--accent-blue), #1e40af)'};
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 12px;
+                    box-shadow: var(--shadow-medium);
+                    z-index: 10000;
+                    font-family: Inter, sans-serif;
+                    font-weight: 500;
+                    max-width: 350px;
+                    backdrop-filter: blur(20px);
+                    animation: slideIn 0.3s ease;
+                `;
+                notification.innerHTML = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'fadeOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 4000);
+            }
+        }
+        
+        // Global functions for backward compatibility
+        let communitySystem;
+        
         function goBackToDashboard() {
             try {
                 if (window.parent && window.parent.showSection) {
@@ -314,149 +1933,121 @@
             }
         }
         
-        // Enhanced tool opening functions with communication focus
-        function openTool(toolName, fallbackFunction) {
-            try {
-                if (window.parent && window.parent[fallbackFunction]) {
-                    window.parent[fallbackFunction]();
-                } else {
-                    console.warn(`${toolName} function not found in parent window`);
-                    // For community tools, show a placeholder message
-                    showCommunityPlaceholder(toolName);
-                }
-            } catch (error) {
-                console.error(`Error opening ${toolName}:`, error);
+        function showTab(tabId) {
+            if (communitySystem) {
+                communitySystem.showTab(tabId);
             }
         }
         
-        function openCommunityHub() {
-            openTool('Community Hub', 'openCommunityHub');
-        }
-        
-        function openHealingCircle() {
-            // For now, redirect to community hub since healing circle has extensive functionality
-            if (window.parent && window.parent.openCommunityHub) {
-                window.parent.openCommunityHub();
-            } else {
-                openTool('Healing Circle', 'openHealingCircle');
+        function createMeditationRoom() {
+            if (communitySystem) {
+                communitySystem.createMeditationRoom();
             }
         }
         
-        function showCommunityPlaceholder(toolName) {
-            // Create a temporary notification for communication tools
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
-                color: white;
-                padding: 1rem 2rem;
-                border-radius: 10px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                z-index: 1000;
-                font-family: Inter, sans-serif;
-                max-width: 300px;
-            `;
-            notification.innerHTML = `
-                <strong>🚀 ${toolName} Loading...</strong><br>
-                <small>Preparing your communication space...</small>
-            `;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
+        function joinMeditationRoom(roomId) {
+            if (communitySystem) {
+                communitySystem.joinMeditationRoom(roomId);
+            }
         }
         
-        // Add loading animation when community tools are clicked
-        document.addEventListener('DOMContentLoaded', function() {
-            const communityCards = document.querySelectorAll('.community-card');
-            
-            communityCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    // Add visual feedback for tool activation
-                    this.style.transform = 'translateY(-5px) scale(1.01)';
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 200);
-                });
-                
-                // Add special hover effects for community cards
-                card.addEventListener('mouseenter', function() {
-                    const icon = this.querySelector('.community-icon');
-                    icon.style.transform = 'scale(1.15) rotate(5deg)';
-                });
-                
-                card.addEventListener('mouseleave', function() {
-                    const icon = this.querySelector('.community-icon');
-                    icon.style.transform = 'scale(1) rotate(0deg)';
-                });
-            });
-            
-            // Add community connection animation
-            setTimeout(() => {
-                const cards = document.querySelectorAll('.community-card.implemented');
-                cards.forEach((card, index) => {
-                    setTimeout(() => {
-                        card.style.animation = 'communityPulse 2s ease-in-out';
-                    }, index * 500);
-                });
-            }, 1500);
-        });
+        function joinRandomRoom() {
+            if (communitySystem) {
+                communitySystem.joinRandomRoom();
+            }
+        }
         
-        // Add CSS for community-specific animations
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes communityPulse {
-                0%, 100% { 
-                    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
-                    border-color: rgba(16, 185, 129, 0.3);
-                }
-                50% { 
-                    box-shadow: 0 0 0 15px rgba(76, 175, 80, 0);
-                    border-color: rgba(76, 175, 80, 0.8);
-                }
+        function scheduleMeditation() {
+            if (communitySystem) {
+                communitySystem.scheduleMeditation();
             }
-            
-            .feature-list {
-                text-align: left;
-                margin-top: 1.5rem;
-                padding-left: 0;
-                list-style: none;
+        }
+        
+        function openDiscussion(discussionId) {
+            if (communitySystem) {
+                communitySystem.openDiscussion(discussionId);
             }
-            
-            .feature-list li {
-                margin: 0.75rem 0;
-                color: var(--text-secondary);
-                padding-left: 1.5rem;
-                position: relative;
+        }
+        
+        function openEvent(eventId) {
+            if (communitySystem) {
+                communitySystem.openEvent(eventId);
             }
-            
-            .feature-list li::before {
-                content: '✨';
-                position: absolute;
-                left: 0;
-                color: var(--accent-gold);
+        }
+        
+        function viewFullCalendar() {
+            if (communitySystem) {
+                communitySystem.viewFullCalendar();
             }
-        `;
-        document.head.appendChild(style);
-
-        // Community Function Validation
+        }
+        
+        function viewMemberProfile(memberId) {
+            if (communitySystem) {
+                communitySystem.viewMemberProfile(memberId);
+            }
+        }
+        
+        function viewAllMembers() {
+            if (communitySystem) {
+                communitySystem.viewAllMembers();
+            }
+        }
+        
+        function closeModal(modalId) {
+            if (communitySystem) {
+                communitySystem.closeModal(modalId);
+            }
+        }
+        
+        function createNewMeditationRoom(event) {
+            if (communitySystem) {
+                communitySystem.createNewMeditationRoom(event);
+            }
+        }
+        
+        function createNewDiscussion(event) {
+            if (communitySystem) {
+                communitySystem.createNewDiscussion(event);
+            }
+        }
+        
+        function createNewEvent(event) {
+            if (communitySystem) {
+                communitySystem.createNewEvent(event);
+            }
+        }
+        
+        // Initialize system when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
-            const requiredFunctions = [];
+            communitySystem = new CommunitySystem();
             
-            if (window.DivineTemplateUtils) {
-                window.DivineTemplateUtils.validateSectionFunctions('Community', requiredFunctions);
-                window.DivineTemplateUtils.initializeSectionListeners('Community');
-                window.DivineTemplateUtils.trackSectionPerformance('Community');
-            } else {
-                console.log('🤝 Community loaded (validation script not found)');
-            }
+            // Add animation styles
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+                
+                @keyframes fadeOut {
+                    from {
+                        opacity: 1;
+                    }
+                    to {
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            console.log('🤝 Sacred Community System initialized');
         });
     </script>
-
-    <!-- Load universal validation script -->
-    <script src="../js/section-validation.js" defer></script>
 </body>
 </html>

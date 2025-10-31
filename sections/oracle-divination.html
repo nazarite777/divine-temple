@@ -15,9 +15,6 @@
     <link rel="preload" href="../css/critical.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../css/critical.min.css"></noscript>
     
-    <!-- Phase 9: Theme System Integration -->
-    <link rel="stylesheet" href="../css/themes.css">
-    
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     
@@ -26,6 +23,11 @@
             --primary-bg: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
             --accent-purple: #8b5fbf;
             --accent-gold: #d4af37;
+            --accent-rose: #f8bbd9;
+            --accent-cyan: #00e5ff;
+            --accent-warm: #ff6b6b;
+            --accent-green: #4ade80;
+            --accent-violet: #7c3aed;
             --glass-bg: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
             --text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
@@ -52,6 +54,25 @@
             padding: 2rem;
         }
 
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
         .oracle-header {
             text-align: center;
             margin-bottom: 3rem;
@@ -60,6 +81,20 @@
             border-radius: 25px;
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .oracle-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(139, 95, 191, 0.1), transparent);
+            animation: mysticRotate 25s linear infinite;
+            z-index: -1;
         }
 
         .oracle-title {
@@ -81,31 +116,1587 @@
             font-weight: 300;
         }
 
-        .oracle-grid {
+        /* Enhanced Oracle Interface */
+        .oracle-main-interface {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: 1fr 280px;
             gap: 2rem;
             margin-bottom: 3rem;
         }
 
-        /* Streamlined Oracle Interface Styles */
-        .oracle-main-interface {
-            display: grid;
-            grid-template-columns: 1fr 200px;
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .reading-selection-panel {
+        .oracle-tools-panel {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 2rem;
-            margin-bottom: 2rem;
             backdrop-filter: blur(20px);
         }
+
+        .tools-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .tools-subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .divination-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .divination-category {
+            background: linear-gradient(135deg, rgba(139, 95, 191, 0.2), rgba(124, 58, 237, 0.2));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .divination-category:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 40px rgba(139, 95, 191, 0.3);
+        }
+
+        .divination-category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .divination-category:hover::before {
+            transform: scaleX(1);
+        }
+
+        .divination-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: mysticGlow 4s ease-in-out infinite;
+        }
+
+        .divination-category h3 {
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .divination-category p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .divination-btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-violet));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .divination-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 95, 191, 0.4);
+        }
+
+        /* Content Display Area */
+        .content-display-area {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            min-height: 600px;
+            position: relative;
+        }
+
+        .welcome-content {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .welcome-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: mysticPulse 3s ease-in-out infinite;
+        }
+
+        .welcome-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .welcome-content p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .quick-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-purple);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0.5rem;
+        }
+
+        /* Oracle Sidebar */
+        .oracle-sidebar {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            height: fit-content;
+            backdrop-filter: blur(20px);
+        }
+
+        .sidebar-title {
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .sidebar-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .sidebar-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .sidebar-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-purple);
+            transform: translateX(5px);
+        }
+
+        .btn-icon {
+            font-size: 1.3rem;
+        }
+
+        .btn-label {
+            font-weight: 500;
+        }
+
+        /* Card Display Styles */
+        .card-display-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .card-deck {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .oracle-card {
+            width: 160px;
+            height: 240px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-violet));
+            border: 3px solid var(--accent-gold);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .oracle-card:hover {
+            transform: translateY(-10px) rotateY(5deg);
+            box-shadow: 0 20px 40px rgba(139, 95, 191, 0.4);
+        }
+
+        .oracle-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #1a1a2e, #8b5fbf, #d4af37);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            backface-visibility: hidden;
+        }
+
+        .card-front {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: #212529;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            backface-visibility: hidden;
+            transform: rotateY(180deg);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .card-meaning {
+            font-size: 0.8rem;
+            line-height: 1.3;
+        }
+
+        /* Reading Display */
+        .reading-display {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid var(--accent-gold);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .reading-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .reading-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Rune Display */
+        .rune-display {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .rune-stone {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #6b7280, #374151);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--accent-gold);
+            position: relative;
+        }
+
+        .rune-stone:hover {
+            transform: scale(1.1) rotateZ(5deg);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .rune-stone.selected {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-warm));
+            transform: scale(1.2);
+        }
+
+        /* I-Ching Hexagram */
+        .hexagram-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 2rem 0;
+        }
+
+        .hexagram {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hexagram-line {
+            width: 60px;
+            height: 8px;
+            background: var(--accent-gold);
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .hexagram-line.broken::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 25px;
+            width: 10px;
+            height: 8px;
+            background: var(--primary-bg);
+            border-radius: 4px;
+        }
+
+        /* History Panel */
+        .history-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .history-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            color: var(--accent-purple);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .history-entries {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .history-entry {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .history-entry:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-purple);
+            transform: translateX(5px);
+        }
+
+        .entry-date {
+            font-size: 0.9rem;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .entry-type {
+            font-weight: 600;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .entry-summary {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
+        }
+
+        /* Animations */
+        @keyframes mysticRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes mysticGlow {
+            0%, 100% { 
+                filter: drop-shadow(0 0 10px rgba(139, 95, 191, 0.5));
+                transform: scale(1);
+            }
+            50% { 
+                filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.8));
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes mysticPulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes cardShuffle {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-10px) rotate(-2deg); }
+            75% { transform: translateX(10px) rotate(2deg); }
+        }
+
+        /* Modal Styles */
+        .oracle-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .oracle-modal {
+            background: var(--primary-bg);
+            border-radius: 25px;
+            padding: 0;
+            max-width: 1000px;
+            max-height: 90vh;
+            width: 100%;
+            position: relative;
+            border: 2px solid var(--accent-purple);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-violet));
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            text-shadow: var(--text-shadow);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .oracle-main-interface {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .oracle-sidebar {
+                order: -1;
+            }
+            
+            .sidebar-actions {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .sidebar-btn {
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .oracle-container {
+                padding: 1rem;
+            }
+            
+            .divination-categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .oracle-card {
+                width: 140px;
+                height: 210px;
+            }
+            
+            .rune-display {
+                gap: 1rem;
+            }
+            
+            .rune-stone {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .oracle-header {
+                padding: 2rem 1rem;
+            }
+            
+            .oracle-title {
+                font-size: 2rem;
+            }
+            
+            .divination-category {
+                padding: 1.5rem;
+            }
+            
+            .divination-icon {
+                font-size: 2.5rem;
+            }
+            
+            .oracle-card {
+                width: 120px;
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="oracle-container">
+        <button class="back-btn" onclick="window.parent.postMessage('back', '*')">
+            ← Back to Temple
+        </button>
+
+        <div class="oracle-header">
+            <div style="font-size: 4rem; margin-bottom: 1rem; animation: mysticGlow 4s ease-in-out infinite;">🔮</div>
+            <h1 class="oracle-title">Oracle & Divination</h1>
+            <p class="oracle-subtitle">Divine guidance through ancient wisdom and mystical arts</p>
+        </div>
+
+        <!-- Enhanced Oracle Interface -->
+        <div class="oracle-main-interface">
+            <!-- Oracle Tools Panel -->
+            <div class="oracle-tools-panel">
+                <h2 class="tools-title">Sacred Oracles</h2>
+                <p class="tools-subtitle">🌟 Choose your path to divine wisdom</p>
+                
+                <div class="divination-categories">
+                    <!-- Tarot Cards -->
+                    <div class="divination-category" onclick="openTarotReading()">
+                        <div class="divination-icon">🃏</div>
+                        <h3>Tarot Reading</h3>
+                        <p>Ancient wisdom through 78 sacred cards revealing your path, challenges, and destiny.</p>
+                        <button class="divination-btn">Draw Cards</button>
+                    </div>
+
+                    <!-- I-Ching Oracle -->
+                    <div class="divination-category" onclick="openIChingOracle()">
+                        <div class="divination-icon">☯️</div>
+                        <h3>I-Ching Oracle</h3>
+                        <p>The Book of Changes offers profound insights through ancient Chinese hexagrams.</p>
+                        <button class="divination-btn">Cast Oracle</button>
+                    </div>
+
+                    <!-- Rune Casting -->
+                    <div class="divination-category" onclick="openRuneCasting()">
+                        <div class="divination-icon">ᚱ</div>
+                        <h3>Rune Casting</h3>
+                        <p>Norse wisdom stones reveal guidance through ancient Germanic symbols and meanings.</p>
+                        <button class="divination-btn">Cast Runes</button>
+                    </div>
+
+                    <!-- Angel Cards -->
+                    <div class="divination-category" onclick="openAngelCards()">
+                        <div class="divination-icon">👼</div>
+                        <h3>Angel Cards</h3>
+                        <p>Receive divine messages and guidance from your guardian angels and spiritual guides.</p>
+                        <button class="divination-btn">Angel Guidance</button>
+                    </div>
+
+                    <!-- Crystal Oracle -->
+                    <div class="divination-category" onclick="openCrystalOracle()">
+                        <div class="divination-icon">💎</div>
+                        <h3>Crystal Oracle</h3>
+                        <p>Sacred gemstones channel Earth's wisdom for healing, guidance, and spiritual growth.</p>
+                        <button class="divination-btn">Crystal Wisdom</button>
+                    </div>
+
+                    <!-- Astro Dice -->
+                    <div class="divination-category" onclick="openAstroDice()">
+                        <div class="divination-icon">🎲</div>
+                        <h3>Astro Dice</h3>
+                        <p>Cosmic dice combine astrology and divination for celestial insights and timing.</p>
+                        <button class="divination-btn">Roll Cosmic</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Display Area -->
+            <div class="content-display-area" id="content-display-area">
+                <div class="welcome-content" id="welcome-content">
+                    <div class="welcome-icon">✨</div>
+                    <h3>Welcome to Divine Oracles</h3>
+                    <p>Select a divination method to receive guidance from the universe. Each oracle offers unique insights into your spiritual path, current challenges, and future possibilities.</p>
+                    <div class="quick-stats">
+                        <div class="stat">
+                            <span class="stat-number">67</span>
+                            <span class="stat-label">Readings Performed</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">23</span>
+                            <span class="stat-label">Insights Gained</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">12</span>
+                            <span class="stat-label">Accurate Predictions</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Oracle Sidebar -->
+            <div class="oracle-sidebar">
+                <h4 class="sidebar-title">🔮 Quick Oracle</h4>
+                <div class="sidebar-actions">
+                    <button class="sidebar-btn" onclick="quickTarotCard()" title="Quick Tarot">
+                        <span class="btn-icon">🃏</span>
+                        <span class="btn-label">Daily Card</span>
+                    </button>
+                    <button class="sidebar-btn" onclick="quickRune()" title="Quick Rune">
+                        <span class="btn-icon">ᚱ</span>
+                        <span class="btn-label">Rune Guidance</span>
+                    </button>
+                    <button class="sidebar-btn" onclick="quickAngel()" title="Angel Message">
+                        <span class="btn-icon">👼</span>
+                        <span class="btn-label">Angel Message</span>
+                    </button>
+                    <button class="sidebar-btn" onclick="quickCrystal()" title="Crystal Wisdom">
+                        <span class="btn-icon">💎</span>
+                        <span class="btn-label">Crystal Pick</span>
+                    </button>
+                    <button class="sidebar-btn" onclick="viewHistory()" title="Reading History">
+                        <span class="btn-icon">📚</span>
+                        <span class="btn-label">History</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Divination History Panel -->
+        <div class="history-panel" id="history-panel" style="display: none;">
+            <h3 class="history-title">📚 Your Divination Journey</h3>
+            <div class="history-entries" id="history-entries">
+                <!-- History entries will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Oracle & Divination System Class
+        class OracleDivinationSystem {
+            constructor() {
+                this.data = this.loadData();
+                this.init();
+            }
+
+            init() {
+                this.loadQuickStats();
+                this.setupPerformanceMonitoring();
+                console.log('🔮 Oracle & Divination System initialized');
+            }
+
+            loadData() {
+                const defaultData = {
+                    readings: { tarot: 34, iching: 12, runes: 18, angel: 15, crystal: 8, astro: 5 },
+                    insights: 23,
+                    predictions: 12,
+                    history: [],
+                    progress: { level: 7, exp: 1680, nextLevel: 2500 },
+                    favorites: []
+                };
+
+                try {
+                    const saved = localStorage.getItem('oracle-divination-data');
+                    return saved ? { ...defaultData, ...JSON.parse(saved) } : defaultData;
+                } catch (error) {
+                    console.warn('Error loading oracle data, using defaults:', error);
+                    return defaultData;
+                }
+            }
+
+            saveData() {
+                try {
+                    localStorage.setItem('oracle-divination-data', JSON.stringify(this.data));
+                } catch (error) {
+                    console.error('Error saving oracle data:', error);
+                }
+            }
+
+            loadQuickStats() {
+                const totalReadings = Object.values(this.data.readings).reduce((sum, count) => sum + count, 0);
+                const stats = document.querySelectorAll('.stat-number');
+                if (stats.length >= 3) {
+                    this.animateNumber(stats[0], totalReadings);
+                    this.animateNumber(stats[1], this.data.insights);
+                    this.animateNumber(stats[2], this.data.predictions);
+                }
+            }
+
+            animateNumber(element, targetValue) {
+                const startValue = parseInt(element.textContent) || 0;
+                const duration = 1000;
+                const startTime = performance.now();
+                
+                const animate = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                    const currentValue = Math.round(startValue + (targetValue - startValue) * easeOutQuart);
+                    
+                    element.textContent = currentValue;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            }
+
+            setupPerformanceMonitoring() {
+                const observer = new PerformanceObserver((list) => {
+                    for (const entry of list.getEntries()) {
+                        if (entry.entryType === 'measure') {
+                            console.log(`🎯 ${entry.name}: ${entry.duration.toFixed(2)}ms`);
+                        }
+                    }
+                });
+                observer.observe({ entryTypes: ['measure'] });
+            }
+
+            updateProgress(category, points = 15) {
+                this.data.progress.exp += points;
+                
+                if (this.data.progress.exp >= this.data.progress.nextLevel) {
+                    this.data.progress.level++;
+                    this.data.progress.exp = 0;
+                    this.data.progress.nextLevel = Math.floor(this.data.progress.nextLevel * 1.2);
+                    this.showLevelUp();
+                }
+
+                this.saveData();
+                this.updateUniversalProgress(category, points);
+            }
+
+            updateUniversalProgress(category, points) {
+                if (typeof window.updateUniversalProgress === 'function') {
+                    window.updateUniversalProgress('oracle', points);
+                }
+            }
+
+            showLevelUp() {
+                if (typeof window.showAchievement === 'function') {
+                    window.showAchievement(
+                        'Oracle Master Level Up!', 
+                        `You've reached Oracle Level ${this.data.progress.level}!`,
+                        'level-up'
+                    );
+                }
+            }
+
+            saveReading(type, details) {
+                const reading = {
+                    id: Date.now(),
+                    type: type,
+                    date: new Date().toLocaleDateString(),
+                    time: new Date().toLocaleTimeString(),
+                    details: details,
+                    timestamp: Date.now()
+                };
+
+                this.data.history.unshift(reading);
+                if (this.data.history.length > 50) {
+                    this.data.history = this.data.history.slice(0, 50);
+                }
+
+                this.data.readings[type.toLowerCase()]++;
+                this.saveData();
+                this.updateProgress(type, 20);
+            }
+        }
+
+        // Initialize system
+        let oracleSystem;
+        document.addEventListener('DOMContentLoaded', () => {
+            oracleSystem = new OracleDivinationSystem();
+        });
+
+        // Tarot Data
+        const tarotDeck = [
+            // Major Arcana
+            { name: "The Fool", meaning: "New beginnings, innocence, spontaneity", icon: "🃏", type: "major" },
+            { name: "The Magician", meaning: "Manifestation, resourcefulness, power", icon: "🎩", type: "major" },
+            { name: "The High Priestess", meaning: "Intuition, sacred knowledge, divine feminine", icon: "🔮", type: "major" },
+            { name: "The Empress", meaning: "Femininity, beauty, nature, abundance", icon: "👑", type: "major" },
+            { name: "The Emperor", meaning: "Authority, structure, control, fatherhood", icon: "⚜️", type: "major" },
+            { name: "The Hierophant", meaning: "Spiritual wisdom, religious beliefs, conformity", icon: "🏛️", type: "major" },
+            { name: "The Lovers", meaning: "Love, harmony, relationships, values alignment", icon: "💕", type: "major" },
+            { name: "The Chariot", meaning: "Control, willpower, success, determination", icon: "🏇", type: "major" },
+            { name: "Strength", meaning: "Strength, courage, persuasion, influence", icon: "🦁", type: "major" },
+            { name: "The Hermit", meaning: "Soul searching, introspection, inner guidance", icon: "🏮", type: "major" },
+            { name: "Wheel of Fortune", meaning: "Good luck, karma, life cycles, destiny", icon: "☸️", type: "major" },
+            { name: "Justice", meaning: "Justice, fairness, truth, cause and effect", icon: "⚖️", type: "major" },
+            { name: "The Hanged Man", meaning: "Surrender, letting go, new perspective", icon: "🤸", type: "major" },
+            { name: "Death", meaning: "Endings, beginnings, change, transformation", icon: "🦋", type: "major" },
+            { name: "Temperance", meaning: "Balance, moderation, patience, purpose", icon: "⚗️", type: "major" },
+            { name: "The Devil", meaning: "Shadow self, attachment, addiction, restriction", icon: "👹", type: "major" },
+            { name: "The Tower", meaning: "Sudden change, upheaval, chaos, revelation", icon: "🗼", type: "major" },
+            { name: "The Star", meaning: "Hope, faith, purpose, renewal, spirituality", icon: "⭐", type: "major" },
+            { name: "The Moon", meaning: "Illusion, fear, anxiety, subconscious, intuition", icon: "🌙", type: "major" },
+            { name: "The Sun", meaning: "Positivity, fun, warmth, success, vitality", icon: "☀️", type: "major" },
+            { name: "Judgement", meaning: "Rebirth, inner calling, absolution", icon: "📯", type: "major" },
+            { name: "The World", meaning: "Completion, accomplishment, travel, fulfillment", icon: "🌍", type: "major" }
+        ];
+
+        // Rune Data
+        const runeStones = [
+            { symbol: "ᚠ", name: "Fehu", meaning: "Wealth, cattle, prosperity, material success" },
+            { symbol: "ᚢ", name: "Uruz", meaning: "Strength, vitality, wild ox, primal power" },
+            { symbol: "ᚦ", name: "Thurisaz", meaning: "Giant, thorn, reactive force, conflict" },
+            { symbol: "ᚨ", name: "Ansuz", meaning: "God, communication, divine inspiration" },
+            { symbol: "ᚱ", name: "Raidho", meaning: "Journey, travel, rhythm, movement" },
+            { symbol: "ᚲ", name: "Kenaz", meaning: "Torch, knowledge, creativity, inspiration" },
+            { symbol: "ᚷ", name: "Gebo", meaning: "Gift, partnership, generosity, exchange" },
+            { symbol: "ᚹ", name: "Wunjo", meaning: "Joy, pleasure, harmony, prosperity" },
+            { symbol: "ᚺ", name: "Hagalaz", meaning: "Hail, disruption, challenge, change" },
+            { symbol: "ᚾ", name: "Nauthiz", meaning: "Need, necessity, constraint, endurance" },
+            { symbol: "ᛁ", name: "Isa", meaning: "Ice, standstill, stillness, clarity" },
+            { symbol: "ᛃ", name: "Jera", meaning: "Year, harvest, cycle, patience" },
+            { symbol: "ᛇ", name: "Eihwaz", meaning: "Yew tree, death, rebirth, transformation" },
+            { symbol: "ᛈ", name: "Perthro", meaning: "Dice cup, fate, mystery, hidden knowledge" },
+            { symbol: "ᛉ", name: "Algiz", meaning: "Elk, protection, higher self, spiritual guidance" },
+            { symbol: "ᛊ", name: "Sowilo", meaning: "Sun, success, vitality, enlightenment" },
+            { symbol: "ᛏ", name: "Tiwaz", meaning: "God Tyr, justice, sacrifice, honor" },
+            { symbol: "ᛒ", name: "Berkano", meaning: "Birch, growth, fertility, new beginnings" },
+            { symbol: "ᛖ", name: "Ehwaz", meaning: "Horse, partnership, trust, loyalty" },
+            { symbol: "ᛗ", name: "Mannaz", meaning: "Man, humanity, self, community" },
+            { symbol: "ᛚ", name: "Laguz", meaning: "Water, flow, intuition, psychic abilities" },
+            { symbol: "ᛜ", name: "Ingwaz", meaning: "God Ing, fertility, internal growth" },
+            { symbol: "ᛞ", name: "Dagaz", meaning: "Day, breakthrough, awakening, clarity" },
+            { symbol: "ᛟ", name: "Othala", meaning: "Ancestral property, heritage, spiritual heritage" }
+        ];
+
+        // Angel Cards Data
+        const angelCards = [
+            { name: "Archangel Michael", message: "You are protected and safe. Have courage to follow your divine path.", icon: "⚔️" },
+            { name: "Archangel Gabriel", message: "Important news is coming. Trust your intuitive messages.", icon: "📯" },
+            { name: "Archangel Raphael", message: "Healing is occurring on all levels. Trust the process.", icon: "🌿" },
+            { name: "Archangel Uriel", message: "Illumination comes through wisdom. Seek understanding.", icon: "💡" },
+            { name: "Guardian Angel", message: "You are never alone. Ask for help when you need it.", icon: "👼" },
+            { name: "Angel of Love", message: "Open your heart to give and receive love freely.", icon: "💖" },
+            { name: "Angel of Peace", message: "Find peace within yourself. Let go of worry and fear.", icon: "🕊️" },
+            { name: "Angel of Abundance", message: "You are worthy of all good things. Abundance flows to you.", icon: "🌟" },
+            { name: "Angel of Creativity", message: "Express your unique gifts. Your creativity blesses the world.", icon: "🎨" },
+            { name: "Angel of Wisdom", message: "Trust your inner knowing. The answers are within you.", icon: "🦉" },
+            { name: "Angel of Healing", message: "Send healing light to yourself and others. You are a healer.", icon: "✨" },
+            { name: "Angel of Joy", message: "Choose joy in every moment. Your happiness matters.", icon: "😇" }
+        ];
+
+        // Crystal Oracle Data
+        const crystalOracle = [
+            { name: "Amethyst", message: "Spiritual awakening and psychic enhancement await you.", icon: "💜", properties: "Intuition, spiritual growth, protection" },
+            { name: "Rose Quartz", message: "Open your heart to love and compassion for yourself and others.", icon: "🌸", properties: "Love, emotional healing, self-care" },
+            { name: "Clear Quartz", message: "Clarity and amplification of your intentions are needed now.", icon: "💎", properties: "Clarity, amplification, healing" },
+            { name: "Citrine", message: "Abundance and manifestation energies are flowing your way.", icon: "🟡", properties: "Abundance, creativity, confidence" },
+            { name: "Black Tourmaline", message: "Protection and grounding will help you feel secure.", icon: "⚫", properties: "Protection, grounding, cleansing" },
+            { name: "Selenite", message: "Divine connection and purification bring peace to your soul.", icon: "🤍", properties: "Purification, divine connection, peace" },
+            { name: "Labradorite", message: "Magic and transformation are awakening within you.", icon: "🌈", properties: "Magic, transformation, psychic abilities" },
+            { name: "Carnelian", message: "Courage and motivation will help you take bold action.", icon: "🧡", properties: "Courage, motivation, creativity" },
+            { name: "Moonstone", message: "Divine feminine energy and intuition guide your path.", icon: "🌙", properties: "Intuition, feminine energy, cycles" },
+            { name: "Fluorite", message: "Mental clarity and focus will illuminate your next steps.", icon: "💚", properties: "Mental clarity, focus, learning" }
+        ];
+
+        // I-Ching Hexagrams (simplified set)
+        const iChingHexagrams = [
+            { number: 1, name: "The Creative", meaning: "Original creative force, leadership, strength", trigrams: ["☰", "☰"] },
+            { number: 2, name: "The Receptive", meaning: "Yielding, nurturing, supporting", trigrams: ["☷", "☷"] },
+            { number: 11, name: "Peace", meaning: "Harmony, good fortune, prosperity", trigrams: ["☷", "☰"] },
+            { number: 12, name: "Standstill", meaning: "Stagnation, obstacles, patience needed", trigrams: ["☰", "☷"] },
+            { number: 25, name: "Innocence", meaning: "Natural action, spontaneity, authenticity", trigrams: ["☰", "☳"] },
+            { number: 44, name: "Coming to Meet", meaning: "Temptation, careful decision-making", trigrams: ["☰", "☴"] },
+            { number: 19, name: "Approach", meaning: "Advancement, progress, leadership", trigrams: ["☷", "☱"] },
+            { number: 20, name: "Contemplation", meaning: "Observation, understanding, wisdom", trigrams: ["☴", "☷"] }
+        ];
+
+        // Main Oracle Functions
+        function openTarotReading() {
+            const content = `
+                <div class="card-display-area">
+                    <h3 style="text-align: center; color: var(--accent-gold); margin-bottom: 2rem;">Choose Your Tarot Spread</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                        <button class="divination-btn" onclick="drawTarotCards(1)">
+                            🃏 Single Card Reading
+                        </button>
+                        <button class="divination-btn" onclick="drawTarotCards(3)">
+                            🃏 Three Card Spread
+                        </button>
+                        <button class="divination-btn" onclick="drawTarotCards(5)">
+                            🃏 Five Card Cross
+                        </button>
+                    </div>
+                    <div id="tarot-cards-display"></div>
+                    <div id="tarot-reading-display"></div>
+                </div>
+            `;
+            
+            openOracleModal('🃏 Tarot Card Reading', content);
+        }
+
+        function drawTarotCards(count) {
+            performance.mark('tarot-draw-start');
+            
+            const shuffledDeck = [...tarotDeck].sort(() => Math.random() - 0.5);
+            const drawnCards = shuffledDeck.slice(0, count);
+            
+            const cardsDisplay = document.getElementById('tarot-cards-display');
+            const readingDisplay = document.getElementById('tarot-reading-display');
+            
+            // Display cards
+            cardsDisplay.innerHTML = `
+                <div style="display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; flex-wrap: wrap;">
+                    ${drawnCards.map((card, index) => `
+                        <div class="oracle-card" onclick="flipCard(${index})" id="card-${index}">
+                            <div class="card-back">🔮</div>
+                            <div class="card-front">
+                                <div class="card-icon">${card.icon}</div>
+                                <div class="card-name">${card.name}</div>
+                                <div class="card-meaning">${card.meaning}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <p style="text-align: center; color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem;">
+                    Click each card to reveal your reading
+                </p>
+            `;
+            
+            // Generate reading interpretation
+            let interpretation = '';
+            if (count === 1) {
+                interpretation = `Your single card reveals: ${drawnCards[0].meaning}. This card represents your current energy and the guidance you need right now.`;
+            } else if (count === 3) {
+                interpretation = `Your three-card spread reveals:
+                    <br><strong>Past:</strong> ${drawnCards[0].name} - ${drawnCards[0].meaning}
+                    <br><strong>Present:</strong> ${drawnCards[1].name} - ${drawnCards[1].meaning}
+                    <br><strong>Future:</strong> ${drawnCards[2].name} - ${drawnCards[2].meaning}`;
+            } else if (count === 5) {
+                interpretation = `Your five-card cross reveals:
+                    <br><strong>Present Situation:</strong> ${drawnCards[0].name} - ${drawnCards[0].meaning}
+                    <br><strong>Challenge:</strong> ${drawnCards[1].name} - ${drawnCards[1].meaning}
+                    <br><strong>Past Influence:</strong> ${drawnCards[2].name} - ${drawnCards[2].meaning}
+                    <br><strong>Possible Outcome:</strong> ${drawnCards[3].name} - ${drawnCards[3].meaning}
+                    <br><strong>Advice:</strong> ${drawnCards[4].name} - ${drawnCards[4].meaning}`;
+            }
+            
+            readingDisplay.innerHTML = `
+                <div class="reading-display">
+                    <div class="reading-title">Your Tarot Reading</div>
+                    <div class="reading-content">${interpretation}</div>
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="divination-btn" onclick="saveTarotReading('${JSON.stringify(drawnCards).replace(/"/g, '&quot;')}')">
+                            💾 Save Reading
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Save to history
+            oracleSystem.saveReading('tarot', {
+                cards: drawnCards,
+                spread: count === 1 ? 'Single Card' : count === 3 ? 'Three Card' : 'Five Card Cross',
+                interpretation: interpretation
+            });
+            
+            performance.mark('tarot-draw-end');
+            performance.measure('tarot-draw', 'tarot-draw-start', 'tarot-draw-end');
+        }
+
+        function flipCard(index) {
+            const card = document.getElementById(`card-${index}`);
+            if (card) {
+                card.classList.toggle('flipped');
+            }
+        }
+
+        function openRuneCasting() {
+            const content = `
+                <div class="card-display-area">
+                    <h3 style="text-align: center; color: var(--accent-gold); margin-bottom: 2rem;">Cast the Ancient Runes</h3>
+                    <p style="text-align: center; color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem;">
+                        Focus on your question and click to cast 3 runes for guidance
+                    </p>
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <button class="divination-btn" onclick="castRunes()">
+                            ᚱ Cast Runes
+                        </button>
+                    </div>
+                    <div id="rune-display"></div>
+                    <div id="rune-reading-display"></div>
+                </div>
+            `;
+            
+            openOracleModal('ᚱ Ancient Rune Casting', content);
+        }
+
+        function castRunes() {
+            const shuffledRunes = [...runeStones].sort(() => Math.random() - 0.5);
+            const castRunes = shuffledRunes.slice(0, 3);
+            
+            const runeDisplay = document.getElementById('rune-display');
+            const readingDisplay = document.getElementById('rune-reading-display');
+            
+            runeDisplay.innerHTML = `
+                <div class="rune-display">
+                    ${castRunes.map((rune, index) => `
+                        <div class="rune-stone selected" style="animation: cardShuffle 0.5s ease-in-out ${index * 0.2}s">
+                            ${rune.symbol}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            const interpretation = `
+                <strong>Past Influence:</strong> ${castRunes[0].name} (${castRunes[0].symbol}) - ${castRunes[0].meaning}
+                <br><strong>Present Situation:</strong> ${castRunes[1].name} (${castRunes[1].symbol}) - ${castRunes[1].meaning}
+                <br><strong>Future Guidance:</strong> ${castRunes[2].name} (${castRunes[2].symbol}) - ${castRunes[2].meaning}
+            `;
+            
+            readingDisplay.innerHTML = `
+                <div class="reading-display">
+                    <div class="reading-title">Your Rune Reading</div>
+                    <div class="reading-content">${interpretation}</div>
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="divination-btn" onclick="saveRuneReading('${JSON.stringify(castRunes).replace(/"/g, '&quot;')}')">
+                            💾 Save Reading
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            oracleSystem.saveReading('runes', {
+                runes: castRunes,
+                interpretation: interpretation
+            });
+        }
+
+        function openAngelCards() {
+            const content = `
+                <div class="card-display-area">
+                    <h3 style="text-align: center; color: var(--accent-gold); margin-bottom: 2rem;">Receive Angelic Guidance</h3>
+                    <p style="text-align: center; color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem;">
+                        Ask your question and let the angels guide you to the perfect message
+                    </p>
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <button class="divination-btn" onclick="drawAngelCard()">
+                            👼 Draw Angel Card
+                        </button>
+                    </div>
+                    <div id="angel-card-display"></div>
+                </div>
+            `;
+            
+            openOracleModal('👼 Angel Card Guidance', content);
+        }
+
+        function drawAngelCard() {
+            const randomAngel = angelCards[Math.floor(Math.random() * angelCards.length)];
+            
+            const angelDisplay = document.getElementById('angel-card-display');
+            angelDisplay.innerHTML = `
+                <div style="text-align: center;">
+                    <div class="oracle-card" style="margin: 0 auto 2rem;">
+                        <div class="card-front" style="transform: rotateY(0deg);">
+                            <div class="card-icon">${randomAngel.icon}</div>
+                            <div class="card-name">${randomAngel.name}</div>
+                            <div class="card-meaning">${randomAngel.message}</div>
+                        </div>
+                    </div>
+                    <div class="reading-display">
+                        <div class="reading-title">Angel Message</div>
+                        <div class="reading-content">
+                            <strong>${randomAngel.name}</strong> brings you this message:<br>
+                            "${randomAngel.message}"
+                        </div>
+                        <div style="margin-top: 2rem;">
+                            <button class="divination-btn" onclick="saveAngelReading('${randomAngel.name}', '${randomAngel.message}')">
+                                💾 Save Message
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            oracleSystem.saveReading('angel', {
+                angel: randomAngel.name,
+                message: randomAngel.message
+            });
+        }
+
+        function openIChingOracle() {
+            const content = `
+                <div class="card-display-area">
+                    <h3 style="text-align: center; color: var(--accent-gold); margin-bottom: 2rem;">I-Ching Oracle Consultation</h3>
+                    <p style="text-align: center; color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem;">
+                        Focus on your question and cast the ancient oracle of change
+                    </p>
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <button class="divination-btn" onclick="castIChingOracle()">
+                            ☯️ Cast Oracle
+                        </button>
+                    </div>
+                    <div id="iching-display"></div>
+                </div>
+            `;
+            
+            openOracleModal('☯️ I-Ching Oracle', content);
+        }
+
+        function castIChingOracle() {
+            const randomHexagram = iChingHexagrams[Math.floor(Math.random() * iChingHexagrams.length)];
+            
+            const ichingDisplay = document.getElementById('iching-display');
+            ichingDisplay.innerHTML = `
+                <div class="hexagram-display">
+                    <div class="hexagram">
+                        ${Array.from({length: 6}, () => `
+                            <div class="hexagram-line ${Math.random() > 0.5 ? 'broken' : ''}"></div>
+                        `).join('')}
+                    </div>
+                    <div class="reading-display">
+                        <div class="reading-title">Hexagram ${randomHexagram.number}: ${randomHexagram.name}</div>
+                        <div class="reading-content">
+                            ${randomHexagram.meaning}
+                            <br><br>
+                            This hexagram speaks to your current situation and the natural flow of change that surrounds you.
+                        </div>
+                        <div style="margin-top: 2rem; text-align: center;">
+                            <button class="divination-btn" onclick="saveIChingReading('${randomHexagram.name}', '${randomHexagram.meaning}')">
+                                💾 Save Oracle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            oracleSystem.saveReading('iching', {
+                hexagram: randomHexagram.number,
+                name: randomHexagram.name,
+                meaning: randomHexagram.meaning
+            });
+        }
+
+        function openCrystalOracle() {
+            const content = `
+                <div class="card-display-area">
+                    <h3 style="text-align: center; color: var(--accent-gold); margin-bottom: 2rem;">Crystal Oracle Wisdom</h3>
+                    <p style="text-align: center; color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem;">
+                        Let the Earth's crystalline wisdom guide your path
+                    </p>
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <button class="divination-btn" onclick="drawCrystalOracle()">
+                            💎 Choose Crystal
+                        </button>
+                    </div>
+                    <div id="crystal-display"></div>
+                </div>
+            `;
+            
+            openOracleModal('💎 Crystal Oracle', content);
+        }
+
+        function drawCrystalOracle() {
+            const randomCrystal = crystalOracle[Math.floor(Math.random() * crystalOracle.length)];
+            
+            const crystalDisplay = document.getElementById('crystal-display');
+            crystalDisplay.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">${randomCrystal.icon}</div>
+                    <div class="reading-display">
+                        <div class="reading-title">${randomCrystal.name}</div>
+                        <div class="reading-content">
+                            <strong>Message:</strong> ${randomCrystal.message}
+                            <br><br>
+                            <strong>Properties:</strong> ${randomCrystal.properties}
+                        </div>
+                        <div style="margin-top: 2rem;">
+                            <button class="divination-btn" onclick="saveCrystalReading('${randomCrystal.name}', '${randomCrystal.message}')">
+                                💾 Save Crystal Wisdom
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            oracleSystem.saveReading('crystal', {
+                crystal: randomCrystal.name,
+                message: randomCrystal.message,
+                properties: randomCrystal.properties
+            });
+        }
+
+        function openAstroDice() {
+            const content = `
+                <div class="card-display-area">
+                    <h3 style="text-align: center; color: var(--accent-gold); margin-bottom: 2rem;">Cosmic Astro Dice</h3>
+                    <p style="text-align: center; color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem;">
+                        Roll the cosmic dice for astrological guidance and timing
+                    </p>
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <button class="divination-btn" onclick="rollAstroDice()">
+                            🎲 Roll Cosmic Dice
+                        </button>
+                    </div>
+                    <div id="astro-dice-display"></div>
+                </div>
+            `;
+            
+            openOracleModal('🎲 Astro Dice Oracle', content);
+        }
+
+        function rollAstroDice() {
+            const signs = ['♈ Aries', '♉ Taurus', '♊ Gemini', '♋ Cancer', '♌ Leo', '♍ Virgo', '♎ Libra', '♏ Scorpio', '♐ Sagittarius', '♑ Capricorn', '♒ Aquarius', '♓ Pisces'];
+            const planets = ['☉ Sun', '☽ Moon', '☿ Mercury', '♀ Venus', '♂ Mars', '♃ Jupiter', '♄ Saturn', '♅ Uranus', '♆ Neptune', '♇ Pluto'];
+            const houses = ['1st House', '2nd House', '3rd House', '4th House', '5th House', '6th House', '7th House', '8th House', '9th House', '10th House', '11th House', '12th House'];
+            
+            const rolledSign = signs[Math.floor(Math.random() * signs.length)];
+            const rolledPlanet = planets[Math.floor(Math.random() * planets.length)];
+            const rolledHouse = houses[Math.floor(Math.random() * houses.length)];
+            
+            const astroDiceDisplay = document.getElementById('astro-dice-display');
+            astroDiceDisplay.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                        <div style="background: var(--accent-purple); padding: 1rem; border-radius: 10px; min-width: 100px;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎲</div>
+                            <div>${rolledSign}</div>
+                        </div>
+                        <div style="background: var(--accent-gold); color: black; padding: 1rem; border-radius: 10px; min-width: 100px;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎲</div>
+                            <div>${rolledPlanet}</div>
+                        </div>
+                        <div style="background: var(--accent-cyan); color: black; padding: 1rem; border-radius: 10px; min-width: 100px;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎲</div>
+                            <div>${rolledHouse}</div>
+                        </div>
+                    </div>
+                    <div class="reading-display">
+                        <div class="reading-title">Cosmic Dice Reading</div>
+                        <div class="reading-content">
+                            Your cosmic dice reveal: <strong>${rolledPlanet}</strong> in <strong>${rolledSign}</strong> in the <strong>${rolledHouse}</strong>
+                            <br><br>
+                            This combination suggests focusing on themes related to your planetary energy, sign qualities, and life area for guidance and timing.
+                        </div>
+                        <div style="margin-top: 2rem;">
+                            <button class="divination-btn" onclick="saveAstroReading('${rolledSign}', '${rolledPlanet}', '${rolledHouse}')">
+                                💾 Save Cosmic Reading
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            oracleSystem.saveReading('astro', {
+                sign: rolledSign,
+                planet: rolledPlanet,
+                house: rolledHouse
+            });
+        }
+
+        // Quick Oracle Functions
+        function quickTarotCard() {
+            const randomCard = tarotDeck[Math.floor(Math.random() * tarotDeck.length)];
+            
+            if (typeof window.showNotification === 'function') {
+                window.showNotification(`🃏 Daily Tarot: ${randomCard.name} - ${randomCard.meaning}`, 'info', 8000);
+            }
+            
+            oracleSystem.saveReading('tarot', {
+                cards: [randomCard],
+                spread: 'Daily Card',
+                interpretation: randomCard.meaning
+            });
+        }
+
+        function quickRune() {
+            const randomRune = runeStones[Math.floor(Math.random() * runeStones.length)];
+            
+            if (typeof window.showNotification === 'function') {
+                window.showNotification(`ᚱ Rune Guidance: ${randomRune.name} (${randomRune.symbol}) - ${randomRune.meaning}`, 'info', 8000);
+            }
+            
+            oracleSystem.saveReading('runes', {
+                runes: [randomRune],
+                interpretation: randomRune.meaning
+            });
+        }
+
+        function quickAngel() {
+            const randomAngel = angelCards[Math.floor(Math.random() * angelCards.length)];
+            
+            if (typeof window.showNotification === 'function') {
+                window.showNotification(`👼 Angel Message: ${randomAngel.name} says "${randomAngel.message}"`, 'info', 8000);
+            }
+            
+            oracleSystem.saveReading('angel', {
+                angel: randomAngel.name,
+                message: randomAngel.message
+            });
+        }
+
+        function quickCrystal() {
+            const randomCrystal = crystalOracle[Math.floor(Math.random() * crystalOracle.length)];
+            
+            if (typeof window.showNotification === 'function') {
+                window.showNotification(`💎 Crystal Wisdom: ${randomCrystal.name} - ${randomCrystal.message}`, 'info', 8000);
+            }
+            
+            oracleSystem.saveReading('crystal', {
+                crystal: randomCrystal.name,
+                message: randomCrystal.message,
+                properties: randomCrystal.properties
+            });
+        }
+
+        // History Functions
+        function viewHistory() {
+            const historyPanel = document.getElementById('history-panel');
+            const historyEntries = document.getElementById('history-entries');
+            
+            if (oracleSystem.data.history.length === 0) {
+                historyEntries.innerHTML = `
+                    <div class="history-entry">
+                        <div class="entry-type">No readings yet</div>
+                        <div class="entry-summary">Start your divination journey by choosing an oracle above</div>
+                    </div>
+                `;
+            } else {
+                historyEntries.innerHTML = oracleSystem.data.history.slice(0, 10).map(entry => `
+                    <div class="history-entry" onclick="viewHistoryDetails('${entry.id}')">
+                        <div class="entry-date">${entry.date} at ${entry.time}</div>
+                        <div class="entry-type">${entry.type.toUpperCase()} Reading</div>
+                        <div class="entry-summary">
+                            ${entry.type === 'tarot' ? `${entry.details.spread} - ${entry.details.cards.length} cards` :
+                              entry.type === 'runes' ? `${entry.details.runes.length} runes cast` :
+                              entry.type === 'angel' ? `Message from ${entry.details.angel}` :
+                              entry.type === 'crystal' ? `${entry.details.crystal} crystal guidance` :
+                              entry.type === 'iching' ? `Hexagram: ${entry.details.name}` :
+                              'Cosmic dice reading'}
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            historyPanel.style.display = historyPanel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Save Reading Functions
+        function saveTarotReading(cardsJson) {
+            if (typeof window.showNotification === 'function') {
+                window.showNotification('Tarot reading saved to your history! 🃏', 'success');
+            }
+        }
+
+        function saveRuneReading(runesJson) {
+            if (typeof window.showNotification === 'function') {
+                window.showNotification('Rune reading saved to your history! ᚱ', 'success');
+            }
+        }
+
+        function saveAngelReading(angelName, message) {
+            if (typeof window.showNotification === 'function') {
+                window.showNotification('Angel message saved to your history! 👼', 'success');
+            }
+        }
+
+        function saveCrystalReading(crystalName, message) {
+            if (typeof window.showNotification === 'function') {
+                window.showNotification('Crystal wisdom saved to your history! 💎', 'success');
+            }
+        }
+
+        function saveIChingReading(name, meaning) {
+            if (typeof window.showNotification === 'function') {
+                window.showNotification('I-Ching oracle saved to your history! ☯️', 'success');
+            }
+        }
+
+        function saveAstroReading(sign, planet, house) {
+            if (typeof window.showNotification === 'function') {
+                window.showNotification('Astro dice reading saved to your history! 🎲', 'success');
+            }
+        }
+
+        // Modal Functions
+        function openOracleModal(title, content) {
+            const modal = document.getElementById('oracle-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContent = document.getElementById('modal-content');
+            
+            modalTitle.textContent = title;
+            modalContent.innerHTML = content;
+            modal.style.display = 'flex';
+            
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeOracleModal() {
+            const modal = document.getElementById('oracle-modal');
+            modal.style.display = 'none';
+            
+            // Restore body scroll
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('oracle-modal');
+            if (e.target === modal) {
+                closeOracleModal();
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeOracleModal();
+            }
+        });
+
+        // Performance monitoring
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (performance.getEntriesByType) {
+                    const navigationEntries = performance.getEntriesByType('navigation');
+                    if (navigationEntries.length > 0) {
+                        const loadTime = navigationEntries[0].loadEventEnd - navigationEntries[0].loadEventStart;
+                        console.log(`🚀 Oracle & Divination loaded in ${loadTime.toFixed(2)}ms`);
+                    }
+                }
+            }, 0);
+        });
+    </script>
+</body>
+</html>
 
         .selection-title {
             font-family: 'Playfair Display', serif;
@@ -504,57 +2095,6 @@
             }
         }
 
-        .divination-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .divination-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(139, 95, 191, 0.4);
-            border-color: var(--accent-gold);
-        }
-
-        .divination-card:active {
-            transform: translateY(-5px) scale(1.01);
-        }
-
-        .divination-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold));
-            border-radius: 20px 20px 0 0;
-        }
-
-        .divination-card::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg, transparent, rgba(139, 95, 191, 0.1), transparent);
-            animation: mysticalRotate 20s linear infinite;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .divination-card:hover::after {
-            opacity: 1;
-        }
-
         .card-icon {
             font-size: 3rem;
             margin-bottom: 1rem;
@@ -614,25 +2154,6 @@
         .oracle-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
-        }
-
-        .featured-tool {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, rgba(139, 95, 191, 0.2), rgba(212, 175, 55, 0.2));
-            border: 2px solid var(--accent-gold);
-        }
-
-        .featured-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: var(--accent-gold);
-            color: #000;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
         }
 
         /* Oracle Cards Modal Styles */
@@ -1164,11 +2685,6 @@
                 padding: 1rem;
             }
 
-            .oracle-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
             .oracle-modal {
                 margin: 1rem;
                 height: calc(100vh - 2rem);
@@ -1219,10 +2735,6 @@
             .reading-grid {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
-            }
-
-            .featured-tool {
-                grid-column: 1;
             }
         }
 
@@ -1403,87 +2915,6 @@
                         <span class="btn-label">Settings</span>
                     </button>
                 </div>
-            </div>
-        </div>
-
-            <!-- Tarot Cards -->
-            <div class="divination-card" onclick="openTarotCards()">
-                <div class="card-icon">🌟</div>
-                <h3 class="card-title">Tarot Wisdom</h3>
-                <p class="card-description">
-                    Explore the ancient wisdom of Tarot with traditional and modern interpretations for deep spiritual insight.
-                </p>
-                <ul class="card-features">
-                    <li>Full 78-card Tarot deck</li>
-                    <li>Multiple spread options</li>
-                    <li>Detailed card meanings</li>
-                    <li>Intuitive guidance system</li>
-                </ul>
-                <button class="oracle-btn">Draw Tarot Cards</button>
-            </div>
-
-            <!-- Rune Casting -->
-            <div class="divination-card" onclick="openRuneCasting()">
-                <div class="card-icon">ᚱ</div>
-                <h3 class="card-title">Ancient Runes</h3>
-                <p class="card-description">
-                    Cast the sacred Norse runes to receive ancient wisdom and guidance from the old ways.
-                </p>
-                <ul class="card-features">
-                    <li>24 Elder Futhark runes</li>
-                    <li>Traditional casting methods</li>
-                    <li>Historical meanings</li>
-                    <li>Modern interpretations</li>
-                </ul>
-                <button class="oracle-btn">Cast Runes</button>
-            </div>
-
-            <!-- Pendulum Divination -->
-            <div class="divination-card" onclick="openPendulum()">
-                <div class="card-icon">🔮</div>
-                <h3 class="card-title">Pendulum Guidance</h3>
-                <p class="card-description">
-                    Use the sacred pendulum to receive yes/no answers and divine guidance for your questions.
-                </p>
-                <ul class="card-features">
-                    <li>Virtual pendulum interface</li>
-                    <li>Question guidance system</li>
-                    <li>Session recording</li>
-                    <li>Accuracy tracking</li>
-                </ul>
-                <button class="oracle-btn">Use Pendulum</button>
-            </div>
-
-            <!-- I Ching -->
-            <div class="divination-card" onclick="openIChing()">
-                <div class="card-icon">☯</div>
-                <h3 class="card-title">I Ching Oracle</h3>
-                <p class="card-description">
-                    Consult the ancient Chinese Book of Changes for profound wisdom and life guidance.
-                </p>
-                <ul class="card-features">
-                    <li>64 hexagrams with interpretations</li>
-                    <li>Traditional coin method</li>
-                    <li>Changing lines guidance</li>
-                    <li>Personal reading journal</li>
-                </ul>
-                <button class="oracle-btn">Consult I Ching</button>
-            </div>
-
-            <!-- Numerology -->
-            <div class="divination-card" onclick="openNumerology()">
-                <div class="card-icon">🔢</div>
-                <h3 class="card-title">Sacred Numerology</h3>
-                <p class="card-description">
-                    Discover the hidden meanings in numbers and their influence on your spiritual path.
-                </p>
-                <ul class="card-features">
-                    <li>Life path number calculation</li>
-                    <li>Name numerology analysis</li>
-                    <li>Daily number guidance</li>
-                    <li>Compatibility readings</li>
-                </ul>
-                <button class="oracle-btn">Explore Numbers</button>
             </div>
         </div>
     </div>

@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crystals & Elements - Divine Temple</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent-gold: #d4af37;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-rose: #f43f5e;
+            --accent-orange: #f59e0b;
+            --accent-indigo: #6366f1;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --shadow-medium: 0 16px 48px rgba(0, 0, 0, 0.2);
+            --shadow-strong: 0 24px 64px rgba(0, 0, 0, 0.3);
+            
+            --fire-gradient: linear-gradient(135deg, #ff6b6b, #ee5a24, #e55039);
+            --water-gradient: linear-gradient(135deg, #74b9ff, #0984e3, #00b894);
+            --earth-gradient: linear-gradient(135deg, #6c5ce7, #a29bfe, #fd79a8);
+            --air-gradient: linear-gradient(135deg, #fdcb6e, #e17055, #fab1a0);
+            --spirit-gradient: linear-gradient(135deg, #fd79a8, #fdcb6e, #e17055);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a1e 0%, #1a1a2e 25%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-crystals {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .crystal-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-gold);
+            border-radius: 2px;
+            opacity: 0.7;
+            animation: float-crystal 12s infinite ease-in-out;
+            transform-origin: center;
+        }
+        
+        @keyframes float-crystal {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+                opacity: 0.7;
+            }
+            25% {
+                transform: translateY(-30px) rotate(90deg) scale(1.2);
+                opacity: 0.9;
+            }
+            50% {
+                transform: translateY(-10px) rotate(180deg) scale(0.8);
+                opacity: 0.6;
+            }
+            75% {
+                transform: translateY(-40px) rotate(270deg) scale(1.1);
+                opacity: 0.8;
+            }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 2.5rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.6s;
+        }
+        
+        .back-btn:hover::before {
+            left: 100%;
+        }
+        
+        .back-btn:hover {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            border-color: var(--accent-gold);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple), var(--accent-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .main-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            flex-wrap: wrap;
+        }
+        
+        .main-tab {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: none;
+            border-radius: 15px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1rem;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .main-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .main-tab.active::before {
+            opacity: 1;
+        }
+        
+        .main-tab.active {
+            color: white;
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .main-tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Crystal Database Styles */
+        .crystal-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .filter-label {
+            color: var(--accent-gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .filter-select, .search-input {
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+        
+        .filter-select:focus, .search-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+        
+        .crystal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .crystal-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .crystal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-gold);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .crystal-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .crystal-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-strong);
+            border-color: var(--accent-gold);
+        }
+        
+        .crystal-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .crystal-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .crystal-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .crystal-properties {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .property-tag {
+            padding: 0.25rem 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .chakra-tag {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+        }
+        
+        .element-tag {
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+        }
+        
+        .healing-tag {
+            background: linear-gradient(135deg, var(--accent-rose), var(--accent-orange));
+        }
+        
+        .crystal-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .crystal-effects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .effect-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .effect-icon {
+            font-size: 1rem;
+            color: var(--accent-gold);
+        }
+        
+        /* Element Work Styles */
+        .element-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .element-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .element-card.fire {
+            border-color: rgba(255, 107, 107, 0.3);
+        }
+        
+        .element-card.water {
+            border-color: rgba(116, 185, 255, 0.3);
+        }
+        
+        .element-card.earth {
+            border-color: rgba(108, 92, 231, 0.3);
+        }
+        
+        .element-card.air {
+            border-color: rgba(253, 203, 110, 0.3);
+        }
+        
+        .element-card.spirit {
+            border-color: rgba(253, 121, 168, 0.3);
+        }
+        
+        .element-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--shadow-strong);
+        }
+        
+        .element-card.fire:hover {
+            background: var(--fire-gradient);
+            border-color: #ff6b6b;
+        }
+        
+        .element-card.water:hover {
+            background: var(--water-gradient);
+            border-color: #74b9ff;
+        }
+        
+        .element-card.earth:hover {
+            background: var(--earth-gradient);
+            border-color: #6c5ce7;
+        }
+        
+        .element-card.air:hover {
+            background: var(--air-gradient);
+            border-color: #fdcb6e;
+        }
+        
+        .element-card.spirit:hover {
+            background: var(--spirit-gradient);
+            border-color: #fd79a8;
+        }
+        
+        .element-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .element-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .element-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .element-work-area {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 2rem;
+            display: none;
+        }
+        
+        .element-work-area.active {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .energy-meter {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+            position: relative;
+        }
+        
+        .energy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-purple));
+            width: 0%;
+            transition: width 2s ease;
+            border-radius: 10px;
+        }
+        
+        .energy-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+        
+        /* Crystal Grid Builder Styles */
+        .grid-builder {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .grid-builder {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+        
+        .grid-tools {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            height: fit-content;
+        }
+        
+        .grid-canvas {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            min-height: 500px;
+            position: relative;
+        }
+        
+        .crystal-palette {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .palette-crystal {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .palette-crystal:hover, .palette-crystal.selected {
+            background: var(--accent-gold);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .palette-crystal-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .palette-crystal-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .grid-canvas-inner {
+            width: 100%;
+            height: 400px;
+            background: 
+                radial-gradient(circle at center, rgba(212, 175, 55, 0.1) 0%, transparent 70%),
+                linear-gradient(45deg, rgba(255, 255, 255, 0.02) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(255, 255, 255, 0.02) 25%, transparent 25%);
+            background-size: 100%, 20px 20px, 20px 20px;
+            border-radius: 15px;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .placed-crystal {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            cursor: move;
+            box-shadow: var(--shadow-medium);
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        
+        .placed-crystal:hover {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+        
+        .grid-templates {
+            margin-top: 2rem;
+        }
+        
+        .template-btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .template-btn:hover {
+            background: var(--accent-purple);
+            border-color: var(--accent-purple);
+        }
+        
+        /* Meditation Guides Styles */
+        .meditation-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .meditation-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .meditation-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-purple));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .meditation-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .meditation-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-strong);
+            border-color: var(--accent-gold);
+        }
+        
+        .meditation-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .meditation-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .meditation-duration {
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .meditation-benefits {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .meditation-player {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 2rem;
+            display: none;
+            text-align: center;
+        }
+        
+        .meditation-player.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .player-header {
+            margin-bottom: 3rem;
+        }
+        
+        .player-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent-gold);
+        }
+        
+        .player-description {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .meditation-timer {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin: 2rem 0;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .meditation-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .control-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .meditation-steps {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: left;
+        }
+        
+        .current-step {
+            font-size: 1.2rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .step-instruction {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-purple));
+            width: 0%;
+            transition: width 1s ease;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .crystal-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .crystal-detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .detail-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 1.5rem;
+        }
+        
+        .detail-section h4 {
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .detail-section p, .detail-section ul {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .detail-section ul {
+            padding-left: 1.5rem;
+        }
+        
+        .detail-section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .main-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .crystal-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .element-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .meditation-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .meditation-timer {
+                font-size: 3rem;
+            }
+            
+            .meditation-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .modal-content {
+                padding: 2rem;
+                margin: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .element-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .meditation-timer {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-crystals"></div>
+    
+    <div class="container">
+        <button class="back-btn" onclick="goBackToDashboard()">
+            <span>←</span>
+            <span>Back to Dashboard</span>
+        </button>
+        
+        <div class="header">
+            <h1>💎 Crystals & Elements</h1>
+            <p class="subtitle">Harness the ancient wisdom of crystals and elemental energies for healing, transformation, and spiritual growth</p>
+        </div>
+        
+        <div class="main-tabs">
+            <button class="main-tab active" onclick="showMainTab('crystal-database')">
+                💎 Crystal Database
+            </button>
+            <button class="main-tab" onclick="showMainTab('elemental-work')">
+                🌟 Elemental Work
+            </button>
+            <button class="main-tab" onclick="showMainTab('crystal-grids')">
+                🔮 Crystal Grids
+            </button>
+            <button class="main-tab" onclick="showMainTab('meditation-guides')">
+                🧘‍♀️ Elemental Meditation
+            </button>
+        </div>
+        
+        <!-- Crystal Database Tab -->
+        <div id="crystal-database" class="tab-content active">
+            <div class="crystal-filters">
+                <div class="filter-group">
+                    <label class="filter-label">Search Crystals</label>
+                    <input type="text" class="search-input" id="crystal-search" placeholder="Search by name or property..." onkeyup="filterCrystals()">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Chakra</label>
+                    <select class="filter-select" id="chakra-filter" onchange="filterCrystals()">
+                        <option value="">All Chakras</option>
+                        <option value="root">Root Chakra</option>
+                        <option value="sacral">Sacral Chakra</option>
+                        <option value="solar">Solar Plexus</option>
+                        <option value="heart">Heart Chakra</option>
+                        <option value="throat">Throat Chakra</option>
+                        <option value="third-eye">Third Eye</option>
+                        <option value="crown">Crown Chakra</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Element</label>
+                    <select class="filter-select" id="element-filter" onchange="filterCrystals()">
+                        <option value="">All Elements</option>
+                        <option value="fire">Fire</option>
+                        <option value="water">Water</option>
+                        <option value="earth">Earth</option>
+                        <option value="air">Air</option>
+                        <option value="spirit">Spirit</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Purpose</label>
+                    <select class="filter-select" id="purpose-filter" onchange="filterCrystals()">
+                        <option value="">All Purposes</option>
+                        <option value="protection">Protection</option>
+                        <option value="healing">Healing</option>
+                        <option value="love">Love & Relationships</option>
+                        <option value="abundance">Abundance</option>
+                        <option value="intuition">Intuition</option>
+                        <option value="grounding">Grounding</option>
+                        <option value="cleansing">Cleansing</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="crystal-grid" id="crystal-grid">
+                <!-- Crystals will be populated here -->
+            </div>
+        </div>
+        
+        <!-- Elemental Work Tab -->
+        <div id="elemental-work" class="tab-content">
+            <div class="element-selector">
+                <div class="element-card fire" onclick="selectElement('fire')">
+                    <div class="element-icon">🔥</div>
+                    <div class="element-name">Fire</div>
+                    <div class="element-description">Passion, transformation, energy, courage, action</div>
+                </div>
+                
+                <div class="element-card water" onclick="selectElement('water')">
+                    <div class="element-icon">🌊</div>
+                    <div class="element-name">Water</div>
+                    <div class="element-description">Emotions, intuition, healing, cleansing, flow</div>
+                </div>
+                
+                <div class="element-card earth" onclick="selectElement('earth')">
+                    <div class="element-icon">🌍</div>
+                    <div class="element-name">Earth</div>
+                    <div class="element-description">Grounding, stability, abundance, growth, fertility</div>
+                </div>
+                
+                <div class="element-card air" onclick="selectElement('air')">
+                    <div class="element-icon">💨</div>
+                    <div class="element-name">Air</div>
+                    <div class="element-description">Communication, intellect, clarity, freedom, inspiration</div>
+                </div>
+                
+                <div class="element-card spirit" onclick="selectElement('spirit')">
+                    <div class="element-icon">✨</div>
+                    <div class="element-name">Spirit</div>
+                    <div class="element-description">Divine connection, unity, transcendence, wisdom</div>
+                </div>
+            </div>
+            
+            <div class="element-work-area" id="element-work-area">
+                <h3 id="selected-element-title">Select an Element to Begin</h3>
+                <div id="element-content">
+                    <!-- Element-specific content will be loaded here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Crystal Grids Tab -->
+        <div id="crystal-grids" class="tab-content">
+            <div class="grid-builder">
+                <div class="grid-tools">
+                    <h3>Crystal Palette</h3>
+                    <div class="crystal-palette" id="crystal-palette">
+                        <!-- Crystal palette will be populated here -->
+                    </div>
+                    
+                    <div class="grid-templates">
+                        <h4>Sacred Templates</h4>
+                        <button class="template-btn" onclick="loadTemplate('flower-of-life')">🌸 Flower of Life</button>
+                        <button class="template-btn" onclick="loadTemplate('merkaba')">⭐ Merkaba Star</button>
+                        <button class="template-btn" onclick="loadTemplate('pentagram')">🔯 Pentagram</button>
+                        <button class="template-btn" onclick="loadTemplate('spiral')">🌀 Sacred Spiral</button>
+                        <button class="template-btn" onclick="loadTemplate('triangle')">🔺 Trinity Triangle</button>
+                        <button class="template-btn" onclick="clearGrid()">🗑️ Clear Grid</button>
+                    </div>
+                    
+                    <div style="margin-top: 2rem;">
+                        <button class="template-btn" onclick="saveGrid()" style="background: var(--accent-green);">💾 Save Grid</button>
+                        <button class="template-btn" onclick="activateGrid()" style="background: var(--accent-gold);">⚡ Activate Grid</button>
+                    </div>
+                </div>
+                
+                <div class="grid-canvas">
+                    <h3>Sacred Grid Canvas</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">Select crystals from the palette and place them on the canvas to create your sacred grid</p>
+                    <div class="grid-canvas-inner" id="grid-canvas" ondrop="dropCrystal(event)" ondragover="allowDrop(event)">
+                        <!-- Placed crystals will appear here -->
+                    </div>
+                    <div id="grid-intention" style="margin-top: 1rem;">
+                        <label style="color: var(--accent-gold); font-weight: 600;">Set Your Intention:</label>
+                        <input type="text" style="width: 100%; margin-top: 0.5rem; padding: 0.75rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white;" placeholder="Focus your intention for this crystal grid...">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Meditation Guides Tab -->
+        <div id="meditation-guides" class="tab-content">
+            <div class="meditation-selector">
+                <div class="meditation-card" onclick="startMeditation('fire-meditation')">
+                    <div class="meditation-icon">🔥</div>
+                    <div class="meditation-title">Fire Element Meditation</div>
+                    <div class="meditation-duration">15 minutes</div>
+                    <div class="meditation-benefits">Ignite passion, courage, and transformative energy</div>
+                </div>
+                
+                <div class="meditation-card" onclick="startMeditation('water-meditation')">
+                    <div class="meditation-icon">🌊</div>
+                    <div class="meditation-title">Water Element Meditation</div>
+                    <div class="meditation-duration">20 minutes</div>
+                    <div class="meditation-benefits">Flow with emotions, enhance intuition, heal deeply</div>
+                </div>
+                
+                <div class="meditation-card" onclick="startMeditation('earth-meditation')">
+                    <div class="meditation-icon">🌍</div>
+                    <div class="meditation-title">Earth Element Meditation</div>
+                    <div class="meditation-duration">25 minutes</div>
+                    <div class="meditation-benefits">Ground your energy, cultivate stability, connect with nature</div>
+                </div>
+                
+                <div class="meditation-card" onclick="startMeditation('air-meditation')">
+                    <div class="meditation-icon">💨</div>
+                    <div class="meditation-title">Air Element Meditation</div>
+                    <div class="meditation-duration">18 minutes</div>
+                    <div class="meditation-benefits">Clarify thoughts, enhance communication, find freedom</div>
+                </div>
+                
+                <div class="meditation-card" onclick="startMeditation('crystal-attunement')">
+                    <div class="meditation-icon">💎</div>
+                    <div class="meditation-title">Crystal Attunement</div>
+                    <div class="meditation-duration">30 minutes</div>
+                    <div class="meditation-benefits">Harmonize with crystal frequencies, amplify healing</div>
+                </div>
+                
+                <div class="meditation-card" onclick="startMeditation('elemental-balance')">
+                    <div class="meditation-icon">⚖️</div>
+                    <div class="meditation-title">Elemental Balance</div>
+                    <div class="meditation-duration">35 minutes</div>
+                    <div class="meditation-benefits">Balance all elements within, achieve harmony</div>
+                </div>
+            </div>
+            
+            <div class="meditation-player" id="meditation-player">
+                <div class="player-header">
+                    <div class="player-title" id="player-title">Meditation Title</div>
+                    <div class="player-description" id="player-description">Meditation description will appear here</div>
+                </div>
+                
+                <div class="meditation-timer" id="meditation-timer">00:00</div>
+                
+                <div class="meditation-controls">
+                    <button class="control-btn" id="play-btn" onclick="playMeditation()">▶️ Start</button>
+                    <button class="control-btn" id="pause-btn" onclick="pauseMeditation()" disabled>⏸️ Pause</button>
+                    <button class="control-btn" onclick="stopMeditation()">⏹️ Stop</button>
+                    <button class="control-btn" onclick="closeMeditationPlayer()">❌ Close</button>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                
+                <div class="meditation-steps" id="meditation-steps">
+                    <div class="current-step" id="current-step">Prepare yourself for meditation</div>
+                    <div class="step-instruction" id="step-instruction">Find a comfortable position and close your eyes. Take three deep breaths to center yourself.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Crystal Detail Modal -->
+    <div id="crystal-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-crystal-name">Crystal Name</h2>
+                <button class="close-btn" onclick="closeCrystalModal()">&times;</button>
+            </div>
+            <div id="crystal-modal-content">
+                <!-- Crystal details will be populated here -->
+            </div>
+        </div>
+    </div>
