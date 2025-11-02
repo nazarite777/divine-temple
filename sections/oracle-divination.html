@@ -290,7 +290,8 @@
 
         <!-- Oracle System Selector -->
         <div class="oracle-selector">
-            <button class="oracle-btn active" onclick="switchOracle('tarot')">🃏 Tarot Cards</button>
+            <button class="oracle-btn active" onclick="switchOracle('oracle')">🔮 Oracle Cards</button>
+            <button class="oracle-btn" onclick="switchOracle('tarot')">🃏 Tarot Cards</button>
             <button class="oracle-btn" onclick="switchOracle('angel')">😇 Angel Cards</button>
             <button class="oracle-btn" onclick="switchOracle('runes')">ᚱ Runes</button>
             <button class="oracle-btn" onclick="switchOracle('crystal')">💎 Crystal Oracle</button>
@@ -298,8 +299,32 @@
             <button class="oracle-btn" onclick="switchOracle('astro')">🎲 Astro Dice</button>
         </div>
 
+        <!-- Oracle Cards -->
+        <div id="oracle-oracle" class="oracle-content active">
+            <div class="card-area">
+                <h2 style="color: #FFD700; margin-bottom: 15px;">🔮 Oracle Cards</h2>
+                <p style="margin-bottom: 20px; text-align: center;">52 prophetic declarations to speak your future into existence</p>
+                
+                <div class="controls">
+                    <button class="control-btn" onclick="shuffleCards('oracle')">🔀 Shuffle Oracle</button>
+                    <button class="control-btn" onclick="drawCards('oracle', 1)">Draw Oracle Card</button>
+                    <button class="control-btn" onclick="resetCards('oracle')">🔄 Reset</button>
+                </div>
+
+                <div class="card-spread" id="oracle-spread">
+                    <!-- Cards will be generated dynamically -->
+                </div>
+
+                <div class="selected-card-info" id="oracle-info">
+                    <div class="card-title" id="oracle-title"></div>
+                    <div class="card-meaning" id="oracle-meaning"></div>
+                    <div class="card-guidance" id="oracle-guidance"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- Tarot Oracle -->
-        <div id="tarot-oracle" class="oracle-content active">
+        <div id="tarot-oracle" class="oracle-content">
             <div class="card-area">
                 <h2 style="color: #FFD700; margin-bottom: 15px;">🃏 Tarot Reading</h2>
                 <p style="margin-bottom: 20px; text-align: center;">Focus on your question and select your cards</p>
@@ -457,7 +482,7 @@
                 <div>Total Readings</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="favorite-oracle">Tarot</div>
+                <div class="stat-value" id="favorite-oracle">Oracle</div>
                 <div>Favorite Oracle</div>
             </div>
             <div class="stat-card">
@@ -481,12 +506,12 @@
     <script>
         class OracleDivinationSystem {
             constructor() {
-                this.currentOracle = 'tarot';
+                this.currentOracle = 'oracle';
                 this.drawnCards = {};
                 this.readingHistory = [];
                 this.stats = {
                     totalReadings: 0,
-                    favoriteOracle: 'tarot',
+                    favoriteOracle: 'oracle',
                     cardsDrawn: 0,
                     accuracy: 100
                 };
@@ -498,6 +523,62 @@
 
             initializeOracleData() {
                 return {
+                    oracle: {
+                        cards: [
+                            { name: "I AM Divine", meaning: "You are a divine being having a human experience", guidance: "Remember your divine nature and act from that truth." },
+                            { name: "I AM Abundant", meaning: "Abundance flows to you naturally", guidance: "Open to receive the infinite abundance of the universe." },
+                            { name: "I AM Protected", meaning: "You are spiritually protected and guided", guidance: "Trust in divine protection and move forward fearlessly." },
+                            { name: "I AM Loved", meaning: "You are unconditionally loved by the universe", guidance: "Feel the love that surrounds you and share it freely." },
+                            { name: "I AM Powerful", meaning: "You have infinite creative power within", guidance: "Use your power wisely to create positive change." },
+                            { name: "I AM Worthy", meaning: "You are worthy of all good things", guidance: "Claim your worthiness and accept your blessings." },
+                            { name: "I AM Guided", meaning: "Divine guidance is always available to you", guidance: "Trust your intuition and inner knowing." },
+                            { name: "I AM Healed", meaning: "Healing energy flows through you", guidance: "Allow healing to take place on all levels." },
+                            { name: "I AM Grateful", meaning: "Gratitude multiplies your blessings", guidance: "Find gratitude in every moment and situation." },
+                            { name: "I AM Free", meaning: "You are free from all limitations", guidance: "Break free from limiting beliefs and soar." },
+                            { name: "I AM Peaceful", meaning: "Inner peace is your natural state", guidance: "Return to peace whenever you feel unbalanced." },
+                            { name: "I AM Joyful", meaning: "Joy is your birthright", guidance: "Choose joy in every moment and spread it to others." },
+                            { name: "I AM Wise", meaning: "Infinite wisdom resides within you", guidance: "Trust your inner wisdom to guide your decisions." },
+                            { name: "I AM Creative", meaning: "You are a powerful creative force", guidance: "Express your creativity and bring beauty into the world." },
+                            { name: "I AM Confident", meaning: "You have unshakeable confidence", guidance: "Stand tall in your truth and abilities." },
+                            { name: "I AM Successful", meaning: "Success is your natural state", guidance: "Define success on your own terms and achieve it." },
+                            { name: "I AM Magnetic", meaning: "You attract what you need effortlessly", guidance: "Align with your desires and watch them manifest." },
+                            { name: "I AM Transformed", meaning: "You are constantly evolving and growing", guidance: "Embrace change as your pathway to greatness." },
+                            { name: "I AM Radiant", meaning: "Your light shines brightly in the world", guidance: "Let your inner light illuminate the path for others." },
+                            { name: "I AM Compassionate", meaning: "You embody divine compassion", guidance: "Extend compassion to yourself and all beings." },
+                            { name: "I AM Courageous", meaning: "You have the courage to face anything", guidance: "Step into your courage and take bold action." },
+                            { name: "I AM Balanced", meaning: "You maintain perfect balance in all things", guidance: "Find harmony between all aspects of your life." },
+                            { name: "I AM Intuitive", meaning: "Your intuition is perfectly aligned", guidance: "Trust your intuitive insights and act upon them." },
+                            { name: "I AM Blessed", meaning: "Blessings flow to you continuously", guidance: "Recognize and appreciate all your blessings." },
+                            { name: "I AM Focused", meaning: "You maintain laser focus on your goals", guidance: "Direct your energy toward what matters most." },
+                            { name: "I AM Resilient", meaning: "You bounce back stronger from challenges", guidance: "Use challenges as stepping stones to growth." },
+                            { name: "I AM Connected", meaning: "You are connected to all life", guidance: "Feel your oneness with all creation." },
+                            { name: "I AM Purposeful", meaning: "You live with clear divine purpose", guidance: "Align your actions with your soul's purpose." },
+                            { name: "I AM Limitless", meaning: "There are no limits to what you can achieve", guidance: "Think beyond boundaries and reach for the stars." },
+                            { name: "I AM Present", meaning: "You live fully in the present moment", guidance: "Find peace and power in the here and now." },
+                            { name: "I AM Truthful", meaning: "You speak and live your truth", guidance: "Honor your truth and express it with love." },
+                            { name: "I AM Forgiving", meaning: "You forgive easily and release the past", guidance: "Forgiveness sets you free to create anew." },
+                            { name: "I AM Prosperous", meaning: "Prosperity flows to you from all directions", guidance: "Open to receive prosperity in all forms." },
+                            { name: "I AM Enlightened", meaning: "You embody enlightened consciousness", guidance: "Share your enlightenment with the world." },
+                            { name: "I AM Sovereign", meaning: "You are the sovereign ruler of your reality", guidance: "Take full responsibility for creating your life." },
+                            { name: "I AM Miraculous", meaning: "Miracles happen through you daily", guidance: "Expect miracles and watch them unfold." },
+                            { name: "I AM Authentic", meaning: "You express your authentic self fearlessly", guidance: "Be true to yourself in all situations." },
+                            { name: "I AM Sacred", meaning: "Everything about you is sacred", guidance: "Honor the sacred nature of your being." },
+                            { name: "I AM Visionary", meaning: "You see beyond the ordinary to the extraordinary", guidance: "Use your vision to create a better world." },
+                            { name: "I AM Unified", meaning: "You are one with divine consciousness", guidance: "Experience the unity that underlies all existence." },
+                            { name: "I AM Regenerative", meaning: "You continuously renew and regenerate", guidance: "Trust in your ability to heal and grow." },
+                            { name: "I AM Luminous", meaning: "You shine with divine light", guidance: "Be a beacon of light for all who encounter you." },
+                            { name: "I AM Expansive", meaning: "Your consciousness expands infinitely", guidance: "Embrace expansion in all areas of your life." },
+                            { name: "I AM Empowered", meaning: "You are fully empowered to create", guidance: "Use your power to serve the highest good." },
+                            { name: "I AM Transcendent", meaning: "You transcend all earthly limitations", guidance: "Rise above challenges with grace and wisdom." },
+                            { name: "I AM Victorious", meaning: "Victory is assured in all your endeavors", guidance: "Claim your victories and celebrate your wins." },
+                            { name: "I AM Eternal", meaning: "Your true essence is eternal and infinite", guidance: "Connect with your eternal nature beyond time." },
+                            { name: "I AM Perfect", meaning: "You are perfect exactly as you are", guidance: "Embrace your perfection while continuing to grow." },
+                            { name: "I AM One", meaning: "You are one with all that is", guidance: "Experience the profound unity of all existence." },
+                            { name: "I AM Love", meaning: "You are love itself in human form", guidance: "Be love, express love, and share love everywhere." },
+                            { name: "I AM Light", meaning: "You are pure divine light", guidance: "Shine your light brightly and illuminate the world." },
+                            { name: "I AM", meaning: "You are the I AM presence itself", guidance: "Rest in the power of your divine I AM presence." }
+                        ]
+                    },
                     tarot: {
                         cards: [
                             { name: "The Fool", meaning: "New beginnings, innocence, spontaneity", guidance: "Take a leap of faith and embrace new adventures." },
