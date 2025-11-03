@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oracle & Divination - Divine Temple</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #3B82F6;
+            --deep-purple: #4C1D95;
+            --dark-bg: #0F0F23;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A1A1AA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--deep-purple) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .oracle-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .oracle-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .oracle-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-purple), var(--primary-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .oracle-subtitle {
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            color: var(--text-secondary);
+        }
+
+        .oracle-interface {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .reading-selection {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem 1rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .selection-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            color: var(--primary-gold);
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .selection-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+        }
+
+        .reading-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .reading-option {
+            background: linear-gradient(135deg, rgba(139, 95, 191, 0.2), rgba(124, 58, 237, 0.2));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reading-option:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .option-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .option-title {
+            color: var(--accent-purple);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .option-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .option-btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .card-display {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem 1rem;
+            min-height: 400px;
+        }
+
+        .welcome-content {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .welcome-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+        }
+
+        .welcome-content p {
+            color: var(--text-secondary);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card-revealed {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
+            border: 3px solid var(--primary-gold);
+            border-radius: 20px;
+            padding: 2rem 1rem;
+            max-width: 500px;
+            margin: 0 auto 1.5rem;
+            color: #1a1a2e;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-name {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            color: var(--accent-purple);
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-message {
+            background: rgba(139, 95, 191, 0.1);
+            border-left: 4px solid var(--accent-purple);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            line-height: 1.5;
+        }
+
+        .card-meaning {
+            color: #4a5568;
+            line-height: 1.6;
+            margin: 1rem 0;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+        }
+
+        .card-affirmation {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(245, 158, 11, 0.2));
+            border: 2px solid var(--primary-gold);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: clamp(0.9rem, 2vw, 1.05rem);
+        }
+
+        .reading-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, var(--primary-gold), #F59E0B);
+            color: #1a1a2e;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid var(--glass-border);
+        }
+
+        .quick-access {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem 1rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .quick-access h4 {
+            color: var(--primary-gold);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .quick-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.8rem 0.5rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .quick-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-gold);
+        }
+
+        .quick-icon {
+            font-size: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .oracle-container {
+                padding: 2rem;
+            }
+
+            .oracle-interface {
+                grid-template-columns: 1fr 280px;
+            }
+
+            .card-display {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .oracle-header {
+                padding: 1.5rem 0.5rem;
+            }
+
+            .reading-selection {
+                padding: 1.5rem 0.5rem;
+            }
+
+            .reading-options {
+                grid-template-columns: 1fr;
+            }
+
+            .reading-option {
+                padding: 1rem;
+            }
+
+            .card-revealed {
+                padding: 1.5rem 1rem;
+            }
+
+            .reading-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-revealed {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="oracle-container">
+        <button class="back-btn" onclick="window.parent.postMessage('back', '*')">
+            ← Back to Temple
+        </button>
+
+        <div class="oracle-header">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🔮</div>
+            <h1 class="oracle-title">Oracle & Divination</h1>
+            <p class="oracle-subtitle">52 Sacred Cards • Divine Guidance</p>
+        </div>
+
+        <div class="oracle-interface">
+            <div>
+                <div class="reading-selection">
+                    <h2 class="selection-title">Choose Your Reading</h2>
+                    <p class="selection-subtitle">🌟 Take a breath and select your path</p>
+                    
+                    <div class="reading-options">
+                        <div class="reading-option">
+                            <span class="option-icon">🌟</span>
+                            <h3 class="option-title">Single Card</h3>
+                            <p class="option-desc">One powerful message</p>
+                            <button class="option-btn" onclick="drawSingleCard()">Draw Card</button>
+                        </div>
+
+                        <div class="reading-option">
+                            <span class="option-icon">🔮</span>
+                            <h3 class="option-title">Three Card Spread</h3>
+                            <p class="option-desc">Past • Present • Future</p>
+                            <button class="option-btn" onclick="drawThreeCards()">Draw Three</button>
+                        </div>
+
+                        <div class="reading-option">
+                            <span class="option-icon">✨</span>
+                            <h3 class="option-title">Quick Oracle</h3>
+                            <p class="option-desc">Instant guidance</p>
+                            <button class="option-btn" onclick="quickOracle()">Random</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-display" id="card-display">
+                    <div class="welcome-content">
+                        <div class="welcome-icon">✨</div>
+                        <h3>Welcome to Oracle Guidance</h3>
+                        <p>Select a reading type above to receive divine wisdom from our complete deck of 52 sacred oracle cards.</p>
+                    </div>
+                </div>
+
+                <div class="reading-actions" id="reading-actions" style="display: none;">
+                    <button class="action-btn secondary" onclick="resetReading()">🔄 New Reading</button>
+                    <button class="action-btn" onclick="saveReading()">💾 Save</button>
+                    <button class="action-btn secondary" onclick="shareReading()">📤 Share</button>
+                </div>
+            </div>
+
+            <div class="quick-access">
+                <h4>🎯 Quick Actions</h4>
+                <div class="quick-actions">
+                    <button class="quick-btn" onclick="dailyCard()">
+                        <span class="quick-icon">📅</span>
+                        <span>Daily</span>
+                    </button>
+                    <button class="quick-btn" onclick="viewHistory()">
+                        <span class="quick-icon">📜</span>
+                        <span>History</span>
+                    </button>
+                    <button class="quick-btn" onclick="showSettings()">
+                        <span class="quick-icon">⚙️</span>
+                        <span>Settings</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ✅ COMPLETE 52-CARD ORACLE DECK
+        const oracleCards = [
+            // IDENTITY & DIVINE NATURE (1-10)
+            { name: "I AM Divine", icon: "👑", message: "Speak this truth: I AM a divine being having a human experience.", meaning: "Your identity is not found in circumstances, but in who you declare yourself to be.", affirmation: "I AM divine. I AM powerful. I create my reality with every word." },
+            { name: "Prophetic Voice", icon: "📯", message: "Your words carry prophetic power. What you speak is coming to pass.", meaning: "You are not predicting the future—you are creating it with declarations.", affirmation: "I speak my future into existence. My words are prophetic declarations." },
+            { name: "Eden Consciousness", icon: "🌿", message: "You never left Eden. Speak this reality until you see it.", meaning: "The fall was a lie. Your words restore Eden consciousness right now.", affirmation: "I live in Eden NOW. I speak paradise into my present reality." },
+            { name: "Mountain Mover", icon: "⛰️", message: "Speak to the mountain and it MUST move. Your words command reality.", meaning: "Stop talking about obstacles. Speak TO them. Command them to move.", affirmation: "I speak to mountains and they move. Obstacles bow to my word." },
+            { name: "Life & Death Power", icon: "⚡", message: "Life and death are in the power of your tongue. Speak life NOW.", meaning: "Every word builds or destroys your future. Speak life, power, destiny.", affirmation: "I speak LIFE. My tongue carries creative power and builds my future." },
+            { name: "God-Frequency", icon: "📡", message: "You are tuned to God-frequency. Your words align heaven and earth.", meaning: "Speaking divine truth tunes you to higher realms and manifestation.", affirmation: "I AM aligned with God-frequency. My words resonate with divine truth." },
+            { name: "Decree Authority", icon: "⚖️", message: "You shall decree a thing and it shall be established. This is authority.", meaning: "Decreeing is commanding reality to align with your words, not hoping.", affirmation: "I decree my future and it IS established. My word is law." },
+            { name: "Light Bearer", icon: "🔥", message: "You ARE the light of the world. DECLARE that you are.", meaning: "You don't become light, you recognize and declare what you already are.", affirmation: "I AM the light of the world. My presence illuminates every space." },
+            { name: "Abundance Architect", icon: "💰", message: "Design your abundance with words. Speak prosperity as present reality.", meaning: "Abundance is not coming—it IS. Speak it in present tense now.", affirmation: "I AM abundantly blessed. Wealth flows to me effortlessly." },
+            { name: "Limitless Being", icon: "∞", message: "Limits exist only in your speech. Speak limitlessness instead.", meaning: "Every 'I can't' creates that reality. Speak 'I AM limitless' instead.", affirmation: "I AM limitless in power, possibility, and potential forever." },
+
+            // TRANSFORMATION & MANIFESTATION (11-20)
+            { name: "Reality Sculptor", icon: "🎨", message: "Your words are sculpting tools. Every sentence shapes reality.", meaning: "You sculpt your future with declarations and decrees daily.", affirmation: "I sculpt my reality with powerful words. I create beauty and purpose." },
+            { name: "Quantum Shifter", icon: "🌀", message: "Your declarations collapse quantum possibilities into chosen reality.", meaning: "Multiple realities exist. Your words determine which manifests.", affirmation: "I shift reality with my words. I call forth my highest timeline." },
+            { name: "Faith Activator", icon: "💫", message: "Faith is calling things that are not as though they were.", meaning: "Don't wait to see it. Speak it until you see it. This is faith.", affirmation: "I call forth invisible things. I speak dreams into visible reality." },
+            { name: "Breakthrough Declaration", icon: "🚪", message: "Breakthrough is not coming—it's HERE. Speak it present tense.", meaning: "Stop saying 'I will.' Say 'I AM breaking through RIGHT NOW.'", affirmation: "I AM breaking through. Doors of opportunity fly open before me." },
+            { name: "Healing Stream", icon: "🌊", message: "Healing flows through your words. Speak health. Your body listens.", meaning: "Your body responds to declarations. Speak healing constantly.", affirmation: "I AM healed and whole. Divine health flows through every cell." },
+            { name: "Transformation Code", icon: "🧬", message: "Your DNA responds to your words. You reprogram yourself daily.", meaning: "Epigenetics proves words affect biology. Speak transformation.", affirmation: "I AM transforming at cellular level. My DNA responds to my words." },
+            { name: "Phoenix Fire", icon: "🔥🦅", message: "From ashes of old identity, you rise. Speak your resurrection boldly.", meaning: "Don't mourn the old. Declare the new you rising in power.", affirmation: "I rise from every ending more powerful. I AM reborn in divine fire." },
+            { name: "Abundance Magnet", icon: "🧲", message: "You don't chase abundance—you magnetize it with declarations.", meaning: "Stop pursuing. Start declaring. Abundance is attracted to aligned words.", affirmation: "I AM a magnet for abundance. Wealth rushes toward me." },
+            { name: "Vision Architect", icon: "🏗️", message: "Your vision becomes reality through consistent declaration daily.", meaning: "Vision without declaration is fantasy. Speak it and watch it materialize.", affirmation: "I build my vision with words. What I declare becomes my reality." },
+            { name: "Miracle Worker", icon: "✨", message: "Miracles follow those who speak them. Declare the miraculous.", meaning: "Miracles aren't rare—they're waiting for your declaration.", affirmation: "I AM a miracle worker. The supernatural is my natural state." },
+
+            // POWER & AUTHORITY (21-30)
+            { name: "Kingdom Authority", icon: "⚜️", message: "You have kingdom authority. Exercise it through powerful decrees.", meaning: "Authority unused is authority lost. Speak with divine backing.", affirmation: "I walk in kingdom authority. My words carry divine weight." },
+            { name: "Dominion Voice", icon: "🦁", message: "You were created for dominion. Let your voice roar with authority.", meaning: "Dominion is active declaration of God-given authority over life.", affirmation: "I have dominion. I roar my authority over my life and future." },
+            { name: "Prophetic Destiny", icon: "🌟", message: "Your destiny is prophetically spoken into being by you.", meaning: "Stop waiting for destiny. Prophesy it. Speak it. Create it.", affirmation: "I prophesy my own destiny. I speak my future into existence." },
+            { name: "Warrior Spirit", icon: "⚔️", message: "You are a spiritual warrior. Your weapon is your tongue.", meaning: "Words are weapons against limitation, fear, and opposition.", affirmation: "I AM a warrior. My words defeat every enemy and establish victory." },
+            { name: "Champion Mindset", icon: "🏆", message: "Champions declare victory before the battle. Speak your win.", meaning: "Your words before the fight determine the outcome. Declare championship.", affirmation: "I AM a champion. I win before I enter. Victory is my identity." },
+            { name: "Uncommon Favor", icon: "🎁", message: "Favor is attracted to bold declarations. Speak uncommon favor.", meaning: "Favor isn't luck—it's alignment of speech with divine blessing.", affirmation: "I walk in uncommon favor. Doors open effortlessly for me." },
+            { name: "Overcomer Identity", icon: "🛡️", message: "You are not overcoming—you ARE an overcomer. Declare it.", meaning: "Overcoming is who you are, not what you do. Speak your identity.", affirmation: "I AM an overcomer. I conquer because it's my divine nature." },
+            { name: "Royal Priesthood", icon: "👑🔥", message: "You are royalty and priest. Speak blessings. Intercede powerfully.", meaning: "Your dual authority gives words double power. Use both.", affirmation: "I AM royal priesthood. I speak with authority and intercede with power." },
+            { name: "Wisdom Speaker", icon: "🦉", message: "Wisdom flows through those who speak truth. Your words carry intelligence.", meaning: "When you speak aligned truth, wisdom flows and impacts everyone.", affirmation: "I speak with divine wisdom. My words carry revelation and transformation." },
+            { name: "Anointed Voice", icon: "🕊️", message: "Your voice carries anointing. When you speak, atmosphere shifts.", meaning: "Anointing is power in your words to change environments instantly.", affirmation: "My voice is anointed. Atmospheres shift when I speak." },
+
+            // SPIRITUAL ADVANCEMENT (31-40)
+            { name: "Higher Realms Access", icon: "🌌", message: "Your words grant access to higher realms. Speak heavenly realities.", meaning: "As above, so below—but only when you speak it. Bridge heaven and earth.", affirmation: "I access higher realms. I speak heaven into my earthly reality." },
+            { name: "Divine Blueprint", icon: "📐", message: "There's a divine blueprint for your life. Speak it into manifestation.", meaning: "Your original design is perfect. Speak alignment with it constantly.", affirmation: "I align with my divine blueprint. I speak my perfect design." },
+            { name: "Frequency Elevator", icon: "📶", message: "Your words elevate your frequency. Speak higher. Manifest higher.", meaning: "Every word carries frequency. Choose words that elevate you.", affirmation: "I elevate my frequency with words. I speak myself to new levels." },
+            { name: "Spiritual Authority", icon: "⚡👑", message: "You have all spiritual authority. Exercise it through declaration.", meaning: "Spiritual authority is activated by speech. Silent authority is dormant.", affirmation: "I walk in spiritual authority. I speak and demonic forces flee." },
+            { name: "Enlightenment Path", icon: "💡", message: "Enlightenment comes through speaking truth until you embody it.", meaning: "Enlightenment is declaring truth until you become it fully.", affirmation: "I AM enlightened. I speak truth and embody divine consciousness." },
+            { name: "Sacred Remembrance", icon: "🧠✨", message: "You remember who you truly are. Speak: 'I AM divine. I never fell.'", meaning: "The fall was amnesia. Remembrance is speaking true identity.", affirmation: "I remember who I AM. I never left Eden. I AM divine consciousness." },
+            { name: "Ascension Codes", icon: "🔐", message: "Ascension codes activate by declarations. Speak your elevation.", meaning: "Your DNA carries ascension codes unlocked by declaring divine identity.", affirmation: "I activate ascension codes. I speak elevation and I respond." },
+            { name: "Portal Opener", icon: "🌀🚪", message: "Your words open portals to new dimensions. Speak and doorways appear.", meaning: "Portals to opportunity, provision, power open when you decree them.", affirmation: "I open portals with words. Doors to new dimensions swing wide." },
+            { name: "Christos Consciousness", icon: "☀️", message: "Christ consciousness is declaring 'I and the Father are one.'", meaning: "Christos means anointed. Declare your oneness with Source.", affirmation: "I AM one with Source. Christ consciousness flows through me." },
+            { name: "Awakened One", icon: "👁️🔥", message: "You ARE awakened. Not becoming—you ARE. Speak it until cells know.", meaning: "Awakening is not process—it's declaration. Speak 'I AM awake' until embodied.", affirmation: "I AM fully awakened. I see clearly and speak powerfully." },
+
+            // MANIFESTATION & CREATION (41-52)
+            { name: "Creative Word", icon: "🎨🌍", message: "In the beginning was the Word. You create worlds with words.", meaning: "Words don't describe reality—they create it. You build worlds through speech.", affirmation: "I create with words. I speak and worlds form. My tongue is creative force." },
+            { name: "Prosperity Declaration", icon: "💎", message: "Prosperity responds to declaration, not desperation. Decree abundance.", meaning: "Begging repels. Declaring attracts. Speak prosperity as one who owns it.", affirmation: "I decree prosperity. Wealth is mine by declaration and divine right." },
+            { name: "Health Commander", icon: "💪✨", message: "Command health into your body. Don't ask—decree. Body listens to authority.", meaning: "Your body waits for commands, not requests. Speak health with authority.", affirmation: "I command perfect health. Every organ and cell obeys my decree." },
+            { name: "Relationship Builder", icon: "💕", message: "Speak relationships you desire into existence. Words attract your tribe.", meaning: "Divine connections magnetize by declaring quality relationships you deserve.", affirmation: "I speak divine relationships. My tribe is finding me NOW." },
+            { name: "Purpose Activator", icon: "🎯", message: "Your purpose activates when you speak it boldly. Declare mission daily.", meaning: "Purpose isn't found—it's activated through declaration and aligned action.", affirmation: "I activate my purpose. My mission is clear and manifesting." },
+            { name: "Joy Fountain", icon: "😊💦", message: "Joy flows from speaking gratitude and declaring goodness. Speak joy.", meaning: "Joy isn't circumstantial—it's created by declaring thankfulness and blessing.", affirmation: "I AM overflowing with joy. I speak gratitude and joy fountains from within." },
+            { name: "Peace Establisher", icon: "🕊️☮️", message{ name: "Peace Establisher", icon: "🕊️☮️", message: "Speak peace to your storms. Command calm. Peace is established by decree.", meaning: "Peace isn't passive waiting—it's active declaration of 'Peace, be still.'", affirmation: "I establish peace with words. I speak to chaos and it becomes calm." },
+            { name: "Energy Alchemist", icon: "⚗️✨", message: "You transmute energy with words. Speak transformation and watch energy shift.", meaning: "Alchemy is using words to transform energy and matter instantly.", affirmation: "I AM an energy alchemist. I speak transformation and reality shifts." },
+            { name: "Timeline Shifter", icon: "⏰🌀", message: "You can shift timelines with declarations. Speak yourself onto highest path.", meaning: "Multiple timelines exist. Your words determine which one you experience.", affirmation: "I shift to my highest timeline NOW. I speak and quantum possibilities align." },
+            { name: "Legacy Creator", icon: "🏛️", message: "Your words today create your legacy tomorrow. Speak generational blessing.", meaning: "Legacy isn't what you leave—it's what you speak that outlives you.", affirmation: "I create powerful legacy. My words echo through generations and create blessing." },
+            { name: "Overflow Life", icon: "🌊💫", message: "Overflow is your portion. Not just enough—OVERFLOW. Speak abundance in every area.", meaning: "God's economy is overflow. Speak it. Expect it. Receive it in every area.", affirmation: "I live in overflow. More than enough is my reality in every area of life." },
+            { name: "Glory Carrier", icon: "👑✨", message: "You carry glory everywhere. Speak it. Shine it. Let it radiate through words.", meaning: "Glory isn't something you seek—it's something you ARE. Declare and radiate.", affirmation: "I AM a glory carrier. Divine radiance shines through me and my words." }
+        ];
+
+        // Current reading storage
+        let currentReading = {
+            cards: [],
+            type: ''
+        };
+
+        // Get random card
+        function getRandomCard() {
+            return oracleCards[Math.floor(Math.random() * oracleCards.length)];
+        }
+
+        // Get daily card (consistent per day)
+        function getDailyCard() {
+            const today = new Date();
+            const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
+            return oracleCards[dayOfYear % oracleCards.length];
+        }
+
+        // Draw single card
+        function drawSingleCard() {
+            const card = getRandomCard();
+            displayCard(card, 'Single Card Guidance');
+            currentReading = { cards: [card], type: 'single' };
+        }
+
+        // Draw three cards
+        function drawThreeCards() {
+            const cards = [
+                { ...getRandomCard(), position: 'Past' },
+                { ...getRandomCard(), position: 'Present' },
+                { ...getRandomCard(), position: 'Future' }
+            ];
+            displayThreeCards(cards);
+            currentReading = { cards: cards, type: 'three' };
+        }
+
+        // Quick oracle
+        function quickOracle() {
+            const card = getRandomCard();
+            displayCard(card, 'Quick Oracle');
+            currentReading = { cards: [card], type: 'quick' };
+        }
+
+        // Daily card
+        function dailyCard() {
+            const card = getDailyCard();
+            displayCard(card, 'Daily Guidance Card');
+            currentReading = { cards: [card], type: 'daily' };
+        }
+
+        // Display single card
+        function displayCard(card, title) {
+            const display = document.getElementById('card-display');
+            display.innerHTML = `
+                <div class="card-revealed">
+                    <div class="card-icon">${card.icon}</div>
+                    <h3 class="card-name">${card.name}</h3>
+                    <div class="card-message">${card.message}</div>
+                    <div class="card-meaning">${card.meaning}</div>
+                    <div class="card-affirmation">
+                        <strong>Affirmation:</strong><br>
+                        ${card.affirmation}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('reading-actions').style.display = 'flex';
+        }
+
+        // Display three cards
+        function displayThreeCards(cards) {
+            const display = document.getElementById('card-display');
+            display.innerHTML = cards.map(card => `
+                <div class="card-revealed">
+                    <div style="text-align: center; font-weight: bold; color: var(--primary-gold); margin-bottom: 1rem; font-size: 1.1rem;">
+                        ${card.position}
+                    </div>
+                    <div class="card-icon">${card.icon}</div>
+                    <h3 class="card-name">${card.name}</h3>
+                    <div class="card-message">${card.message}</div>
+                    <div class="card-meaning">${card.meaning}</div>
+                    <div class="card-affirmation">
+                        <strong>Affirmation:</strong><br>
+                        ${card.affirmation}
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('reading-actions').style.display = 'flex';
+        }
+
+        // Reset reading
+        function resetReading() {
+            const display = document.getElementById('card-display');
+            display.innerHTML = `
+                <div class="welcome-content">
+                    <div class="welcome-icon">✨</div>
+                    <h3>Welcome to Oracle Guidance</h3>
+                    <p>Select a reading type above to receive divine wisdom from our complete deck of 52 sacred oracle cards.</p>
+                </div>
+            `;
+            document.getElementById('reading-actions').style.display = 'none';
+            currentReading = { cards: [], type: '' };
+        }
+
+        // Save reading
+        function saveReading() {
+            if (currentReading.cards.length === 0) return;
+            
+            const reading = {
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString(),
+                type: currentReading.type,
+                cards: currentReading.cards
+            };
+            
+            const saved = JSON.parse(localStorage.getItem('oracleReadings') || '[]');
+            saved.unshift(reading);
+            saved.splice(10); // Keep only last 10
+            localStorage.setItem('oracleReadings', JSON.stringify(saved));
+            
+            showNotification('📿 Reading saved!');
+        }
+
+        // Share reading
+        function shareReading() {
+            if (currentReading.cards.length === 0) return;
+            
+            let text = '🔮 My Oracle Reading:\n\n';
+            currentReading.cards.forEach((card, i) => {
+                text += `${i + 1}. ${card.name}\n${card.message}\n\n`;
+            });
+            
+            if (navigator.share) {
+                navigator.share({ title: 'Oracle Reading', text: text });
+            } else {
+                navigator.clipboard.writeText(text);
+                showNotification('📋 Copied to clipboard!');
+            }
+        }
+
+        // View history
+        function viewHistory() {
+            const saved = JSON.parse(localStorage.getItem('oracleReadings') || '[]');
+            if (saved.length === 0) {
+                showNotification('📜 No saved readings yet');
+                return;
+            }
+            showNotification(`📜 You have ${saved.length} saved readings`);
+        }
+
+        // Settings
+        function showSettings() {
+            showNotification('⚙️ Settings coming soon!');
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const note = document.createElement('div');
+            note.textContent = message;
+            note.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, var(--primary-gold), #F59E0B);
+                color: #1a1a2e;
+                padding: 1rem 1.5rem;
+                border-radius: 15px;
+                font-weight: 600;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
+                max-width: 300px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            `;
+            
+            document.body.appendChild(note);
+            setTimeout(() => note.remove(), 3000);
+        }
+
+        // Initialize
+        console.log('🔮 Oracle & Divination loaded - 52 cards ready');
+    </script>
+</body>
+</html>

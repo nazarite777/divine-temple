@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angel Messages - Divine Temple</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --accent-purple: #8B5CF6;
+            --deep-purple: #4C1D95;
+            --dark-bg: #0F0F23;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A1A1AA;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--deep-purple) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 1rem; }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            text-decoration: none;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            background: linear-gradient(135deg, var(--accent-purple), var(--primary-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .draw-btn {
+            background: linear-gradient(135deg, #ec4899, #a855f7);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 2rem auto;
+            display: block;
+        }
+
+        .angel-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
+            border: 3px solid var(--primary-gold);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            margin: 2rem auto;
+            color: #1a1a2e;
+            text-align: center;
+            animation: angelReveal 0.8s ease-out;
+        }
+
+        @keyframes angelReveal {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="oracle-divination.html" class="back-btn">← Back to Oracle Hub</a>
+
+        <div class="header">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">👼</div>
+            <h1 class="title">Angel Messages</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">12 Archangels • Divine Guidance • Heavenly Messages</p>
+        </div>
+
+        <div style="text-align: center;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--primary-gold); margin-bottom: 1rem;">Receive Angel Guidance</h2>
+            <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 2rem;">Your guardian angels are ready to deliver a message. Open your heart and receive divine guidance.</p>
+            <button class="draw-btn" onclick="drawAngel()">👼 Draw Angel Card</button>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const angels = [
+            { name: "Archangel Michael", icon: "⚔️", message: "You are protected and safe. Have courage to follow your divine path. I stand guard around you." },
+            { name: "Archangel Gabriel", icon: "📯", message: "Important news is coming. Trust your intuitive messages. I help you communicate your truth." },
+            { name: "Archangel Raphael", icon: "🌿", message: "Healing is occurring on all levels. Trust the process. I bring divine healing energy." },
+            { name: "Archangel Uriel", icon: "💡", message: "Illumination comes through wisdom. Seek understanding. I light your path forward." },
+            { name: "Guardian Angel", icon: "👼", message: "You are never alone. Ask for help when you need it. I am always by your side." },
+            { name: "Angel of Love", icon: "💖", message: "Open your heart to give and receive love freely. I help you embody divine love." },
+            { name: "Angel of Peace", icon: "🕊️", message: "Find peace within yourself. Let go of worry and fear. I bring calm to your spirit." },
+            { name: "Angel of Abundance", icon: "🌟", message: "You are worthy of all good things. Abundance flows to you. I open doors of prosperity." },
+            { name: "Angel of Creativity", icon: "🎨", message: "Express your unique gifts. Your creativity blesses the world. I inspire your creative flow." },
+            { name: "Angel of Wisdom", icon: "🦉", message: "Trust your inner knowing. The answers are within you. I help you access divine wisdom." },
+            { name: "Angel of Healing", icon: "✨", message: "Send healing light to yourself and others. You are a healer. I amplify your healing gifts." },
+            { name: "Angel of Joy", icon: "😇", message: "Choose joy in every moment. Your happiness matters. I bring lightness to your heart." }
+        ];
+
+        function drawAngel() {
+            const angel = angels[Math.floor(Math.random() * angels.length)];
+            document.getElementById('result').innerHTML = `
+                <div class="angel-card">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">${angel.icon}</div>
+                    <h3 style="color: var(--accent-purple); font-size: 1.8rem; margin-bottom: 1rem;">${angel.name}
+"${angel.message}"
+
+
+🔄 Draw Another
+
+`;
+}
+console.log('👼 Angel Messages loaded - 12 angels ready');
+</script>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I-Ching Oracle - Divine Temple</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --accent-purple: #8B5CF6;
+            --deep-purple: #4C1D95;
+            --dark-bg: #0F0F23;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A1A1AA;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--deep-purple) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 1rem; }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            text-decoration: none;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            background: linear-gradient(135deg, var(--accent-purple), var(--primary-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .cast-btn {
+            background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 2rem auto;
+            display: block;
+        }
+
+        .hexagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 2rem auto;
+            width: fit-content;
+        }
+
+        .hexagram-line {
+            width: 80px;
+            height: 10px;
+            background: var(--primary-gold);
+            border-radius: 5px;
+        }
+
+        .hexagram-line.broken {
+            width: 30px;
+            margin: 0 10px;
+        }
+
+        .reading {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
+            border: 3px solid var(--primary-gold);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 700px;
+            margin: 2rem auto;
+            color: #1a1a2e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="oracle-divination.html" class="back-btn">← Back to Oracle Hub</a>
+
+        <div class="header">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">☯️</div>
+            <h1 class="title">I-Ching Oracle</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">64 Hexagrams • Ancient Book of Changes</p>
+        </div>
+
+        <div style="text-align: center;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--primary-gold); margin-bottom: 1rem;">Consult the Oracle</h2>
+            <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 2rem; line-height: 1.6;">Focus on your question. The I-Ching will reveal the wisdom of the Book of Changes.</p>
+            <button class="cast-btn" onclick="castHexagram()">☯️ Cast Hexagram</button>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const hexagrams = [
+            { number: 1, name: "The Creative", meaning: "Original creative force, leadership, strength. Pure yang energy manifesting." },
+            { number: 2, name: "The Receptive", meaning: "Yielding, nurturing, supporting. Pure yin energy receiving and containing." },
+            { number: 11, name: "Peace", meaning: "Harmony, good fortune, prosperity. Heaven and earth in perfect balance." },
+            { number: 12, name: "Standstill", meaning: "Stagnation, obstacles, patience needed. Temporary blockage before movement." },
+            { number: 25, name: "Innocence", meaning: "Natural action, spontaneity, authenticity. Acting from pure heart." },
+            { number: 44, name: "Coming to Meet", meaning: "Temptation, careful decision-making. Consider consequences before acting." },
+            { number: 19, name: "Approach", meaning: "Advancement, progress, leadership. Favorable time for forward movement." },
+            { number: 20, name: "Contemplation", meaning: "Observation, understanding, wisdom. Step back and see the bigger picture." }
+        ];
+
+        function castHexagram() {
+            const hex = hexagrams[Math.floor(Math.random() * hexagrams.length)];
+            const lines = Array.from({length: 6}, () => Math.random() > 0.5);
+            
+            document.getElementById('result').innerHTML = `
+                <div class="hexagram">
+                    ${lines.map(solid => `<div class="hexagram-line ${solid ? '' : 'broken'}"></div>`).join('')}
+                </div>
+                <div class="reading">
+                    <h3 style="color: var(--accent-purple); font-size: 1.8rem; margin-bottom: 1rem; text-align: center;">
+                        Hexagram ${hex.number}: ${hex.name}
+                    </h3>
+                    <p style="line-height: 1.8; font-size: 1.1rem;">${hex.meaning}</p>
+                </div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="cast-btn" style="background: rgba(255, 255, 255, 0.1);" onclick="castHexagram()">🔄 Cast Again</button>
+                </div>
+            `;
+        }
+
+        console.log('☯️ I-Ching Oracle loaded');
+    </script>
+</body>
+</html>

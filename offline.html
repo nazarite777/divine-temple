@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divine Temple - Offline Sacred Space</title>
+    <style>
+        :root {
+            --primary-bg: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            --accent-gold: #d4af37;
+            --accent-purple: #8b5fbf;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .offline-container {
+            text-align: center;
+            max-width: 600px;
+            padding: 3rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            border-radius: 25px;
+            position: relative;
+            animation: gentleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes gentleGlow {
+            from { box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2); }
+            to { box-shadow: 0 30px 60px rgba(212, 175, 55, 0.4); }
+        }
+
+        .temple-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            animation: templeFloat 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.6));
+        }
+
+        @keyframes templeFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .offline-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleShimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes titleShimmer {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+
+        .offline-message {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .offline-features {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .offline-features h3 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            text-align: left;
+        }
+
+        .feature-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list li::before {
+            content: '✨';
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .reconnect-btn {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 1rem;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .reconnect-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.5);
+        }
+
+        .spiritual-quote {
+            font-style: italic;
+            font-size: 1.1rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(139, 95, 191, 0.1);
+            border-left: 4px solid var(--accent-purple);
+            border-radius: 0 15px 15px 0;
+            position: relative;
+        }
+
+        .spiritual-quote::before {
+            content: '"';
+            font-size: 3rem;
+            color: var(--accent-purple);
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            opacity: 0.5;
+        }
+
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: rgba(220, 38, 127, 0.2);
+            border: 1px solid rgba(220, 38, 127, 0.4);
+            border-radius: 25px;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #dc2626;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .floating-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            animation: particleFloat 8s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .practice-reminder {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .practice-reminder h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .offline-meditation {
+            background: rgba(139, 95, 191, 0.1);
+            border: 1px solid rgba(139, 95, 191, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .offline-meditation:hover {
+            background: rgba(139, 95, 191, 0.2);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .offline-container {
+                margin: 1rem;
+                padding: 2rem;
+            }
+            
+            .offline-title {
+                font-size: 2rem;
+            }
+            
+            .offline-message {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles">
+        <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 20%; animation-delay: 1s;"></div>
+        <div class="particle" style="left: 30%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 40%; animation-delay: 3s;"></div>
+        <div class="particle" style="left: 50%; animation-delay: 4s;"></div>
+        <div class="particle" style="left: 60%; animation-delay: 5s;"></div>
+        <div class="particle" style="left: 70%; animation-delay: 6s;"></div>
+        <div class="particle" style="left: 80%; animation-delay: 7s;"></div>
+        <div class="particle" style="left: 90%; animation-delay: 8s;"></div>
+    </div>
+
+    <div class="offline-container">
+        <div class="temple-icon">🏛️</div>
+        
+        <div class="connection-status">
+            <div class="status-dot"></div>
+            Sacred Connection Temporarily Unavailable
+        </div>
+        
+        <h1 class="offline-title">Sacred Offline Space</h1>
+        
+        <p class="offline-message">
+            Welcome to your divine sanctuary. Even without an internet connection, 
+            the sacred wisdom within you remains accessible. Continue your spiritual 
+            practice in this blessed offline space.
+        </p>
+
+        <div class="offline-features">
+            <h3>Available Sacred Practices</h3>
+            <ul class="feature-list">
+                <li>Continue meditation with breath awareness</li>
+                <li>Reflect on your spiritual journey</li>
+                <li>Practice mindfulness and presence</li>
+                <li>Contemplate divine wisdom</li>
+                <li>Set intentions for your growth</li>
+                <li>Express gratitude for your blessings</li>
+            </ul>
+        </div>
+
+        <div class="practice-reminder">
+            <h4>🧘 Offline Meditation Practice</h4>
+            <div class="offline-meditation" onclick="startOfflineMeditation()">
+                <strong>5-Minute Breathing Meditation</strong><br>
+                <small>Close your eyes and focus on your breath for inner peace</small>
+            </div>
+            <div class="offline-meditation" onclick="startOfflineReflection()">
+                <strong>Gratitude Reflection</strong><br>
+                <small>Count your blessings and appreciate this moment</small>
+            </div>
+            <div class="offline-meditation" onclick="startOfflineIntention()">
+                <strong>Intention Setting</strong><br>
+                <small>Clarify your spiritual goals and aspirations</small>
+            </div>
+        </div>
+
+        <div class="spiritual-quote">
+            Even in moments of disconnection, the divine light within you continues to shine. 
+            Your spiritual journey is not dependent on external connections, 
+            but on the eternal connection to your true self.
+        </div>
+
+        <button class="reconnect-btn" onclick="checkConnection()">
+            🔄 Reconnect to the Divine Temple
+        </button>
+        
+        <button class="reconnect-btn" onclick="window.location.href='/members-new.html'">
+            🏠 Return to Sacred Portal
+        </button>
+    </div>
+
+    <script>
+        // Check for connection and update status
+        function checkConnection() {
+            if (navigator.onLine) {
+                window.location.reload();
+            } else {
+                showOfflineMessage();
+            }
+        }
+
+        function showOfflineMessage() {
+            const btn = document.querySelector('.reconnect-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '🌟 Still in Sacred Offline Mode';
+            btn.style.background = 'rgba(139, 95, 191, 0.8)';
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '';
+            }, 2000);
+        }
+
+        // Offline meditation practices
+        function startOfflineMeditation() {
+            alert('🧘 Take 5 deep breaths:\n\n1. Inhale slowly for 4 counts\n2. Hold for 4 counts\n3. Exhale for 6 counts\n4. Repeat and find your inner peace\n\n✨ Your divine nature is always present');
+        }
+
+        function startOfflineReflection() {
+            const gratitudes = [
+                'I am grateful for this moment of stillness',
+                'I appreciate the breath that flows through me',
+                'I am thankful for my spiritual journey',
+                'I cherish the divine wisdom within me',
+                'I am blessed to have this time for reflection'
+            ];
+            
+            const randomGratitude = gratitudes[Math.floor(Math.random() * gratitudes.length)];
+            alert(`🙏 Gratitude Practice:\n\n"${randomGratitude}"\n\nTake a moment to truly feel this appreciation in your heart. What else are you grateful for today?`);
+        }
+
+        function startOfflineIntention() {
+            alert('🌟 Intention Setting:\n\n1. Close your eyes and breathe deeply\n2. Ask yourself: "What does my soul most need today?"\n3. Listen to your inner wisdom\n4. Set a clear, loving intention\n5. Trust that the universe supports your growth\n\n✨ Your intentions have divine power');
+        }
+
+        // Listen for connection changes
+        window.addEventListener('online', () => {
+            window.location.reload();
+        });
+
+        window.addEventListener('offline', () => {
+            console.log('🏛️ Divine Temple entering sacred offline mode');
+        });
+
+        // Auto-check connection every 30 seconds
+        setInterval(checkConnection, 30000);
+
+        // Initialize offline experience
+        console.log('🏛️ Divine Temple Offline Sacred Space initialized ✨');
+    </script>
+</body>
+</html>

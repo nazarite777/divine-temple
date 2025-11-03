@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Test - Divine Temple</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0A0E27 0%, #1a1f3a 50%, #0A0E27 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #F59E0B;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #F59E0B, #8B5CF6);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .message {
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86EFAC;
+        }
+        .error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #FCA5A5;
+        }
+        .credentials {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #F59E0B;">🧪 Login Test</h1>
+        
+        <div class="credentials">
+            <h3 style="color: #F59E0B;">Test Credentials:</h3>
+            <p><strong>Username:</strong> TestUser</p>
+            <p><strong>Password:</strong> test123</p>
+            <hr style="border-color: rgba(255,255,255,0.2);">
+            <p><strong>Username:</strong> DemoMember</p>
+            <p><strong>Password:</strong> demo123</p>
+        </div>
+        
+        <form id="testForm">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit">🔮 Test Login</button>
+        </form>
+        
+        <div id="message"></div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="members-new.html" style="color: #8B5CF6; text-decoration: none;">
+                ← Back to Main Portal
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const messageDiv = document.getElementById('message');
+            
+            let isValid = false;
+            let memberType = '';
+            
+            if (username === 'TestUser' && password === 'test123') {
+                isValid = true;
+                memberType = 'Test User';
+            } else if (username === 'DemoMember' && password === 'demo123') {
+                isValid = true;
+                memberType = 'Demo User';
+            } else if (username === 'nazir23' && password === 'Nazir777') {
+                isValid = true;
+                memberType = 'Founding Member';
+            }
+            
+            if (isValid) {
+                messageDiv.innerHTML = `<div class="message success">
+                    ✅ SUCCESS! Login valid for ${memberType}
+                    <br><br>
+                    <a href="members-new.html" style="color: #86EFAC; text-decoration: underline;">
+                        Now try the main portal →
+                    </a>
+                </div>`;
+            } else {
+                messageDiv.innerHTML = `<div class="message error">
+                    ❌ FAILED! Invalid credentials
+                    <br>Please use the test credentials provided above
+                </div>`;
+            }
+        });
+    </script>
+</body>
+</html>

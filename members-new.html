@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divine Temple - Sacred Members Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Performance Optimized CSS -->
+    <link rel="stylesheet" href="css/performance-optimized.css">
+    
+    <!-- Performance Optimization Script -->
+    <script src="js/performance-optimizer.js" defer></script>
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #3B82F6;
+            --accent-gold: #F59E0B;
+            --deep-purple: #4C1D95;
+            --dark-bg: #0F0F23;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A1A1AA;
+            --success: #10B981;
+            --error: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--deep-purple) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(600px at 20% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(600px at 80% 70%, rgba(245, 158, 11, 0.15) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundFloat {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, -30px); }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(26, 31, 58, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 0.9rem;
+            color: var(--accent-gold);
+            margin-top: 0.25rem;
+        }
+
+        .member-badge {
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid var(--accent-purple);
+            border-radius: 15px;
+            padding: 0.75rem 1.25rem;
+        }
+
+        .member-name {
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--error);
+            color: var(--error);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Auth Overlay */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .auth-overlay.hidden {
+            display: none !important;
+        }
+
+        .auth-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            border: 2px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold), var(--accent-blue));
+        }
+
+        .divine-symbol {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .auth-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--accent-gold), #FBBF24);
+            color: var(--dark-bg);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6);
+        }
+
+        .auth-message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        .auth-message.show {
+            display: block;
+        }
+
+        .auth-message.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #FCA5A5;
+        }
+
+        .auth-message.success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86EFAC;
+        }
+
+        /* Dashboard */
+        #dashboard {
+            display: none !important;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        #dashboard.active {
+            display: block !important;
+            opacity: 1;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-text {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+
+        /* Navigation Grid */
+        .navigation-section {
+            max-width: 1400px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            contain: layout style paint;
+        }
+
+        .nav-card {
+            background: linear-gradient(135deg, rgba(26, 31, 58, 0.9), rgba(15, 52, 96, 0.8));
+            border: 2px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 2.5rem;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            will-change: transform;
+            contain: layout style paint;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-10px) translateZ(0);
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 40px rgba(245, 158, 11, 0.3);
+        }
+
+        .nav-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .nav-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .nav-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .feature-tag {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid var(--accent-purple);
+            border-radius: 12px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.75rem;
+            color: var(--accent-purple);
+            font-weight: 500;
+        }
+
+        /* Section Container */
+        #section-container {
+            display: none;
+            min-height: 100vh;
+            background: var(--dark-bg);
+        }
+
+        #section-container.active {
+            display: block;
+        }
+
+        .section-header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .section-frame {
+            width: 100%;
+            height: calc(100vh - 80px);
+            border: none;
+            background: var(--dark-bg);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(212, 175, 55, 0.3);
+            border-top: 4px solid var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        .loading-text {
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 3rem 1rem;
+            margin-top: 4rem;
+            background: rgba(26, 31, 58, 0.8);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+        }
+
+        .footer-link {
+            color: var(--accent-gold);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--primary-gold);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .section-header {
+                padding: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .section-frame {
+                height: calc(100vh - 120px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Overlay -->
+    <div id="auth-overlay" class="auth-overlay">
+        <div class="auth-container">
+            <div class="divine-symbol">🏛️</div>
+            <div class="auth-header">
+                <h2>Divine Temple Access</h2>
+                <p class="auth-subtitle">Enter Your Sacred Credentials</p>
+            </div>
+
+            <form id="auth-form" onsubmit="authenticateUser(event)">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="username" required placeholder="Enter username" autocomplete="username">
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" required placeholder="Enter password" autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="auth-btn">🔮 Enter Divine Temple</button>
+
+                <div id="auth-error" class="auth-message error"></div>
+                <div id="auth-success" class="auth-message success"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div>
+                <h1 class="logo">🏛️ Divine Temple</h1>
+                <p class="tagline">Sacred Members Portal</p>
+            </div>
+            <div class="member-badge" id="member-badge">
+                <div class="member-name" id="member-display"></div>
+                <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard">
+        <!-- Welcome -->
+        <section class="welcome-section">
+            <h2 class="welcome-title">Welcome to Your Divine Temple</h2>
+            <p class="welcome-text">
+                Access 12 sacred pathways designed to guide your spiritual journey.
+                Each section contains divine tools and practices for your transformation.
+            </p>
+        </section>
+
+        <!-- Navigation -->
+        <section class="navigation-section">
+            <h3 class="section-title">Choose Your Sacred Path</h3>
+            <div class="nav-grid">
+                <!-- 1. Oracle & Divination -->
+                <div class="nav-card" onclick="showSection('oracle-divination')">
+                    <span class="nav-icon">🔮</span>
+                    <h4 class="nav-title">Oracle & Divination</h4>
+                    <p class="nav-description">
+                        Divine guidance through Oracle Cards, Tarot, Runes, I-Ching, Angel Messages, Crystal Wisdom, and Astro Dice.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">52 Oracle Cards</span>
+                        <span class="feature-tag">22 Tarot Cards</span>
+                        <span class="feature-tag">24 Runes</span>
+                        <span class="feature-tag">7 Systems</span>
+                    </div>
+                </div>
+
+                <!-- 2. Spiritual Practices -->
+                <div class="nav-card" onclick="showSection('spiritual-practices')">
+                    <span class="nav-icon">🧘</span>
+                    <h4 class="nav-title">Spiritual Practices</h4>
+                    <p class="nav-description">
+                        Daily meditation, breathwork, affirmations, prayer, journaling, and gratitude practices.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Meditation</span>
+                        <span class="feature-tag">Breathwork</span>
+                        <span class="feature-tag">Prayer</span>
+                        <span class="feature-tag">Journal</span>
+                    </div>
+                </div>
+
+                <!-- 3. Meditation & Mindfulness -->
+                <div class="nav-card" onclick="showSection('meditation-mindfulness')">
+                    <span class="nav-icon">🧘‍♀️</span>
+                    <h4 class="nav-title">Meditation & Mindfulness</h4>
+                    <p class="nav-description">
+                        Guided meditation, chakra work, and mindfulness techniques for inner peace.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Guided Sessions</span>
+                        <span class="feature-tag">Chakra Balance</span>
+                        <span class="feature-tag">Breathing</span>
+                    </div>
+                </div>
+
+                <!-- 4. Energy & Healing -->
+                <div class="nav-card" onclick="showSection('energy-healing')">
+                    <span class="nav-icon">⚡</span>
+                    <h4 class="nav-title">Energy & Healing</h4>
+                    <p class="nav-description">
+                        Balance chakras, cleanse aura, and activate natural healing abilities.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Chakra Work</span>
+                        <span class="feature-tag">Aura Cleansing</span>
+                        <span class="feature-tag">Crystal Healing</span>
+                    </div>
+                </div>
+
+                <!-- 5. Sacred Arts & Sound -->
+                <div class="nav-card" onclick="showSection('sacred-arts-sound')">
+                    <span class="nav-icon">🎨</span>
+                    <h4 class="nav-title">Sacred Arts & Sound</h4>
+                    <p class="nav-description">
+                        Express soul through divine creativity and healing sound vibrations.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Mystic Arts</span>
+                        <span class="feature-tag">Sound Healing</span>
+                        <span class="feature-tag">Mandalas</span>
+                    </div>
+                </div>
+
+                <!-- 6. Devotion & Growth -->
+                <div class="nav-card" onclick="showSection('devotion-growth')">
+                    <span class="nav-icon">🙏</span>
+                    <h4 class="nav-title">Devotion & Growth</h4>
+                    <p class="nav-description">
+                        Cultivate sacred practice and track spiritual development journey.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Daily Devotions</span>
+                        <span class="feature-tag">Journal</span>
+                        <span class="feature-tag">Growth Tracker</span>
+                    </div>
+                </div>
+
+                <!-- 7. Sacred Knowledge -->
+                <div class="nav-card" onclick="showSection('sacred-knowledge')">
+                    <span class="nav-icon">📚</span>
+                    <h4 class="nav-title">Sacred Knowledge</h4>
+                    <p class="nav-description">
+                        Divine wisdom, sacred texts, spiritual library, and ancient teachings.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Sacred Library</span>
+                        <span class="feature-tag">Wisdom Texts</span>
+                        <span class="feature-tag">Teachings</span>
+                    </div>
+                </div>
+
+                <!-- 8. Community & Service -->
+                <div class="nav-card" onclick="showSection('community')">
+                    <span class="nav-icon">🤝</span>
+                    <h4 class="nav-title">Community & Service</h4>
+                    <p class="nav-description">
+                        Connect with practitioners and contribute to sacred service.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Sacred Circle</span>
+                        <span class="feature-tag">Community</span>
+                        <span class="feature-tag">Service</span>
+                    </div>
+                </div>
+
+                <!-- 9. Sacred Calendar -->
+                <div class="nav-card" onclick="showSection('calendar')">
+                    <span class="nav-icon">📅</span>
+                    <h4 class="nav-title">Sacred Calendar</h4>
+                    <p class="nav-description">
+                        Track moon phases, celestial events, and optimal spiritual timing.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Moon Phases</span>
+                        <span class="feature-tag">Celestial</span>
+                        <span class="feature-tag">Timing</span>
+                    </div>
+                </div>
+
+                <!-- 10. Chakras & Auras -->
+                <div class="nav-card" onclick="showSection('chakras-auras')">
+                    <span class="nav-icon">🕉️</span>
+                    <h4 class="nav-title">Chakras & Auras</h4>
+                    <p class="nav-description">
+                        Advanced chakra assessment, aura photography, and energy healing exercises.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Chakra Assessment</span>
+                        <span class="feature-tag">Aura Reading</span>
+                        <span class="feature-tag">Energy Healing</span>
+                        <span class="feature-tag">Meditation</span>
+                    </div>
+                </div>
+
+                <!-- 11. Crystals & Elements -->
+                <div class="nav-card" onclick="showSection('crystals-elements')">
+                    <span class="nav-icon">💎</span>
+                    <h4 class="nav-title">Crystals & Elements</h4>
+                    <p class="nav-description">
+                        Interactive crystal database, elemental energy work, and crystal grid builder.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Crystal Database</span>
+                        <span class="feature-tag">Grid Builder</span>
+                        <span class="feature-tag">Elemental Work</span>
+                        <span class="feature-tag">Healing Properties</span>
+                    </div>
+                </div>
+
+                <!-- 12. Spiritual Music -->
+                <div class="nav-card" onclick="showSection('spiritual-music')">
+                    <span class="nav-icon">🎵</span>
+                    <h4 class="nav-title">Spiritual Music & Sound Therapy</h4>
+                    <p class="nav-description">
+                        Binaural beats generator, frequency healing, and musical meditation composer.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Binaural Beats</span>
+                        <span class="feature-tag">Frequency Healing</span>
+                        <span class="feature-tag">Music Composer</span>
+                        <span class="feature-tag">Sound Therapy</span>
+                    </div>
+                </div>
+
+                <!-- Enhanced Oracle Cards -->
+                <div class="nav-card" onclick="showSection('oracle-cards')">
+                    <span class="nav-icon">🃏</span>
+                    <h4 class="nav-title">Oracle Cards & Divine Guidance</h4>
+                    <p class="nav-description">
+                        134 mystical oracle cards with multiple spreads, divine insights, and journaling system.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">134 Cards</span>
+                        <span class="feature-tag">Multiple Spreads</span>
+                        <span class="feature-tag">Journaling</span>
+                        <span class="feature-tag">Insights</span>
+                    </div>
+                </div>
+
+                <!-- Sacred Books -->
+                <div class="nav-card" onclick="showSection('sacred-books')">
+                    <span class="nav-icon">📖</span>
+                    <h4 class="nav-title">Sacred Books & Wisdom Library</h4>
+                    <p class="nav-description">
+                        Interactive book reader with note-taking, study groups, and progress tracking.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Interactive Reader</span>
+                        <span class="feature-tag">Note-Taking</span>
+                        <span class="feature-tag">Study Groups</span>
+                        <span class="feature-tag">Progress Tracking</span>
+                    </div>
+                </div>
+
+                <!-- Videos & Media -->
+                <div class="nav-card" onclick="showSection('videos-media')">
+                    <span class="nav-icon">🎬</span>
+                    <h4 class="nav-title">Videos & Media Library</h4>
+                    <p class="nav-description">
+                        Curated spiritual content with playlists, watch progress, and interactive discussions.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Curated Videos</span>
+                        <span class="feature-tag">Playlists</span>
+                        <span class="feature-tag">Watch Progress</span>
+                        <span class="feature-tag">Discussions</span>
+                    </div>
+                </div>
+
+                <!-- Sacred Geometry -->
+                <div class="nav-card" onclick="showSection('sacred-geometry')">
+                    <span class="nav-icon">🔯</span>
+                    <h4 class="nav-title">Sacred Geometry & Patterns</h4>
+                    <p class="nav-description">
+                        Interactive sacred patterns, golden ratio explorations, and geometric meditations.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Interactive Patterns</span>
+                        <span class="feature-tag">Golden Ratio</span>
+                        <span class="feature-tag">Geometric Arts</span>
+                        <span class="feature-tag">Meditations</span>
+                    </div>
+                </div>
+
+                <!-- Enhanced Meditation -->
+                <div class="nav-card" onclick="showSection('meditation')">
+                    <span class="nav-icon">🧘‍♂️</span>
+                    <h4 class="nav-title">Enhanced Meditation Space</h4>
+                    <p class="nav-description">
+                        Guided sessions with ambient sounds, progress tracking, and meditation library.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Guided Sessions</span>
+                        <span class="feature-tag">Ambient Sounds</span>
+                        <span class="feature-tag">Progress Tracking</span>
+                        <span class="feature-tag">Meditation Library</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Section Container -->
+    <div id="section-container">
+        <div class="section-header">
+            <button onclick="returnToDashboard()" class="back-btn">← Back to Temple</button>
+            <h2 id="section-title" class="section-title"></h2>
+        </div>
+        <iframe id="section-frame" class="section-frame" src=""></iframe>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">🔮 Loading Divine Portal...</div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="footer-text">Divine Temple • Eden Consciousness</p>
+        <p style="margin-top: 0.5rem;">
+            <a href="index.html" class="footer-link">← Return to Main Site</a>
+        </p>
+    </footer>
+
+    <script>
+        // ========================================
+        // CONFIGURATION
+        // ========================================
+        
+        const CREDENTIALS = {
+            username: 'nazir23',
+            password: 'Nazir777'
+        };
+
+        const SECTION_MAP = {
+            'oracle-cards': 'sections/oracle-cards.html',
+            'sacred-geometry': 'sections/sacred-geometry.html',
+            'meditation': 'sections/meditation.html',
+            'astral-travel': 'sections/astral-travel.html',
+            'energy-healing': 'sections/energy-healing.html',
+            'cosmic-laws': 'sections/cosmic-laws.html',
+            'dream-portal': 'sections/dream-portal.html',
+            'light-activation': 'sections/light-activation.html',
+            'manifestation': 'sections/manifestation.html',
+            'cosmic-calendar': 'sections/cosmic-calendar.html',
+            'universal-classroom': 'sections/universal-classroom.html',
+            'sacred-music': 'sections/sacred-music.html',
+            'sacred-books': 'sections/sacred-books.html',
+            'videos-media': 'sections/videos-media.html',
+            'oracle-divination': 'sections/oracle-divination.html',
+            'spiritual-practices': 'sections/spiritual-practices.html',
+            'meditation-mindfulness': 'sections/meditation-mindfulness.html',
+            'sacred-arts-sound': 'sections/sacred-arts-sound.html',
+            'devotion-growth': 'sections/devotion-growth.html',
+            'sacred-knowledge': 'sections/sacred-knowledge.html',
+            'community': 'sections/community.html',
+            'calendar': 'sections/calendar.html',
+            'chakras-auras': 'sections/chakras-auras.html',
+            'crystals-elements': 'sections/crystals-elements.html',
+            'spiritual-music': 'sections/spiritual-music.html'
+        };
+
+        const SECTION_TITLES = {
+            'oracle-cards': 'Oracle Cards & Divine Guidance',
+            'sacred-geometry': 'Sacred Geometry & Patterns',
+            'meditation': 'Meditation & Inner Peace',
+            'astral-travel': 'Astral Travel & Projection',
+            'energy-healing': 'Energy Healing & Chakras',
+            'cosmic-laws': 'Cosmic Laws & Universal Principles',
+            'dream-portal': 'Dream Portal & Lucid Dreaming',
+            'light-activation': 'Light Activation & DNA Awakening',
+            'manifestation': 'Manifestation & Reality Creation',
+            'cosmic-calendar': 'Cosmic Calendar & Celestial Events',
+            'universal-classroom': 'Universal Classroom & Learning',
+            'sacred-music': 'Sacred Music & Sound Healing',
+            'sacred-books': 'Sacred Books & Wisdom Library',
+            'videos-media': 'Videos & Media Library',
+            'oracle-divination': 'Oracle & Divination',
+            'spiritual-practices': 'Spiritual Practices',
+            'meditation-mindfulness': 'Meditation & Mindfulness',
+            'energy-healing': 'Energy & Healing',
+            'sacred-arts-sound': 'Sacred Arts & Sound',
+            'devotion-growth': 'Devotion & Growth',
+            'sacred-knowledge': 'Sacred Knowledge',
+            'community': 'Community & Service',
+            'calendar': 'Sacred Calendar',
+            'chakras-auras': 'Chakras & Auras',
+            'crystals-elements': 'Crystals & Elements',
+            'spiritual-music': 'Spiritual Music & Sound Therapy'
+        };
+
+        // ========================================
+        // UNIVERSAL PROGRESS SYSTEM
+        // ========================================
+
+        window.UniversalProgressSystem = {
+            init() {
+                this.loadProgressData();
+                console.log('🎮 Universal Progress System initialized');
+            },
+
+            loadProgressData() {
+                this.progressData = JSON.parse(localStorage.getItem('universalProgress') || JSON.stringify({
+                    level: 1,
+                    experience: 0,
+                    totalExperience: 0,
+                    spiritualRank: 'Seeker',
+                    achievements: [],
+                    sectionProgress: {},
+                    lastActive: new Date().toISOString()
+                }));
+            },
+
+            saveProgressData() {
+                localStorage.setItem('universalProgress', JSON.stringify(this.progressData));
+            },
+
+            updateProgress(data) {
+                const { section, activity, points = 10, details = {} } = data;
+                
+                // Update section progress
+                if (!this.progressData.sectionProgress[section]) {
+                    this.progressData.sectionProgress[section] = {
+                        points: 0,
+                        activities: [],
+                        level: 1
+                    };
+                }
+
+                this.progressData.sectionProgress[section].points += points;
+                this.progressData.sectionProgress[section].activities.push({
+                    activity,
+                    points,
+                    timestamp: new Date().toISOString(),
+                    details
+                });
+
+                // Update overall progress
+                this.progressData.experience += points;
+                this.progressData.totalExperience += points;
+                this.progressData.lastActive = new Date().toISOString();
+
+                // Check for level up
+                this.checkLevelUp();
+
+                // Save progress
+                this.saveProgressData();
+
+                console.log(`🎯 Progress updated: +${points} points for ${section} (${activity})`);
+                
+                // Dispatch progress event
+                window.dispatchEvent(new CustomEvent('progressUpdated', {
+                    detail: { section, activity, points, level: this.progressData.level }
+                }));
+            },
+
+            checkLevelUp() {
+                const requiredExp = this.getRequiredExperience(this.progressData.level);
+                if (this.progressData.experience >= requiredExp) {
+                    this.progressData.level++;
+                    this.progressData.experience -= requiredExp;
+                    this.updateSpiritualRank();
+                    
+                    // Show level up notification
+                    this.showLevelUpNotification();
+                    
+                    console.log(`🌟 LEVEL UP! Now level ${this.progressData.level} - ${this.progressData.spiritualRank}`);
+                }
+            },
+
+            getRequiredExperience(level) {
+                return Math.floor(100 * Math.pow(1.5, level - 1));
+            },
+
+            updateSpiritualRank() {
+                const ranks = [
+                    'Seeker', 'Initiate', 'Student', 'Practitioner', 'Devotee',
+                    'Adept', 'Teacher', 'Guide', 'Master', 'Sage', 'Enlightened'
+                ];
+                const rankIndex = Math.min(Math.floor(this.progressData.level / 5), ranks.length - 1);
+                this.progressData.spiritualRank = ranks[rankIndex];
+            },
+
+            showLevelUpNotification() {
+                // Create level up notification
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: linear-gradient(135deg, #8B5CF6, #D4AF37);
+                    color: white;
+                    padding: 2rem;
+                    border-radius: 20px;
+                    text-align: center;
+                    z-index: 10000;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+                    backdrop-filter: blur(20px);
+                    animation: levelUpAnimation 3s ease-out forwards;
+                `;
+
+                notification.innerHTML = `
+                    <h2 style="margin: 0 0 1rem 0; font-size: 2rem;">🌟 LEVEL UP! 🌟</h2>
+                    <p style="margin: 0; font-size: 1.2rem;">Level ${this.progressData.level}</p>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 1rem; opacity: 0.9;">${this.progressData.spiritualRank}</p>
+                `;
+
+                // Add animation styles
+                if (!document.querySelector('#levelUpStyles')) {
+                    const styles = document.createElement('style');
+                    styles.id = 'levelUpStyles';
+                    styles.textContent = `
+                        @keyframes levelUpAnimation {
+                            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+                            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+                            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                            100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+                        }
+                    `;
+                    document.head.appendChild(styles);
+                }
+
+                document.body.appendChild(notification);
+
+                // Remove notification after animation
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 3000);
+            },
+
+            getProgressSummary() {
+                return {
+                    level: this.progressData.level,
+                    spiritualRank: this.progressData.spiritualRank,
+                    experience: this.progressData.experience,
+                    totalExperience: this.progressData.totalExperience,
+                    nextLevelExp: this.getRequiredExperience(this.progressData.level),
+                    sectionsActive: Object.keys(this.progressData.sectionProgress).length,
+                    achievements: this.progressData.achievements.length
+                };
+            }
+        };
+
+        // ========================================
+        // AUTHENTICATION FUNCTIONS
+        // ========================================
+
+        function checkAuth() {
+            console.log('🔐 Checking authentication status...');
+            
+            const isAuth = sessionStorage.getItem('divineAuth');
+            const memberDataStr = sessionStorage.getItem('memberData');
+            
+            if (isAuth === 'true' && memberDataStr) {
+                try {
+                    const memberData = JSON.parse(memberDataStr);
+                    console.log('✅ User authenticated:', memberData.username);
+                    showDashboard(memberData);
+                } catch (error) {
+                    console.error('❌ Error parsing member data:', error);
+                    showAuthOverlay();
+                }
+            } else {
+                console.log('📝 No authentication found');
+                showAuthOverlay();
+            }
+        }
+
+        function authenticateUser(event) {
+            event.preventDefault();
+            console.log('🔐 Attempting authentication...');
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('auth-error');
+            const successDiv = document.getElementById('auth-success');
+
+            console.log('📝 Username entered:', username);
+            console.log('🔑 Password length:', password.length);
+
+            // Clear previous messages
+            errorDiv.classList.remove('show');
+            successDiv.classList.remove('show');
+
+            if (username === CREDENTIALS.username && password === CREDENTIALS.password) {
+                console.log('✅ Credentials match!');
+                
+                const memberData = {
+                    username: username,
+                    name: 'Nazir El',
+                    loginTime: new Date().toISOString(),
+                    joinDate: '2024-01-01'
+                };
+
+                // Store authentication
+                sessionStorage.setItem('divineAuth', 'true');
+                sessionStorage.setItem('memberData', JSON.stringify(memberData));
+
+                // Show success message
+                successDiv.textContent = '✨ Welcome, Nazir El! ✨';
+                successDiv.classList.add('show');
+
+                console.log('✅ Authentication successful - transitioning to dashboard');
+
+                // Redirect to dashboard
+                setTimeout(() => {
+                    showDashboard(memberData);
+                }, 1000);
+            } else {
+                console.log('❌ Authentication failed');
+                console.log('Expected username:', CREDENTIALS.username);
+                console.log('Expected password length:', CREDENTIALS.password.length);
+                errorDiv.textContent = '❌ Invalid credentials. Please try again.';
+                errorDiv.classList.add('show');
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                console.log('🚪 Logging out...');
+                sessionStorage.removeItem('divineAuth');
+                sessionStorage.removeItem('memberData');
+                location.reload();
+            }
+        }
+
+        function showAuthOverlay() {
+            console.log('🔓 Showing authentication overlay');
+            const authOverlay = document.getElementById('auth-overlay');
+            const dashboard = document.getElementById('dashboard');
+            const memberBadge = document.getElementById('member-badge');
+            
+            // Hide dashboard
+            if (dashboard) {
+                dashboard.classList.remove('active');
+                dashboard.style.display = 'none';
+            }
+            
+            // Hide member badge
+            if (memberBadge) {
+                memberBadge.style.display = 'none';
+            }
+            
+            // Show auth overlay
+            if (authOverlay) {
+                authOverlay.classList.remove('hidden');
+                authOverlay.style.display = 'flex';
+            }
+            
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideAuthOverlay() {
+            console.log('🔒 Hiding authentication overlay');
+            const authOverlay = document.getElementById('auth-overlay');
+            
+            if (authOverlay) {
+                authOverlay.classList.add('hidden');
+                authOverlay.style.display = 'none';
+            }
+            
+            document.body.style.overflow = 'auto';
+        }
+
+        // ========================================
+        // DASHBOARD FUNCTIONS
+        // ========================================
+
+        function showDashboard(memberData) {
+            console.log('🏛️ Showing dashboard for:', memberData);
+            
+            // Hide auth overlay first
+            hideAuthOverlay();
+            
+            // Show dashboard
+            const dashboard = document.getElementById('dashboard');
+            if (dashboard) {
+                dashboard.style.display = 'block';
+                dashboard.classList.add('active');
+                
+                // Force visibility with timeout to ensure transition
+                setTimeout(() => {
+                    dashboard.style.opacity = '1';
+                }, 50);
+                
+                console.log('✅ Dashboard activated');
+            }
+            
+            // Show and update member badge
+            const memberBadge = document.getElementById('member-badge');
+            const memberDisplay = document.getElementById('member-display');
+            
+            if (memberBadge) {
+                memberBadge.style.display = 'flex';
+            }
+            
+            if (memberDisplay && memberData) {
+                memberDisplay.textContent = memberData.name || memberData.username;
+            }
+            
+            // Hide section container if visible
+            const sectionContainer = document.getElementById('section-container');
+            if (sectionContainer) {
+                sectionContainer.classList.remove('active');
+                sectionContainer.style.display = 'none';
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+            
+            console.log('✅ Dashboard displayed successfully');
+        }
+
+        // ========================================
+        // NAVIGATION FUNCTIONS
+        // ========================================
+
+        function showSection(sectionId) {
+            console.log('📂 Opening section:', sectionId);
+            
+            if (!SECTION_MAP[sectionId]) {
+                console.error('❌ Section not found:', sectionId);
+                alert('Section not available yet.');
+                return;
+            }
+            
+            // Show loading
+            showLoading();
+            
+            // Hide dashboard completely
+            const dashboard = document.getElementById('dashboard');
+            if (dashboard) {
+                dashboard.classList.remove('active');
+                dashboard.style.display = 'none';
+                console.log('✅ Dashboard hidden');
+            }
+            
+            // Show section container
+            const sectionContainer = document.getElementById('section-container');
+            const sectionFrame = document.getElementById('section-frame');
+            const sectionTitle = document.getElementById('section-title');
+            
+            if (sectionContainer) {
+                sectionContainer.classList.add('active');
+                sectionContainer.style.display = 'block';
+                console.log('✅ Section container shown');
+            }
+            
+            if (sectionTitle) {
+                sectionTitle.textContent = SECTION_TITLES[sectionId];
+                console.log('✅ Section title set:', SECTION_TITLES[sectionId]);
+            }
+            
+            // Load section in iframe
+            if (sectionFrame) {
+                sectionFrame.onload = function() {
+                    console.log('✅ Section loaded successfully:', sectionId);
+                    hideLoading();
+                };
+                
+                sectionFrame.onerror = function() {
+                    console.error('❌ Failed to load section:', sectionId);
+                    hideLoading();
+                    alert('⚠️ Failed to load section. Please try again.');
+                    returnToDashboard();
+                };
+                
+                console.log('🔄 Loading section URL:', SECTION_MAP[sectionId]);
+                sectionFrame.src = SECTION_MAP[sectionId];
+            }
+        }
+
+        function returnToDashboard() {
+            console.log('🏠 Returning to dashboard');
+            
+            const memberData = JSON.parse(sessionStorage.getItem('memberData') || '{}');
+            
+            // Hide section container completely
+            const sectionContainer = document.getElementById('section-container');
+            if (sectionContainer) {
+                sectionContainer.classList.remove('active');
+                sectionContainer.style.display = 'none';
+                console.log('✅ Section container hidden');
+            }
+            
+            // Clear iframe
+            const sectionFrame = document.getElementById('section-frame');
+            if (sectionFrame) {
+                sectionFrame.src = '';
+                console.log('✅ Section frame cleared');
+            }
+            
+            // Show dashboard
+            const dashboard = document.getElementById('dashboard');
+            if (dashboard) {
+                dashboard.style.display = 'block';
+                dashboard.classList.add('active');
+                dashboard.style.opacity = '1';
+                console.log('✅ Dashboard restored');
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // ========================================
+        // LOADING FUNCTIONS
+        // ========================================
+
+        function showLoading() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            if (loadingOverlay) {
+                loadingOverlay.classList.add('active');
+            }
+        }
+
+        function hideLoading() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            if (loadingOverlay) {
+                loadingOverlay.classList.remove('active');
+            }
+        }
+
+        // ========================================
+        // EVENT LISTENERS
+        // ========================================
+
+        // Listen for messages from iframes
+        window.addEventListener('message', function(event) {
+            if (event.data === 'back' || event.data === 'backToDashboard') {
+                returnToDashboard();
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Escape key - return to dashboard if in section
+            if (e.key === 'Escape') {
+                const sectionContainer = document.getElementById('section-container');
+                if (sectionContainer && sectionContainer.classList.contains('active')) {
+                    returnToDashboard();
+                }
+            }
+            
+            // Ctrl/Cmd + K - logout
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                logout();
+            }
+        });
+
+        // Prevent accidental page reload when in section
+        window.addEventListener('beforeunload', function(e) {
+            const sectionContainer = document.getElementById('section-container');
+            if (sectionContainer && sectionContainer.classList.contains('active')) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        // ========================================
+        // INITIALIZATION
+        // ========================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🏛️ Divine Temple Portal Initializing...');
+            console.log('📅 Date:', new Date().toISOString());
+            
+            // Initialize Performance Optimizer
+            if (window.performanceOptimizer) {
+                window.performanceOptimizer.optimizeCriticalSection('auth-overlay');
+                window.performanceOptimizer.lazyLoadImages();
+                console.log('🚀 Performance optimizations applied');
+            }
+            
+            // Clear any existing session for fresh start
+            sessionStorage.removeItem('divineAuth');
+            sessionStorage.removeItem('memberData');
+            
+            // Initialize Universal Progress System
+            window.UniversalProgressSystem.init();
+            console.log('🎮 Universal Progress System ready');
+            
+            // Force initial state - always show auth overlay
+            const authOverlay = document.getElementById('auth-overlay');
+            const dashboard = document.getElementById('dashboard');
+            const memberBadge = document.getElementById('member-badge');
+            
+            // Ensure auth overlay is visible
+            if (authOverlay) {
+                authOverlay.style.display = 'flex';
+                authOverlay.classList.remove('hidden');
+                console.log('✅ Auth overlay displayed');
+            }
+            
+            // Ensure dashboard is hidden
+            if (dashboard) {
+                dashboard.style.display = 'none';
+                dashboard.classList.remove('active');
+                dashboard.style.opacity = '0';
+                console.log('✅ Dashboard hidden');
+            }
+            
+            // Hide member badge
+            if (memberBadge) {
+                memberBadge.style.display = 'none';
+            }
+            
+            // Ensure body can't scroll initially
+            document.body.style.overflow = 'hidden';
+            
+            // Log system info
+            console.log('✨ Portal ready for authentication');
+            console.log('📊 Available sections:', Object.keys(SECTION_MAP).length);
+            console.log('%c🏛️ Divine Temple', 'font-size: 24px; font-weight: bold; color: #F59E0B;');
+            console.log('%c✨ Eden Consciousness - Nazir El', 'font-size: 16px; color: #8B5CF6;');
+        });
+
+        // ========================================
+        // DEBUG FUNCTIONS (Console Only)
+        // ========================================
+
+        window.divineTemple = {
+            checkAuth: checkAuth,
+            showDashboard: showDashboard,
+            showSection: showSection,
+            logout: logout,
+            
+            // Debug info
+            getState: function() {
+                return {
+                    authenticated: sessionStorage.getItem('divineAuth') === 'true',
+                    memberData: JSON.parse(sessionStorage.getItem('memberData') || '{}'),
+                    dashboardActive: document.getElementById('dashboard')?.classList.contains('active'),
+                    sectionActive: document.getElementById('section-container')?.classList.contains('active'),
+                    availableSections: Object.keys(SECTION_MAP)
+                };
+            },
+            
+            // Quick test
+            test: function() {
+                console.log('🧪 Running Divine Temple Test...');
+                const state = this.getState();
+                console.log('Current State:', state);
+                
+                console.log('\n📊 Test Results:');
+                console.log('✅ Authentication:', state.authenticated ? 'PASS' : 'FAIL');
+                console.log('✅ Dashboard:', state.dashboardActive ? 'VISIBLE' : 'HIDDEN');
+                console.log('✅ Sections Available:', state.availableSections.length);
+                
+                return state;
+            }
+        };
+
+        // Console welcome
+        console.log('%c🔧 Debug Tools Available:', 'font-size: 14px; font-weight: bold; color: #10B981;');
+        console.log('%cdivineTemple.getState() - View current state', 'color: #8B5CF6;');
+        console.log('%cdivineTemple.test() - Run system test', 'color: #8B5CF6;');
+        console.log('%cdivineTemple.showSection("oracle-divination") - Open section', 'color: #8B5CF6;');
+    </script>
+    
+    <!-- Performance Optimizer -->
+    <script src="js/performance-optimizer.js"></script>
+    
+    <!-- Accessibility & UX Enhancement -->
+    <script src="js/accessibility-ux.js"></script>
+    
+    <!-- SEO Optimizer -->
+    <script src="js/seo-optimizer.js"></script>
+    
+    <!-- Final Testing Suite -->
+    <script src="js/final-testing.js"></script>
+    
+    <!-- Initialize Final Polish -->
+    <script>
+        // Initialize performance monitoring and final enhancements
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add final polish CSS
+            const finalPolishStyles = document.createElement('style');
+            finalPolishStyles.textContent = `
+                /* Final Polish - Enhanced Visual Consistency */
+                :root {
+                    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    --shadow-soft: 0 4px 20px rgba(139, 92, 246, 0.15);
+                    --shadow-hover: 0 8px 30px rgba(139, 92, 246, 0.25);
+                    --border-radius-modern: 12px;
+                }
+                
+                /* Enhanced Card Interactions */
+                .nav-card, .card, .video-card {
+                    transition: var(--transition-smooth);
+                    border-radius: var(--border-radius-modern);
+                    box-shadow: var(--shadow-soft);
+                }
+                
+                .nav-card:hover, .card:hover, .video-card:hover {
+                    transform: translateY(-4px) scale(1.02);
+                    box-shadow: var(--shadow-hover);
+                }
+                
+                .nav-card:active, .card:active, .video-card:active {
+                    transform: translateY(-2px) scale(1.01);
+                }
+                
+                /* Enhanced Typography */
+                h1, h2, h3, h4, h5, h6 {
+                    font-weight: 600;
+                    line-height: 1.4;
+                    letter-spacing: -0.025em;
+                }
+                
+                /* Improved Button Styles */
+                button, .btn {
+                    font-weight: 600;
+                    border-radius: 8px;
+                    transition: var(--transition-smooth);
+                    cursor: pointer;
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                button::before, .btn::before {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 0;
+                    height: 0;
+                    background: rgba(255, 255, 255, 0.2);
+                    border-radius: 50%;
+                    transform: translate(-50%, -50%);
+                    transition: width 0.6s, height 0.6s;
+                }
+                
+                button:active::before, .btn:active::before {
+                    width: 300px;
+                    height: 300px;
+                }
+                
+                /* Enhanced Loading States */
+                .loading {
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                .loading::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+                    animation: shimmer 1.5s infinite;
+                }
+                
+                @keyframes shimmer {
+                    0% { left: -100%; }
+                    100% { left: 100%; }
+                }
+                
+                /* Micro-interactions */
+                .nav-card, .card {
+                    --scale: 1;
+                    transform: scale(var(--scale));
+                }
+                
+                .nav-card:hover, .card:hover {
+                    --scale: 1.02;
+                }
+                
+                /* Accessibility Enhancements */
+                @media (prefers-reduced-motion: reduce) {
+                    *, *::before, *::after {
+                        animation-duration: 0.01ms !important;
+                        animation-iteration-count: 1 !important;
+                        transition-duration: 0.01ms !important;
+                    }
+                }
+                
+                /* High Contrast Mode Support */
+                @media (prefers-contrast: high) {
+                    .nav-card, .card {
+                        border: 2px solid currentColor;
+                    }
+                }
+                
+                /* Focus Improvements */
+                .nav-card:focus-visible, .card:focus-visible, button:focus-visible {
+                    outline: 3px solid var(--accent-purple);
+                    outline-offset: 2px;
+                    box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.2);
+                }
+                
+                /* Enhanced Scroll Behavior */
+                html {
+                    scroll-behavior: smooth;
+                }
+                
+                /* Perfect Grid Layouts */
+                .nav-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                    gap: 1.5rem;
+                    align-items: start;
+                }
+                
+                /* Mobile Optimizations */
+                @media (max-width: 768px) {
+                    .nav-grid {
+                        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                        gap: 1rem;
+                    }
+                    
+                    .nav-card, .card {
+                        padding: 1rem;
+                    }
+                    
+                    h1 { font-size: 2rem; }
+                    h2 { font-size: 1.5rem; }
+                    h3 { font-size: 1.25rem; }
+                }
+                
+                /* Advanced Animations */
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                
+                .animate-fade-in-up {
+                    animation: fadeInUp 0.6s ease-out;
+                }
+                
+                /* Stagger animation for cards */
+                .nav-card:nth-child(1) { animation-delay: 0.1s; }
+                .nav-card:nth-child(2) { animation-delay: 0.2s; }
+                .nav-card:nth-child(3) { animation-delay: 0.3s; }
+                .nav-card:nth-child(4) { animation-delay: 0.4s; }
+                .nav-card:nth-child(5) { animation-delay: 0.5s; }
+                .nav-card:nth-child(6) { animation-delay: 0.6s; }
+            `;
+            document.head.appendChild(finalPolishStyles);
+            
+            // Add entrance animations to cards
+            setTimeout(() => {
+                document.querySelectorAll('.nav-card, .card').forEach(card => {
+                    card.classList.add('animate-fade-in-up');
+                });
+            }, 100);
+            
+            // Initialize final systems
+            console.log('🌟 Divine Temple Members Portal initialized with final polish');
+            console.log('♿ Accessibility features active');
+            console.log('🔍 SEO optimization complete');
+            console.log('🧪 Testing suite ready');
+            
+            // Run a quick validation after initialization
+            if (window.finalTestingSuite) {
+                setTimeout(() => {
+                    console.log('🔍 Running quick validation...');
+                    window.finalTestingSuite.runSingleValidator('navigation').then(result => {
+                        console.log('✅ Navigation validation:', result.passed ? 'PASSED' : 'NEEDS ATTENTION');
+                    }).catch(console.error);
+                }, 2000);
+            }
+            
+            // Announce completion to accessibility systems
+            if (window.accessibilityManager) {
+                window.accessibilityManager.announce('Divine Temple fully loaded and accessible');
+            }
+            
+            // Final UX notification
+            if (window.uxEnhancementManager) {
+                setTimeout(() => {
+                    window.uxEnhancementManager.showNotification(
+                        'Welcome to Divine Temple - Your spiritual sanctuary awaits',
+                        'spiritual',
+                        6000
+                    );
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>

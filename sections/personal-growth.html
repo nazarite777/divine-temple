@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Growth - Divine Temple</title>
+    <style>
+        :root {
+            --accent-gold: #d4af37;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+        .section-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .growth-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .growth-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            cursor: pointer;
+            transition: all 0.4s;
+            text-align: center;
+        }
+        
+        .growth-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--accent-gold);
+        }
+        
+        .growth-card:active {
+            transform: translateY(-5px) scale(1.01);
+        }
+        
+        .growth-card.implemented {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        
+        .growth-card.implemented:hover {
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.2), 0 0 0 1px var(--accent-gold);
+        }
+        
+        .growth-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        .growth-info {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .feature-item {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .tool-status {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-complete {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .status-placeholder {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 2.5rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.6s;
+        }
+        
+        .back-btn:hover::before {
+            left: 100%;
+        }
+        
+        .back-btn:hover {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            border-color: var(--accent-gold);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .back-btn .back-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+        
+        .back-btn:hover .back-icon {
+            transform: translateX(-3px);
+        }
+        
+        /* Modal Styles */
+        .growth-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        
+        .growth-modal {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            border: 2px solid var(--glass-border);
+            border-radius: 20px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .growth-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .growth-header h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-gold);
+            margin: 0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+        
+        .growth-content {
+            padding: 2rem;
+        }
+        
+        .growth-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .growth-section h3 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+        
+        /* Goal Tracker Styles */
+        .goal-form {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .goal-input, .goal-textarea, .goal-select {
+            padding: 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-family: inherit;
+        }
+        
+        .goal-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .goal-progress {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            transition: width 0.3s ease;
+        }
+        
+        .goal-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--accent-gold);
+        }
+        
+        .goal-category {
+            color: var(--accent-purple);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        
+        .goal-title {
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Sacred Chambers Styles */
+        .chambers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .chamber-btn {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(212, 175, 55, 0.2));
+            border: 1px solid var(--accent-gold);
+            border-radius: 12px;
+            padding: 1rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .chamber-btn:hover {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            transform: translateY(-2px);
+        }
+        
+        .chamber-content {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .chamber-content.active {
+            display: block;
+        }
+        
+        .reflection-question {
+            background: rgba(139, 92, 246, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            border-left: 3px solid var(--accent-purple);
+        }
+        
+        /* Manifestation Lab Styles */
+        .vision-board {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed var(--accent-gold);
+            border-radius: 15px;
+            min-height: 300px;
+            padding: 2rem;
+            text-align: center;
+            margin: 1rem 0;
+            position: relative;
+        }
+        
+        .vision-item {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 0.5rem;
+            display: inline-block;
+            cursor: move;
+        }
+        
+        .manifestation-tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .tool-btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tool-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .growth-modal {
+                width: 95vw;
+                height: 95vh;
+            }
+            
+            .growth-content {
+                padding: 1rem;
+            }
+            
+            .chambers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .manifestation-tools {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="section-container">
+        <button class="back-btn" onclick="goBackToDashboard()">
+            <span class="back-icon">←</span>
+            <span>Back to Dashboard</span>
+        </button>
+        
+        <div class="section-header">
+            <h1>📈 Personal Growth</h1>
+            <p>Track your spiritual evolution and soul development journey</p>
+        </div>
+        
+        <div class="growth-info">
+            <h3>🌱 Spiritual Evolution Tracking</h3>
+            <p>Comprehensive tools for monitoring your divine growth, setting spiritual goals, and measuring your ascension progress across all dimensions.</p>
+            
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <strong>📊 Progress Tracking</strong><br>
+                    Monitor your evolution
+                </div>
+                <div class="feature-item">
+                    <strong>🎯 Goal Setting</strong><br>
+                    Spiritual objectives
+                </div>
+                <div class="feature-item">
+                    <strong>🏛️ Chamber Work</strong><br>
+                    Nine sacred chambers
+                </div>
+                <div class="feature-item">
+                    <strong>✨ Manifestation</strong><br>
+                    Reality creation
+                </div>
+            </div>
+        </div>
+        
+        <div class="growth-grid">
+            <div class="growth-card implemented" onclick="openGoalTracker()">
+                <div class="growth-icon">📊</div>
+                <h3>Goal & Progress Tracker</h3>
+                <p>Set spiritual goals, track your evolution, and measure your divine growth across all chambers</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    🎯 Goal creation • 📈 Progress tracking • 🏛️ Chamber integration • 📊 Analytics
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="growth-card implemented" onclick="openSoulJourney()">
+                <div class="growth-icon">🛤️</div>
+                <h3>Soul Journey</h3>
+                <p>Past life exploration, soul contracts, karmic patterns, life purpose discovery</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    🔮 Past lives • 📜 Soul contracts • ⚖️ Karma patterns • 🎯 Life purpose
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="growth-card implemented" onclick="openManifestationLab()">
+                <div class="growth-icon">✨</div>
+                <h3>Manifestation Lab</h3>
+                <p>Vision boarding, sacred geometry, abundance practices, reality creation</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    🎨 Vision boards • 🔺 Sacred geometry • 💰 Abundance • ⚡ Reality creation
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="growth-card implemented" onclick="openSacredChambers()">
+                <div class="growth-icon">🏛️</div>
+                <h3>Sacred Chambers</h3>
+                <p>Nine chambers of reflection and inner guidance based on divine discernment principles</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    🏛️ Nine chambers • 🤔 Reflection • 💡 Inner guidance • ⚖️ Discernment
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="growth-card implemented" onclick="openAscensionGateway()">
+                <div class="growth-icon">🌌</div>
+                <h3>Ascension Gateway</h3>
+                <p>Quantum healing, dimensional travel, cosmic consciousness, divine integration</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    ⚛️ Quantum healing • 🌌 Dimensions • 🧠 Consciousness • 🌟 Integration
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="growth-card implemented" onclick="openShadowWork()">
+                <div class="growth-icon">🌑</div>
+                <h3>Shadow Work Portal</h3>
+                <p>Deep shadow integration, unconscious pattern release, inner child healing, trauma alchemy</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    🌑 Shadow integration • 🔄 Pattern release • 👶 Inner child • ⚗️ Trauma alchemy
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Enhanced back navigation with feedback
+        function goBackToDashboard() {
+            try {
+                if (window.parent && window.parent.showSection) {
+                    window.parent.showSection('dashboard');
+                } else {
+                    window.location.href = '../members.html';
+                }
+            } catch (error) {
+                console.error('Navigation error:', error);
+                window.location.href = '../members.html';
+            }
+        }
+        
+        // Enhanced tool opening functions with loading feedback
+        function openTool(toolName, fallbackFunction) {
+            try {
+                if (window.parent && window.parent[fallbackFunction]) {
+                    window.parent[fallbackFunction]();
+                } else {
+                    console.warn(`${toolName} function not found in parent window`);
+                }
+            } catch (error) {
+                console.error(`Error opening ${toolName}:`, error);
+            }
+        }
+        
+        function openGoalTracker() {
+            openTool('Goal Tracker', 'openGoalTracker');
+        }
+        
+        function openSoulJourney() {
+            openTool('Soul Journey', 'openSoulJourney');
+        }
+        
+        function openManifestationLab() {
+            openTool('Manifestation Lab', 'openManifestationLab');
+        }
+        
+        function openSacredChambers() {
+            openTool('Sacred Chambers', 'openSacredChambers');
+        }
+        
+        function openAscensionGateway() {
+            openTool('Ascension Gateway', 'openAscensionGateway');
+        }
+        
+        function openShadowWork() {
+            openTool('Shadow Work Portal', 'openShadowWork');
+        }
+        
+        // Add loading animation when tools are clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            const growthCards = document.querySelectorAll('.growth-card');
+            
+            growthCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Add visual feedback for tool activation
+                    this.style.transform = 'translateY(-5px) scale(1.01)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+                
+                // Add special hover effects for growth cards
+                card.addEventListener('mouseenter', function() {
+                    const icon = this.querySelector('.growth-icon');
+                    icon.style.transform = 'scale(1.1) rotate(3deg)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    const icon = this.querySelector('.growth-icon');
+                    icon.style.transform = 'scale(1) rotate(0deg)';
+                });
+            });
+            
+            // Add growth milestone animation
+            setTimeout(() => {
+                const cards = document.querySelectorAll('.growth-card.implemented');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.animation = 'pulse 1s ease-in-out';
+                    }, index * 200);
+                });
+            }, 1000);
+            
+            // Initialize growth tools
+            initializeGoalTracker();
+            initializeSoulJourney();
+            initializeManifestationLab();
+            initializeSacredChambers();
+            initializeAscensionGateway();
+            initializeShadowWork();
+        });
+        
+        // Goal Tracker Implementation
+        function initializeGoalTracker() {
+            const goalModal = document.createElement('div');
+            goalModal.id = 'goal-tracker-modal';
+            goalModal.innerHTML = `
+                <div class="growth-modal-overlay" onclick="closeGoalTracker()">
+                    <div class="growth-modal" onclick="event.stopPropagation()">
+                        <div class="growth-header">
+                            <h2>📊 Goal & Progress Tracker</h2>
+                            <button onclick="closeGoalTracker()" class="close-btn">×</button>
+                        </div>
+                        <div class="growth-content">
+                            <div class="growth-section">
+                                <h3>🎯 Create New Goal</h3>
+                                <div class="goal-form">
+                                    <input type="text" id="goal-title" class="goal-input" placeholder="Goal Title">
+                                    <textarea id="goal-description" class="goal-textarea" placeholder="Goal Description & Action Steps"></textarea>
+                                    <select id="goal-category" class="goal-select">
+                                        <option value="">Select Category</option>
+                                        <option value="spiritual">Spiritual Growth</option>
+                                        <option value="physical">Physical Health</option>
+                                        <option value="mental">Mental Clarity</option>
+                                        <option value="emotional">Emotional Healing</option>
+                                        <option value="relationships">Relationships</option>
+                                        <option value="career">Career/Purpose</option>
+                                        <option value="abundance">Abundance</option>
+                                    </select>
+                                    <input type="date" id="goal-deadline" class="goal-input">
+                                    <button onclick="addGoal()" class="tool-btn">Add Goal</button>
+                                </div>
+                            </div>
+                            <div class="growth-section">
+                                <h3>📈 Active Goals</h3>
+                                <div id="goals-list"></div>
+                            </div>
+                            <div class="growth-section">
+                                <h3>📊 Progress Analytics</h3>
+                                <div id="progress-analytics">
+                                    <div class="goal-progress">
+                                        <span>Overall Progress:</span>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" id="overall-progress" style="width: 0%"></div>
+                                        </div>
+                                        <span id="progress-percentage">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(goalModal);
+        }
+        
+        function openGoalTracker() {
+            document.getElementById('goal-tracker-modal').style.display = 'flex';
+            loadGoals();
+            updateProgressAnalytics();
+        }
+        
+        function closeGoalTracker() {
+            document.getElementById('goal-tracker-modal').style.display = 'none';
+        }
+        
+        function addGoal() {
+            const title = document.getElementById('goal-title').value;
+            const description = document.getElementById('goal-description').value;
+            const category = document.getElementById('goal-category').value;
+            const deadline = document.getElementById('goal-deadline').value;
+            
+            if (!title || !category) {
+                alert('Please fill in title and category');
+                return;
+            }
+            
+            const goal = {
+                id: Date.now(),
+                title,
+                description,
+                category,
+                deadline,
+                progress: 0,
+                created: new Date().toISOString()
+            };
+            
+            const goals = JSON.parse(localStorage.getItem('spiritualGoals') || '[]');
+            goals.push(goal);
+            localStorage.setItem('spiritualGoals', JSON.stringify(goals));
+            
+            // Clear form
+            document.getElementById('goal-title').value = '';
+            document.getElementById('goal-description').value = '';
+            document.getElementById('goal-category').value = '';
+            document.getElementById('goal-deadline').value = '';
+            
+            loadGoals();
+            updateProgressAnalytics();
+        }
+        
+        function loadGoals() {
+            const goals = JSON.parse(localStorage.getItem('spiritualGoals') || '[]');
+            const goalsList = document.getElementById('goals-list');
+            
+            goalsList.innerHTML = goals.map(goal => `
+                <div class="goal-card">
+                    <div class="goal-category">${goal.category}</div>
+                    <div class="goal-title">${goal.title}</div>
+                    <p>${goal.description}</p>
+                    <div class="goal-progress">
+                        <span>Progress:</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${goal.progress}%"></div>
+                        </div>
+                        <span>${goal.progress}%</span>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <button onclick="updateGoalProgress(${goal.id}, ${Math.min(goal.progress + 10, 100)})" class="tool-btn" style="margin: 0.25rem;">+10%</button>
+                        <button onclick="updateGoalProgress(${goal.id}, Math.max(goal.progress - 10, 0))" class="tool-btn" style="margin: 0.25rem;">-10%</button>
+                        <button onclick="deleteGoal(${goal.id})" class="tool-btn" style="margin: 0.25rem; background: linear-gradient(135deg, #ef4444, #dc2626);">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function updateGoalProgress(goalId, newProgress) {
+            const goals = JSON.parse(localStorage.getItem('spiritualGoals') || '[]');
+            const goalIndex = goals.findIndex(g => g.id === goalId);
+            if (goalIndex !== -1) {
+                goals[goalIndex].progress = newProgress;
+                localStorage.setItem('spiritualGoals', JSON.stringify(goals));
+                loadGoals();
+                updateProgressAnalytics();
+            }
+        }
+        
+        function deleteGoal(goalId) {
+            if (confirm('Are you sure you want to delete this goal?')) {
+                const goals = JSON.parse(localStorage.getItem('spiritualGoals') || '[]');
+                const filteredGoals = goals.filter(g => g.id !== goalId);
+                localStorage.setItem('spiritualGoals', JSON.stringify(filteredGoals));
+                loadGoals();
+                updateProgressAnalytics();
+            }
+        }
+        
+        function updateProgressAnalytics() {
+            const goals = JSON.parse(localStorage.getItem('spiritualGoals') || '[]');
+            if (goals.length === 0) return;
+            
+            const totalProgress = goals.reduce((sum, goal) => sum + goal.progress, 0);
+            const averageProgress = Math.round(totalProgress / goals.length);
+            
+            document.getElementById('overall-progress').style.width = averageProgress + '%';
+            document.getElementById('progress-percentage').textContent = averageProgress + '%';
+        }
+        
+        // Soul Journey Implementation
+        function initializeSoulJourney() {
+            const soulModal = document.createElement('div');
+            soulModal.id = 'soul-journey-modal';
+            soulModal.innerHTML = `
+                <div class="growth-modal-overlay" onclick="closeSoulJourney()">
+                    <div class="growth-modal" onclick="event.stopPropagation()">
+                        <div class="growth-header">
+                            <h2>🛤️ Soul Journey Explorer</h2>
+                            <button onclick="closeSoulJourney()" class="close-btn">×</button>
+                        </div>
+                        <div class="growth-content">
+                            <div class="growth-section">
+                                <h3>🔮 Past Life Exploration</h3>
+                                <button onclick="exploreLifetime()" class="tool-btn">Explore Past Lifetime</button>
+                                <div id="lifetime-insight" class="chamber-content"></div>
+                            </div>
+                            <div class="growth-section">
+                                <h3>📜 Soul Contracts</h3>
+                                <button onclick="revealContract()" class="tool-btn">Reveal Soul Contract</button>
+                                <div id="contract-insight" class="chamber-content"></div>
+                            </div>
+                            <div class="growth-section">
+                                <h3>⚖️ Karmic Patterns</h3>
+                                <button onclick="analyzeKarma()" class="tool-btn">Analyze Karma</button>
+                                <div id="karma-insight" class="chamber-content"></div>
+                            </div>
+                            <div class="growth-section">
+                                <h3>🎯 Life Purpose Discovery</h3>
+                                <button onclick="discoverPurpose()" class="tool-btn">Discover Purpose</button>
+                                <div id="purpose-insight" class="chamber-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(soulModal);
+        }
+        
+        function openSoulJourney() {
+            document.getElementById('soul-journey-modal').style.display = 'flex';
+        }
+        
+        function closeSoulJourney() {
+            document.getElementById('soul-journey-modal').style.display = 'none';
+        }
+        
+        function exploreLifetime() {
+            const lifetimes = [
+                "Ancient Egyptian priest/priestess working in the temples of Isis, mastering healing arts and divine connection",
+                "Atlantean crystal keeper who helped preserve ancient wisdom before the great fall",
+                "Celtic druid living in harmony with nature and understanding the language of trees and stones",
+                "Tibetan monk dedicated to meditation and achieving enlightenment through compassion",
+                "Native American medicine person serving as a bridge between worlds and healing the community",
+                "Renaissance artist channeling divine inspiration through sacred geometry and beauty",
+                "Medieval mystic receiving visions and guidance, serving as a spiritual guide for others"
+            ];
+            
+            const randomLifetime = lifetimes[Math.floor(Math.random() * lifetimes.length)];
+            document.getElementById('lifetime-insight').innerHTML = `
+                <h4>Past Lifetime Revealed</h4>
+                <p>${randomLifetime}</p>
+                <div class="reflection-question">
+                    <strong>Reflection:</strong> How do the gifts and experiences from this lifetime serve your current spiritual path?
+                </div>
+            `;
+            document.getElementById('lifetime-insight').classList.add('active');
+        }
+        
+        function revealContract() {
+            const contracts = [
+                "You agreed to be a wayshower for others awakening to their spiritual truth",
+                "Your soul chose to heal ancestral patterns and break generational cycles",
+                "You contracted to help others remember their divine nature through your example",
+                "Your mission is to bridge the spiritual and physical worlds as a divine translator",
+                "You came to master unconditional love through challenging relationships",
+                "Your purpose is to anchor light and raise the vibration of your environment",
+                "You agreed to be a healing presence and help others transform their pain"
+            ];
+            
+            const randomContract = contracts[Math.floor(Math.random() * contracts.length)];
+            document.getElementById('contract-insight').innerHTML = `
+                <h4>Soul Contract Revealed</h4>
+                <p>${randomContract}</p>
+                <div class="reflection-question">
+                    <strong>Integration:</strong> How can you more fully honor this sacred agreement in your daily life?
+                </div>
+            `;
+            document.getElementById('contract-insight').classList.add('active');
+        }
+        
+        function analyzeKarma() {
+            const patterns = [
+                "Learning to trust your intuition over external authority - releasing the pattern of giving your power away",
+                "Healing the wound of abandonment by learning to be your own source of love and validation",
+                "Balancing giving and receiving - moving from over-giving into healthy energetic exchange",
+                "Transforming judgment into compassion through understanding that all beings are doing their best",
+                "Releasing the need for approval and learning to honor your authentic self regardless of others' opinions",
+                "Healing family dynamics by becoming the conscious observer rather than reactive participant",
+                "Learning healthy boundaries and saying no without guilt - honoring your sacred energy"
+            ];
+            
+            const randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
+            document.getElementById('karma-insight').innerHTML = `
+                <h4>Karmic Pattern Identified</h4>
+                <p>${randomPattern}</p>
+                <div class="reflection-question">
+                    <strong>Healing Action:</strong> What one small step can you take today to heal this pattern?
+                </div>
+            `;
+            document.getElementById('karma-insight').classList.add('active');
+        }
+        
+        function discoverPurpose() {
+            const purposes = [
+                "You are here to help others remember their divine nature through authentic expression of your gifts",
+                "Your purpose is to create beauty and inspiration that elevates consciousness and opens hearts",
+                "You came to be a healer and transformer, helping others release what no longer serves them",
+                "Your mission is to teach and guide others on their spiritual path through wisdom and compassion",
+                "You are here to innovate and create new systems that honor both spiritual and material well-being",
+                "Your purpose is to be a bridge between worlds, translating spiritual truths into practical wisdom",
+                "You came to embody love in action, showing others how to live from their heart center"
+            ];
+            
+            const randomPurpose = purposes[Math.floor(Math.random() * purposes.length)];
+            document.getElementById('purpose-insight').innerHTML = `
+                <h4>Life Purpose Revealed</h4>
+                <p>${randomPurpose}</p>
+                <div class="reflection-question">
+                    <strong>Activation:</strong> What is one way you can more fully embody this purpose this week?
+                </div>
+            `;
+            document.getElementById('purpose-insight').classList.add('active');
+        }
+        
+        // Manifestation Lab Implementation
+        function initializeManifestationLab() {
+            const manifestModal = document.createElement('div');
+            manifestModal.id = 'manifestation-lab-modal';
+            manifestModal.innerHTML = `
+                <div class="growth-modal-overlay" onclick="closeManifestationLab()">
+                    <div class="growth-modal" onclick="event.stopPropagation()">
+                        <div class="growth-header">
+                            <h2>✨ Manifestation Lab</h2>
+                            <button onclick="closeManifestationLab()" class="close-btn">×</button>
+                        </div>
+                        <div class="growth-content">
+                            <div class="growth-section">
+                                <h3>🎨 Digital Vision Board</h3>
+                                <div class="vision-board" id="vision-board">
+                                    <p>Click "Add Vision" to create your manifestation board</p>
+                                </div>
+                                <div class="manifestation-tools">
+                                    <button onclick="addVision()" class="tool-btn">Add Vision</button>
+                                    <button onclick="clearBoard()" class="tool-btn">Clear Board</button>
+                                    <button onclick="energizeBoard()" class="tool-btn">Energize Board</button>
+                                </div>
+                            </div>
+                            <div class="growth-section">
+                                <h3>💰 Abundance Activator</h3>
+                                <button onclick="activateAbundance()" class="tool-btn">Activate Abundance</button>
+                                <div id="abundance-activation" class="chamber-content"></div>
+                            </div>
+                            <div class="growth-section">
+                                <h3>⚡ Reality Creation Portal</h3>
+                                <button onclick="openCreationPortal()" class="tool-btn">Open Portal</button>
+                                <div id="creation-portal" class="chamber-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(manifestModal);
+        }
+        
+        function openManifestationLab() {
+            document.getElementById('manifestation-lab-modal').style.display = 'flex';
+            loadVisionBoard();
+        }
+        
+        function closeManifestationLab() {
+            document.getElementById('manifestation-lab-modal').style.display = 'none';
+        }
+        
+        function addVision() {
+            const vision = prompt('What do you want to manifest? Be specific:');
+            if (vision) {
+                const visions = JSON.parse(localStorage.getItem('visionBoard') || '[]');
+                visions.push({
+                    id: Date.now(),
+                    text: vision,
+                    created: new Date().toISOString()
+                });
+                localStorage.setItem('visionBoard', JSON.stringify(visions));
+                loadVisionBoard();
+            }
+        }
+        
+        function loadVisionBoard() {
+            const visions = JSON.parse(localStorage.getItem('visionBoard') || '[]');
+            const board = document.getElementById('vision-board');
+            
+            if (visions.length === 0) {
+                board.innerHTML = '<p>Click "Add Vision" to create your manifestation board</p>';
+            } else {
+                board.innerHTML = visions.map(vision => `
+                    <div class="vision-item" onclick="removeVision(${vision.id})">
+                        ${vision.text}
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function removeVision(visionId) {
+            if (confirm('Remove this vision from your board?')) {
+                const visions = JSON.parse(localStorage.getItem('visionBoard') || '[]');
+                const filteredVisions = visions.filter(v => v.id !== visionId);
+                localStorage.setItem('visionBoard', JSON.stringify(filteredVisions));
+                loadVisionBoard();
+            }
+        }
+        
+        function clearBoard() {
+            if (confirm('Clear your entire vision board?')) {
+                localStorage.removeItem('visionBoard');
+                loadVisionBoard();
+            }
+        }
+        
+        function energizeBoard() {
+            const board = document.getElementById('vision-board');
+            board.style.animation = 'pulse 2s ease-in-out 3';
+            
+            setTimeout(() => {
+                alert('✨ Your vision board has been energized with divine light! Your manifestations are accelerated.');
+                board.style.animation = '';
+            }, 6000);
+        }
+        
+        function activateAbundance() {
+            const abundanceAffirmations = [
+                "I am a divine conduit for infinite abundance. Money flows to me easily and joyfully.",
+                "I align with the frequency of prosperity. Abundance is my natural state of being.",
+                "I release all blocks to receiving and allow divine wealth to flow through my life.",
+                "I am worthy of unlimited abundance. The universe conspires to support my highest good.",
+                "I trust in divine timing and know that my needs are always met in perfect ways.",
+                "I am grateful for the abundance already present in my life, opening space for more.",
+                "I embody prosperity consciousness and attract wealth through my divine gifts."
+            ];
+            
+            const randomAffirmation = abundanceAffirmations[Math.floor(Math.random() * abundanceAffirmations.length)];
+            document.getElementById('abundance-activation').innerHTML = `
+                <h4>💰 Abundance Activation</h4>
+                <p style="font-size: 1.1rem; font-style: italic; color: var(--accent-gold);">"${randomAffirmation}"</p>
+                <div class="reflection-question">
+                    <strong>Integration Practice:</strong> Repeat this affirmation 3 times while visualizing golden light filling your energy field.
+                </div>
+            `;
+            document.getElementById('abundance-activation').classList.add('active');
+        }
+        
+        function openCreationPortal() {
+            const portalTechniques = [
+                {
+                    title: "Quantum Field Manifestation",
+                    description: "Connect with the quantum field of infinite possibilities. Visualize your desire as already existing in the field and draw it into your reality.",
+                    steps: ["Center yourself in stillness", "Feel into the quantum field around you", "See your manifestation as already complete", "Feel the gratitude of having received it", "Trust and release to divine timing"]
+                },
+                {
+                    title: "Sacred Geometry Creation",
+                    description: "Use the power of sacred geometry to amplify your manifestation through divine mathematical principles.",
+                    steps: ["Visualize a golden merkaba around your desire", "See it spinning with divine light", "Feel the geometric perfection of your manifestation", "Send it into the unified field", "Know it is done"]
+                },
+                {
+                    title: "Timeline Jumping",
+                    description: "Access parallel timelines where your desire already exists and merge with that reality.",
+                    steps: ["Feel into your current timeline", "Sense the timeline where you have your desire", "Feel the bridge between them", "Step into the new timeline", "Embody that version of yourself"]
+                }
+            ];
+            
+            const randomTechnique = portalTechniques[Math.floor(Math.random() * portalTechniques.length)];
+            document.getElementById('creation-portal').innerHTML = `
+                <h4>⚡ ${randomTechnique.title}</h4>
+                <p>${randomTechnique.description}</p>
+                <ol>
+                    ${randomTechnique.steps.map(step => `<li>${step}</li>`).join('')}
+                </ol>
+                <div class="reflection-question">
+                    <strong>Practice Now:</strong> Take 5 minutes to practice this technique with one specific manifestation.
+                </div>
+            `;
+            document.getElementById('creation-portal').classList.add('active');
+        }
+        
+        // Sacred Chambers Implementation
+        function initializeSacredChambers() {
+            const chambersModal = document.createElement('div');
+            chambersModal.id = 'sacred-chambers-modal';
+            chambersModal.innerHTML = `
+                <div class="growth-modal-overlay" onclick="closeSacredChambers()">
+                    <div class="growth-modal" onclick="event.stopPropagation()">
+                        <div class="growth-header">
+                            <h2>🏛️ Sacred Chambers of Reflection</h2>
+                            <button onclick="closeSacredChambers()" class="close-btn">×</button>
+                        </div>
+                        <div class="growth-content">
+                            <div class="growth-section">
+                                <h3>Choose Your Chamber for Divine Guidance</h3>
+                                <div class="chambers-grid">
+                                    <button class="chamber-btn" onclick="enterChamber('wisdom')">🧠 Wisdom</button>
+                                    <button class="chamber-btn" onclick="enterChamber('love')">❤️ Love</button>
+                                    <button class="chamber-btn" onclick="enterChamber('power')">⚡ Power</button>
+                                    <button class="chamber-btn" onclick="enterChamber('truth')">💎 Truth</button>
+                                    <button class="chamber-btn" onclick="enterChamber('peace')">🕊️ Peace</button>
+                                    <button class="chamber-btn" onclick="enterChamber('abundance')">💰 Abundance</button>
+                                    <button class="chamber-btn" onclick="enterChamber('healing')">🌿 Healing</button>
+                                    <button class="chamber-btn" onclick="enterChamber('purpose')">🎯 Purpose</button>
+                                    <button class="chamber-btn" onclick="enterChamber('unity')">🌌 Unity</button>
+                                </div>
+                            </div>
+                            <div id="chamber-guidance" class="growth-section" style="display: none;">
+                                <h3 id="chamber-title">Chamber Guidance</h3>
+                                <div id="chamber-message" class="chamber-content active"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(chambersModal);
+        }
+        
+        function openSacredChambers() {
+            document.getElementById('sacred-chambers-modal').style.display = 'flex';
+        }
+        
+        function closeSacredChambers() {
+            document.getElementById('sacred-chambers-modal').style.display = 'none';
+        }
+        
+        function enterChamber(chamber) {
+            const guidance = {
+                wisdom: {
+                    title: "🧠 Chamber of Divine Wisdom",
+                    message: "In stillness, true wisdom emerges. What situation in your life is calling for deeper understanding?",
+                    reflection: "The wise one within you already knows the answer. Trust your inner knowing over external opinions."
+                },
+                love: {
+                    title: "❤️ Chamber of Unconditional Love",
+                    message: "Love is the force that heals all things. Where in your life can you extend more compassion?",
+                    reflection: "Begin with loving yourself completely, then watch how this love transforms everything around you."
+                },
+                power: {
+                    title: "⚡ Chamber of Sovereign Power",
+                    message: "True power comes from alignment with your divine nature. How can you reclaim your spiritual authority?",
+                    reflection: "Your power is not over others, but the power to create, heal, and transform through divine love."
+                },
+                truth: {
+                    title: "💎 Chamber of Divine Truth",
+                    message: "Truth illuminates the path forward. What truth have you been avoiding or afraid to speak?",
+                    reflection: "Speaking your truth with love and compassion creates space for authentic connection and growth."
+                },
+                peace: {
+                    title: "🕊️ Chamber of Sacred Peace",
+                    message: "Peace is your natural state. What thoughts or beliefs are disturbing your inner tranquility?",
+                    reflection: "Release the need to control outcomes and find peace in trusting the divine flow of life."
+                },
+                abundance: {
+                    title: "💰 Chamber of Divine Abundance",
+                    message: "Abundance flows from gratitude and trust. Where can you shift from scarcity to abundance thinking?",
+                    reflection: "You are inherently worthy of all good things. Open to receive the gifts the universe offers."
+                },
+                healing: {
+                    title: "🌿 Chamber of Sacred Healing",
+                    message: "Healing happens when you bring love to wounded places. What part of you is ready to be healed?",
+                    reflection: "Healing is not about fixing what's broken, but remembering your wholeness and divine perfection."
+                },
+                purpose: {
+                    title: "🎯 Chamber of Soul Purpose",
+                    message: "Your purpose unfolds naturally when you follow your joy. What brings you alive and inspired?",
+                    reflection: "Your purpose is not something you find, but something you embody by being authentically yourself."
+                },
+                unity: {
+                    title: "🌌 Chamber of Divine Unity",
+                    message: "Separation is an illusion. How can you see the divine in all beings and situations?",
+                    reflection: "When you remember our fundamental unity, compassion and love naturally flow through you."
+                }
+            };
+            
+            const chamberData = guidance[chamber];
+            document.getElementById('chamber-title').textContent = chamberData.title;
+            document.getElementById('chamber-message').innerHTML = `
+                <h4>Divine Guidance</h4>
+                <p style="font-size: 1.1rem; color: var(--accent-gold); margin-bottom: 1rem;">${chamberData.message}</p>
+                <div class="reflection-question">
+                    <strong>Sacred Reflection:</strong> ${chamberData.reflection}
+                </div>
+                <div style="margin-top: 2rem;">
+                    <button onclick="receiveGuidance('${chamber}')" class="tool-btn">Receive Deeper Guidance</button>
+                </div>
+            `;
+            document.getElementById('chamber-guidance').style.display = 'block';
+        }
+        
+        function receiveGuidance(chamber) {
+            const deeperGuidance = {
+                wisdom: "Trust the whispers of your soul over the noise of the world. Your inner wisdom is directly connected to divine source.",
+                love: "Love is not just an emotion but a state of being. Practice seeing through the eyes of love, especially in challenging moments.",
+                power: "Your greatest power lies in your ability to choose love over fear in every moment. This transforms everything.",
+                truth: "Truth spoken with love creates healing. Truth spoken with judgment creates separation. Choose love as your foundation.",
+                peace: "Peace is not the absence of chaos, but your presence in the midst of it. You are the calm center of any storm.",
+                abundance: "Abundance is not about having more, but recognizing the infinite nature of divine supply that flows through you.",
+                healing: "You are not broken and do not need fixing. Healing is remembering the wholeness that you have always been.",
+                purpose: "Your purpose is woven into your very being. Follow what lights you up and you will naturally serve the world.",
+                unity: "In unity consciousness, there is no 'other' - only different expressions of the one divine source that you are."
+            };
+            
+            const guidance = deeperGuidance[chamber];
+            const currentMessage = document.getElementById('chamber-message');
+            currentMessage.innerHTML += `
+                <div style="margin-top: 2rem; padding: 1.5rem; background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(212, 175, 55, 0.2)); border-radius: 12px; border-left: 3px solid var(--accent-gold);">
+                    <h4>✨ Deeper Divine Guidance</h4>
+                    <p style="font-style: italic; color: var(--accent-gold);">${guidance}</p>
+                </div>
+            `;
+        }
+        
+        // Ascension Gateway Implementation
+        function initializeAscensionGateway() {
+            const ascensionModal = document.createElement('div');
+            ascensionModal.id = 'ascension-gateway-modal';
+            ascensionModal.innerHTML = `
+                <div class="growth-modal-overlay" onclick="closeAscensionGateway()">
+                    <div class="growth-modal" onclick="event.stopPropagation()">
+                        <div class="growth-header">
+                            <h2>🌌 Ascension Gateway</h2>
+                            <button onclick="closeAscensionGateway()" class="close-btn">×</button>
+                        </div>
+                        <div class="growth-content">
+                            <div class="growth-section">
+                                <h3>⚛️ Quantum Healing</h3>
+                                <button onclick="activateQuantumHealing()" class="tool-btn">Activate Quantum Healing</button>
+                                <div id="quantum-healing" class="chamber-content"></div>
+                            </div>
+                            <div class="growth-section">
+                                <h3>🌌 Dimensional Travel</h3>
+                                <button onclick="openDimensionalPortal()" class="tool-btn">Open Portal</button>
+                                <div id="dimensional-travel" class="chamber-content"></div>
+                            </div>
+                            <div class="growth-section">
+                                <h3>🧠 Cosmic Consciousness</h3>
+                                <button onclick="expandConsciousness()" class="tool-btn">Expand Consciousness</button>
+                                <div id="cosmic-consciousness" class="chamber-content"></div>
+                            </div>
+                            <div class="growth-section">
+                                <h3>🌟 Divine Integration</h3>
+                                <button onclick="integrateHigherSelf()" class="tool-btn">Integrate Higher Self</button>
+                                <div id="divine-integration" class="chamber-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(ascensionModal);
+        }
+        
+        function openAscensionGateway() {
+            document.getElementById('ascension-gateway-modal').style.display = 'flex';
+        }
+        
+        function closeAscensionGateway() {
+            document.getElementById('ascension-gateway-modal').style.display = 'none';
+        }
+        
+        function activateQuantumHealing() {
+            document.getElementById('quantum-healing').innerHTML = `
+                <h4>⚛️ Quantum Healing Activation</h4>
+                <p>You are now connected to the quantum field of infinite healing possibilities.</p>
+                <div class="reflection-question">
+                    <strong>Healing Process:</strong>
+                    <ol>
+                        <li>Place your hands on your heart and breathe deeply</li>
+                        <li>Visualize golden quantum light filling every cell</li>
+                        <li>See all dis-ease transforming into perfect health</li>
+                        <li>Feel the quantum field supporting your highest healing</li>
+                        <li>Know that healing is happening now across all timelines</li>
+                    </ol>
+                </div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button onclick="completeHealing()" class="tool-btn">Complete Healing Session</button>
+                </div>
+            `;
+            document.getElementById('quantum-healing').classList.add('active');
+        }
+        
+        function completeHealing() {
+            alert('✨ Quantum healing complete! Your cellular structure has been updated with divine perfection. Integration will continue over the next 24 hours.');
+        }
+        
+        function openDimensionalPortal() {
+            const dimensions = [
+                {
+                    name: "5th Dimension - Unity Consciousness",
+                    description: "Experience the dimension where all separation dissolves and you remember your oneness with all life.",
+                    guidance: "From this perspective, see how every experience has been perfect for your soul's evolution."
+                },
+                {
+                    name: "7th Dimension - Pure Light",
+                    description: "Enter the realm of pure divine light where form dissolves into infinite love and wisdom.",
+                    guidance: "Allow this light to restructure your consciousness and release all limitations."
+                },
+                {
+                    name: "9th Dimension - Cosmic Mind",
+                    description: "Access the cosmic mind where all knowledge exists and divine blueprints are held.",
+                    guidance: "Download the information you need for your next level of spiritual evolution."
+                },
+                {
+                    name: "12th Dimension - Source Connection",
+                    description: "Merge with the Source of all creation and remember your true nature as divine consciousness.",
+                    guidance: "From this state, bless all dimensions and anchor this frequency on Earth."
+                }
+            ];
+            
+            const randomDimension = dimensions[Math.floor(Math.random() * dimensions.length)];
+            document.getElementById('dimensional-travel').innerHTML = `
+                <h4>🌌 ${randomDimension.name}</h4>
+                <p>${randomDimension.description}</p>
+                <div class="reflection-question">
+                    <strong>Dimensional Guidance:</strong> ${randomDimension.guidance}
+                </div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button onclick="anchorFrequency()" class="tool-btn">Anchor This Frequency</button>
+                </div>
+            `;
+            document.getElementById('dimensional-travel').classList.add('active');
+        }
+        
+        function anchorFrequency() {
+            alert('🌟 Dimensional frequency anchored! You are now broadcasting this higher consciousness into the collective field.');
+        }
+        
+        function expandConsciousness() {
+            document.getElementById('cosmic-consciousness').innerHTML = `
+                <h4>🧠 Cosmic Consciousness Expansion</h4>
+                <p>Your consciousness is now expanding beyond the limitations of individual identity into cosmic awareness.</p>
+                <div class="reflection-question">
+                    <strong>Expansion Process:</strong>
+                    <ol>
+                        <li>Feel your awareness expanding beyond your body</li>
+                        <li>Sense your connection to all life on Earth</li>
+                        <li>Expand to feel your solar system</li>
+                        <li>Reach out to touch other galaxies</li>
+                        <li>Rest in the infinite field of cosmic consciousness</li>
+                    </ol>
+                </div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button onclick="downloadCosmic()" class="tool-btn">Download Cosmic Codes</button>
+                </div>
+            `;
+            document.getElementById('cosmic-consciousness').classList.add('active');
+        }
+        
+        function downloadCosmic() {
+            alert('🌌 Cosmic consciousness codes downloaded! New levels of awareness and psychic abilities are now activating in your field.');
+        }
+        
+        function integrateHigherSelf() {
+            document.getElementById('divine-integration').innerHTML = `
+                <h4>🌟 Higher Self Integration</h4>
+                <p>Your higher self is merging with your human consciousness, creating a unified divine being.</p>
+                <div class="reflection-question">
+                    <strong>Integration Meditation:</strong>
+                    <ol>
+                        <li>Call in your highest divine self</li>
+                        <li>Feel their loving presence above you</li>
+                        <li>Invite them to merge with your being</li>
+                        <li>Feel divine wisdom filling your mind</li>
+                        <li>Allow divine love to flow through your heart</li>
+                        <li>Embody divine power in your will center</li>
+                    </ol>
+                </div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button onclick="sealIntegration()" class="tool-btn">Seal Integration</button>
+                </div>
+            `;
+            document.getElementById('divine-integration').classList.add('active');
+        }
+        
+        function sealIntegration() {
+            alert('✨ Higher Self integration sealed! You are now operating from your divine nature. Trust your intuition and inner guidance.');
+        }
+        
+        // Add CSS for pulse animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+                70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Personal Growth Function Validation
+        document.addEventListener('DOMContentLoaded', () => {
+            const requiredFunctions = [
+                'loadTabContent', 'setActiveTab', 'addGoal', 'updateGoal', 
+                'deleteGoal', 'renderGoals', 'addHabit', 'renderHabits'
+            ];
+            
+            if (window.DivineTemplateUtils) {
+                window.DivineTemplateUtils.validateSectionFunctions('Personal Growth', requiredFunctions);
+                window.DivineTemplateUtils.initializeSectionListeners('Personal Growth');
+                window.DivineTemplateUtils.trackSectionPerformance('Personal Growth');
+            } else {
+                console.log('🌱 Personal Growth loaded (validation script not found)');
+            }
+        });
+    </script>
+
+    <!-- Load universal validation script -->
+    <script src="../js/section-validation.js" defer></script>
+</body>
+</html>

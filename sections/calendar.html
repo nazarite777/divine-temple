@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sacred Calendar - Divine Temple</title>
+    
+    <!-- Performance optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Critical CSS -->
+    <link rel="preload" href="../css/critical.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/critical.min.css"></noscript>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    
+    <style>
+        :root {
+            --primary-bg: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            --accent-purple: #8b5fbf;
+            --accent-gold: #d4af37;
+            --accent-rose: #f8bbd9;
+            --accent-cyan: #00e5ff;
+            --accent-warm: #ff6b6b;
+            --accent-green: #4ade80;
+            --accent-blue: #3b82f6;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        .calendar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .calendar-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .calendar-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(0, 229, 255, 0.1), transparent);
+            animation: celestialRotate 30s linear infinite;
+            z-index: -1;
+        }
+
+        .calendar-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: var(--text-shadow);
+        }
+
+        .calendar-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        /* Enhanced Calendar Interface */
+        .calendar-main-interface {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .calendar-view-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .calendar-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            border: none;
+            color: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 229, 255, 0.3);
+        }
+
+        .current-month {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1px;
+            margin-bottom: 2rem;
+        }
+
+        .calendar-day-header {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            padding: 1rem 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .calendar-day-header:first-child {
+            border-top-left-radius: 14px;
+        }
+
+        .calendar-day-header:last-child {
+            border-top-right-radius: 14px;
+        }
+
+        .calendar-day {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem 0.5rem;
+            min-height: 80px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .calendar-day:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.02);
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(248, 187, 217, 0.3));
+            border: 2px solid var(--accent-gold);
+        }
+
+        .calendar-day.other-month {
+            opacity: 0.4;
+        }
+
+        .calendar-day.has-events {
+            border-left: 4px solid var(--accent-cyan);
+        }
+
+        .day-number {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+            color: white;
+        }
+
+        .day-lunar {
+            font-size: 1.2rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .day-events {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            justify-content: center;
+        }
+
+        .event-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: block;
+        }
+
+        .event-sacred { background: var(--accent-gold); }
+        .event-lunar { background: var(--accent-cyan); }
+        .event-meditation { background: var(--accent-rose); }
+        .event-celebration { background: var(--accent-green); }
+
+        /* Lunar Phase Display */
+        .lunar-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .lunar-title {
+            color: var(--accent-cyan);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .lunar-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .moon-phase {
+            font-size: 3rem;
+            margin-right: 1rem;
+        }
+
+        .lunar-info {
+            flex: 1;
+        }
+
+        .phase-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .phase-energy {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
+        }
+
+        /* Sacred Events Sidebar */
+        .calendar-sidebar {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            height: fit-content;
+            backdrop-filter: blur(20px);
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+        }
+
+        .event-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .event-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .event-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-cyan);
+            transform: translateX(5px);
+        }
+
+        .event-date {
+            font-size: 0.8rem;
+            color: var(--accent-cyan);
+            margin-bottom: 0.3rem;
+        }
+
+        .event-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .event-description {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Meditation Scheduler */
+        .scheduler-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .scheduler-form {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            color: var(--accent-gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 0.8rem;
+            color: white;
+            font-family: inherit;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .schedule-btn {
+            background: linear-gradient(135deg, var(--accent-rose), var(--accent-purple));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .schedule-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(248, 187, 217, 0.4);
+        }
+
+        /* Astrological Events */
+        .astro-panel {
+            background: linear-gradient(135deg, rgba(139, 95, 191, 0.2), rgba(59, 130, 246, 0.2));
+            border: 2px solid var(--accent-purple);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .astro-title {
+            text-align: center;
+            font-size: 1.6rem;
+            color: var(--accent-purple);
+            margin-bottom: 1.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .astro-events {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .astro-event {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .astro-date {
+            color: var(--accent-purple);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .astro-name {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .astro-influence {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-style: italic;
+        }
+
+        /* Quick Stats */
+        .calendar-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Animations */
+        @keyframes celestialRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes lunarGlow {
+            0%, 100% { 
+                filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.5));
+                transform: scale(1);
+            }
+            50% { 
+                filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.8));
+                transform: scale(1.05);
+            }
+        }
+
+        /* Calendar Modal */
+        .calendar-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .calendar-modal {
+            background: var(--primary-bg);
+            border-radius: 25px;
+            padding: 0;
+            max-width: 800px;
+            max-height: 90vh;
+            width: 100%;
+            position: relative;
+            border: 2px solid var(--accent-cyan);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            text-shadow: var(--text-shadow);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .calendar-main-interface {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .calendar-sidebar {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .calendar-container {
+                padding: 1rem;
+            }
+            
+            .calendar-grid {
+                gap: 0.5px;
+            }
+            
+            .calendar-day {
+                min-height: 60px;
+                padding: 0.5rem 0.25rem;
+            }
+            
+            .lunar-display {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .moon-phase {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .calendar-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calendar-header {
+                padding: 2rem 1rem;
+            }
+            
+            .calendar-title {
+                font-size: 2rem;
+            }
+            
+            .calendar-nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .astro-events {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <button class="back-btn" onclick="window.parent.postMessage('back', '*')">
+            ← Back to Temple
+        </button>
+
+        <div class="calendar-header">
+            <div style="font-size: 4rem; margin-bottom: 1rem; animation: lunarGlow 4s ease-in-out infinite;">📅</div>
+            <h1 class="calendar-title">Sacred Calendar</h1>
+            <p class="calendar-subtitle">Divine timing, lunar cycles, and celestial events for spiritual alignment</p>
+        </div>
+
+        <!-- Enhanced Calendar Interface -->
+        <div class="calendar-main-interface">
+            <!-- Calendar View Panel -->
+            <div class="calendar-view-panel">
+                <!-- Calendar Navigation -->
+                <div class="calendar-nav">
+                    <button class="nav-btn" onclick="previousMonth()">← Previous</button>
+                    <div class="current-month" id="current-month">October 2025</div>
+                    <button class="nav-btn" onclick="nextMonth()">Next →</button>
+                </div>
+
+                <!-- Calendar Grid -->
+                <div class="calendar-grid" id="calendar-grid">
+                    <!-- Calendar headers -->
+                    <div class="calendar-day-header">Sun</div>
+                    <div class="calendar-day-header">Mon</div>
+                    <div class="calendar-day-header">Tue</div>
+                    <div class="calendar-day-header">Wed</div>
+                    <div class="calendar-day-header">Thu</div>
+                    <div class="calendar-day-header">Fri</div>
+                    <div class="calendar-day-header">Sat</div>
+                    <!-- Calendar days will be generated by JavaScript -->
+                </div>
+
+                <!-- Lunar Phase Display -->
+                <div class="lunar-panel">
+                    <h4 class="lunar-title">🌙 Current Lunar Phase</h4>
+                    <div class="lunar-display" id="lunar-display">
+                        <div class="moon-phase" id="moon-phase">🌕</div>
+                        <div class="lunar-info">
+                            <div class="phase-name" id="phase-name">Full Moon</div>
+                            <div class="phase-energy" id="phase-energy">
+                                Perfect time for manifestation, gratitude, and releasing what no longer serves you.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meditation Scheduler -->
+                <div class="scheduler-panel">
+                    <h4 class="sidebar-title">⏰ Schedule Sacred Time</h4>
+                    <div class="scheduler-form">
+                        <div class="form-group">
+                            <label class="form-label">Practice Type</label>
+                            <select class="form-input" id="practice-type">
+                                <option value="meditation">Meditation</option>
+                                <option value="prayer">Prayer</option>
+                                <option value="gratitude">Gratitude Practice</option>
+                                <option value="reflection">Daily Reflection</option>
+                                <option value="study">Sacred Study</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date & Time</label>
+                            <input type="datetime-local" class="form-input" id="practice-datetime">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Duration (minutes)</label>
+                            <input type="number" class="form-input" id="practice-duration" placeholder="20" min="5" max="120">
+                        </div>
+                        <button class="schedule-btn" onclick="schedulePractice()">🎯 Schedule Practice</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Sidebar -->
+            <div class="calendar-sidebar">
+                <!-- Today's Sacred Events -->
+                <div class="sidebar-section">
+                    <h4 class="sidebar-title">🌟 Today's Sacred Events</h4>
+                    <div class="event-list" id="todays-events">
+                        <!-- Events will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Upcoming Sacred Holidays -->
+                <div class="sidebar-section">
+                    <h4 class="sidebar-title">🎭 Upcoming Sacred Holidays</h4>
+                    <div class="event-list" id="upcoming-holidays">
+                        <!-- Holidays will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Quick Calendar Stats -->
+                <div class="sidebar-section">
+                    <h4 class="sidebar-title">📊 Your Sacred Journey</h4>
+                    <div class="calendar-stats">
+                        <div class="stat-card">
+                            <div class="stat-number" id="meditation-sessions">23</div>
+                            <div class="stat-label">Meditation Sessions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="prayer-days">47</div>
+                            <div class="stat-label">Prayer Days</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="reflection-entries">31</div>
+                            <div class="stat-label">Reflection Entries</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="sacred-celebrations">12</div>
+                            <div class="stat-label">Sacred Celebrations</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Astrological Events Panel -->
+        <div class="astro-panel">
+            <h3 class="astro-title">✨ Astrological Events & Celestial Influences</h3>
+            <div class="astro-events" id="astro-events">
+                <!-- Astrological events will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Calendar Modal -->
+    <div id="calendar-modal" class="calendar-modal-overlay">
+        <div class="calendar-modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Day Details</h2>
+                <button class="modal-close" onclick="closeCalendarModal()">×</button>
+            </div>
+            <div class="modal-content" id="modal-content">
+                <!-- Modal content will be loaded here -->
+            </div>
+        </div>
+    </div>
+    <script>
+        // Sacred Calendar System Class
+        class SacredCalendarSystem {
+            constructor() {
+                this.currentDate = new Date();
+                this.viewDate = new Date(this.currentDate);
+                this.data = this.loadData();
+                this.init();
+            }
+
+            init() {
+                this.generateCalendar();
+                this.updateLunarPhase();
+                this.loadTodaysEvents();
+                this.loadUpcomingHolidays();
+                this.loadAstrologicalEvents();
+                this.updateStats();
+                this.setupPerformanceMonitoring();
+                console.log('📅 Sacred Calendar System initialized');
+            }
+
+            loadData() {
+                const defaultData = {
+                    meditation: { sessions: 23, totalMinutes: 1840 },
+                    prayer: { days: 47, sessions: 156 },
+                    reflection: { entries: 31, insights: 87 },
+                    celebrations: { attended: 12, created: 5 },
+                    scheduledPractices: [],
+                    customEvents: [],
+                    progress: { level: 6, exp: 1450, nextLevel: 2000 }
+                };
+
+                try {
+                    const saved = localStorage.getItem('sacred-calendar-data');
+                    return saved ? { ...defaultData, ...JSON.parse(saved) } : defaultData;
+                } catch (error) {
+                    console.warn('Error loading calendar data, using defaults:', error);
+                    return defaultData;
+                }
+            }
+
+            saveData() {
+                try {
+                    localStorage.setItem('sacred-calendar-data', JSON.stringify(this.data));
+                } catch (error) {
+                    console.error('Error saving calendar data:', error);
+                }
+            }
+
+            generateCalendar() {
+                performance.mark('calendar-generate-start');
+                
+                const grid = document.getElementById('calendar-grid');
+                const monthDisplay = document.getElementById('current-month');
+                
+                // Clear existing calendar days
+                const existingDays = grid.querySelectorAll('.calendar-day');
+                existingDays.forEach(day => day.remove());
+                
+                // Update month display
+                monthDisplay.textContent = this.viewDate.toLocaleDateString('en-US', { 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+                
+                // Get first day of month and number of days
+                const firstDay = new Date(this.viewDate.getFullYear(), this.viewDate.getMonth(), 1);
+                const lastDay = new Date(this.viewDate.getFullYear(), this.viewDate.getMonth() + 1, 0);
+                const startDate = new Date(firstDay);
+                startDate.setDate(startDate.getDate() - firstDay.getDay());
+                
+                // Generate 42 days (6 weeks)
+                for (let i = 0; i < 42; i++) {
+                    const dayDate = new Date(startDate);
+                    dayDate.setDate(startDate.getDate() + i);
+                    
+                    const dayElement = this.createDayElement(dayDate);
+                    grid.appendChild(dayElement);
+                }
+                
+                performance.mark('calendar-generate-end');
+                performance.measure('calendar-generate', 'calendar-generate-start', 'calendar-generate-end');
+            }
+
+            createDayElement(date) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.onclick = () => this.openDayDetails(date);
+                
+                const isCurrentMonth = date.getMonth() === this.viewDate.getMonth();
+                const isToday = this.isSameDay(date, this.currentDate);
+                const isOtherMonth = !isCurrentMonth;
+                
+                if (isToday) dayElement.classList.add('today');
+                if (isOtherMonth) dayElement.classList.add('other-month');
+                
+                const events = this.getEventsForDate(date);
+                if (events.length > 0) dayElement.classList.add('has-events');
+                
+                dayElement.innerHTML = `
+                    <div class="day-number">${date.getDate()}</div>
+                    <div class="day-lunar">${this.getLunarPhaseForDate(date)}</div>
+                    <div class="day-events">
+                        ${events.slice(0, 3).map(event => 
+                            `<span class="event-dot event-${event.type}"></span>`
+                        ).join('')}
+                    </div>
+                `;
+                
+                return dayElement;
+            }
+
+            getEventsForDate(date) {
+                const events = [];
+                const dateStr = date.toDateString();
+                
+                // Add sacred holidays
+                const holiday = this.getSacredHolidayForDate(date);
+                if (holiday) {
+                    events.push({ type: 'sacred', title: holiday.name, description: holiday.description });
+                }
+                
+                // Add lunar events
+                const lunarEvent = this.getLunarEventForDate(date);
+                if (lunarEvent) {
+                    events.push({ type: 'lunar', title: lunarEvent.name, description: lunarEvent.energy });
+                }
+                
+                // Add scheduled practices
+                const practices = this.data.scheduledPractices.filter(p => 
+                    new Date(p.datetime).toDateString() === dateStr
+                );
+                practices.forEach(practice => {
+                    events.push({ 
+                        type: 'meditation', 
+                        title: practice.type, 
+                        description: `${practice.duration} minutes`
+                    });
+                });
+                
+                // Add astrological events
+                const astroEvent = this.getAstrologicalEventForDate(date);
+                if (astroEvent) {
+                    events.push({ type: 'celebration', title: astroEvent.name, description: astroEvent.influence });
+                }
+                
+                return events;
+            }
+
+            updateLunarPhase() {
+                const lunarDisplay = document.getElementById('lunar-display');
+                const moonPhase = document.getElementById('moon-phase');
+                const phaseName = document.getElementById('phase-name');
+                const phaseEnergy = document.getElementById('phase-energy');
+                
+                const currentPhase = this.getCurrentLunarPhase();
+                
+                moonPhase.textContent = currentPhase.emoji;
+                phaseName.textContent = currentPhase.name;
+                phaseEnergy.textContent = currentPhase.energy;
+            }
+
+            getCurrentLunarPhase() {
+                // Simplified lunar phase calculation
+                const phases = [
+                    { 
+                        name: 'New Moon', 
+                        emoji: '🌑', 
+                        energy: 'Perfect time for new beginnings, setting intentions, and planting seeds for future growth.'
+                    },
+                    { 
+                        name: 'Waxing Crescent', 
+                        emoji: '🌒', 
+                        energy: 'Building energy for manifestation, taking action on intentions, and gathering momentum.'
+                    },
+                    { 
+                        name: 'First Quarter', 
+                        emoji: '🌓', 
+                        energy: 'Decision-making time, overcoming challenges, and pushing through obstacles.'
+                    },
+                    { 
+                        name: 'Waxing Gibbous', 
+                        emoji: '🌔', 
+                        energy: 'Refinement and adjustment, perfecting your path and fine-tuning your goals.'
+                    },
+                    { 
+                        name: 'Full Moon', 
+                        emoji: '🌕', 
+                        energy: 'Peak manifestation energy, gratitude practice, and releasing what no longer serves.'
+                    },
+                    { 
+                        name: 'Waning Gibbous', 
+                        emoji: '🌖', 
+                        energy: 'Sharing wisdom, teaching others, and expressing gratitude for abundance received.'
+                    },
+                    { 
+                        name: 'Last Quarter', 
+                        emoji: '🌗', 
+                        energy: 'Letting go, forgiveness, and releasing negative patterns or relationships.'
+                    },
+                    { 
+                        name: 'Waning Crescent', 
+                        emoji: '🌘', 
+                        energy: 'Rest and reflection, inner contemplation, and preparing for new cycles.'
+                    }
+                ];
+                
+                // Use current day of month to simulate phase progression
+                const dayOfMonth = this.currentDate.getDate();
+                const phaseIndex = Math.floor((dayOfMonth - 1) / 3.75) % 8;
+                
+                return phases[phaseIndex];
+            }
+
+            getLunarPhaseForDate(date) {
+                const phases = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
+                const dayOfMonth = date.getDate();
+                const phaseIndex = Math.floor((dayOfMonth - 1) / 3.75) % 8;
+                return phases[phaseIndex];
+            }
+
+            loadTodaysEvents() {
+                const container = document.getElementById('todays-events');
+                const today = this.currentDate;
+                const events = this.getEventsForDate(today);
+                
+                if (events.length === 0) {
+                    container.innerHTML = `
+                        <div class="event-item">
+                            <div class="event-title">No special events today</div>
+                            <div class="event-description">Perfect day for personal practice and reflection</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = events.map(event => `
+                    <div class="event-item">
+                        <div class="event-title">${event.title}</div>
+                        <div class="event-description">${event.description}</div>
+                    </div>
+                `).join('');
+            }
+
+            loadUpcomingHolidays() {
+                const container = document.getElementById('upcoming-holidays');
+                const holidays = this.getUpcomingSacredHolidays();
+                
+                container.innerHTML = holidays.map(holiday => `
+                    <div class="event-item">
+                        <div class="event-date">${holiday.date}</div>
+                        <div class="event-title">${holiday.name}</div>
+                        <div class="event-description">${holiday.description}</div>
+                    </div>
+                `).join('');
+            }
+
+            getUpcomingSacredHolidays() {
+                const holidays = [
+                    {
+                        name: 'Samhain',
+                        date: 'October 31',
+                        description: 'Celtic new year and time for honoring ancestors'
+                    },
+                    {
+                        name: 'Diwali',
+                        date: 'November 1',
+                        description: 'Festival of lights celebrating the triumph of light over darkness'
+                    },
+                    {
+                        name: 'Day of the Dead',
+                        date: 'November 2',
+                        description: 'Honoring and remembering deceased loved ones'
+                    },
+                    {
+                        name: 'Winter Solstice',
+                        date: 'December 21',
+                        description: 'Longest night, rebirth of the light, inner reflection'
+                    },
+                    {
+                        name: 'Christmas',
+                        date: 'December 25',
+                        description: 'Celebration of divine love and spiritual rebirth'
+                    }
+                ];
+                
+                return holidays.slice(0, 4);
+            }
+
+            loadAstrologicalEvents() {
+                const container = document.getElementById('astro-events');
+                const events = this.getAstrologicalEvents();
+                
+                container.innerHTML = events.map(event => `
+                    <div class="astro-event">
+                        <div class="astro-date">${event.date}</div>
+                        <div class="astro-name">${event.name}</div>
+                        <div class="astro-influence">${event.influence}</div>
+                    </div>
+                `).join('');
+            }
+
+            getAstrologicalEvents() {
+                return [
+                    {
+                        date: 'Nov 1',
+                        name: 'Mercury Retrograde Ends',
+                        influence: 'Clear communication and forward progress resume'
+                    },
+                    {
+                        date: 'Nov 15',
+                        name: 'New Moon in Scorpio',
+                        influence: 'Deep transformation and emotional healing'
+                    },
+                    {
+                        date: 'Nov 27',
+                        name: 'Jupiter Trine Neptune',
+                        influence: 'Spiritual expansion and heightened intuition'
+                    },
+                    {
+                        date: 'Dec 7',
+                        name: 'Venus Enters Capricorn',
+                        influence: 'Practical approach to love and relationships'
+                    },
+                    {
+                        date: 'Dec 21',
+                        name: 'Winter Solstice',
+                        influence: 'Rebirth of light, inner reflection, new beginnings'
+                    },
+                    {
+                        date: 'Dec 30',
+                        name: 'Full Moon in Cancer',
+                        influence: 'Emotional fulfillment and family connections'
+                    }
+                ];
+            }
+
+            updateStats() {
+                const stats = {
+                    'meditation-sessions': this.data.meditation.sessions,
+                    'prayer-days': this.data.prayer.days,
+                    'reflection-entries': this.data.reflection.entries,
+                    'sacred-celebrations': this.data.celebrations.attended
+                };
+                
+                Object.entries(stats).forEach(([id, value]) => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        this.animateNumber(element, value);
+                    }
+                });
+            }
+
+            animateNumber(element, targetValue) {
+                const startValue = parseInt(element.textContent) || 0;
+                const duration = 1000;
+                const startTime = performance.now();
+                
+                const animate = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                    const currentValue = Math.round(startValue + (targetValue - startValue) * easeOutQuart);
+                    
+                    element.textContent = currentValue;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            }
+
+            setupPerformanceMonitoring() {
+                const observer = new PerformanceObserver((list) => {
+                    for (const entry of list.getEntries()) {
+                        if (entry.entryType === 'measure') {
+                            console.log(`📊 ${entry.name}: ${entry.duration.toFixed(2)}ms`);
+                        }
+                    }
+                });
+                observer.observe({ entryTypes: ['measure'] });
+            }
+
+            // Calendar navigation
+            previousMonth() {
+                this.viewDate.setMonth(this.viewDate.getMonth() - 1);
+                this.generateCalendar();
+            }
+
+            nextMonth() {
+                this.viewDate.setMonth(this.viewDate.getMonth() + 1);
+                this.generateCalendar();
+            }
+
+            // Day details modal
+            openDayDetails(date) {
+                const events = this.getEventsForDate(date);
+                const lunarPhase = this.getLunarPhaseForDate(date);
+                const isToday = this.isSameDay(date, this.currentDate);
+                
+                const content = `
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <h3 style="color: var(--accent-cyan); font-size: 1.8rem; margin-bottom: 1rem;">
+                            ${date.toLocaleDateString('en-US', { 
+                                weekday: 'long', 
+                                month: 'long', 
+                                day: 'numeric', 
+                                year: 'numeric' 
+                            })}
+                        </h3>
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">${lunarPhase}</div>
+                        ${isToday ? '<div style="color: var(--accent-gold); font-weight: bold;">Today</div>' : ''}
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h4 style="color: var(--accent-gold); margin-bottom: 1rem;">Sacred Events</h4>
+                        ${events.length > 0 ? events.map(event => `
+                            <div style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 10px; margin-bottom: 0.5rem;">
+                                <div style="font-weight: 600; margin-bottom: 0.3rem;">${event.title}</div>
+                                <div style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">${event.description}</div>
+                            </div>
+                        `).join('') : '<p style="color: rgba(255, 255, 255, 0.7);">No special events today</p>'}
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <button class="schedule-btn" onclick="quickSchedule('${date.toISOString()}')">
+                            ⏰ Schedule Practice
+                        </button>
+                    </div>
+                `;
+                
+                this.openCalendarModal(`📅 ${date.getDate()}`, content);
+            }
+
+            openCalendarModal(title, content) {
+                const modal = document.getElementById('calendar-modal');
+                const modalTitle = document.getElementById('modal-title');
+                const modalContent = document.getElementById('modal-content');
+                
+                modalTitle.textContent = title;
+                modalContent.innerHTML = content;
+                modal.style.display = 'flex';
+                
+                document.body.style.overflow = 'hidden';
+            }
+
+            updateProgress(category, points = 10) {
+                this.data.progress.exp += points;
+                
+                if (this.data.progress.exp >= this.data.progress.nextLevel) {
+                    this.data.progress.level++;
+                    this.data.progress.exp = 0;
+                    this.data.progress.nextLevel = Math.floor(this.data.progress.nextLevel * 1.2);
+                    this.showLevelUp();
+                }
+                
+                this.saveData();
+                this.updateUniversalProgress(category, points);
+            }
+
+            updateUniversalProgress(category, points) {
+                if (typeof window.updateUniversalProgress === 'function') {
+                    window.updateUniversalProgress('calendar', points);
+                }
+            }
+
+            showLevelUp() {
+                if (typeof window.showAchievement === 'function') {
+                    window.showAchievement(
+                        'Level Up!', 
+                        `You've reached Calendar Level ${this.data.progress.level}!`,
+                        'level-up'
+                    );
+                }
+            }
+
+            // Utility methods
+            isSameDay(date1, date2) {
+                return date1.toDateString() === date2.toDateString();
+            }
+
+            getSacredHolidayForDate(date) {
+                const month = date.getMonth() + 1;
+                const day = date.getDate();
+                
+                const holidays = {
+                    '10-31': { name: 'Samhain', description: 'Celtic new year, honoring ancestors' },
+                    '11-1': { name: 'Diwali', description: 'Festival of lights' },
+                    '12-21': { name: 'Winter Solstice', description: 'Rebirth of light' },
+                    '12-25': { name: 'Christmas', description: 'Divine love celebration' },
+                    '3-20': { name: 'Spring Equinox', description: 'Balance and renewal' },
+                    '6-21': { name: 'Summer Solstice', description: 'Peak solar energy' },
+                    '9-22': { name: 'Autumn Equinox', description: 'Harvest and gratitude' }
+                };
+                
+                const key = `${month}-${day}`;
+                return holidays[key] || null;
+            }
+
+            getLunarEventForDate(date) {
+                // Simplified lunar event detection
+                const day = date.getDate();
+                if (day === 1 || day === 15) {
+                    return {
+                        name: day === 1 ? 'New Moon' : 'Full Moon',
+                        energy: day === 1 ? 'New beginnings and intentions' : 'Manifestation and release'
+                    };
+                }
+                return null;
+            }
+
+            getAstrologicalEventForDate(date) {
+                // Simplified astrological event detection
+                const month = date.getMonth() + 1;
+                const day = date.getDate();
+                
+                if (month === 11 && day === 1) {
+                    return { name: 'Mercury Direct', influence: 'Clear communication returns' };
+                }
+                if (month === 12 && day === 7) {
+                    return { name: 'Venus Shift', influence: 'Love energy transformation' };
+                }
+                
+                return null;
+            }
+        }
+
+        // Initialize system
+        let calendarSystem;
+        document.addEventListener('DOMContentLoaded', () => {
+            calendarSystem = new SacredCalendarSystem();
+        });
+
+        // Global functions for UI interaction
+        function previousMonth() {
+            calendarSystem.previousMonth();
+        }
+
+        function nextMonth() {
+            calendarSystem.nextMonth();
+        }
+
+        function schedulePractice() {
+            const practiceType = document.getElementById('practice-type').value;
+            const datetime = document.getElementById('practice-datetime').value;
+            const duration = document.getElementById('practice-duration').value;
+            
+            if (!datetime || !duration) {
+                if (typeof window.showNotification === 'function') {
+                    window.showNotification('Please fill in all fields', 'error');
+                }
+                return;
+            }
+            
+            const practice = {
+                type: practiceType,
+                datetime: datetime,
+                duration: parseInt(duration),
+                id: Date.now(),
+                created: new Date().toISOString()
+            };
+            
+            calendarSystem.data.scheduledPractices.push(practice);
+            calendarSystem.saveData();
+            calendarSystem.generateCalendar();
+            calendarSystem.updateProgress('scheduling', 15);
+            
+            // Clear form
+            document.getElementById('practice-datetime').value = '';
+            document.getElementById('practice-duration').value = '';
+            
+            if (typeof window.showNotification === 'function') {
+                window.showNotification(`${practiceType} scheduled successfully! 🎯`, 'success');
+            }
+        }
+
+        function quickSchedule(dateString) {
+            const date = new Date(dateString);
+            const datetime = date.toISOString().slice(0, 16);
+            
+            document.getElementById('practice-datetime').value = datetime;
+            closeCalendarModal();
+            
+            // Scroll to scheduler
+            document.querySelector('.scheduler-panel').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+        }
+
+        function closeCalendarModal() {
+            const modal = document.getElementById('calendar-modal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('calendar-modal');
+            if (e.target === modal) {
+                closeCalendarModal();
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeCalendarModal();
+            }
+            if (e.key === 'ArrowLeft' && e.ctrlKey) {
+                previousMonth();
+            }
+            if (e.key === 'ArrowRight' && e.ctrlKey) {
+                nextMonth();
+            }
+        });
+
+        // Performance monitoring
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (performance.getEntriesByType) {
+                    const navigationEntries = performance.getEntriesByType('navigation');
+                    if (navigationEntries.length > 0) {
+                        const loadTime = navigationEntries[0].loadEventEnd - navigationEntries[0].loadEventStart;
+                        console.log(`🚀 Sacred Calendar loaded in ${loadTime.toFixed(2)}ms`);
+                    }
+                }
+            }, 0);
+        });
+
+        // Auto-refresh calendar at midnight
+        function scheduleCalendarRefresh() {
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0);
+            
+            const msUntilMidnight = tomorrow.getTime() - now.getTime();
+            
+            setTimeout(() => {
+                if (calendarSystem) {
+                    calendarSystem.currentDate = new Date();
+                    calendarSystem.generateCalendar();
+                    calendarSystem.updateLunarPhase();
+                    calendarSystem.loadTodaysEvents();
+                }
+                scheduleCalendarRefresh(); // Schedule next refresh
+            }, msUntilMidnight);
+        }
+
+        // Initialize auto-refresh
+        document.addEventListener('DOMContentLoaded', () => {
+            scheduleCalendarRefresh();
+        });
+    </script>
+</body>
+</html>

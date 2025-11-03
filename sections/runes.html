@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rune Casting - Divine Temple</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --accent-purple: #8B5CF6;
+            --deep-purple: #4C1D95;
+            --dark-bg: #0F0F23;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A1A1AA;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--deep-purple) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 1rem; }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-purple), var(--primary-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .reading-selection {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .cast-btn {
+            background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 1rem;
+        }
+
+        .cast-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+        }
+
+        .rune-display {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .rune-stone {
+            background: linear-gradient(135deg, #6b7280, #374151);
+            border: 3px solid var(--primary-gold);
+            border-radius: 15px;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: runeReveal 0.6s ease-out;
+        }
+
+        .rune-name {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-gold);
+        }
+
+        .rune-meaning {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
+            border: 3px solid var(--primary-gold);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            color: #1a1a2e;
+        }
+
+        @keyframes runeReveal {
+            from { opacity: 0; transform: scale(0.8) rotateY(180deg); }
+            to { opacity: 1; transform: scale(1) rotateY(0deg); }
+        }
+
+        @media (max-width: 768px) {
+            .rune-stone { width: 100px; height: 100px; font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="oracle-divination.html" class="back-btn">← Back to Oracle Hub</a>
+
+        <div class="header">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">ᚱ</div>
+            <h1 class="title">Rune Casting</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">24 Ancient Norse Runes • Viking Wisdom</p>
+        </div>
+
+        <div class="reading-selection">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--primary-gold); margin-bottom: 1rem;">Cast the Sacred Runes</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Focus on your question and let the ancient stones reveal their wisdom</p>
+            
+            <button class="cast-btn" onclick="castSingle()">ᚱ Cast Single Rune</button>
+            <button class="cast-btn" onclick="castThree()">ᚱᚱᚱ Cast Three Runes</button>
+        </div>
+
+        <div id="rune-display"></div>
+        <div id="reading-actions" style="text-align: center; margin-top: 2rem; display: none;">
+            <button class="cast-btn" style="background: rgba(255, 255, 255, 0.1);" onclick="reset()">🔄 Cast Again</button>
+        </div>
+    </div>
+
+    <script>
+        const runes = [
+            { symbol: "ᚠ", name: "Fehu", meaning: "Wealth, cattle, prosperity, material abundance, financial success" },
+            { symbol: "ᚢ", name: "Uruz", meaning: "Strength, vitality, wild ox, primal power, physical health" },
+            { symbol: "ᚦ", name: "Thurisaz", meaning: "Giant, thorn, reactive force, conflict, protection" },
+            { symbol: "ᚨ", name: "Ansuz", meaning: "God, communication, divine inspiration, wisdom, signals" },
+            { symbol: "ᚱ", name: "Raidho", meaning: "Journey, travel, rhythm, movement, life path" },
+            { symbol: "ᚲ", name: "Kenaz", meaning: "Torch, knowledge, creativity, inspiration, illumination" },
+            { symbol: "ᚷ", name: "Gebo", meaning: "Gift, partnership, generosity, exchange, balance" },
+            { symbol: "ᚹ", name: "Wunjo", meaning: "Joy, pleasure, harmony, prosperity, fulfillment" },
+            { symbol: "ᚺ", name: "Hagalaz", meaning: "Hail, disruption, challenge, change, natural force" },
+            { symbol: "ᚾ", name: "Nauthiz", meaning: "Need, necessity, constraint, endurance, resistance" },
+            { symbol: "ᛁ", name: "Isa", meaning: "Ice, standstill, stillness, clarity, patience" },
+            { symbol: "ᛃ", name: "Jera", meaning: "Year, harvest, cycle, patience, reward" },
+            { symbol: "ᛇ", name: "Eihwaz", meaning: "Yew tree, death, rebirth, transformation, endurance" },
+            { symbol: "ᛈ", name: "Perthro", meaning: "Dice cup, fate, mystery, hidden knowledge, chance" },
+            { symbol: "ᛉ", name: "Algiz", meaning: "Elk, protection, higher self, spiritual guidance, defense" },
+            { symbol: "ᛊ", name: "Sowilo", meaning: "Sun, success, vitality, enlightenment, victory" },
+            { symbol: "ᛏ", name: "Tiwaz", meaning: "God Tyr, justice, sacrifice, honor, leadership" },
+            { symbol: "ᛒ", name: "Berkano", meaning: "Birch, growth, fertility, new beginnings, nurturing" },
+            { symbol: "ᛖ", name: "Ehwaz", meaning: "Horse, partnership, trust, loyalty, movement" },
+            { symbol: "ᛗ", name: "Mannaz", meaning: "Man, humanity, self, community, cooperation" },
+            { symbol: "ᛚ", name: "Laguz", meaning: "Water, flow, intuition, psychic abilities, emotions" },
+            { symbol: "ᛜ", name: "Ingwaz", meaning: "God Ing, fertility, internal growth, completion" },
+            { symbol: "ᛞ", name: "Dagaz", meaning: "Day, breakthrough, awakening, clarity, transformation" },
+            { symbol: "ᛟ", name: "Othala", meaning: "Ancestral property, heritage, spiritual heritage, home" }
+        ];
+
+        let currentReading = [];
+
+        function getRandom() {
+            return runes[Math.floor(Math.random() * runes.length)];
+        }
+
+        function castSingle() {
+            const rune = getRandom();
+            displayRunes([rune], 'Single Rune Guidance');
+            currentReading = [rune];
+        }
+
+        function castThree() {
+            const cast = [
+                { ...getRandom(), position: 'Past' },
+                { ...getRandom(), position: 'Present' },
+                { ...getRandom(), position: 'Future' }
+            ];
+            displayRunes(cast, 'Three Rune Cast');
+            currentReading = cast;
+        }
+
+        function displayRunes(cast, title) {
+            const display = document.getElementById('rune-display');
+            display.innerHTML = `
+                <h3 style="text-align: center; font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--primary-gold); margin-bottom: 2rem;">${title}</h3>
+                <div class="rune-display">
+                    ${cast.map(r => `
+                        <div>
+                            ${r.position ? `<div style="text-align: center; color: var(--primary-gold); font-weight: 600; margin-bottom: 0.5rem;">${r.position}</div>` : ''}
+                            <div class="rune-stone">
+                                <div>${r.symbol}</div>
+                                <div class="rune-name">${r.name}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                ${cast.map(r => `
+                    <div class="rune-meaning">
+                        <h4 style="color: var(--accent-purple); margin-bottom: 1rem; font-size: 1.4rem;">${r.name} (${r.symbol})</h4>
+                        <p style="line-height: 1.6;">${r.meaning}</p>
+                    </div>
+                `).join('')}
+            `;
+            document.getElementById('reading-actions').style.display = 'block';
+        }
+
+        function reset() {
+            document.getElementById('rune-display').innerHTML = '';
+            document.getElementById('reading-actions').style.display = 'none';
+            currentReading = [];
+        }
+
+        console.log('ᚱ Rune Casting loaded - 24 runes ready');
+    </script>
+</body>
+</html>

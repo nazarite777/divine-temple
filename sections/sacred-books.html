@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sacred Books - Divine Temple</title>
+    
+    <!-- Performance Optimized CSS -->
+    <link rel="stylesheet" href="../css/performance-optimized.css">
+    
+    <style>
+        :root {
+            --accent-gold: #d4af37;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --background-dark: #0f0f23;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+
+        .section-container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 2.5rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            border-color: var(--accent-gold);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Main Layout */
+        .books-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            gap: 2rem;
+            min-height: 80vh;
+            contain: layout style paint;
+        }
+
+        .books-sidebar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        .books-main {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        .books-tools {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        /* Book Library Sidebar */
+        .library-search {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .library-search::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .book-categories {
+            margin-bottom: 1.5rem;
+        }
+
+        .category-title {
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .book-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .book-item {
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 0.5rem;
+            border: 1px solid transparent;
+        }
+
+        .book-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-gold);
+        }
+
+        .book-item.active {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            color: white;
+        }
+
+        .book-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .book-author {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .reading-progress {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-purple));
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        /* Book Reader */
+        .reader-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .reader-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+        }
+
+        .reader-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .control-btn:hover {
+            background: var(--accent-gold);
+            color: var(--background-dark);
+        }
+
+        .reader-content {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 1rem;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .reader-content h2 {
+            color: var(--accent-gold);
+            font-family: 'Playfair Display', serif;
+            margin: 2rem 0 1rem 0;
+        }
+
+        .reader-content h3 {
+            color: var(--accent-purple);
+            margin: 1.5rem 0 0.75rem 0;
+        }
+
+        .reader-content p {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(139, 92, 246, 0.3));
+            padding: 0.1rem 0.3rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .chapter-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Study Tools */
+        .tool-section {
+            margin-bottom: 2rem;
+        }
+
+        .tool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .tool-title {
+            color: var(--accent-gold);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .tool-toggle {
+            background: none;
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .tool-content {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .note-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.9rem;
+            min-height: 80px;
+            resize: vertical;
+            margin-bottom: 0.5rem;
+        }
+
+        .note-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid var(--accent-purple);
+        }
+
+        .note-text {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .note-meta {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .highlight-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid var(--accent-gold);
+            cursor: pointer;
+        }
+
+        .highlight-text {
+            font-size: 0.9rem;
+            font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Study Groups */
+        .study-group {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .group-name {
+            font-weight: 600;
+            color: var(--accent-gold);
+        }
+
+        .group-members {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .group-description {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .join-btn {
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .join-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Reading Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .books-layout {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .books-sidebar, .books-tools {
+                order: 2;
+            }
+
+            .books-main {
+                order: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section-container {
+                padding: 1rem;
+            }
+
+            .reader-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .reader-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            border: 2px solid var(--glass-border);
+            border-radius: 20px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+        }
+
+        .modal h3 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        /* Custom Scrollbars */
+        .book-list::-webkit-scrollbar,
+        .reader-content::-webkit-scrollbar,
+        .tool-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .book-list::-webkit-scrollbar-track,
+        .reader-content::-webkit-scrollbar-track,
+        .tool-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .book-list::-webkit-scrollbar-thumb,
+        .reader-content::-webkit-scrollbar-thumb,
+        .tool-content::-webkit-scrollbar-thumb {
+            background: var(--accent-gold);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="section-container">
+        <button class="back-btn" onclick="goBackToDashboard()">
+            <span class="back-icon">←</span>
+            <span>Back to Dashboard</span>
+        </button>
+        
+        <div class="section-header">
+            <h1>📚 Sacred Books</h1>
+            <p>Interactive reading, note-taking, and collaborative study system</p>
+        </div>
+
+        <div class="books-layout">
+            <!-- Library Sidebar -->
+            <div class="books-sidebar">
+                <input type="text" class="library-search" id="library-search" placeholder="Search books..." onkeyup="searchBooks()">
+                
+                <div class="book-categories">
+                    <div class="category-title">📖 Sacred Texts</div>
+                    <div class="book-list" id="sacred-books-list"></div>
+                </div>
+
+                <div class="book-categories">
+                    <div class="category-title">🔮 Mystical Works</div>
+                    <div class="book-list" id="mystical-books-list"></div>
+                </div>
+
+                <div class="book-categories">
+                    <div class="category-title">📜 Ancient Wisdom</div>
+                    <div class="book-list" id="ancient-books-list"></div>
+                </div>
+            </div>
+
+            <!-- Main Reader -->
+            <div class="books-main">
+                <div class="reader-header">
+                    <h2 class="reader-title" id="current-book-title">Select a Book to Begin Reading</h2>
+                    <div class="reader-controls">
+                        <button class="control-btn" onclick="toggleBookmarks()">🔖 Bookmarks</button>
+                        <button class="control-btn" onclick="toggleReadingMode()">🌙 Night Mode</button>
+                        <button class="control-btn" onclick="changeFontSize()">📝 Font Size</button>
+                        <button class="control-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+                    </div>
+                </div>
+
+                <div class="reader-content" id="reader-content">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Welcome to the Sacred Books Library. Select a book from the sidebar to begin your spiritual reading journey.
+                    </div>
+                </div>
+
+                <div class="chapter-navigation" id="chapter-nav" style="display: none;">
+                    <button class="nav-btn" id="prev-chapter" onclick="previousChapter()">← Previous Chapter</button>
+                    <span id="chapter-info">Chapter 1 of 12</span>
+                    <button class="nav-btn" id="next-chapter" onclick="nextChapter()">Next Chapter →</button>
+                </div>
+            </div>
+
+            <!-- Study Tools -->
+            <div class="books-tools">
+                <!-- Reading Progress -->
+                <div class="tool-section">
+                    <div class="tool-header">
+                        <span class="tool-title">📊 Reading Progress</span>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value" id="books-read">0</span>
+                            <span class="stat-label">Books Read</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="reading-streak">0</span>
+                            <span class="stat-label">Day Streak</span>
+                        </div>
+                    </div>
+                    <div class="reading-progress">
+                        <div class="progress-bar" id="overall-progress" style="width: 0%"></div>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        <span id="progress-text">Start reading to track progress</span>
+                    </p>
+                </div>
+
+                <!-- Notes -->
+                <div class="tool-section">
+                    <div class="tool-header">
+                        <span class="tool-title">📝 My Notes</span>
+                        <button class="tool-toggle" onclick="toggleNotes()">Toggle</button>
+                    </div>
+                    <div class="tool-content" id="notes-content">
+                        <textarea class="note-input" id="note-input" placeholder="Add a note about this passage..."></textarea>
+                        <button class="control-btn" onclick="saveNote()" style="width: 100%; margin-bottom: 1rem;">Save Note</button>
+                        <div id="notes-list"></div>
+                    </div>
+                </div>
+
+                <!-- Highlights -->
+                <div class="tool-section">
+                    <div class="tool-header">
+                        <span class="tool-title">✨ Highlights</span>
+                        <button class="tool-toggle" onclick="toggleHighlights()">Toggle</button>
+                    </div>
+                    <div class="tool-content" id="highlights-content">
+                        <div id="highlights-list"></div>
+                    </div>
+                </div>
+
+                <!-- Study Groups -->
+                <div class="tool-section">
+                    <div class="tool-header">
+                        <span class="tool-title">👥 Study Groups</span>
+                        <button class="tool-toggle" onclick="toggleStudyGroups()">Toggle</button>
+                    </div>
+                    <div class="tool-content" id="study-groups-content">
+                        <div id="study-groups-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bookmarks Modal -->
+    <div class="modal-overlay" id="bookmarks-modal">
+        <div class="modal" onclick="event.stopPropagation()">
+            <h3>🔖 Your Bookmarks</h3>
+            <div id="bookmarks-list"></div>
+            <button class="control-btn" onclick="closeBookmarksModal()" style="margin-top: 1rem;">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Sacred Books System Class
+        class SacredBooksSystem {
+            constructor() {
+                this.currentBook = null;
+                this.currentChapter = 0;
+                this.fontSize = 16;
+                this.nightMode = false;
+                this.books = this.initializeBooksLibrary();
+                this.userProgress = this.loadUserProgress();
+                this.notes = this.loadNotes();
+                this.highlights = this.loadHighlights();
+                this.bookmarks = this.loadBookmarks();
+                this.studyGroups = this.initializeStudyGroups();
+                
+                this.init();
+            }
+
+            init() {
+                this.renderBooksList();
+                this.renderStudyGroups();
+                this.updateProgressStats();
+                this.setupEventListeners();
+                console.log('📚 Sacred Books System initialized');
+            }
+
+            initializeBooksLibrary() {
+                return {
+                    'sacred-texts': [
+                        {
+                            id: 'you-never-left-eden',
+                            title: 'You Never Left Eden',
+                            author: 'Nazir El',
+                            chapters: [
+                                {
+                                    title: 'The Great Remembering',
+                                    content: `<h2>Chapter 1: The Great Remembering</h2>
+                                    <p>You never left Eden. This is not metaphor, allegory, or spiritual platitude. This is the fundamental truth of your existence that has been hidden in plain sight.</p>
+                                    <p>The garden was never a place you could lose, because the garden is consciousness itself. Eden is the natural state of divine awareness that you ARE, not a location you once inhabited.</p>
+                                    <h3>The Illusion of Separation</h3>
+                                    <p>What we call "the fall" was not a departure from paradise, but a forgetting of what you are. It was the first experience of amnesia - divine consciousness forgetting its own nature.</p>
+                                    <p>Every seeking, every spiritual practice, every prayer and meditation is simply consciousness trying to remember what it never actually forgot. You are not returning to Eden. You are awakening AS Eden.</p>
+                                    <h3>The Sacred Recognition</h3>
+                                    <p>This moment, reading these words, breathing this breath, feeling this heartbeat - this IS Eden expressing itself. The divine presence you seek is the divine presence you are.</p>`
+                                },
+                                {
+                                    title: 'Divine Identity',
+                                    content: `<h2>Chapter 2: Divine Identity</h2>
+                                    <p>Your true identity is not the collection of thoughts, memories, and experiences you call "me." Your true identity is the eternal, unchanging awareness in which all experience appears.</p>
+                                    <h3>Beyond the Personal Self</h3>
+                                    <p>The person you think you are is a beautiful expression of divinity, but it is not WHO you are. You are the divine consciousness that animates the person, that observes through the person, that experiences AS the person.</p>
+                                    <p>This recognition changes everything. When you know yourself as divine consciousness, fear dissolves, seeking ends, and love becomes your natural expression.</p>`
+                                }
+                            ]
+                        },
+                        {
+                            id: 'divine-consciousness',
+                            title: 'Divine Consciousness Unveiled',
+                            author: 'Ancient Masters',
+                            chapters: [
+                                {
+                                    title: 'The Nature of Reality',
+                                    content: `<h2>Chapter 1: The Nature of Reality</h2>
+                                    <p>Reality is consciousness appearing as the world. What you perceive as separate objects, people, and experiences are all modifications of the one divine consciousness.</p>
+                                    <p>This understanding is not merely intellectual but must be realized directly through spiritual practice and divine grace.</p>`
+                                }
+                            ]
+                        }
+                    ],
+                    'mystical-works': [
+                        {
+                            id: 'hermetic-mysteries',
+                            title: 'Hermetic Mysteries',
+                            author: 'Hermes Trismegistus',
+                            chapters: [
+                                {
+                                    title: 'As Above, So Below',
+                                    content: `<h2>Chapter 1: As Above, So Below</h2>
+                                    <p>The principle of correspondence reveals that what exists in the macrocosm is reflected in the microcosm. The patterns of the universe are replicated at every level of existence.</p>
+                                    <p>By understanding this principle, the wise can access universal wisdom through contemplation of any aspect of creation.</p>`
+                                }
+                            ]
+                        }
+                    ],
+                    'ancient-wisdom': [
+                        {
+                            id: 'bhagavad-gita-essence',
+                            title: 'Bhagavad Gita Essence',
+                            author: 'Krishna',
+                            chapters: [
+                                {
+                                    title: 'The Eternal Self',
+                                    content: `<h2>Chapter 1: The Eternal Self</h2>
+                                    <p>The soul is eternal, unborn, and deathless. What we call birth and death are merely changes of costume for the immortal soul.</p>
+                                    <p>As a person changes old garments for new ones, so the soul changes bodies when the old body dies.</p>`
+                                }
+                            ]
+                        }
+                    ]
+                };
+            }
+
+            initializeStudyGroups() {
+                return [
+                    {
+                        id: 'eden-consciousness',
+                        name: 'Eden Consciousness Circle',
+                        description: 'Deep study of "You Never Left Eden" with weekly discussions',
+                        members: 47,
+                        currentBook: 'you-never-left-eden',
+                        schedule: 'Wednesdays 7 PM EST'
+                    },
+                    {
+                        id: 'hermetic-study',
+                        name: 'Hermetic Wisdom Study',
+                        description: 'Exploring ancient hermetic principles and their modern applications',
+                        members: 23,
+                        currentBook: 'hermetic-mysteries',
+                        schedule: 'Saturdays 2 PM EST'
+                    },
+                    {
+                        id: 'sacred-texts-deep-dive',
+                        name: 'Sacred Texts Deep Dive',
+                        description: 'Comparative study of spiritual classics with meditation practice',
+                        members: 61,
+                        currentBook: 'bhagavad-gita-essence',
+                        schedule: 'Sundays 10 AM EST'
+                    }
+                ];
+            }
+
+            renderBooksList() {
+                const categories = ['sacred-texts', 'mystical-works', 'ancient-wisdom'];
+                
+                categories.forEach(category => {
+                    const listElement = document.getElementById(`${category.replace('-', '-books')}-list`);
+                    if (!listElement) return;
+                    
+                    const books = this.books[category] || [];
+                    listElement.innerHTML = books.map(book => {
+                        const progress = this.userProgress[book.id] || { chapter: 0, progress: 0 };
+                        return `
+                            <div class="book-item" onclick="sacredBooks.loadBook('${book.id}')" data-book-id="${book.id}">
+                                <div class="book-title">${book.title}</div>
+                                <div class="book-author">by ${book.author}</div>
+                                <div class="reading-progress">
+                                    <div class="progress-bar" style="width: ${progress.progress}%"></div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                });
+            }
+
+            loadBook(bookId) {
+                // Find book in any category
+                this.currentBook = null;
+                for (const category in this.books) {
+                    const book = this.books[category].find(b => b.id === bookId);
+                    if (book) {
+                        this.currentBook = book;
+                        break;
+                    }
+                }
+
+                if (!this.currentBook) return;
+
+                // Update UI
+                document.getElementById('current-book-title').textContent = this.currentBook.title;
+                
+                // Load saved chapter or start from beginning
+                const progress = this.userProgress[bookId] || { chapter: 0, progress: 0 };
+                this.currentChapter = progress.chapter;
+                
+                this.renderCurrentChapter();
+                this.updateActiveBook(bookId);
+                
+                console.log(`📖 Loaded "${this.currentBook.title}"`);
+            }
+
+            renderCurrentChapter() {
+                if (!this.currentBook) return;
+
+                const chapter = this.currentBook.chapters[this.currentChapter];
+                if (!chapter) return;
+
+                document.getElementById('reader-content').innerHTML = chapter.content;
+                document.getElementById('chapter-nav').style.display = 'flex';
+                
+                // Update chapter navigation
+                const chapterInfo = document.getElementById('chapter-info');
+                chapterInfo.textContent = `Chapter ${this.currentChapter + 1} of ${this.currentBook.chapters.length}`;
+                
+                // Update navigation buttons
+                document.getElementById('prev-chapter').disabled = this.currentChapter === 0;
+                document.getElementById('next-chapter').disabled = this.currentChapter === this.currentBook.chapters.length - 1;
+
+                // Add text selection for highlighting
+                this.setupTextSelection();
+                
+                // Update reading progress
+                this.updateReadingProgress();
+            }
+
+            setupTextSelection() {
+                const content = document.getElementById('reader-content');
+                content.addEventListener('mouseup', () => {
+                    const selection = window.getSelection();
+                    if (selection.toString().length > 0) {
+                        this.showHighlightOption(selection);
+                    }
+                });
+            }
+
+            showHighlightOption(selection) {
+                const selectedText = selection.toString();
+                if (selectedText.length < 10) return; // Only highlight meaningful text
+
+                const confirmed = confirm(`Highlight this text?\n\n"${selectedText.substring(0, 100)}${selectedText.length > 100 ? '...' : ''}"`);
+                
+                if (confirmed) {
+                    this.addHighlight(selectedText);
+                    
+                    // Wrap selection in highlight span
+                    const range = selection.getRangeAt(0);
+                    const span = document.createElement('span');
+                    span.className = 'highlight';
+                    span.onclick = () => this.showHighlightDetails(selectedText);
+                    
+                    try {
+                        range.surroundContents(span);
+                    } catch (e) {
+                        // If selection spans multiple elements, just add to highlights list
+                        console.log('Complex selection highlighted');
+                    }
+                    
+                    selection.removeAllRanges();
+                }
+            }
+
+            addHighlight(text) {
+                const highlight = {
+                    id: Date.now(),
+                    text: text,
+                    book: this.currentBook.id,
+                    chapter: this.currentChapter,
+                    timestamp: new Date().toISOString()
+                };
+
+                this.highlights.push(highlight);
+                this.saveHighlights();
+                this.renderHighlights();
+            }
+
+            renderHighlights() {
+                const container = document.getElementById('highlights-list');
+                if (!container) return;
+
+                container.innerHTML = this.highlights
+                    .filter(h => h.book === this.currentBook?.id)
+                    .map(highlight => `
+                        <div class="highlight-item" onclick="sacredBooks.jumpToHighlight('${highlight.id}')">
+                            <div class="highlight-text">"${highlight.text.substring(0, 100)}${highlight.text.length > 100 ? '...' : ''}"</div>
+                            <div class="note-meta">
+                                <span>Chapter ${highlight.chapter + 1}</span>
+                                <span>${new Date(highlight.timestamp).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                    `).join('');
+            }
+
+            saveNote() {
+                const noteInput = document.getElementById('note-input');
+                const noteText = noteInput.value.trim();
+                
+                if (!noteText || !this.currentBook) return;
+
+                const note = {
+                    id: Date.now(),
+                    text: noteText,
+                    book: this.currentBook.id,
+                    chapter: this.currentChapter,
+                    timestamp: new Date().toISOString()
+                };
+
+                this.notes.push(note);
+                this.saveNotes();
+                this.renderNotes();
+                
+                noteInput.value = '';
+                alert('Note saved! 📝');
+            }
+
+            renderNotes() {
+                const container = document.getElementById('notes-list');
+                if (!container) return;
+
+                container.innerHTML = this.notes
+                    .filter(n => n.book === this.currentBook?.id)
+                    .map(note => `
+                        <div class="note-item">
+                            <div class="note-text">${note.text}</div>
+                            <div class="note-meta">
+                                <span>Chapter ${note.chapter + 1}</span>
+                                <span>${new Date(note.timestamp).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                    `).join('');
+            }
+
+            renderStudyGroups() {
+                const container = document.getElementById('study-groups-list');
+                if (!container) return;
+
+                container.innerHTML = this.studyGroups.map(group => `
+                    <div class="study-group">
+                        <div class="group-header">
+                            <div class="group-name">${group.name}</div>
+                            <div class="group-members">${group.members} members</div>
+                        </div>
+                        <div class="group-description">${group.description}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                            📅 ${group.schedule} • 📖 Currently reading: ${this.getBookTitle(group.currentBook)}
+                        </div>
+                        <button class="join-btn" onclick="sacredBooks.joinStudyGroup('${group.id}')">Join Group</button>
+                    </div>
+                `).join('');
+            }
+
+            getBookTitle(bookId) {
+                for (const category in this.books) {
+                    const book = this.books[category].find(b => b.id === bookId);
+                    if (book) return book.title;
+                }
+                return 'Unknown';
+            }
+
+            joinStudyGroup(groupId) {
+                const group = this.studyGroups.find(g => g.id === groupId);
+                if (group) {
+                    alert(`You've joined "${group.name}"! 👥\n\nNext meeting: ${group.schedule}\nYou'll receive email notifications about upcoming sessions.`);
+                    
+                    // Load the group's current book
+                    this.loadBook(group.currentBook);
+                }
+            }
+
+            previousChapter() {
+                if (this.currentChapter > 0) {
+                    this.currentChapter--;
+                    this.renderCurrentChapter();
+                    this.updateReadingProgress();
+                }
+            }
+
+            nextChapter() {
+                if (this.currentBook && this.currentChapter < this.currentBook.chapters.length - 1) {
+                    this.currentChapter++;
+                    this.renderCurrentChapter();
+                    this.updateReadingProgress();
+                }
+            }
+
+            updateReadingProgress() {
+                if (!this.currentBook) return;
+
+                const progress = ((this.currentChapter + 1) / this.currentBook.chapters.length) * 100;
+                
+                // Save progress
+                this.userProgress[this.currentBook.id] = {
+                    chapter: this.currentChapter,
+                    progress: Math.round(progress)
+                };
+                this.saveUserProgress();
+
+                // Update UI
+                this.updateProgressStats();
+                this.renderBooksList(); // Update progress bars
+            }
+
+            updateProgressStats() {
+                const booksRead = Object.values(this.userProgress).filter(p => p.progress === 100).length;
+                const streak = this.calculateReadingStreak();
+
+                document.getElementById('books-read').textContent = booksRead;
+                document.getElementById('reading-streak').textContent = streak;
+
+                // Calculate overall progress
+                const totalProgress = Object.values(this.userProgress).reduce((sum, p) => sum + p.progress, 0);
+                const totalBooks = Object.values(this.books).flat().length;
+                const overallProgress = totalBooks > 0 ? totalProgress / totalBooks : 0;
+
+                document.getElementById('overall-progress').style.width = `${overallProgress}%`;
+                document.getElementById('progress-text').textContent = 
+                    totalBooks > 0 ? `${Math.round(overallProgress)}% of library completed` : 'No reading progress yet';
+            }
+
+            calculateReadingStreak() {
+                // Simplified streak calculation - would be more sophisticated in real app
+                const lastRead = localStorage.getItem('sacredBooks_lastRead');
+                const today = new Date().toDateString();
+                
+                if (lastRead === today) {
+                    return parseInt(localStorage.getItem('sacredBooks_streak') || '1');
+                }
+                
+                return 0;
+            }
+
+            updateActiveBook(bookId) {
+                // Remove active class from all books
+                document.querySelectorAll('.book-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Add active class to current book
+                const activeBook = document.querySelector(`[data-book-id="${bookId}"]`);
+                if (activeBook) {
+                    activeBook.classList.add('active');
+                }
+            }
+
+            searchBooks() {
+                const searchTerm = document.getElementById('library-search').value.toLowerCase();
+                const bookItems = document.querySelectorAll('.book-item');
+
+                bookItems.forEach(item => {
+                    const title = item.querySelector('.book-title').textContent.toLowerCase();
+                    const author = item.querySelector('.book-author').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || author.includes(searchTerm)) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = searchTerm === '' ? 'block' : 'none';
+                    }
+                });
+            }
+
+            // UI Control Methods
+            toggleBookmarks() {
+                document.getElementById('bookmarks-modal').style.display = 'flex';
+                this.renderBookmarks();
+            }
+
+            renderBookmarks() {
+                const container = document.getElementById('bookmarks-list');
+                if (this.bookmarks.length === 0) {
+                    container.innerHTML = '<p>No bookmarks yet. Add bookmarks while reading!</p>';
+                    return;
+                }
+
+                container.innerHTML = this.bookmarks.map(bookmark => `
+                    <div class="note-item" onclick="sacredBooks.jumpToBookmark('${bookmark.id}')">
+                        <div class="note-text">${bookmark.text}</div>
+                        <div class="note-meta">
+                            <span>${bookmark.book} - Chapter ${bookmark.chapter + 1}</span>
+                            <span>${new Date(bookmark.timestamp).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            toggleReadingMode() {
+                this.nightMode = !this.nightMode;
+                const content = document.getElementById('reader-content');
+                
+                if (this.nightMode) {
+                    content.style.background = '#1a1a1a';
+                    content.style.color = '#e0e0e0';
+                } else {
+                    content.style.background = '';
+                    content.style.color = '';
+                }
+            }
+
+            changeFontSize() {
+                this.fontSize = this.fontSize === 16 ? 18 : this.fontSize === 18 ? 20 : 16;
+                document.getElementById('reader-content').style.fontSize = `${this.fontSize}px`;
+                alert(`Font size: ${this.fontSize}px`);
+            }
+
+            toggleFullscreen() {
+                const main = document.querySelector('.books-main');
+                
+                if (!document.fullscreenElement) {
+                    main.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+
+            // Tool panel toggles
+            toggleNotes() {
+                const content = document.getElementById('notes-content');
+                content.style.display = content.style.display === 'none' ? 'block' : 'none';
+            }
+
+            toggleHighlights() {
+                const content = document.getElementById('highlights-content');
+                content.style.display = content.style.display === 'none' ? 'block' : 'none';
+            }
+
+            toggleStudyGroups() {
+                const content = document.getElementById('study-groups-content');
+                content.style.display = content.style.display === 'none' ? 'block' : 'none';
+            }
+
+            // Data persistence methods
+            loadUserProgress() {
+                return JSON.parse(localStorage.getItem('sacredBooks_progress') || '{}');
+            }
+
+            saveUserProgress() {
+                localStorage.setItem('sacredBooks_progress', JSON.stringify(this.userProgress));
+                localStorage.setItem('sacredBooks_lastRead', new Date().toDateString());
+                
+                // Update reading streak
+                const currentStreak = parseInt(localStorage.getItem('sacredBooks_streak') || '0');
+                localStorage.setItem('sacredBooks_streak', (currentStreak + 1).toString());
+            }
+
+            loadNotes() {
+                return JSON.parse(localStorage.getItem('sacredBooks_notes') || '[]');
+            }
+
+            saveNotes() {
+                localStorage.setItem('sacredBooks_notes', JSON.stringify(this.notes));
+            }
+
+            loadHighlights() {
+                return JSON.parse(localStorage.getItem('sacredBooks_highlights') || '[]');
+            }
+
+            saveHighlights() {
+                localStorage.setItem('sacredBooks_highlights', JSON.stringify(this.highlights));
+            }
+
+            loadBookmarks() {
+                return JSON.parse(localStorage.getItem('sacredBooks_bookmarks') || '[]');
+            }
+
+            saveBookmarks() {
+                localStorage.setItem('sacredBooks_bookmarks', JSON.stringify(this.bookmarks));
+            }
+
+            setupEventListeners() {
+                // Update reading progress when scrolling
+                const content = document.getElementById('reader-content');
+                content.addEventListener('scroll', () => {
+                    if (!this.currentBook) return;
+                    
+                    const scrollPercent = (content.scrollTop / (content.scrollHeight - content.clientHeight)) * 100;
+                    
+                    // Mark chapter as read when 80% scrolled
+                    if (scrollPercent > 80) {
+                        this.markChapterAsRead();
+                    }
+                });
+            }
+
+            markChapterAsRead() {
+                // Implementation for marking chapters as read
+                console.log('Chapter marked as read');
+            }
+        }
+
+        // Global functions
+        function goBackToDashboard() {
+            try {
+                // Try to send message to parent window (if in iframe)
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage('backToDashboard', '*');
+                } else {
+                    // Fallback navigation
+                    window.location.href = '../members-new.html';
+                }
+            } catch (error) {
+                console.error('Navigation error:', error);
+                window.location.href = '../members-new.html';
+            }
+        }
+
+        function searchBooks() {
+            sacredBooks.searchBooks();
+        }
+
+        function previousChapter() {
+            sacredBooks.previousChapter();
+        }
+
+        function nextChapter() {
+            sacredBooks.nextChapter();
+        }
+
+        function toggleBookmarks() {
+            sacredBooks.toggleBookmarks();
+        }
+
+        function closeBookmarksModal() {
+            document.getElementById('bookmarks-modal').style.display = 'none';
+        }
+
+        function toggleReadingMode() {
+            sacredBooks.toggleReadingMode();
+        }
+
+        function changeFontSize() {
+            sacredBooks.changeFontSize();
+        }
+
+        function toggleFullscreen() {
+            sacredBooks.toggleFullscreen();
+        }
+
+        function toggleNotes() {
+            sacredBooks.toggleNotes();
+        }
+
+        function toggleHighlights() {
+            sacredBooks.toggleHighlights();
+        }
+
+        function toggleStudyGroups() {
+            sacredBooks.toggleStudyGroups();
+        }
+
+        function saveNote() {
+            sacredBooks.saveNote();
+        }
+
+        // Initialize Sacred Books System
+        let sacredBooks;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            sacredBooks = new SacredBooksSystem();
+            
+            // Close modal when clicking outside
+            document.getElementById('bookmarks-modal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) {
+                    closeBookmarksModal();
+                }
+            });
+
+            console.log('📚 Sacred Books section loaded successfully');
+        });
+
+        // Section validation
+        if (window.DivineTemplateUtils) {
+            window.DivineTemplateUtils.validateSectionFunctions('Sacred Books', [
+                'loadBook', 'saveNote', 'addHighlight', 'joinStudyGroup'
+            ]);
+        }
+    </script>
+
+    <!-- Load universal validation script -->
+    <script src="../js/section-validation.js" defer></script>
+</body>
+</html>

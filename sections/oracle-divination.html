@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oracle & Divination - Divine Temple</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FF69B4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .oracle-selector {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .oracle-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 20px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .oracle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .oracle-btn.active {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #333;
+        }
+
+        .oracle-content {
+            display: none;
+            min-height: 500px;
+        }
+
+        .oracle-content.active {
+            display: block;
+        }
+
+        .card-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .card-spread {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            max-width: 800px;
+            margin: 20px 0;
+        }
+
+        .oracle-card {
+            width: 120px;
+            height: 180px;
+            position: relative;
+            cursor: pointer;
+            perspective: 1000px;
+            margin: 0 auto;
+        }
+
+        .card-inner {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .oracle-card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .card-back {
+            background: linear-gradient(45deg, #4a148c, #7b1fa2);
+            color: white;
+            font-size: 2em;
+        }
+
+        .card-front {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #333;
+            transform: rotateY(180deg);
+            font-size: 0.9em;
+            line-height: 1.2;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .control-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .selected-card-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-height: 150px;
+            display: none;
+        }
+
+        .selected-card-info.show {
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+
+        .card-meaning {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .card-guidance {
+            font-size: 1em;
+            color: #a0a0a0;
+            font-style: italic;
+        }
+
+        .reading-history {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .history-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 15px;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .oracle-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .oracle-btn {
+                width: 200px;
+            }
+            
+            .card-spread {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+            
+            .oracle-card {
+                width: 100px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔮 Oracle & Divination 🌟</h1>
+            <p>Discover divine guidance through sacred oracle systems</p>
+        </div>
+
+        <!-- Oracle System Selector -->
+        <div class="oracle-selector">
+            <button class="oracle-btn active" onclick="switchOracle('oracle')">🔮 Oracle Cards</button>
+            <button class="oracle-btn" onclick="switchOracle('tarot')">🃏 Tarot Cards</button>
+            <button class="oracle-btn" onclick="switchOracle('angel')">😇 Angel Cards</button>
+            <button class="oracle-btn" onclick="switchOracle('runes')">ᚱ Runes</button>
+            <button class="oracle-btn" onclick="switchOracle('crystal')">💎 Crystal Oracle</button>
+            <button class="oracle-btn" onclick="switchOracle('iching')">☯ I-Ching</button>
+            <button class="oracle-btn" onclick="switchOracle('astro')">🎲 Astro Dice</button>
+        </div>
+
+        <!-- Oracle Cards -->
+        <div id="oracle-oracle" class="oracle-content active">
+            <div class="card-area">
+                <h2 style="color: #FFD700; margin-bottom: 15px;">🔮 Oracle Cards</h2>
+                <p style="margin-bottom: 20px; text-align: center;">52 prophetic declarations to speak your future into existence</p>
+                
+                <div class="controls">
+                    <button class="control-btn" onclick="shuffleCards('oracle')">🔀 Shuffle Oracle</button>
+                    <button class="control-btn" onclick="drawCards('oracle', 1)">Draw Oracle Card</button>
+                    <button class="control-btn" onclick="resetCards('oracle')">🔄 Reset</button>
+                </div>
+
+                <div class="card-spread" id="oracle-spread">
+                    <!-- Cards will be generated dynamically -->
+                </div>
+
+                <div class="selected-card-info" id="oracle-info">
+                    <div class="card-title" id="oracle-title"></div>
+                    <div class="card-meaning" id="oracle-meaning"></div>
+                    <div class="card-guidance" id="oracle-guidance"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarot Oracle -->
+        <div id="tarot-oracle" class="oracle-content">
+            <div class="card-area">
+                <h2 style="color: #FFD700; margin-bottom: 15px;">🃏 Tarot Reading</h2>
+                <p style="margin-bottom: 20px; text-align: center;">Focus on your question and select your cards</p>
+                
+                <div class="controls">
+                    <button class="control-btn" onclick="shuffleCards('tarot')">🔀 Shuffle Cards</button>
+                    <button class="control-btn" onclick="drawCards('tarot', 3)">Draw 3 Cards</button>
+                    <button class="control-btn" onclick="resetCards('tarot')">🔄 Reset</button>
+                </div>
+
+                <div class="card-spread" id="tarot-spread">
+                    <!-- Cards will be generated dynamically -->
+                </div>
+
+                <div class="selected-card-info" id="tarot-info">
+                    <div class="card-title" id="tarot-title"></div>
+                    <div class="card-meaning" id="tarot-meaning"></div>
+                    <div class="card-guidance" id="tarot-guidance"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Angel Cards Oracle -->
+        <div id="angel-oracle" class="oracle-content">
+            <div class="card-area">
+                <h2 style="color: #FFD700; margin-bottom: 15px;">😇 Angel Messages</h2>
+                <p style="margin-bottom: 20px; text-align: center;">Call upon your guardian angels for guidance</p>
+                
+                <div class="controls">
+                    <button class="control-btn" onclick="shuffleCards('angel')">🔀 Shuffle Cards</button>
+                    <button class="control-btn" onclick="drawCards('angel', 1)">Draw Angel Card</button>
+                    <button class="control-btn" onclick="resetCards('angel')">🔄 Reset</button>
+                </div>
+
+                <div class="card-spread" id="angel-spread">
+                    <!-- Cards will be generated dynamically -->
+                </div>
+
+                <div class="selected-card-info" id="angel-info">
+                    <div class="card-title" id="angel-title"></div>
+                    <div class="card-meaning" id="angel-meaning"></div>
+                    <div class="card-guidance" id="angel-guidance"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Runes Oracle -->
+        <div id="runes-oracle" class="oracle-content">
+            <div class="card-area">
+                <h2 style="color: #FFD700; margin-bottom: 15px;">ᚱ Rune Casting</h2>
+                <p style="margin-bottom: 20px; text-align: center;">Ancient Nordic wisdom for your path</p>
+                
+                <div class="controls">
+                    <button class="control-btn" onclick="shuffleCards('runes')">🔀 Cast Runes</button>
+                    <button class="control-btn" onclick="drawCards('runes', 3)">Three Rune Spread</button>
+                    <button class="control-btn" onclick="resetCards('runes')">🔄 Reset</button>
+                </div>
+
+                <div class="card-spread" id="runes-spread">
+                    <!-- Cards will be generated dynamically -->
+                </div>
+
+                <div class="selected-card-info" id="runes-info">
+                    <div class="card-title" id="runes-title"></div>
+                    <div class="card-meaning" id="runes-meaning"></div>
+                    <div class="card-guidance" id="runes-guidance"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crystal Oracle -->
+        <div id="crystal-oracle" class="oracle-content">
+            <div class="card-area">
+                <h2 style="color: #FFD700; margin-bottom: 15px;">💎 Crystal Wisdom</h2>
+                <p style="margin-bottom: 20px; text-align: center;">Crystal energies for healing and guidance</p>
+                
+                <div class="controls">
+                    <button class="control-btn" onclick="shuffleCards('crystal')">🔀 Shuffle Crystals</button>
+                    <button class="control-btn" onclick="drawCards('crystal', 2)">Draw 2 Crystals</button>
+                    <button class="control-btn" onclick="resetCards('crystal')">🔄 Reset</button>
+                </div>
+
+                <div class="card-spread" id="crystal-spread">
+                    <!-- Cards will be generated dynamically -->
+                </div>
+
+                <div class="selected-card-info" id="crystal-info">
+                    <div class="card-title" id="crystal-title"></div>
+                    <div class="card-meaning" id="crystal-meaning"></div>
+                    <div class="card-guidance" id="crystal-guidance"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- I-Ching Oracle -->
+        <div id="iching-oracle" class="oracle-content">
+            <div class="card-area">
+                <h2 style="color: #FFD700; margin-bottom: 15px;">☯ I-Ching Wisdom</h2>
+                <p style="margin-bottom: 20px; text-align: center;">Ancient Chinese oracle of change</p>
+                
+                <div class="controls">
+                    <button class="control-btn" onclick="shuffleCards('iching')">🔀 Cast Coins</button>
+                    <button class="control-btn" onclick="drawCards('iching', 1)">Draw Hexagram</button>
+                    <button class="control-btn" onclick="resetCards('iching')">🔄 Reset</button>
+                </div>
+
+                <div class="card-spread" id="iching-spread">
+                    <!-- Cards will be generated dynamically -->
+                </div>
+
+                <div class="selected-card-info" id="iching-info">
+                    <div class="card-title" id="iching-title"></div>
+                    <div class="card-meaning" id="iching-meaning"></div>
+                    <div class="card-guidance" id="iching-guidance"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Astro Dice Oracle -->
+        <div id="astro-oracle" class="oracle-content">
+            <div class="card-area">
+                <h2 style="color: #FFD700; margin-bottom: 15px;">🎲 Astro Dice</h2>
+                <p style="margin-bottom: 20px; text-align: center;">Astrological guidance through cosmic dice</p>
+                
+                <div class="controls">
+                    <button class="control-btn" onclick="shuffleCards('astro')">🔀 Roll Dice</button>
+                    <button class="control-btn" onclick="drawCards('astro', 3)">3 Dice Reading</button>
+                    <button class="control-btn" onclick="resetCards('astro')">🔄 Reset</button>
+                </div>
+
+                <div class="card-spread" id="astro-spread">
+                    <!-- Cards will be generated dynamically -->
+                </div>
+
+                <div class="selected-card-info" id="astro-info">
+                    <div class="card-title" id="astro-title"></div>
+                    <div class="card-meaning" id="astro-meaning"></div>
+                    <div class="card-guidance" id="astro-guidance"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reading History -->
+        <div class="reading-history">
+            <div class="history-title">📖 Recent Readings</div>
+            <div id="reading-history-list">
+                <div class="history-item">Welcome to your Oracle & Divination portal! Your readings will appear here.</div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <div class="stat-value" id="total-readings">0</div>
+                <div>Total Readings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="favorite-oracle">Oracle</div>
+                <div>Favorite Oracle</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="cards-drawn">0</div>
+                <div>Cards Drawn</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="accuracy-rating">100%</div>
+                <div>Accuracy</div>
+            </div>
+        </div>
+
+        <!-- Return Button -->
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="control-btn" onclick="window.parent.postMessage('back', '*')" style="padding: 15px 30px;">
+                🏠 Return to Dashboard
+            </button>
+        </div>
+    </div>
+
+    <script>
+        class OracleDivinationSystem {
+            constructor() {
+                this.currentOracle = 'oracle';
+                this.drawnCards = {};
+                this.readingHistory = [];
+                this.stats = {
+                    totalReadings: 0,
+                    favoriteOracle: 'oracle',
+                    cardsDrawn: 0,
+                    accuracy: 100
+                };
+                
+                this.oracleData = this.initializeOracleData();
+                this.loadProgress();
+                this.initializeOracles();
+            }
+
+            initializeOracleData() {
+                return {
+                    oracle: {
+                        cards: [
+                            { name: "I AM Divine", meaning: "You are a divine being having a human experience", guidance: "Remember your divine nature and act from that truth." },
+                            { name: "I AM Abundant", meaning: "Abundance flows to you naturally", guidance: "Open to receive the infinite abundance of the universe." },
+                            { name: "I AM Protected", meaning: "You are spiritually protected and guided", guidance: "Trust in divine protection and move forward fearlessly." },
+                            { name: "I AM Loved", meaning: "You are unconditionally loved by the universe", guidance: "Feel the love that surrounds you and share it freely." },
+                            { name: "I AM Powerful", meaning: "You have infinite creative power within", guidance: "Use your power wisely to create positive change." },
+                            { name: "I AM Worthy", meaning: "You are worthy of all good things", guidance: "Claim your worthiness and accept your blessings." },
+                            { name: "I AM Guided", meaning: "Divine guidance is always available to you", guidance: "Trust your intuition and inner knowing." },
+                            { name: "I AM Healed", meaning: "Healing energy flows through you", guidance: "Allow healing to take place on all levels." },
+                            { name: "I AM Grateful", meaning: "Gratitude multiplies your blessings", guidance: "Find gratitude in every moment and situation." },
+                            { name: "I AM Free", meaning: "You are free from all limitations", guidance: "Break free from limiting beliefs and soar." },
+                            { name: "I AM Peaceful", meaning: "Inner peace is your natural state", guidance: "Return to peace whenever you feel unbalanced." },
+                            { name: "I AM Joyful", meaning: "Joy is your birthright", guidance: "Choose joy in every moment and spread it to others." },
+                            { name: "I AM Wise", meaning: "Infinite wisdom resides within you", guidance: "Trust your inner wisdom to guide your decisions." },
+                            { name: "I AM Creative", meaning: "You are a powerful creative force", guidance: "Express your creativity and bring beauty into the world." },
+                            { name: "I AM Confident", meaning: "You have unshakeable confidence", guidance: "Stand tall in your truth and abilities." },
+                            { name: "I AM Successful", meaning: "Success is your natural state", guidance: "Define success on your own terms and achieve it." },
+                            { name: "I AM Magnetic", meaning: "You attract what you need effortlessly", guidance: "Align with your desires and watch them manifest." },
+                            { name: "I AM Transformed", meaning: "You are constantly evolving and growing", guidance: "Embrace change as your pathway to greatness." },
+                            { name: "I AM Radiant", meaning: "Your light shines brightly in the world", guidance: "Let your inner light illuminate the path for others." },
+                            { name: "I AM Compassionate", meaning: "You embody divine compassion", guidance: "Extend compassion to yourself and all beings." },
+                            { name: "I AM Courageous", meaning: "You have the courage to face anything", guidance: "Step into your courage and take bold action." },
+                            { name: "I AM Balanced", meaning: "You maintain perfect balance in all things", guidance: "Find harmony between all aspects of your life." },
+                            { name: "I AM Intuitive", meaning: "Your intuition is perfectly aligned", guidance: "Trust your intuitive insights and act upon them." },
+                            { name: "I AM Blessed", meaning: "Blessings flow to you continuously", guidance: "Recognize and appreciate all your blessings." },
+                            { name: "I AM Focused", meaning: "You maintain laser focus on your goals", guidance: "Direct your energy toward what matters most." },
+                            { name: "I AM Resilient", meaning: "You bounce back stronger from challenges", guidance: "Use challenges as stepping stones to growth." },
+                            { name: "I AM Connected", meaning: "You are connected to all life", guidance: "Feel your oneness with all creation." },
+                            { name: "I AM Purposeful", meaning: "You live with clear divine purpose", guidance: "Align your actions with your soul's purpose." },
+                            { name: "I AM Limitless", meaning: "There are no limits to what you can achieve", guidance: "Think beyond boundaries and reach for the stars." },
+                            { name: "I AM Present", meaning: "You live fully in the present moment", guidance: "Find peace and power in the here and now." },
+                            { name: "I AM Truthful", meaning: "You speak and live your truth", guidance: "Honor your truth and express it with love." },
+                            { name: "I AM Forgiving", meaning: "You forgive easily and release the past", guidance: "Forgiveness sets you free to create anew." },
+                            { name: "I AM Prosperous", meaning: "Prosperity flows to you from all directions", guidance: "Open to receive prosperity in all forms." },
+                            { name: "I AM Enlightened", meaning: "You embody enlightened consciousness", guidance: "Share your enlightenment with the world." },
+                            { name: "I AM Sovereign", meaning: "You are the sovereign ruler of your reality", guidance: "Take full responsibility for creating your life." },
+                            { name: "I AM Miraculous", meaning: "Miracles happen through you daily", guidance: "Expect miracles and watch them unfold." },
+                            { name: "I AM Authentic", meaning: "You express your authentic self fearlessly", guidance: "Be true to yourself in all situations." },
+                            { name: "I AM Sacred", meaning: "Everything about you is sacred", guidance: "Honor the sacred nature of your being." },
+                            { name: "I AM Visionary", meaning: "You see beyond the ordinary to the extraordinary", guidance: "Use your vision to create a better world." },
+                            { name: "I AM Unified", meaning: "You are one with divine consciousness", guidance: "Experience the unity that underlies all existence." },
+                            { name: "I AM Regenerative", meaning: "You continuously renew and regenerate", guidance: "Trust in your ability to heal and grow." },
+                            { name: "I AM Luminous", meaning: "You shine with divine light", guidance: "Be a beacon of light for all who encounter you." },
+                            { name: "I AM Expansive", meaning: "Your consciousness expands infinitely", guidance: "Embrace expansion in all areas of your life." },
+                            { name: "I AM Empowered", meaning: "You are fully empowered to create", guidance: "Use your power to serve the highest good." },
+                            { name: "I AM Transcendent", meaning: "You transcend all earthly limitations", guidance: "Rise above challenges with grace and wisdom." },
+                            { name: "I AM Victorious", meaning: "Victory is assured in all your endeavors", guidance: "Claim your victories and celebrate your wins." },
+                            { name: "I AM Eternal", meaning: "Your true essence is eternal and infinite", guidance: "Connect with your eternal nature beyond time." },
+                            { name: "I AM Perfect", meaning: "You are perfect exactly as you are", guidance: "Embrace your perfection while continuing to grow." },
+                            { name: "I AM One", meaning: "You are one with all that is", guidance: "Experience the profound unity of all existence." },
+                            { name: "I AM Love", meaning: "You are love itself in human form", guidance: "Be love, express love, and share love everywhere." },
+                            { name: "I AM Light", meaning: "You are pure divine light", guidance: "Shine your light brightly and illuminate the world." },
+                            { name: "I AM", meaning: "You are the I AM presence itself", guidance: "Rest in the power of your divine I AM presence." }
+                        ]
+                    },
+                    tarot: {
+                        cards: [
+                            { name: "The Fool", meaning: "New beginnings, innocence, spontaneity", guidance: "Take a leap of faith and embrace new adventures." },
+                            { name: "The Magician", meaning: "Manifestation, resourcefulness, power", guidance: "You have all the tools needed to succeed." },
+                            { name: "The High Priestess", meaning: "Intuition, sacred knowledge, mystery", guidance: "Trust your inner wisdom and intuition." },
+                            { name: "The Empress", meaning: "Femininity, beauty, nature, abundance", guidance: "Nurture yourself and others around you." },
+                            { name: "The Emperor", meaning: "Authority, structure, control, father-figure", guidance: "Take charge of your situation with confidence." },
+                            { name: "The Hierophant", meaning: "Spiritual wisdom, conformity, tradition", guidance: "Seek guidance from trusted mentors or traditions." },
+                            { name: "The Lovers", meaning: "Love, harmony, relationships, values", guidance: "Choose love and make decisions from the heart." },
+                            { name: "The Chariot", meaning: "Control, willpower, success, determination", guidance: "Stay focused and driven toward your goals." },
+                            { name: "Strength", meaning: "Strength, courage, patience, control", guidance: "Use inner strength and compassion to overcome challenges." },
+                            { name: "The Hermit", meaning: "Soul searching, introspection, guidance", guidance: "Take time for self-reflection and inner guidance." },
+                            { name: "Wheel of Fortune", meaning: "Good luck, karma, life cycles, destiny", guidance: "Trust that the universe is working in your favor." },
+                            { name: "Justice", meaning: "Justice, fairness, truth, karma", guidance: "Seek balance and fairness in all your dealings." },
+                            { name: "The Hanged Man", meaning: "Suspension, restriction, letting go", guidance: "Sometimes you must surrender to gain perspective." },
+                            { name: "Death", meaning: "Endings, transformation, transition", guidance: "Embrace change as a natural part of growth." },
+                            { name: "Temperance", meaning: "Balance, moderation, patience, purpose", guidance: "Find the middle path and practice moderation." },
+                            { name: "The Devil", meaning: "Bondage, addiction, sexuality, materialism", guidance: "Break free from limiting beliefs and dependencies." },
+                            { name: "The Tower", meaning: "Sudden change, upheaval, chaos, revelation", guidance: "Sometimes destruction is necessary for rebuilding." },
+                            { name: "The Star", meaning: "Hope, faith, purpose, renewal", guidance: "Keep hope alive and trust in your dreams." },
+                            { name: "The Moon", meaning: "Illusion, fear, anxiety, subconscious", guidance: "Face your fears and trust your intuition." },
+                            { name: "The Sun", meaning: "Happiness, success, optimism, vitality", guidance: "Embrace joy and share your light with others." },
+                            { name: "Judgement", meaning: "Judgement, rebirth, inner calling", guidance: "Listen to your higher calling and forgive the past." },
+                            { name: "The World", meaning: "Completion, accomplishment, travel", guidance: "Celebrate your achievements and prepare for new cycles." }
+                        ]
+                    },
+                    angel: {
+                        cards: [
+                            { name: "Archangel Michael", meaning: "Protection, courage, strength", guidance: "You are protected and guided. Have courage in your decisions." },
+                            { name: "Archangel Gabriel", meaning: "Communication, creativity, messages", guidance: "Important messages are coming to you. Stay open to divine communication." },
+                            { name: "Archangel Raphael", meaning: "Healing, travel, guidance", guidance: "Healing energy surrounds you. Trust in the recovery process." },
+                            { name: "Archangel Uriel", meaning: "Wisdom, illumination, service", guidance: "Divine wisdom is available to you. Use it to serve others." },
+                            { name: "Guardian Angel", meaning: "Personal protection, love, guidance", guidance: "Your guardian angel is always with you, offering love and protection." },
+                            { name: "Angel of Peace", meaning: "Tranquility, harmony, resolution", guidance: "Peace is possible in your situation. Choose harmony over conflict." },
+                            { name: "Angel of Love", meaning: "Unconditional love, relationships", guidance: "Open your heart to give and receive love freely." },
+                            { name: "Angel of Abundance", meaning: "Prosperity, gratitude, blessings", guidance: "Abundance flows to you when you remain grateful." },
+                            { name: "Angel of Healing", meaning: "Recovery, wholeness, renewal", guidance: "Healing is taking place on all levels. Trust the process." },
+                            { name: "Angel of Guidance", meaning: "Direction, clarity, purpose", guidance: "Clear guidance is available. Ask and you shall receive." }
+                        ]
+                    },
+                    runes: {
+                        cards: [
+                            { name: "Fehu (ᚠ)", meaning: "Wealth, abundance, material success", guidance: "Focus on building and sharing your resources wisely." },
+                            { name: "Uruz (ᚢ)", meaning: "Strength, vitality, primal power", guidance: "Tap into your inner strength and raw potential." },
+                            { name: "Thurisaz (ᚦ)", meaning: "Protection, conflict, catalyst", guidance: "Use protective energy to overcome obstacles." },
+                            { name: "Ansuz (ᚨ)", meaning: "Communication, divine breath, inspiration", guidance: "Open yourself to divine inspiration and clear communication." },
+                            { name: "Raidho (ᚱ)", meaning: "Journey, movement, evolution", guidance: "Trust in your journey and embrace positive change." },
+                            { name: "Kenaz (ᚲ)", meaning: "Knowledge, creativity, inspiration", guidance: "Your creative fire will illuminate new possibilities." },
+                            { name: "Gebo (ᚷ)", meaning: "Gift, partnership, balance", guidance: "Balance giving and receiving in your relationships." },
+                            { name: "Wunjo (ᚹ)", meaning: "Joy, harmony, fellowship", guidance: "Seek joy and harmony in your connections with others." },
+                            { name: "Hagalaz (ᚺ)", meaning: "Disruption, natural wrath, testing", guidance: "Accept challenges as opportunities for growth." },
+                            { name: "Nauthiz (ᚾ)", meaning: "Need, resistance, constraint", guidance: "Constraints can teach you valuable lessons about priorities." },
+                            { name: "Isa (ᛁ)", meaning: "Ice, standstill, introspection", guidance: "Sometimes stillness is necessary for clarity." },
+                            { name: "Jera (ᛃ)", meaning: "Year, harvest, cycles", guidance: "Trust in natural cycles and timing for your harvest." },
+                            { name: "Eihwaz (ᛇ)", meaning: "Yew tree, endurance, reliability", guidance: "Your persistence and reliability will see you through." },
+                            { name: "Perthro (ᛈ)", meaning: "Fate, mystery, hidden things", guidance: "Some things are meant to remain mysterious for now." },
+                            { name: "Algiz (ᛉ)", meaning: "Protection, higher self, spirituality", guidance: "You are spiritually protected and guided." },
+                            { name: "Sowilo (ᛊ)", meaning: "Sun, success, vitality", guidance: "Success and vitality are shining upon you." },
+                            { name: "Tiwaz (ᛏ)", meaning: "Warrior, justice, sacrifice", guidance: "Stand up for justice and what you believe in." },
+                            { name: "Berkano (ᛒ)", meaning: "Birch, new beginnings, growth", guidance: "New growth and fresh starts are available to you." },
+                            { name: "Ehwaz (ᛖ)", meaning: "Horse, partnership, cooperation", guidance: "Success comes through cooperation and partnership." },
+                            { name: "Mannaz (ᛗ)", meaning: "Man, humanity, collective", guidance: "Consider your role in the larger human community." },
+                            { name: "Laguz (ᛚ)", meaning: "Water, intuition, psychic abilities", guidance: "Trust your intuition and psychic insights." },
+                            { name: "Ingwaz (ᛜ)", meaning: "Fertility, internal growth, peace", guidance: "Focus on internal growth and peaceful development." },
+                            { name: "Dagaz (ᛞ)", meaning: "Day, awakening, clarity", guidance: "A new dawn brings clarity and fresh perspective." },
+                            { name: "Othala (ᛟ)", meaning: "Heritage, inheritance, home", guidance: "Honor your heritage while building your own legacy." }
+                        ]
+                    },
+                    crystal: {
+                        cards: [
+                            { name: "Amethyst", meaning: "Spiritual protection, intuition, clarity", guidance: "Trust your spiritual insights and seek higher wisdom." },
+                            { name: "Rose Quartz", meaning: "Unconditional love, emotional healing", guidance: "Open your heart to love and emotional healing." },
+                            { name: "Clear Quartz", meaning: "Amplification, clarity, healing", guidance: "Amplify your intentions and seek clarity in all matters." },
+                            { name: "Citrine", meaning: "Abundance, manifestation, joy", guidance: "Focus on manifesting abundance and maintaining a joyful attitude." },
+                            { name: "Black Tourmaline", meaning: "Protection, grounding, purification", guidance: "Protect your energy and stay grounded in truth." },
+                            { name: "Labradorite", meaning: "Transformation, magic, intuition", guidance: "Embrace transformation and trust your magical abilities." },
+                            { name: "Moonstone", meaning: "Feminine energy, cycles, intuition", guidance: "Honor natural cycles and trust your feminine wisdom." },
+                            { name: "Tiger's Eye", meaning: "Courage, confidence, willpower", guidance: "Approach challenges with courage and unwavering confidence." },
+                            { name: "Selenite", meaning: "Purification, divine connection, peace", guidance: "Purify your energy and connect with divine peace." },
+                            { name: "Carnelian", meaning: "Creativity, motivation, vitality", guidance: "Tap into your creative fire and take motivated action." }
+                        ]
+                    },
+                    iching: {
+                        cards: [
+                            { name: "Hexagram 1 - The Creative", meaning: "Creative power, heaven, leadership", guidance: "Lead with creative vision and heavenly wisdom." },
+                            { name: "Hexagram 2 - The Receptive", meaning: "Receptivity, earth, yielding", guidance: "Practice receptivity and allow things to unfold naturally." },
+                            { name: "Hexagram 3 - Initial Difficulty", meaning: "New beginnings, challenges, growth", guidance: "Persist through initial challenges for eventual success." },
+                            { name: "Hexagram 8 - Holding Together", meaning: "Unity, cooperation, alliance", guidance: "Build strong alliances and work cooperatively." },
+                            { name: "Hexagram 11 - Peace", meaning: "Harmony, prosperity, good fortune", guidance: "Enjoy this period of harmony and share your good fortune." },
+                            { name: "Hexagram 25 - Innocence", meaning: "Natural action, spontaneity, instinct", guidance: "Act from your natural instincts and pure intentions." },
+                            { name: "Hexagram 42 - Increase", meaning: "Growth, benefit, advancement", guidance: "This is a time of increase and beneficial growth." },
+                            { name: "Hexagram 50 - The Cauldron", meaning: "Transformation, nourishment, culture", guidance: "Transform and nourish yourself through cultural pursuits." }
+                        ]
+                    },
+                    astro: {
+                        cards: [
+                            { name: "Sun in Aries", meaning: "Leadership, initiative, new beginnings", guidance: "Take the lead and initiate new projects with confidence." },
+                            { name: "Moon in Cancer", meaning: "Emotional nurturing, intuition, home", guidance: "Honor your emotions and nurture yourself and others." },
+                            { name: "Mercury in Gemini", meaning: "Communication, learning, adaptability", guidance: "Focus on clear communication and continuous learning." },
+                            { name: "Venus in Libra", meaning: "Love, beauty, harmony, relationships", guidance: "Seek harmony in relationships and appreciate beauty around you." },
+                            { name: "Mars in Scorpio", meaning: "Transformation, intensity, power", guidance: "Channel intense energy into meaningful transformation." },
+                            { name: "Jupiter in Sagittarius", meaning: "Expansion, wisdom, adventure", guidance: "Expand your horizons through wisdom and adventure." },
+                            { name: "Saturn in Capricorn", meaning: "Discipline, responsibility, achievement", guidance: "Apply discipline and responsibility to achieve your goals." },
+                            { name: "Uranus in Aquarius", meaning: "Innovation, revolution, awakening", guidance: "Embrace innovative ideas and revolutionary thinking." }
+                        ]
+                    }
+                };
+            }
+
+            initializeOracles() {
+                // Initialize each oracle with shuffled cards
+                Object.keys(this.oracleData).forEach(oracle => {
+                    this.generateCardSpread(oracle);
+                });
+            }
+
+            switchOracle(oracleType) {
+                // Update active button
+                document.querySelectorAll('.oracle-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                event.target.classList.add('active');
+
+                // Hide all oracle content
+                document.querySelectorAll('.oracle-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // Show selected oracle
+                document.getElementById(`${oracleType}-oracle`).classList.add('active');
+                
+                this.currentOracle = oracleType;
+                this.generateCardSpread(oracleType);
+            }
+
+            generateCardSpread(oracleType) {
+                const spread = document.getElementById(`${oracleType}-spread`);
+                spread.innerHTML = '';
+
+                const cards = this.oracleData[oracleType].cards;
+                const shuffledCards = [...cards].sort(() => Math.random() - 0.5);
+                
+                // Show 8 cards for selection
+                for (let i = 0; i < Math.min(8, shuffledCards.length); i++) {
+                    const cardElement = this.createCardElement(shuffledCards[i], oracleType, i);
+                    spread.appendChild(cardElement);
+                }
+            }
+
+            createCardElement(cardData, oracleType, index) {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'oracle-card';
+                cardDiv.dataset.oracle = oracleType;
+                cardDiv.dataset.index = index;
+                
+                cardDiv.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-face card-back">
+                            🔮
+                        </div>
+                        <div class="card-face card-front">
+                            ${cardData.name}
+                        </div>
+                    </div>
+                `;
+
+                cardDiv.addEventListener('click', () => this.flipCard(cardDiv, cardData, oracleType));
+                
+                return cardDiv;
+            }
+
+            flipCard(cardElement, cardData, oracleType) {
+                if (cardElement.classList.contains('flipped')) return;
+
+                cardElement.classList.add('flipped');
+                
+                // Show card information
+                this.showCardInfo(cardData, oracleType);
+                
+                // Update statistics
+                this.updateStats(oracleType);
+                
+                // Add to reading history
+                this.addToHistory(cardData, oracleType);
+            }
+
+            showCardInfo(cardData, oracleType) {
+                const infoDiv = document.getElementById(`${oracleType}-info`);
+                const titleDiv = document.getElementById(`${oracleType}-title`);
+                const meaningDiv = document.getElementById(`${oracleType}-meaning`);
+                const guidanceDiv = document.getElementById(`${oracleType}-guidance`);
+
+                titleDiv.textContent = cardData.name;
+                meaningDiv.textContent = cardData.meaning;
+                guidanceDiv.textContent = cardData.guidance;
+
+                infoDiv.classList.add('show');
+            }
+
+            shuffleCards(oracleType) {
+                this.generateCardSpread(oracleType);
+                document.getElementById(`${oracleType}-info`).classList.remove('show');
+            }
+
+            drawCards(oracleType, count) {
+                this.shuffleCards(oracleType);
+                
+                setTimeout(() => {
+                    const cards = document.querySelectorAll(`#${oracleType}-spread .oracle-card`);
+                    for (let i = 0; i < Math.min(count, cards.length); i++) {
+                        setTimeout(() => {
+                            cards[i].click();
+                        }, i * 500);
+                    }
+                }, 500);
+            }
+
+            resetCards(oracleType) {
+                const cards = document.querySelectorAll(`#${oracleType}-spread .oracle-card`);
+                cards.forEach(card => {
+                    card.classList.remove('flipped');
+                });
+                
+                document.getElementById(`${oracleType}-info`).classList.remove('show');
+            }
+
+            addToHistory(cardData, oracleType) {
+                const timestamp = new Date().toLocaleString();
+                const historyItem = {
+                    card: cardData.name,
+                    oracle: oracleType,
+                    timestamp: timestamp
+                };
+
+                this.readingHistory.unshift(historyItem);
+                if (this.readingHistory.length > 10) {
+                    this.readingHistory.pop();
+                }
+
+                this.updateHistoryDisplay();
+                this.saveProgress();
+            }
+
+            updateHistoryDisplay() {
+                const historyList = document.getElementById('reading-history-list');
+                historyList.innerHTML = '';
+
+                if (this.readingHistory.length === 0) {
+                    historyList.innerHTML = '<div class="history-item">No readings yet. Draw your first card!</div>';
+                    return;
+                }
+
+                this.readingHistory.forEach(item => {
+                    const historyDiv = document.createElement('div');
+                    historyDiv.className = 'history-item';
+                    historyDiv.innerHTML = `
+                        <strong>${item.card}</strong> (${item.oracle}) - ${item.timestamp}
+                    `;
+                    historyList.appendChild(historyDiv);
+                });
+            }
+
+            updateStats(oracleType) {
+                this.stats.totalReadings++;
+                this.stats.cardsDrawn++;
+                
+                // Update favorite oracle (simplified logic)
+                this.stats.favoriteOracle = oracleType;
+
+                // Update display
+                document.getElementById('total-readings').textContent = this.stats.totalReadings;
+                document.getElementById('favorite-oracle').textContent = this.stats.favoriteOracle;
+                document.getElementById('cards-drawn').textContent = this.stats.cardsDrawn;
+                document.getElementById('accuracy-rating').textContent = this.stats.accuracy + '%';
+
+                this.saveProgress();
+                this.saveUniversalProgress('oracle-divination', 'card_reading', 5);
+            }
+
+            loadProgress() {
+                const saved = localStorage.getItem('oracleProgress');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    this.stats = { ...this.stats, ...data.stats };
+                    this.readingHistory = data.history || [];
+                    this.updateHistoryDisplay();
+                    
+                    // Update display
+                    document.getElementById('total-readings').textContent = this.stats.totalReadings;
+                    document.getElementById('favorite-oracle').textContent = this.stats.favoriteOracle;
+                    document.getElementById('cards-drawn').textContent = this.stats.cardsDrawn;
+                    document.getElementById('accuracy-rating').textContent = this.stats.accuracy + '%';
+                }
+            }
+
+            saveProgress() {
+                const progressData = {
+                    stats: this.stats,
+                    history: this.readingHistory,
+                    timestamp: new Date().toISOString()
+                };
+                localStorage.setItem('oracleProgress', JSON.stringify(progressData));
+            }
+
+            saveUniversalProgress(section, activity, points) {
+                // Integration with Universal Progress System
+                const event = new CustomEvent('updateProgress', {
+                    detail: {
+                        section: section,
+                        activity: activity,
+                        points: points,
+                        timestamp: new Date().toISOString()
+                    }
+                });
+                window.dispatchEvent(event);
+            }
+        }
+
+        // Global functions for buttons
+        function switchOracle(oracleType) {
+            oracleSystem.switchOracle(oracleType);
+        }
+
+        function shuffleCards(oracleType) {
+            oracleSystem.shuffleCards(oracleType);
+        }
+
+        function drawCards(oracleType, count) {
+            oracleSystem.drawCards(oracleType, count);
+        }
+
+        function resetCards(oracleType) {
+            oracleSystem.resetCards(oracleType);
+        }
+
+        // Initialize system when page loads
+        let oracleSystem;
+        document.addEventListener('DOMContentLoaded', function() {
+            oracleSystem = new OracleDivinationSystem();
+        });
+    </script>
+</body>
+</html>
+            background: linear-gradient(135deg, rgba(139, 95, 191, 0.2), rgba(124, 58, 237, 0.2));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .divination-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--primary-gold));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .divination-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .divination-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3);
+        }
+
+        .card-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .divination-card:hover .card-icon {
+            transform: scale(1.1);
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            color: var(--primary-gold);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .card-desc {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .card-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .feature-tag {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid var(--accent-purple);
+            border-radius: 12px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.75rem;
+            color: var(--accent-purple);
+            font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10B981;
+            border-radius: 20px;
+            padding: 0.4rem 1rem;
+            font-size: 0.8rem;
+            color: #10B981;
+            font-weight: 600;
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, var(--primary-gold), #FBBF24);
+            color: #1a1a2e;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 768px) {
+            .divination-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .container {
+                padding: 1rem 0.5rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .divination-card {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-btn" onclick="window.parent.postMessage('back', '*')">
+            ← Back to Temple
+        </button>
+
+        <div class="header">
+            <div class="header-icon">🔮</div>
+            <h1 class="title">Oracle & Divination Hub</h1>
+            <p class="subtitle">7 Sacred Divination Systems • Ancient Wisdom • Divine Guidance</p>
+        </div>
+
+        <div class="divination-grid">
+            <!-- Oracle Cards -->
+            <a href="oracle-cards.html" class="divination-card">
+                <div class="featured-badge">✨ FEATURED</div>
+                <span class="card-icon">🃏</span>
+                <h3 class="card-title">Oracle Cards</h3>
+                <p class="card-desc">52 powerful prophetic declarations to speak your future into existence</p>
+                <div class="card-features">
+                    <span class="feature-tag">52 Cards</span>
+                    <span class="feature-tag">Daily Reading</span>
+                    <span class="feature-tag">3-Card Spread</span>
+                </div>
+                <div class="status-badge">✅ Complete System</div>
+            </a>
+
+            <!-- Tarot -->
+            <a href="tarot.html" class="divination-card">
+                <span class="card-icon">🎴</span>
+                <h3 class="card-title">Tarot Wisdom</h3>
+                <p class="card-desc">78-card tarot deck with Major and Minor Arcana for deep spiritual insight</p>
+                <div class="card-features">
+                    <span class="feature-tag">78 Cards</span>
+                    <span class="feature-tag">Celtic Cross</span>
+                    <span class="feature-tag">Past-Present-Future</span>
+                </div>
+                <div class="status-badge">✅ Complete System</div>
+            </a>
+
+            <!-- Runes -->
+            <a href="runes.html" class="divination-card">
+                <span class="card-icon">ᚱ</span>
+                <h3 class="card-title">Rune Casting</h3>
+                <p class="card-desc">24 ancient Norse runes revealing wisdom through sacred Viking symbols</p>
+                <div class="card-features">
+                    <span class="feature-tag">24 Runes</span>
+                    <span class="feature-tag">3-Rune Cast</span>
+                    <span class="feature-tag">Single Rune</span>
+                </div>
+                <div class="status-badge">✅ Complete System</div>
+            </a>
+
+            <!-- I-Ching -->
+            <a href="iching.html" class="divination-card">
+                <span class="card-icon">☯️</span>
+                <h3 class="card-title">I-Ching Oracle</h3>
+                <p class="card-desc">64 hexagrams from the ancient Chinese Book of Changes</p>
+                <div class="card-features">
+                    <span class="feature-tag">64 Hexagrams</span>
+                    <span class="feature-tag">Changing Lines</span>
+                    <span class="feature-tag">Deep Wisdom</span>
+                </div>
+                <div class="status-badge">✅ Complete System</div>
+            </a>
+
+            <!-- Angel Cards -->
+            <a href="angel-cards.html" class="divination-card">
+                <span class="card-icon">👼</span>
+                <h3 class="card-title">Angel Messages</h3>
+                <p class="card-desc">Divine messages from 12 archangels and guardian angels</p>
+                <div class="card-features">
+                    <span class="feature-tag">12 Angels</span>
+                    <span class="feature-tag">Daily Message</span>
+                    <span class="feature-tag">Angel Guidance</span>
+                </div>
+                <div class="status-badge">✅ Complete System</div>
+            </a>
+
+            <!-- Crystal Oracle -->
+            <a href="crystal-oracle.html" class="divination-card">
+                <span class="card-icon">💎</span>
+                <h3 class="card-title">Crystal Wisdom</h3>
+                <p class="card-desc">10 sacred crystals channeling Earth's healing and guidance energy</p>
+                <div class="card-features">
+                    <span class="feature-tag">10 Crystals</span>
+                    <span class="feature-tag">Healing Properties</span>
+                    <span class="feature-tag">Energy Reading</span>
+                </div>
+                <div class="status-badge">✅ Complete System</div>
+            </a>
+
+            <!-- Astro Dice -->
+            <a href="astro-dice.html" class="divination-card">
+                <span class="card-icon">🎲</span>
+                <h3 class="card-title">Astro Dice</h3>
+                <p class="card-desc">Cosmic dice combining astrology with divination for celestial timing</p>
+                <div class="card-features">
+                    <span class="feature-tag">Signs</span>
+                    <span class="feature-tag">Planets</span>
+                    <span class="feature-tag">Houses</span>
+                </div>
+                <div class="status-badge">✅ Complete System</div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        console.log('🔮 Oracle & Divination Hub loaded - 7 systems ready');
+    </script>
+</body>
+</html>

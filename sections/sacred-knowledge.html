@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sacred Knowledge - Divine Temple</title>
+    <style>
+        :root {
+            --accent-gold: #d4af37;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+        .section-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .knowledge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .knowledge-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            cursor: pointer;
+            transition: all 0.4s;
+            text-align: center;
+        }
+        
+        .knowledge-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--accent-gold);
+        }
+        
+        .knowledge-card:active {
+            transform: translateY(-5px) scale(1.01);
+        }
+        
+        .knowledge-card.implemented {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        
+        .knowledge-card.implemented:hover {
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.2), 0 0 0 1px var(--accent-gold);
+        }
+        
+        .tool-status {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-complete {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .status-placeholder {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        
+        .knowledge-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        .knowledge-info {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .feature-item {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 2.5rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.6s;
+        }
+        
+        .back-btn:hover::before {
+            left: 100%;
+        }
+        
+        .back-btn:hover {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            border-color: var(--accent-gold);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .back-btn .back-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+        
+        .back-btn:hover .back-icon {
+            transform: translateX(-3px);
+        }
+        
+        /* Modal Styles */
+        .knowledge-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        
+        .knowledge-modal {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            border: 2px solid var(--glass-border);
+            border-radius: 20px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .knowledge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .knowledge-header h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-gold);
+            margin: 0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+        
+        .knowledge-content {
+            padding: 2rem;
+        }
+        
+        .knowledge-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .knowledge-section h3 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+        
+        /* Library Styles */
+        .library-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .category-btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .category-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .knowledge-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .knowledge-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .knowledge-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .knowledge-item h4 {
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+        
+        .knowledge-item p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* Glossary Styles */
+        .alphabet-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .letter-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .letter-btn:hover, .letter-btn.active {
+            background: var(--accent-gold);
+            color: var(--background-dark);
+        }
+        
+        .definition-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--accent-gold);
+        }
+        
+        .definition-term {
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Dream Journal Styles */
+        .dream-form {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .dream-input, .dream-textarea {
+            padding: 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-family: inherit;
+        }
+        
+        .dream-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .dream-entry {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--accent-purple);
+        }
+        
+        .dream-date {
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .dream-symbols {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .symbol-tag {
+            background: rgba(139, 92, 246, 0.3);
+            border: 1px solid var(--accent-purple);
+            border-radius: 20px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+            color: var(--accent-purple);
+        }
+        
+        @media (max-width: 768px) {
+            .knowledge-modal {
+                width: 95vw;
+                height: 95vh;
+            }
+            
+            .knowledge-content {
+                padding: 1rem;
+            }
+            
+            .library-categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .alphabet-nav {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="section-container">
+        <button class="back-btn" onclick="goBackToDashboard()">
+            <span class="back-icon">←</span>
+            <span>Back to Dashboard</span>
+        </button>
+        
+        <div class="section-header">
+            <h1>📚 Sacred Knowledge</h1>
+            <p>Access ancient wisdom, spiritual teachings, and divine insights</p>
+        </div>
+        
+        <div class="knowledge-info">
+            <h3>🌟 Divine Wisdom Repository</h3>
+            <p>Explore our comprehensive collection of sacred knowledge, ancient teachings, and spiritual insights gathered from divine sources.</p>
+            
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <strong>📚 Vast Library</strong><br>
+                    Ancient texts & wisdom
+                </div>
+                <div class="feature-item">
+                    <strong>🔍 Quick Search</strong><br>
+                    Find knowledge instantly
+                </div>
+                <div class="feature-item">
+                    <strong>💭 Dream Analysis</strong><br>
+                    Interpret visions
+                </div>
+                <div class="feature-item">
+                    <strong>📖 Glossary</strong><br>
+                    Sacred terminology
+                </div>
+            </div>
+        </div>
+        
+        <div class="knowledge-grid">
+            <div class="knowledge-card implemented" onclick="openSacredLibrary()">
+                <div class="knowledge-icon">📚</div>
+                <h3>Sacred Library</h3>
+                <p>Ancient texts, spiritual downloads, divine revelations, wisdom collection</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    📖 Sacred texts • ⬇️ Divine downloads • 💎 Wisdom gems • 🔍 Search system
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="knowledge-card implemented" onclick="openSacredGlossary()">
+                <div class="knowledge-icon">📖</div>
+                <h3>Sacred Glossary</h3>
+                <p>Spiritual terminology, sacred definitions, divine concepts, wisdom library</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    📝 Definitions • 🔤 Terms • 💡 Concepts • 🎯 Quick lookup
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="knowledge-card implemented" onclick="openAncientWisdom()">
+                <div class="knowledge-icon">📜</div>
+                <h3>Ancient Wisdom</h3>
+                <p>Timeless teachings, mystic knowledge, hidden truths, divine secrets</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    🏛️ Ancient texts • 🔮 Mystic knowledge • 🗝️ Hidden truths • ⚡ Divine secrets
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="knowledge-card implemented" onclick="openDreamsVisions()">
+                <div class="knowledge-icon">💭</div>
+                <h3>Dreams & Visions</h3>
+                <p>Record & analyze dreams, vision journaling, prophetic insights, subconscious messages</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    💤 Dream journal • 🔮 Vision tracking • 📊 Pattern analysis • 💡 Insights
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Enhanced back navigation with feedback
+        function goBackToDashboard() {
+            try {
+                if (window.parent && window.parent.showSection) {
+                    window.parent.showSection('dashboard');
+                } else {
+                    window.location.href = '../members.html';
+                }
+            } catch (error) {
+                console.error('Navigation error:', error);
+                window.location.href = '../members.html';
+            }
+        }
+        
+        // Enhanced tool opening functions with loading feedback
+        function openTool(toolName, fallbackFunction) {
+            try {
+                if (window.parent && window.parent[fallbackFunction]) {
+                    window.parent[fallbackFunction]();
+                } else {
+                    console.warn(`${toolName} function not found in parent window`);
+                }
+            } catch (error) {
+                console.error(`Error opening ${toolName}:`, error);
+            }
+        }
+        
+        function openSacredLibrary() {
+            openTool('Sacred Library', 'openSacredLibrary');
+        }
+        
+        function openSacredGlossary() {
+            openTool('Sacred Glossary', 'openSacredGlossary');
+        }
+        
+        function openAncientWisdom() {
+            openTool('Ancient Wisdom', 'openAncientWisdom');
+        }
+        
+        function openDreamsVisions() {
+            openTool('Dreams & Visions', 'openDreamsVisions');
+        }
+        
+        // Add loading animation when tools are clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            const knowledgeCards = document.querySelectorAll('.knowledge-card');
+            
+            knowledgeCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Add visual feedback for tool activation
+                    this.style.transform = 'translateY(-5px) scale(1.01)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+            });
+            
+            // Add special hover effects for knowledge cards
+            knowledgeCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    const icon = this.querySelector('.knowledge-icon');
+                    icon.style.transform = 'scale(1.1) rotate(5deg)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    const icon = this.querySelector('.knowledge-icon');
+                    icon.style.transform = 'scale(1) rotate(0deg)';
+                });
+            });
+            
+            // Initialize all knowledge tools
+            initializeSacredLibrary();
+            initializeSacredGlossary();
+            initializeAncientWisdom();
+            initializeDreamsVisions();
+        });
+        
+        // Sacred Library Implementation
+        function initializeSacredLibrary() {
+            const libraryModal = document.createElement('div');
+            libraryModal.id = 'sacred-library-modal';
+            libraryModal.innerHTML = `
+                <div class="knowledge-modal-overlay" onclick="closeSacredLibrary()">
+                    <div class="knowledge-modal" onclick="event.stopPropagation()">
+                        <div class="knowledge-header">
+                            <h2>📚 Sacred Library</h2>
+                            <button onclick="closeSacredLibrary()" class="close-btn">×</button>
+                        </div>
+                        <div class="knowledge-content">
+                            <div class="knowledge-section">
+                                <h3>📖 Browse Categories</h3>
+                                <div class="library-categories">
+                                    <button class="category-btn" onclick="loadCategory('ancient-texts')">Ancient Texts</button>
+                                    <button class="category-btn" onclick="loadCategory('divine-downloads')">Divine Downloads</button>
+                                    <button class="category-btn" onclick="loadCategory('wisdom-gems')">Wisdom Gems</button>
+                                    <button class="category-btn" onclick="loadCategory('mystical-teachings')">Mystical Teachings</button>
+                                    <button class="category-btn" onclick="loadCategory('prophetic-visions')">Prophetic Visions</button>
+                                    <button class="category-btn" onclick="loadCategory('healing-knowledge')">Healing Knowledge</button>
+                                </div>
+                            </div>
+                            
+                            <div class="knowledge-section">
+                                <h3>🔍 Search Library</h3>
+                                <input type="text" class="search-box" id="library-search" placeholder="Search sacred knowledge..." onkeyup="searchLibrary()">
+                            </div>
+                            
+                            <div class="knowledge-section">
+                                <h3 id="library-section-title">📚 Featured Knowledge</h3>
+                                <div id="library-content" class="knowledge-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(libraryModal);
+        }
+        
+        function openSacredLibrary() {
+            document.getElementById('sacred-library-modal').style.display = 'flex';
+            loadCategory('featured');
+        }
+        
+        function closeSacredLibrary() {
+            document.getElementById('sacred-library-modal').style.display = 'none';
+        }
+        
+        const libraryData = {
+            'ancient-texts': [
+                { title: "The Book of Enoch", content: "Ancient wisdom about the watchers and divine secrets", category: "Scripture" },
+                { title: "Hermetic Principles", content: "The seven universal laws governing reality", category: "Philosophy" },
+                { title: "Tree of Life Mysteries", content: "Kabbalistic teachings on divine emanation", category: "Mysticism" },
+                { title: "Sacred Geometry Codex", content: "Mathematical principles underlying creation", category: "Science" }
+            ],
+            'divine-downloads': [
+                { title: "Eden Consciousness Activation", content: "Remembering your original divine nature", category: "Activation" },
+                { title: "DNA Light Code Upgrades", content: "Genetic template restoration and enhancement", category: "Healing" },
+                { title: "Multidimensional Awareness", content: "Expanding consciousness beyond 3D limitations", category: "Expansion" },
+                { title: "Divine Feminine Rising", content: "Balancing masculine and feminine energies", category: "Balance" }
+            ],
+            'wisdom-gems': [
+                { title: "You Never Left Eden", content: "The fundamental truth of our divine nature", category: "Truth" },
+                { title: "Love is the Only Reality", content: "Understanding the nature of divine love", category: "Love" },
+                { title: "Fear is Illusion", content: "Dissolving fear through divine understanding", category: "Healing" },
+                { title: "Unity Consciousness", content: "Recognizing the oneness of all creation", category: "Unity" }
+            ],
+            'featured': [
+                { title: "Welcome to Sacred Knowledge", content: "Begin your journey into divine wisdom", category: "Introduction" },
+                { title: "Daily Wisdom Practice", content: "Integrating sacred knowledge into daily life", category: "Practice" },
+                { title: "The Path of Remembrance", content: "Awakening to your true divine identity", category: "Awakening" }
+            ]
+        };
+        
+        function loadCategory(category) {
+            const content = document.getElementById('library-content');
+            const title = document.getElementById('library-section-title');
+            const items = libraryData[category] || libraryData['featured'];
+            
+            title.textContent = `📚 ${category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}`;
+            
+            content.innerHTML = items.map(item => `
+                <div class="knowledge-item" onclick="openKnowledgeItem('${item.title}', '${item.content}', '${item.category}')">
+                    <h4>${item.title}</h4>
+                    <p>${item.content}</p>
+                    <small style="color: var(--accent-purple);">Category: ${item.category}</small>
+                </div>
+            `).join('');
+        }
+        
+        function searchLibrary() {
+            const searchTerm = document.getElementById('library-search').value.toLowerCase();
+            const content = document.getElementById('library-content');
+            const title = document.getElementById('library-section-title');
+            
+            if (searchTerm.length < 2) {
+                loadCategory('featured');
+                return;
+            }
+            
+            const allItems = Object.values(libraryData).flat();
+            const filtered = allItems.filter(item => 
+                item.title.toLowerCase().includes(searchTerm) || 
+                item.content.toLowerCase().includes(searchTerm) ||
+                item.category.toLowerCase().includes(searchTerm)
+            );
+            
+            title.textContent = `🔍 Search Results for "${searchTerm}"`;
+            
+            if (filtered.length === 0) {
+                content.innerHTML = '<div class="knowledge-item"><h4>No Results Found</h4><p>Try different search terms</p></div>';
+            } else {
+                content.innerHTML = filtered.map(item => `
+                    <div class="knowledge-item" onclick="openKnowledgeItem('${item.title}', '${item.content}', '${item.category}')">
+                        <h4>${item.title}</h4>
+                        <p>${item.content}</p>
+                        <small style="color: var(--accent-purple);">Category: ${item.category}</small>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function openKnowledgeItem(title, content, category) {
+            alert(`📖 ${title}\n\nCategory: ${category}\n\n${content}\n\n[Full content would be displayed in an expanded modal]`);
+        }
+        
+        // Sacred Glossary Implementation
+        function initializeSacredGlossary() {
+            const glossaryModal = document.createElement('div');
+            glossaryModal.id = 'sacred-glossary-modal';
+            glossaryModal.innerHTML = `
+                <div class="knowledge-modal-overlay" onclick="closeSacredGlossary()">
+                    <div class="knowledge-modal" onclick="event.stopPropagation()">
+                        <div class="knowledge-header">
+                            <h2>📖 Sacred Glossary</h2>
+                            <button onclick="closeSacredGlossary()" class="close-btn">×</button>
+                        </div>
+                        <div class="knowledge-content">
+                            <div class="knowledge-section">
+                                <h3>🔤 Browse by Letter</h3>
+                                <div class="alphabet-nav" id="alphabet-nav"></div>
+                            </div>
+                            
+                            <div class="knowledge-section">
+                                <h3>🔍 Search Terms</h3>
+                                <input type="text" class="search-box" id="glossary-search" placeholder="Search spiritual terms..." onkeyup="searchGlossary()">
+                            </div>
+                            
+                            <div class="knowledge-section">
+                                <h3 id="glossary-section-title">📝 Definitions</h3>
+                                <div id="glossary-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(glossaryModal);
+            
+            // Initialize alphabet navigation
+            const alphabetNav = document.getElementById('alphabet-nav');
+            for (let i = 65; i <= 90; i++) {
+                const letter = String.fromCharCode(i);
+                alphabetNav.innerHTML += `<button class="letter-btn" onclick="showGlossaryLetter('${letter}')">${letter}</button>`;
+            }
+        }
+        
+        function openSacredGlossary() {
+            document.getElementById('sacred-glossary-modal').style.display = 'flex';
+            showGlossaryLetter('A');
+        }
+        
+        function closeSacredGlossary() {
+            document.getElementById('sacred-glossary-modal').style.display = 'none';
+        }
+        
+        const glossaryTerms = {
+            'A': [
+                { term: "Ascension", definition: "The process of raising one's consciousness and vibrational frequency to higher dimensions of existence." },
+                { term: "Akashic Records", definition: "The cosmic library containing all information about every soul's journey through time." },
+                { term: "Awakening", definition: "The process of remembering one's true divine nature and spiritual reality." }
+            ],
+            'C': [
+                { term: "Consciousness", definition: "The fundamental awareness that underlies all existence and reality." },
+                { term: "Chakra", definition: "Energy centers in the body that regulate spiritual, physical, and emotional well-being." }
+            ],
+            'D': [
+                { term: "Divine Feminine", definition: "The receptive, nurturing, intuitive aspect of divine energy present in all beings." },
+                { term: "Divine Masculine", definition: "The active, protective, logical aspect of divine energy present in all beings." }
+            ],
+            'E': [
+                { term: "Eden Consciousness", definition: "The original state of divine awareness before the illusion of separation." },
+                { term: "Enlightenment", definition: "The state of complete spiritual awakening and unity consciousness." }
+            ],
+            'L': [
+                { term: "Light Language", definition: "Divine communication that bypasses the mind and speaks directly to the soul." },
+                { term: "Light Body", definition: "The spiritual energy body that exists beyond the physical form." }
+            ],
+            'S': [
+                { term: "Source", definition: "The original divine consciousness from which all existence emanates." },
+                { term: "Soul", definition: "The eternal divine essence of an individual being." }
+            ]
+        };
+        
+        function showGlossaryLetter(letter) {
+            const content = document.getElementById('glossary-content');
+            const title = document.getElementById('glossary-section-title');
+            const terms = glossaryTerms[letter] || [];
+            
+            // Update active letter button
+            document.querySelectorAll('.letter-btn').forEach(btn => btn.classList.remove('active'));
+            event?.target?.classList.add('active');
+            
+            title.textContent = `📝 Terms Starting with "${letter}"`;
+            
+            if (terms.length === 0) {
+                content.innerHTML = '<div class="definition-card"><div class="definition-term">No Terms Found</div><p>No terms starting with this letter yet.</p></div>';
+            } else {
+                content.innerHTML = terms.map(item => `
+                    <div class="definition-card">
+                        <div class="definition-term">${item.term}</div>
+                        <p>${item.definition}</p>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function searchGlossary() {
+            const searchTerm = document.getElementById('glossary-search').value.toLowerCase();
+            const content = document.getElementById('glossary-content');
+            const title = document.getElementById('glossary-section-title');
+            
+            if (searchTerm.length < 2) {
+                showGlossaryLetter('A');
+                return;
+            }
+            
+            const allTerms = Object.values(glossaryTerms).flat();
+            const filtered = allTerms.filter(item => 
+                item.term.toLowerCase().includes(searchTerm) || 
+                item.definition.toLowerCase().includes(searchTerm)
+            );
+            
+            title.textContent = `🔍 Search Results for "${searchTerm}"`;
+            
+            if (filtered.length === 0) {
+                content.innerHTML = '<div class="definition-card"><div class="definition-term">No Results Found</div><p>Try different search terms</p></div>';
+            } else {
+                content.innerHTML = filtered.map(item => `
+                    <div class="definition-card">
+                        <div class="definition-term">${item.term}</div>
+                        <p>${item.definition}</p>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        // Ancient Wisdom Implementation
+        function initializeAncientWisdom() {
+            const wisdomModal = document.createElement('div');
+            wisdomModal.id = 'ancient-wisdom-modal';
+            wisdomModal.innerHTML = `
+                <div class="knowledge-modal-overlay" onclick="closeAncientWisdom()">
+                    <div class="knowledge-modal" onclick="event.stopPropagation()">
+                        <div class="knowledge-header">
+                            <h2>📜 Ancient Wisdom</h2>
+                            <button onclick="closeAncientWisdom()" class="close-btn">×</button>
+                        </div>
+                        <div class="knowledge-content">
+                            <div class="knowledge-section">
+                                <h3>🏛️ Wisdom Traditions</h3>
+                                <div class="library-categories">
+                                    <button class="category-btn" onclick="loadWisdom('hermetic')">Hermetic Wisdom</button>
+                                    <button class="category-btn" onclick="loadWisdom('kabbalah')">Kabbalistic Teachings</button>
+                                    <button class="category-btn" onclick="loadWisdom('gnostic')">Gnostic Knowledge</button>
+                                    <button class="category-btn" onclick="loadWisdom('mystical')">Mystical Secrets</button>
+                                </div>
+                            </div>
+                            
+                            <div class="knowledge-section">
+                                <h3 id="wisdom-title">✨ Featured Wisdom</h3>
+                                <div id="wisdom-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(wisdomModal);
+        }
+        
+        function openAncientWisdom() {
+            document.getElementById('ancient-wisdom-modal').style.display = 'flex';
+            loadWisdom('featured');
+        }
+        
+        function closeAncientWisdom() {
+            document.getElementById('ancient-wisdom-modal').style.display = 'none';
+        }
+        
+        const wisdomData = {
+            'hermetic': [
+                { title: "As Above, So Below", teaching: "The principle of correspondence - what happens on one level of reality reflects on all other levels." },
+                { title: "The Law of Vibration", teaching: "Everything is in constant motion and vibration. By changing your vibration, you change your reality." },
+                { title: "The Principle of Polarity", teaching: "Everything has its opposite, and opposites are identical in nature but different in degree." }
+            ],
+            'kabbalah': [
+                { title: "The Tree of Life", teaching: "The map of creation showing how divine energy flows from Source into physical manifestation." },
+                { title: "Ein Sof", teaching: "The infinite, unknowable aspect of the Divine before creation." },
+                { title: "Tikkun Olam", teaching: "The repair of the world through conscious spiritual action." }
+            ],
+            'featured': [
+                { title: "The Great Work", teaching: "The alchemical process of transforming the lead of ordinary consciousness into the gold of divine awareness." },
+                { title: "Know Thyself", teaching: "The ancient oracle's wisdom that true knowledge begins with self-understanding." }
+            ]
+        };
+        
+        function loadWisdom(category) {
+            const content = document.getElementById('wisdom-content');
+            const title = document.getElementById('wisdom-title');
+            const teachings = wisdomData[category] || wisdomData['featured'];
+            
+            title.textContent = `✨ ${category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} Wisdom`;
+            
+            content.innerHTML = teachings.map(item => `
+                <div class="knowledge-item">
+                    <h4>${item.title}</h4>
+                    <p>${item.teaching}</p>
+                </div>
+            `).join('');
+        }
+        
+        // Dreams & Visions Implementation
+        function initializeDreamsVisions() {
+            const dreamsModal = document.createElement('div');
+            dreamsModal.id = 'dreams-visions-modal';
+            dreamsModal.innerHTML = `
+                <div class="knowledge-modal-overlay" onclick="closeDreamsVisions()">
+                    <div class="knowledge-modal" onclick="event.stopPropagation()">
+                        <div class="knowledge-header">
+                            <h2>💭 Dreams & Visions</h2>
+                            <button onclick="closeDreamsVisions()" class="close-btn">×</button>
+                        </div>
+                        <div class="knowledge-content">
+                            <div class="knowledge-section">
+                                <h3>📝 Record New Dream/Vision</h3>
+                                <div class="dream-form">
+                                    <input type="date" class="dream-input" id="dream-date" value="${new Date().toISOString().split('T')[0]}">
+                                    <input type="text" class="dream-input" id="dream-title" placeholder="Dream/Vision Title">
+                                    <textarea class="dream-textarea" id="dream-description" placeholder="Describe your dream or vision in detail..."></textarea>
+                                    <input type="text" class="dream-input" id="dream-symbols" placeholder="Key symbols (comma-separated)">
+                                    <select class="dream-input" id="dream-type">
+                                        <option value="dream">Dream</option>
+                                        <option value="vision">Vision</option>
+                                        <option value="meditation">Meditation Vision</option>
+                                        <option value="prophetic">Prophetic Dream</option>
+                                    </select>
+                                    <button class="category-btn" onclick="saveDreamEntry()">Save Entry</button>
+                                </div>
+                            </div>
+                            
+                            <div class="knowledge-section">
+                                <h3>📚 Your Dream Journal</h3>
+                                <div id="dream-entries"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(dreamsModal);
+        }
+        
+        function openDreamsVisions() {
+            document.getElementById('dreams-visions-modal').style.display = 'flex';
+            loadDreamEntries();
+        }
+        
+        function closeDreamsVisions() {
+            document.getElementById('dreams-visions-modal').style.display = 'none';
+        }
+        
+        function saveDreamEntry() {
+            const date = document.getElementById('dream-date').value;
+            const title = document.getElementById('dream-title').value;
+            const description = document.getElementById('dream-description').value;
+            const symbols = document.getElementById('dream-symbols').value;
+            const type = document.getElementById('dream-type').value;
+            
+            if (!title || !description) {
+                alert('Please fill in at least the title and description.');
+                return;
+            }
+            
+            const entry = {
+                id: Date.now(),
+                date,
+                title,
+                description,
+                symbols: symbols.split(',').map(s => s.trim()).filter(s => s),
+                type,
+                timestamp: new Date().toISOString()
+            };
+            
+            const entries = JSON.parse(localStorage.getItem('dreamEntries') || '[]');
+            entries.unshift(entry);
+            localStorage.setItem('dreamEntries', JSON.stringify(entries));
+            
+            // Clear form
+            document.getElementById('dream-title').value = '';
+            document.getElementById('dream-description').value = '';
+            document.getElementById('dream-symbols').value = '';
+            
+            loadDreamEntries();
+            alert('Dream entry saved! 💭');
+        }
+        
+        function loadDreamEntries() {
+            const entries = JSON.parse(localStorage.getItem('dreamEntries') || '[]');
+            const container = document.getElementById('dream-entries');
+            
+            if (entries.length === 0) {
+                container.innerHTML = '<div class="dream-entry"><h4>No entries yet</h4><p>Start recording your dreams and visions to track patterns and insights.</p></div>';
+                return;
+            }
+            
+            container.innerHTML = entries.map(entry => `
+                <div class="dream-entry">
+                    <div class="dream-date">${entry.date} • ${entry.type.charAt(0).toUpperCase() + entry.type.slice(1)}</div>
+                    <h4>${entry.title}</h4>
+                    <p>${entry.description}</p>
+                    ${entry.symbols.length > 0 ? `
+                        <div class="dream-symbols">
+                            ${entry.symbols.map(symbol => `<span class="symbol-tag">${symbol}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Sacred Knowledge Function Validation
+        document.addEventListener('DOMContentLoaded', () => {
+            const requiredFunctions = [
+                'loadTabContent', 'setActiveTab', 'addDreamEntry', 'renderDreamEntries'
+            ];
+            
+            if (window.DivineTemplateUtils) {
+                window.DivineTemplateUtils.validateSectionFunctions('Sacred Knowledge', requiredFunctions);
+                window.DivineTemplateUtils.initializeSectionListeners('Sacred Knowledge');
+                window.DivineTemplateUtils.trackSectionPerformance('Sacred Knowledge');
+            } else {
+                console.log('📚 Sacred Knowledge loaded (validation script not found)');
+            }
+        });
+    </script>
+
+    <!-- Load universal validation script -->
+    <script src="../js/section-validation.js" defer></script>
+</body>
+</html>
