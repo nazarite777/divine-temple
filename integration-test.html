@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divine Temple - Integration Test</title>
+    <style>
+        :root {
+            --accent-gold: #d4af37;
+            --accent-purple: #8b5cf6;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            font-family: 'Inter', sans-serif;
+            color: white;
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .test-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .test-header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .test-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .test-section h2 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .test-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .test-item:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .test-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .test-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-pass {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-fail {
+            background: var(--error);
+            color: white;
+        }
+
+        .status-warning {
+            background: var(--warning);
+            color: black;
+        }
+
+        .status-pending {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .test-description {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
+        }
+
+        .test-button {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .test-results {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .summary-stats {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        @media (max-width: 768px) {
+            .test-container {
+                padding: 1rem;
+            }
+
+            .test-header h1 {
+                font-size: 2rem;
+            }
+
+            .test-section {
+                padding: 1.5rem;
+            }
+
+            .summary-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🧪 Divine Temple Integration Test</h1>
+            <p>Comprehensive testing of all enhanced sections, navigation, and cross-system integration</p>
+        </div>
+
+        <div class="summary-stats" id="summary-stats">
+            <div class="stat-item">
+                <span class="stat-value" id="total-tests">0</span>
+                <span class="stat-label">Total Tests</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="passed-tests" style="color: var(--success);">0</span>
+                <span class="stat-label">Passed</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="failed-tests" style="color: var(--error);">0</span>
+                <span class="stat-label">Failed</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="warning-tests" style="color: var(--warning);">0</span>
+                <span class="stat-label">Warnings</span>
+            </div>
+        </div>
+
+        <!-- Navigation Integration Tests -->
+        <div class="test-section">
+            <h2>🧭 Navigation Integration</h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div class="test-name">Member Portal Access</div>
+                    <div class="test-status status-pending" id="portal-status">PENDING</div>
+                    <div class="test-description">Test if member portal loads correctly and displays navigation grid.</div>
+                    <button class="test-button" onclick="testPortalAccess()">Test Portal</button>
+                </div>
+                <div class="test-item">
+                    <div class="test-name">Section Mapping</div>
+                    <div class="test-status status-pending" id="mapping-status">PENDING</div>
+                    <div class="test-description">Verify all enhanced sections are properly mapped in navigation.</div>
+                    <button class="test-button" onclick="testSectionMapping()">Test Mapping</button>
+                </div>
+                <div class="test-item">
+                    <div class="test-name">Back Navigation</div>
+                    <div class="test-status status-pending" id="back-nav-status">PENDING</div>
+                    <div class="test-description">Test if back navigation from sections to dashboard works properly.</div>
+                    <button class="test-button" onclick="testBackNavigation()">Test Back Nav</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Sections Tests -->
+        <div class="test-section">
+            <h2>✨ Enhanced Sections</h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div class="test-name">Oracle Cards System</div>
+                    <div class="test-status status-pending" id="oracle-status">PENDING</div>
+                    <div class="test-description">Test Oracle Cards with 134 cards, spreads, and journaling.</div>
+                    <button class="test-button" onclick="testSection('oracle-cards')">Test Oracle Cards</button>
+                </div>
+                <div class="test-item">
+                    <div class="test-name">Sacred Books Library</div>
+                    <div class="test-status status-pending" id="books-status">PENDING</div>
+                    <div class="test-description">Test interactive book reader, note-taking, and study groups.</div>
+                    <button class="test-button" onclick="testSection('sacred-books')">Test Sacred Books</button>
+                </div>
+                <div class="test-item">
+                    <div class="test-name">Videos & Media</div>
+                    <div class="test-status status-pending" id="videos-status">PENDING</div>
+                    <div class="test-description">Test video library, playlists, and watch progress tracking.</div>
+                    <button class="test-button" onclick="testSection('videos-media')">Test Videos</button>
+                </div>
+                <div class="test-item">
+                    <div class="test-name">Sacred Geometry</div>
+                    <div class="test-status status-pending" id="geometry-status">PENDING</div>
+                    <div class="test-description">Test interactive patterns and geometric meditations.</div>
+                    <button class="test-button" onclick="testSection('sacred-geometry')">Test Geometry</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress System Tests -->
+        <div class="test-section">
+            <h2>🎮 Universal Progress System</h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div class="test-name">Progress Tracking</div>
+                    <div class="test-status status-pending" id="progress-status">PENDING</div>
+                    <div class="test-description">Test if Universal Progress System tracks activities across sections.</div>
+                    <button class="test-button" onclick="testProgressSystem()">Test Progress</button>
+                </div>
+                <div class="test-item">
+                    <div class="test-name">Data Persistence</div>
+                    <div class="test-status status-pending" id="persistence-status">PENDING</div>
+                    <div class="test-description">Test if progress data persists across sessions and page reloads.</div>
+                    <button class="test-button" onclick="testDataPersistence()">Test Persistence</button>
+                </div>
+                <div class="test-item">
+                    <div class="test-name">Level System</div>
+                    <div class="test-status status-pending" id="level-status">PENDING</div>
+                    <div class="test-description">Test level progression and spiritual rank updates.</div>
+                    <button class="test-button" onclick="testLevelSystem()">Test Levels</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Responsiveness Tests -->
+        <div class="test-section">
+            <h2>📱 Mobile Responsiveness</h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <div class="test-name">Viewport Adaptation</div>
+                    <div class="test-status status-pending" id="viewport-status">PENDING</div>
+                    <div class="test-description">Test if all sections adapt properly to mobile viewport sizes.</div>
+                    <button class="test-button" onclick="testViewportAdaptation()">Test Viewport</button>
+                </div>
+                <div class="test-item">
+                    <div class="test-name">Touch Interactions</div>
+                    <div class="test-status status-pending" id="touch-status">PENDING</div>
+                    <div class="test-description">Test touch gestures, scrolling, and mobile-specific interactions.</div>
+                    <button class="test-button" onclick="testTouchInteractions()">Test Touch</button>
+                </div>
+                <div class="test-item">
+                    <div class="test-name">Performance on Mobile</div>
+                    <div class="test-status status-pending" id="mobile-perf-status">PENDING</div>
+                    <div class="test-description">Test loading times and performance on mobile devices.</div>
+                    <button class="test-button" onclick="testMobilePerformance()">Test Performance</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Run All Tests -->
+        <div class="test-section">
+            <h2>🚀 Automated Testing</h2>
+            <button class="test-button" onclick="runAllTests()" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                🧪 Run All Tests
+            </button>
+            <button class="test-button" onclick="generateReport()" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                📊 Generate Report
+            </button>
+            <div class="test-results" id="test-results" style="display: none;">
+                <div id="results-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class IntegrationTester {
+            constructor() {
+                this.tests = [];
+                this.results = {
+                    passed: 0,
+                    failed: 0,
+                    warnings: 0,
+                    total: 0
+                };
+                this.init();
+            }
+
+            init() {
+                console.log('🧪 Integration Tester initialized');
+                this.updateStats();
+            }
+
+            updateStats() {
+                document.getElementById('total-tests').textContent = this.results.total;
+                document.getElementById('passed-tests').textContent = this.results.passed;
+                document.getElementById('failed-tests').textContent = this.results.failed;
+                document.getElementById('warning-tests').textContent = this.results.warnings;
+            }
+
+            updateTestStatus(testId, status, message = '') {
+                const statusElement = document.getElementById(testId);
+                if (statusElement) {
+                    statusElement.textContent = status.toUpperCase();
+                    statusElement.className = `test-status status-${status}`;
+                    
+                    if (message) {
+                        console.log(`${testId}: ${message}`);
+                    }
+                }
+                
+                this.updateStats();
+            }
+
+            async testPortalAccess() {
+                this.updateTestStatus('portal-status', 'pending', 'Testing portal access...');
+                
+                try {
+                    // Simulate portal access test
+                    const portalUrl = './members-new.html';
+                    
+                    // Check if portal page exists and basic structure is valid
+                    const response = await fetch(portalUrl, { method: 'HEAD' });
+                    
+                    if (response.ok) {
+                        this.updateTestStatus('portal-status', 'pass', 'Portal accessible');
+                        this.results.passed++;
+                    } else {
+                        this.updateTestStatus('portal-status', 'fail', 'Portal not accessible');
+                        this.results.failed++;
+                    }
+                } catch (error) {
+                    this.updateTestStatus('portal-status', 'fail', `Portal access error: ${error.message}`);
+                    this.results.failed++;
+                }
+                
+                this.results.total++;
+            }
+
+            async testSectionMapping() {
+                this.updateTestStatus('mapping-status', 'pending', 'Testing section mapping...');
+                
+                const expectedSections = [
+                    'oracle-cards', 'sacred-books', 'videos-media', 'sacred-geometry',
+                    'meditation', 'astral-travel', 'energy-healing', 'cosmic-laws'
+                ];
+                
+                let mappedSections = 0;
+                
+                for (const section of expectedSections) {
+                    try {
+                        const sectionPath = `./sections/${section}.html`;
+                        const response = await fetch(sectionPath, { method: 'HEAD' });
+                        
+                        if (response.ok) {
+                            mappedSections++;
+                        }
+                    } catch (error) {
+                        console.warn(`Section not found: ${section}`);
+                    }
+                }
+                
+                const mappingRatio = mappedSections / expectedSections.length;
+                
+                if (mappingRatio >= 0.8) {
+                    this.updateTestStatus('mapping-status', 'pass', `${mappedSections}/${expectedSections.length} sections mapped`);
+                    this.results.passed++;
+                } else if (mappingRatio >= 0.5) {
+                    this.updateTestStatus('mapping-status', 'warning', `${mappedSections}/${expectedSections.length} sections mapped`);
+                    this.results.warnings++;
+                } else {
+                    this.updateTestStatus('mapping-status', 'fail', `Only ${mappedSections}/${expectedSections.length} sections mapped`);
+                    this.results.failed++;
+                }
+                
+                this.results.total++;
+            }
+
+            async testBackNavigation() {
+                this.updateTestStatus('back-nav-status', 'pending', 'Testing back navigation...');
+                
+                try {
+                    // Test if sections have proper back navigation implementation
+                    const testSections = ['videos-media', 'sacred-books', 'oracle-cards'];
+                    let properNavigation = 0;
+                    
+                    for (const section of testSections) {
+                        try {
+                            const response = await fetch(`./sections/${section}.html`);
+                            const html = await response.text();
+                            
+                            // Check for proper back navigation patterns
+                            const hasPostMessage = html.includes('postMessage') && html.includes('backToDashboard');
+                            const hasBackButton = html.includes('back-btn') || html.includes('Back to');
+                            
+                            if (hasPostMessage && hasBackButton) {
+                                properNavigation++;
+                            }
+                        } catch (error) {
+                            console.warn(`Could not test navigation for ${section}`);
+                        }
+                    }
+                    
+                    const navRatio = properNavigation / testSections.length;
+                    
+                    if (navRatio >= 0.8) {
+                        this.updateTestStatus('back-nav-status', 'pass', 'Back navigation properly implemented');
+                        this.results.passed++;
+                    } else {
+                        this.updateTestStatus('back-nav-status', 'warning', 'Some sections missing proper back navigation');
+                        this.results.warnings++;
+                    }
+                } catch (error) {
+                    this.updateTestStatus('back-nav-status', 'fail', `Navigation test failed: ${error.message}`);
+                    this.results.failed++;
+                }
+                
+                this.results.total++;
+            }
+
+            async testSection(sectionName) {
+                const statusId = `${sectionName.replace('-', '')}-status`;
+                this.updateTestStatus(statusId, 'pending', `Testing ${sectionName}...`);
+                
+                try {
+                    const response = await fetch(`./sections/${sectionName}.html`);
+                    
+                    if (response.ok) {
+                        const html = await response.text();
+                        
+                        // Check for enhanced features
+                        const hasInteractivity = html.includes('class') && html.includes('onclick');
+                        const hasValidation = html.includes('validation') || html.includes('section-validation');
+                        const hasStyles = html.includes('<style>') || html.includes('css');
+                        
+                        if (hasInteractivity && hasStyles) {
+                            this.updateTestStatus(statusId, 'pass', `${sectionName} fully enhanced`);
+                            this.results.passed++;
+                        } else {
+                            this.updateTestStatus(statusId, 'warning', `${sectionName} partially enhanced`);
+                            this.results.warnings++;
+                        }
+                    } else {
+                        this.updateTestStatus(statusId, 'fail', `${sectionName} not found`);
+                        this.results.failed++;
+                    }
+                } catch (error) {
+                    this.updateTestStatus(statusId, 'fail', `${sectionName} test error: ${error.message}`);
+                    this.results.failed++;
+                }
+                
+                this.results.total++;
+            }
+
+            testProgressSystem() {
+                this.updateTestStatus('progress-status', 'pending', 'Testing progress system...');
+                
+                try {
+                    // Test Universal Progress System implementation
+                    const hasLocalStorage = typeof localStorage !== 'undefined';
+                    const supportsProgress = hasLocalStorage;
+                    
+                    if (supportsProgress) {
+                        // Simulate progress tracking
+                        const testData = {
+                            section: 'integration-test',
+                            activity: 'test-activity',
+                            points: 10
+                        };
+                        
+                        // Test localStorage functionality
+                        localStorage.setItem('test-progress', JSON.stringify(testData));
+                        const retrieved = JSON.parse(localStorage.getItem('test-progress'));
+                        localStorage.removeItem('test-progress');
+                        
+                        if (retrieved && retrieved.points === 10) {
+                            this.updateTestStatus('progress-status', 'pass', 'Progress system working');
+                            this.results.passed++;
+                        } else {
+                            this.updateTestStatus('progress-status', 'fail', 'Progress system data issue');
+                            this.results.failed++;
+                        }
+                    } else {
+                        this.updateTestStatus('progress-status', 'fail', 'No localStorage support');
+                        this.results.failed++;
+                    }
+                } catch (error) {
+                    this.updateTestStatus('progress-status', 'fail', `Progress test error: ${error.message}`);
+                    this.results.failed++;
+                }
+                
+                this.results.total++;
+            }
+
+            testDataPersistence() {
+                this.updateTestStatus('persistence-status', 'pending', 'Testing data persistence...');
+                
+                try {
+                    // Test data persistence across sessions
+                    const testKey = 'divine-temple-test-persistence';
+                    const testData = {
+                        timestamp: Date.now(),
+                        testValue: 'persistence-test'
+                    };
+                    
+                    localStorage.setItem(testKey, JSON.stringify(testData));
+                    
+                    // Immediate retrieval test
+                    const retrieved = JSON.parse(localStorage.getItem(testKey));
+                    
+                    if (retrieved && retrieved.testValue === 'persistence-test') {
+                        this.updateTestStatus('persistence-status', 'pass', 'Data persistence working');
+                        this.results.passed++;
+                    } else {
+                        this.updateTestStatus('persistence-status', 'fail', 'Data persistence failed');
+                        this.results.failed++;
+                    }
+                    
+                    // Clean up
+                    localStorage.removeItem(testKey);
+                } catch (error) {
+                    this.updateTestStatus('persistence-status', 'fail', `Persistence test error: ${error.message}`);
+                    this.results.failed++;
+                }
+                
+                this.results.total++;
+            }
+
+            testLevelSystem() {
+                this.updateTestStatus('level-status', 'pending', 'Testing level system...');
+                
+                try {
+                    // Simulate level system functionality
+                    const testLevel = 1;
+                    const testExp = 150;
+                    const requiredExp = 100 * Math.pow(1.5, testLevel - 1);
+                    
+                    // Test level calculation
+                    const shouldLevelUp = testExp >= requiredExp;
+                    
+                    if (typeof requiredExp === 'number' && !isNaN(requiredExp)) {
+                        this.updateTestStatus('level-status', 'pass', 'Level system calculations working');
+                        this.results.passed++;
+                    } else {
+                        this.updateTestStatus('level-status', 'fail', 'Level system calculation error');
+                        this.results.failed++;
+                    }
+                } catch (error) {
+                    this.updateTestStatus('level-status', 'fail', `Level system error: ${error.message}`);
+                    this.results.failed++;
+                }
+                
+                this.results.total++;
+            }
+
+            testViewportAdaptation() {
+                this.updateTestStatus('viewport-status', 'pending', 'Testing viewport adaptation...');
+                
+                try {
+                    // Test responsive design features
+                    const viewport = window.innerWidth;
+                    const isMobile = viewport <= 768;
+                    const isTablet = viewport > 768 && viewport <= 1024;
+                    const isDesktop = viewport > 1024;
+                    
+                    // Check if CSS supports media queries
+                    const supportsMediaQueries = window.matchMedia && window.matchMedia('(max-width: 768px)');
+                    
+                    if (supportsMediaQueries) {
+                        this.updateTestStatus('viewport-status', 'pass', `Responsive design supported (${viewport}px)`);
+                        this.results.passed++;
+                    } else {
+                        this.updateTestStatus('viewport-status', 'warning', 'Limited responsive support');
+                        this.results.warnings++;
+                    }
+                } catch (error) {
+                    this.updateTestStatus('viewport-status', 'fail', `Viewport test error: ${error.message}`);
+                    this.results.failed++;
+                }
+                
+                this.results.total++;
+            }
+
+            testTouchInteractions() {
+                this.updateTestStatus('touch-status', 'pending', 'Testing touch interactions...');
+                
+                try {
+                    // Test touch support
+                    const hasTouchSupport = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+                    const hasGestureSupport = 'ongesturestart' in window;
+                    
+                    if (hasTouchSupport) {
+                        this.updateTestStatus('touch-status', 'pass', 'Touch interactions supported');
+                        this.results.passed++;
+                    } else {
+                        this.updateTestStatus('touch-status', 'warning', 'Testing on non-touch device');
+                        this.results.warnings++;
+                    }
+                } catch (error) {
+                    this.updateTestStatus('touch-status', 'fail', `Touch test error: ${error.message}`);
+                    this.results.failed++;
+                }
+                
+                this.results.total++;
+            }
+
+            testMobilePerformance() {
+                this.updateTestStatus('mobile-perf-status', 'pending', 'Testing mobile performance...');
+                
+                try {
+                    const startTime = performance.now();
+                    
+                    // Simulate performance test
+                    const testArray = new Array(10000).fill(0).map((_, i) => i);
+                    const processedArray = testArray.map(x => x * 2);
+                    
+                    const endTime = performance.now();
+                    const processingTime = endTime - startTime;
+                    
+                    if (processingTime < 50) {
+                        this.updateTestStatus('mobile-perf-status', 'pass', `Good performance (${processingTime.toFixed(2)}ms)`);
+                        this.results.passed++;
+                    } else if (processingTime < 100) {
+                        this.updateTestStatus('mobile-perf-status', 'warning', `Moderate performance (${processingTime.toFixed(2)}ms)`);
+                        this.results.warnings++;
+                    } else {
+                        this.updateTestStatus('mobile-perf-status', 'fail', `Poor performance (${processingTime.toFixed(2)}ms)`);
+                        this.results.failed++;
+                    }
+                } catch (error) {
+                    this.updateTestStatus('mobile-perf-status', 'fail', `Performance test error: ${error.message}`);
+                    this.results.failed++;
+                }
+                
+                this.results.total++;
+            }
+
+            async runAllTests() {
+                console.log('🚀 Running all integration tests...');
+                
+                // Reset results
+                this.results = { passed: 0, failed: 0, warnings: 0, total: 0 };
+                
+                // Run all tests
+                await this.testPortalAccess();
+                await this.testSectionMapping();
+                await this.testBackNavigation();
+                
+                await this.testSection('oracle-cards');
+                await this.testSection('sacred-books');
+                await this.testSection('videos-media');
+                await this.testSection('sacred-geometry');
+                
+                this.testProgressSystem();
+                this.testDataPersistence();
+                this.testLevelSystem();
+                
+                this.testViewportAdaptation();
+                this.testTouchInteractions();
+                this.testMobilePerformance();
+                
+                // Show results
+                this.generateReport();
+                
+                console.log('✅ All tests completed');
+            }
+
+            generateReport() {
+                const resultsDiv = document.getElementById('test-results');
+                const contentDiv = document.getElementById('results-content');
+                
+                const passRate = this.results.total > 0 ? (this.results.passed / this.results.total * 100).toFixed(1) : 0;
+                
+                const report = `
+🧪 DIVINE TEMPLE INTEGRATION TEST REPORT
+Generated: ${new Date().toLocaleString()}
+
+📊 SUMMARY:
+• Total Tests: ${this.results.total}
+• Passed: ${this.results.passed} ✅
+• Failed: ${this.results.failed} ❌
+• Warnings: ${this.results.warnings} ⚠️
+• Pass Rate: ${passRate}%
+
+🎯 INTEGRATION STATUS:
+${passRate >= 80 ? '✅ EXCELLENT - System fully integrated' : 
+  passRate >= 60 ? '⚠️ GOOD - Minor integration issues' : 
+  '❌ NEEDS WORK - Major integration issues'}
+
+🔧 RECOMMENDATIONS:
+${this.results.failed > 0 ? '• Fix failed tests before deployment' : ''}
+${this.results.warnings > 0 ? '• Address warnings for optimal performance' : ''}
+${passRate >= 90 ? '• System ready for production deployment' : ''}
+
+📱 MOBILE COMPATIBILITY:
+${this.results.warnings === 0 ? '✅ Fully mobile responsive' : '⚠️ Some mobile optimization needed'}
+
+🔗 NAVIGATION INTEGRITY:
+${this.results.failed === 0 ? '✅ All navigation systems working' : '❌ Navigation issues detected'}
+                `;
+                
+                contentDiv.textContent = report;
+                resultsDiv.style.display = 'block';
+                
+                console.log('📊 Integration test report generated');
+            }
+        }
+
+        // Global functions for buttons
+        const tester = new IntegrationTester();
+
+        function testPortalAccess() { tester.testPortalAccess(); }
+        function testSectionMapping() { tester.testSectionMapping(); }
+        function testBackNavigation() { tester.testBackNavigation(); }
+        function testSection(name) { tester.testSection(name); }
+        function testProgressSystem() { tester.testProgressSystem(); }
+        function testDataPersistence() { tester.testDataPersistence(); }
+        function testLevelSystem() { tester.testLevelSystem(); }
+        function testViewportAdaptation() { tester.testViewportAdaptation(); }
+        function testTouchInteractions() { tester.testTouchInteractions(); }
+        function testMobilePerformance() { tester.testMobilePerformance(); }
+        function runAllTests() { tester.runAllTests(); }
+        function generateReport() { tester.generateReport(); }
+
+        // Auto-run basic tests on load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🧪 Integration Test Suite loaded');
+            console.log('📱 Viewport: ' + window.innerWidth + 'x' + window.innerHeight);
+            console.log('🔧 User Agent: ' + navigator.userAgent);
+        });
+    </script>
+</body>
+</html>

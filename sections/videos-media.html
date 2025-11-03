@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Videos & Media - Divine Temple</title>
+    <style>
+        :root {
+            --accent-gold: #d4af37;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --background-dark: #0f0f23;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+
+        .section-container {
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 2.5rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            border-color: var(--accent-gold);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Main Layout */
+        .media-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr 300px;
+            gap: 2rem;
+            min-height: 80vh;
+        }
+
+        .media-sidebar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        .media-main {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        .media-tools {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        /* Media Categories */
+        .category-nav {
+            margin-bottom: 2rem;
+        }
+
+        .category-tabs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .category-tab {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .category-tab:hover, .category-tab.active {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            border-color: var(--accent-gold);
+            color: white;
+        }
+
+        .search-media {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-media::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Video Grid */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .video-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+        }
+
+        .play-button {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--background-dark);
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .video-card:hover .play-button {
+            transform: scale(1.1);
+            background: var(--accent-gold);
+            color: white;
+        }
+
+        .video-info {
+            padding: 1rem;
+        }
+
+        .video-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .video-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .video-progress {
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-purple));
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        /* Video Player */
+        .video-player {
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .player-container {
+            width: 100%;
+            height: 450px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .player-placeholder {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .player-placeholder .play-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--accent-gold);
+        }
+
+        .video-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent-gold);
+        }
+
+        .time-display {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .volume-control {
+            width: 80px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        /* Video Details */
+        .video-details {
+            margin-bottom: 2rem;
+        }
+
+        .video-details h2 {
+            color: var(--accent-gold);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .video-details .meta-info {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .video-details .description {
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        /* Playlists */
+        .playlist-section {
+            margin-bottom: 2rem;
+        }
+
+        .playlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playlist-title {
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .create-playlist-btn {
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .create-playlist-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(16, 185, 129, 0.4);
+        }
+
+        .playlist-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .playlist-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .playlist-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-gold);
+        }
+
+        .playlist-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .playlist-info {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Comments & Discussions */
+        .discussions-section {
+            margin-top: 2rem;
+        }
+
+        .discussion-header {
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .comment-form {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.9rem;
+            min-height: 80px;
+            resize: vertical;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .submit-comment-btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .submit-comment-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(139, 92, 246, 0.4);
+        }
+
+        .comments-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .comment-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            border-left: 3px solid var(--accent-purple);
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-text {
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .comment-action {
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .comment-action:hover {
+            color: var(--accent-gold);
+        }
+
+        /* Watch Statistics */
+        .watch-stats {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .stats-title {
+            color: var(--accent-gold);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Watch History */
+        .watch-history {
+            margin-bottom: 1rem;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .history-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .history-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .media-layout {
+                grid-template-columns: 300px 1fr;
+                gap: 1rem;
+            }
+
+            .media-tools {
+                order: -1;
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .media-layout {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .section-container {
+                padding: 1rem;
+            }
+
+            .videos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .player-container {
+                height: 300px;
+            }
+
+            .video-controls {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            border: 2px solid var(--glass-border);
+            border-radius: 20px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+        }
+
+        .modal h3 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        /* Custom Scrollbars */
+        .playlist-list::-webkit-scrollbar,
+        .comments-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .playlist-list::-webkit-scrollbar-track,
+        .comments-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .playlist-list::-webkit-scrollbar-thumb,
+        .comments-list::-webkit-scrollbar-thumb {
+            background: var(--accent-gold);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="section-container">
+        <button class="back-btn" onclick="goBackToDashboard()">
+            <span class="back-icon">←</span>
+            <span>Back to Dashboard</span>
+        </button>
+        
+        <div class="section-header">
+            <h1>🎬 Videos & Media</h1>
+            <p>Curated spiritual content, interactive learning, and sacred media library</p>
+        </div>
+
+        <div class="media-layout">
+            <!-- Media Categories Sidebar -->
+            <div class="media-sidebar">
+                <input type="text" class="search-media" id="media-search" placeholder="Search videos..." onkeyup="searchMedia()">
+                
+                <div class="category-nav">
+                    <div class="category-tabs">
+                        <button class="category-tab active" onclick="loadCategory('all')">🎬 All Videos</button>
+                        <button class="category-tab" onclick="loadCategory('teachings')">📚 Spiritual Teachings</button>
+                        <button class="category-tab" onclick="loadCategory('meditations')">🧘 Guided Meditations</button>
+                        <button class="category-tab" onclick="loadCategory('consciousness')">🔮 Consciousness</button>
+                        <button class="category-tab" onclick="loadCategory('healing')">✨ Energy Healing</button>
+                        <button class="category-tab" onclick="loadCategory('wisdom')">💎 Ancient Wisdom</button>
+                        <button class="category-tab" onclick="loadCategory('interviews')">🎙️ Interviews</button>
+                        <button class="category-tab" onclick="loadCategory('live-sessions')">📡 Live Sessions</button>
+                    </div>
+                </div>
+
+                <div class="playlist-section">
+                    <div class="playlist-header">
+                        <span class="playlist-title">My Playlists</span>
+                        <button class="create-playlist-btn" onclick="createPlaylist()">+ Create</button>
+                    </div>
+                    <div class="playlist-list" id="playlist-list"></div>
+                </div>
+            </div>
+
+            <!-- Main Video Area -->
+            <div class="media-main">
+                <!-- Video Player -->
+                <div class="video-player" id="video-player">
+                    <div class="player-container">
+                        <div class="player-placeholder">
+                            <div class="play-icon">▶️</div>
+                            <h3>Select a video to begin watching</h3>
+                            <p>Choose from our curated collection of spiritual teachings and transformational content</p>
+                        </div>
+                    </div>
+                    <div class="video-controls" id="video-controls" style="display: none;">
+                        <div class="control-group">
+                            <button class="control-btn" id="play-pause-btn">⏸️</button>
+                            <button class="control-btn" onclick="skipTime(-10)">⏪</button>
+                            <button class="control-btn" onclick="skipTime(10)">⏩</button>
+                            <span class="time-display" id="time-display">0:00 / 0:00</span>
+                        </div>
+                        <div class="control-group">
+                            <button class="control-btn" onclick="toggleMute()">🔊</button>
+                            <div class="volume-control" onclick="setVolume(event)"></div>
+                            <button class="control-btn" onclick="toggleFullscreen()">⛶</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Details -->
+                <div class="video-details" id="video-details" style="display: none;">
+                    <h2 id="video-title">Video Title</h2>
+                    <div class="meta-info">
+                        <span id="video-duration">Duration: 45:30</span>
+                        <span id="video-views">Views: 1,234</span>
+                        <span id="video-date">Published: Oct 15, 2024</span>
+                    </div>
+                    <div class="description" id="video-description">
+                        Video description will appear here...
+                    </div>
+                </div>
+
+                <!-- Videos Grid -->
+                <div class="videos-grid" id="videos-grid">
+                    <!-- Videos will be populated by JavaScript -->
+                </div>
+
+                <!-- Comments & Discussions -->
+                <div class="discussions-section" id="discussions-section" style="display: none;">
+                    <h3 class="discussion-header">💬 Discussions & Insights</h3>
+                    
+                    <div class="comment-form">
+                        <textarea class="comment-input" id="comment-input" placeholder="Share your insights about this video..."></textarea>
+                        <button class="submit-comment-btn" onclick="submitComment()">Post Comment</button>
+                    </div>
+
+                    <div class="comments-list" id="comments-list">
+                        <!-- Comments will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Media Tools & Stats -->
+            <div class="media-tools">
+                <!-- Watch Statistics -->
+                <div class="watch-stats">
+                    <div class="stats-title">📊 Your Progress</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value" id="videos-watched">0</span>
+                            <span class="stat-label">Videos Watched</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="watch-time">0h</span>
+                            <span class="stat-label">Total Watch Time</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="learning-streak">0</span>
+                            <span class="stat-label">Day Streak</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="favorites-count">0</span>
+                            <span class="stat-label">Favorites</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Watch History -->
+                <div class="watch-history">
+                    <h4 style="color: var(--accent-gold); margin-bottom: 1rem;">📝 Recent Watches</h4>
+                    <div id="watch-history-list">
+                        <!-- History items will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <button class="control-btn" onclick="addToFavorites()" style="background: rgba(255, 255, 255, 0.1); padding: 0.75rem; border-radius: 8px;">
+                        ⭐ Add to Favorites
+                    </button>
+                    <button class="control-btn" onclick="addToPlaylist()" style="background: rgba(255, 255, 255, 0.1); padding: 0.75rem; border-radius: 8px;">
+                        📝 Add to Playlist
+                    </button>
+                    <button class="control-btn" onclick="shareVideo()" style="background: rgba(255, 255, 255, 0.1); padding: 0.75rem; border-radius: 8px;">
+                        📤 Share Video
+                    </button>
+                    <button class="control-btn" onclick="reportIssue()" style="background: rgba(255, 255, 255, 0.1); padding: 0.75rem; border-radius: 8px;">
+                        🚨 Report Issue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Playlist Modal -->
+    <div class="modal-overlay" id="playlist-modal">
+        <div class="modal" onclick="event.stopPropagation()">
+            <h3>📝 Create New Playlist</h3>
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Playlist Name:</label>
+                <input type="text" id="playlist-name" style="width: 100%; padding: 0.75rem; border: 1px solid var(--glass-border); border-radius: 8px; background: rgba(255, 255, 255, 0.1); color: white;">
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Description:</label>
+                <textarea id="playlist-description" style="width: 100%; padding: 0.75rem; border: 1px solid var(--glass-border); border-radius: 8px; background: rgba(255, 255, 255, 0.1); color: white; min-height: 80px; resize: vertical;"></textarea>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button onclick="closePlaylistModal()" style="background: rgba(255, 255, 255, 0.1); border: 1px solid var(--glass-border); padding: 0.75rem 1.5rem; border-radius: 8px; color: white; cursor: pointer;">Cancel</button>
+                <button onclick="savePlaylist()" style="background: linear-gradient(135deg, var(--accent-green), #059669); border: none; padding: 0.75rem 1.5rem; border-radius: 8px; color: white; cursor: pointer;">Create Playlist</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Videos & Media System Class
+        class VideosMediaSystem {
+            constructor() {
+                this.currentVideo = null;
+                this.currentCategory = 'all';
+                this.isPlaying = false;
+                this.currentTime = 0;
+                this.duration = 0;
+                this.volume = 1;
+                this.isMuted = false;
+                
+                this.videos = this.initializeVideoLibrary();
+                this.playlists = this.loadPlaylists();
+                this.watchHistory = this.loadWatchHistory();
+                this.watchStats = this.loadWatchStats();
+                this.comments = this.loadComments();
+                
+                this.init();
+            }
+
+            init() {
+                this.renderVideoGrid();
+                this.renderPlaylists();
+                this.renderWatchHistory();
+                this.updateWatchStats();
+                this.setupEventListeners();
+                console.log('🎬 Videos & Media System initialized');
+            }
+
+            initializeVideoLibrary() {
+                return {
+                    'teachings': [
+                        {
+                            id: 'eden-consciousness-intro',
+                            title: 'You Never Left Eden: Introduction to Eden Consciousness',
+                            description: 'Discover the fundamental truth that will transform your understanding of reality and your divine nature.',
+                            duration: '45:30',
+                            views: 12847,
+                            publishDate: '2024-10-15',
+                            thumbnail: '🌟',
+                            category: 'teachings',
+                            tags: ['consciousness', 'awakening', 'divine nature'],
+                            instructor: 'Nazir El'
+                        },
+                        {
+                            id: 'divine-identity',
+                            title: 'Remembering Your Divine Identity',
+                            description: 'A deep exploration of who you truly are beyond the illusion of separation.',
+                            duration: '38:22',
+                            views: 9876,
+                            publishDate: '2024-10-10',
+                            thumbnail: '👑',
+                            category: 'teachings',
+                            tags: ['identity', 'divine self', 'awakening'],
+                            instructor: 'Nazir El'
+                        },
+                        {
+                            id: 'illusion-of-separation',
+                            title: 'The Great Illusion: Understanding Separation',
+                            description: 'How the mind creates the illusion of separation and how to see through it.',
+                            duration: '52:15',
+                            views: 8234,
+                            publishDate: '2024-10-05',
+                            thumbnail: '🔮',
+                            category: 'teachings',
+                            tags: ['illusion', 'separation', 'consciousness'],
+                            instructor: 'Nazir El'
+                        }
+                    ],
+                    'meditations': [
+                        {
+                            id: 'return-to-eden-meditation',
+                            title: 'Guided Meditation: Return to Eden',
+                            description: 'A transformative meditation to help you experience your original divine state.',
+                            duration: '25:00',
+                            views: 15632,
+                            publishDate: '2024-10-12',
+                            thumbnail: '🧘',
+                            category: 'meditations',
+                            tags: ['meditation', 'eden', 'divine state'],
+                            instructor: 'Nazir El'
+                        },
+                        {
+                            id: 'chakra-awakening',
+                            title: '7 Chakras Awakening Meditation',
+                            description: 'Activate and balance all seven chakras for complete energetic alignment.',
+                            duration: '35:45',
+                            views: 11234,
+                            publishDate: '2024-10-08',
+                            thumbnail: '💎',
+                            category: 'meditations',
+                            tags: ['chakras', 'energy', 'awakening'],
+                            instructor: 'Divine Temple Guides'
+                        }
+                    ],
+                    'consciousness': [
+                        {
+                            id: 'dimensions-of-consciousness',
+                            title: 'Exploring Dimensions of Consciousness',
+                            description: 'Journey through different levels of awareness and dimensional understanding.',
+                            duration: '41:18',
+                            views: 7892,
+                            publishDate: '2024-10-03',
+                            thumbnail: '🌌',
+                            category: 'consciousness',
+                            tags: ['dimensions', 'awareness', 'consciousness'],
+                            instructor: 'Nazir El'
+                        }
+                    ],
+                    'healing': [
+                        {
+                            id: 'energy-healing-basics',
+                            title: 'Energy Healing Fundamentals',
+                            description: 'Learn the basics of energy healing and how to work with divine energy.',
+                            duration: '33:27',
+                            views: 9453,
+                            publishDate: '2024-10-01',
+                            thumbnail: '✨',
+                            category: 'healing',
+                            tags: ['energy healing', 'divine energy', 'healing'],
+                            instructor: 'Sacred Healers'
+                        }
+                    ],
+                    'wisdom': [
+                        {
+                            id: 'ancient-wisdom-keys',
+                            title: 'Keys to Ancient Wisdom',
+                            description: 'Unlock the secrets of ancient spiritual traditions and their relevance today.',
+                            duration: '47:33',
+                            views: 6789,
+                            publishDate: '2024-09-28',
+                            thumbnail: '🗝️',
+                            category: 'wisdom',
+                            tags: ['ancient wisdom', 'spiritual traditions', 'keys'],
+                            instructor: 'Wisdom Keepers'
+                        }
+                    ],
+                    'interviews': [
+                        {
+                            id: 'nazir-awakening-story',
+                            title: 'Nazir\'s Awakening Journey',
+                            description: 'An intimate conversation about Nazir\'s spiritual awakening and mission.',
+                            duration: '62:45',
+                            views: 18976,
+                            publishDate: '2024-09-25',
+                            thumbnail: '🎙️',
+                            category: 'interviews',
+                            tags: ['awakening journey', 'nazir el', 'personal story'],
+                            instructor: 'Divine Temple Host'
+                        }
+                    ],
+                    'live-sessions': [
+                        {
+                            id: 'monthly-consciousness-call',
+                            title: 'Monthly Consciousness Gathering',
+                            description: 'Live Q&A and consciousness expansion session with the community.',
+                            duration: '73:12',
+                            views: 5643,
+                            publishDate: '2024-10-20',
+                            thumbnail: '📡',
+                            category: 'live-sessions',
+                            tags: ['live session', 'community', 'q&a'],
+                            instructor: 'Nazir El'
+                        }
+                    ]
+                };
+            }
+
+            renderVideoGrid() {
+                const grid = document.getElementById('videos-grid');
+                const videos = this.getVideosByCategory(this.currentCategory);
+                
+                grid.innerHTML = videos.map(video => `
+                    <div class="video-card" onclick="videosMedia.playVideo('${video.id}')">
+                        <div class="video-thumbnail">
+                            <div style="font-size: 3rem;">${video.thumbnail}</div>
+                            <div class="play-button">▶️</div>
+                        </div>
+                        <div class="video-info">
+                            <div class="video-title">${video.title}</div>
+                            <div class="video-meta">
+                                <span>${video.duration}</span>
+                                <span>${video.views.toLocaleString()} views</span>
+                            </div>
+                            <div class="video-description">${video.description}</div>
+                            <div class="video-progress">
+                                <div class="progress-fill" style="width: ${this.getVideoProgress(video.id)}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            getVideosByCategory(category) {
+                if (category === 'all') {
+                    return Object.values(this.videos).flat();
+                }
+                return this.videos[category] || [];
+            }
+
+            getVideoProgress(videoId) {
+                const history = this.watchHistory.find(h => h.videoId === videoId);
+                return history ? history.progress : 0;
+            }
+
+            playVideo(videoId) {
+                // Find video in any category
+                this.currentVideo = null;
+                for (const category in this.videos) {
+                    const video = this.videos[category].find(v => v.id === videoId);
+                    if (video) {
+                        this.currentVideo = video;
+                        break;
+                    }
+                }
+
+                if (!this.currentVideo) return;
+
+                // Update player UI
+                this.updateVideoPlayer();
+                
+                // Add to watch history
+                this.addToWatchHistory(videoId);
+                
+                // Show video controls and details
+                document.getElementById('video-controls').style.display = 'flex';
+                document.getElementById('video-details').style.display = 'block';
+                document.getElementById('discussions-section').style.display = 'block';
+                
+                // Load comments for this video
+                this.renderComments();
+                
+                console.log(`🎬 Playing: "${this.currentVideo.title}"`);
+            }
+
+            updateVideoPlayer() {
+                if (!this.currentVideo) return;
+
+                // Update player placeholder (in real app, this would load actual video)
+                const playerContainer = document.querySelector('.player-container');
+                playerContainer.innerHTML = `
+                    <div class="player-placeholder">
+                        <div class="play-icon">${this.currentVideo.thumbnail}</div>
+                        <h3>Now Playing: ${this.currentVideo.title}</h3>
+                        <p>Duration: ${this.currentVideo.duration} • By ${this.currentVideo.instructor}</p>
+                        <div style="margin-top: 1rem;">
+                            <button onclick="videosMedia.togglePlayPause()" style="background: var(--accent-gold); border: none; padding: 1rem 2rem; border-radius: 25px; color: white; font-weight: 600; cursor: pointer;">
+                                ${this.isPlaying ? '⏸️ Pause' : '▶️ Play'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                // Update video details
+                document.getElementById('video-title').textContent = this.currentVideo.title;
+                document.getElementById('video-duration').textContent = `Duration: ${this.currentVideo.duration}`;
+                document.getElementById('video-views').textContent = `Views: ${this.currentVideo.views.toLocaleString()}`;
+                document.getElementById('video-date').textContent = `Published: ${new Date(this.currentVideo.publishDate).toLocaleDateString()}`;
+                document.getElementById('video-description').textContent = this.currentVideo.description;
+
+                // Simulate video duration for controls
+                this.duration = this.parseDuration(this.currentVideo.duration);
+                this.updateTimeDisplay();
+            }
+
+            parseDuration(durationStr) {
+                const parts = durationStr.split(':').map(Number);
+                return parts.length === 2 ? parts[0] * 60 + parts[1] : parts[0] * 3600 + parts[1] * 60 + parts[2];
+            }
+
+            formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            updateTimeDisplay() {
+                const timeDisplay = document.getElementById('time-display');
+                timeDisplay.textContent = `${this.formatTime(this.currentTime)} / ${this.formatTime(this.duration)}`;
+            }
+
+            togglePlayPause() {
+                this.isPlaying = !this.isPlaying;
+                
+                // Update button text
+                const playBtn = document.getElementById('play-pause-btn');
+                playBtn.textContent = this.isPlaying ? '⏸️' : '▶️';
+                
+                // Update player button
+                this.updateVideoPlayer();
+                
+                // Simulate progress tracking
+                if (this.isPlaying) {
+                    this.startProgressTracking();
+                } else {
+                    this.stopProgressTracking();
+                }
+            }
+
+            startProgressTracking() {
+                if (this.progressInterval) clearInterval(this.progressInterval);
+                
+                this.progressInterval = setInterval(() => {
+                    if (this.isPlaying && this.currentTime < this.duration) {
+                        this.currentTime += 1;
+                        this.updateTimeDisplay();
+                        this.updateWatchProgress();
+                    }
+                }, 1000);
+            }
+
+            stopProgressTracking() {
+                if (this.progressInterval) {
+                    clearInterval(this.progressInterval);
+                    this.progressInterval = null;
+                }
+            }
+
+            updateWatchProgress() {
+                if (!this.currentVideo) return;
+                
+                const progress = (this.currentTime / this.duration) * 100;
+                
+                // Update watch history
+                const historyIndex = this.watchHistory.findIndex(h => h.videoId === this.currentVideo.id);
+                if (historyIndex >= 0) {
+                    this.watchHistory[historyIndex].progress = Math.round(progress);
+                    this.watchHistory[historyIndex].lastWatched = new Date().toISOString();
+                }
+                
+                this.saveWatchHistory();
+                
+                // Update stats if video is completed
+                if (progress >= 90) { // Consider 90% as completed
+                    this.markVideoCompleted();
+                }
+            }
+
+            markVideoCompleted() {
+                if (!this.currentVideo) return;
+                
+                const isNewCompletion = !this.watchStats.completedVideos.includes(this.currentVideo.id);
+                
+                if (isNewCompletion) {
+                    this.watchStats.completedVideos.push(this.currentVideo.id);
+                    this.watchStats.totalWatchTime += this.duration;
+                    this.updateWatchStreak();
+                    this.saveWatchStats();
+                    this.updateWatchStats();
+                    
+                    alert(`🎉 Video completed! You've earned progress points for finishing "${this.currentVideo.title}"`);
+                }
+            }
+
+            updateWatchStreak() {
+                const today = new Date().toDateString();
+                const lastWatchDate = this.watchStats.lastWatchDate;
+                
+                if (lastWatchDate === today) {
+                    // Already watched today, no change to streak
+                    return;
+                } else if (lastWatchDate) {
+                    const lastDate = new Date(lastWatchDate);
+                    const todayDate = new Date(today);
+                    const diffTime = todayDate.getTime() - lastDate.getTime();
+                    const diffDays = diffTime / (1000 * 3600 * 24);
+                    
+                    if (diffDays === 1) {
+                        // Consecutive day
+                        this.watchStats.streak++;
+                    } else {
+                        // Streak broken
+                        this.watchStats.streak = 1;
+                    }
+                } else {
+                    // First watch
+                    this.watchStats.streak = 1;
+                }
+                
+                this.watchStats.lastWatchDate = today;
+            }
+
+            skipTime(seconds) {
+                this.currentTime = Math.max(0, Math.min(this.duration, this.currentTime + seconds));
+                this.updateTimeDisplay();
+            }
+
+            toggleMute() {
+                this.isMuted = !this.isMuted;
+                const muteBtn = document.querySelector('.control-btn[onclick="toggleMute()"]');
+                muteBtn.textContent = this.isMuted ? '🔇' : '🔊';
+            }
+
+            setVolume(event) {
+                const volumeControl = event.currentTarget;
+                const rect = volumeControl.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                this.volume = x / rect.width;
+                
+                // Visual feedback would be added here
+                console.log(`Volume set to: ${Math.round(this.volume * 100)}%`);
+            }
+
+            toggleFullscreen() {
+                const player = document.getElementById('video-player');
+                
+                if (!document.fullscreenElement) {
+                    player.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+
+            addToWatchHistory(videoId) {
+                const existingIndex = this.watchHistory.findIndex(h => h.videoId === videoId);
+                const historyItem = {
+                    videoId: videoId,
+                    progress: 0,
+                    lastWatched: new Date().toISOString()
+                };
+
+                if (existingIndex >= 0) {
+                    this.watchHistory[existingIndex] = historyItem;
+                } else {
+                    this.watchHistory.unshift(historyItem);
+                }
+
+                // Keep only last 20 items
+                this.watchHistory = this.watchHistory.slice(0, 20);
+                this.saveWatchHistory();
+                this.renderWatchHistory();
+            }
+
+            renderWatchHistory() {
+                const container = document.getElementById('watch-history-list');
+                
+                if (this.watchHistory.length === 0) {
+                    container.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.9rem;">No watch history yet</div>';
+                    return;
+                }
+
+                container.innerHTML = this.watchHistory.slice(0, 5).map(item => {
+                    const video = this.findVideoById(item.videoId);
+                    if (!video) return '';
+                    
+                    return `
+                        <div class="history-item" onclick="videosMedia.playVideo('${item.videoId}')">
+                            <div class="history-title">${video.title}</div>
+                            <div class="history-meta">
+                                ${item.progress}% • ${new Date(item.lastWatched).toLocaleDateString()}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            findVideoById(videoId) {
+                for (const category in this.videos) {
+                    const video = this.videos[category].find(v => v.id === videoId);
+                    if (video) return video;
+                }
+                return null;
+            }
+
+            loadCategory(category) {
+                this.currentCategory = category;
+                
+                // Update active tab
+                document.querySelectorAll('.category-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                event.target.classList.add('active');
+                
+                this.renderVideoGrid();
+            }
+
+            searchMedia() {
+                const searchTerm = document.getElementById('media-search').value.toLowerCase();
+                const videoCards = document.querySelectorAll('.video-card');
+
+                videoCards.forEach(card => {
+                    const title = card.querySelector('.video-title').textContent.toLowerCase();
+                    const description = card.querySelector('.video-description').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = searchTerm === '' ? 'block' : 'none';
+                    }
+                });
+            }
+
+            // Playlist Management
+            createPlaylist() {
+                document.getElementById('playlist-modal').style.display = 'flex';
+            }
+
+            savePlaylist() {
+                const name = document.getElementById('playlist-name').value.trim();
+                const description = document.getElementById('playlist-description').value.trim();
+                
+                if (!name) {
+                    alert('Please enter a playlist name');
+                    return;
+                }
+
+                const playlist = {
+                    id: Date.now(),
+                    name: name,
+                    description: description,
+                    videos: [],
+                    created: new Date().toISOString()
+                };
+
+                this.playlists.push(playlist);
+                this.savePlaylists();
+                this.renderPlaylists();
+                this.closePlaylistModal();
+                
+                alert(`Playlist "${name}" created! 📝`);
+            }
+
+            renderPlaylists() {
+                const container = document.getElementById('playlist-list');
+                
+                if (this.playlists.length === 0) {
+                    container.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.9rem;">No playlists yet</div>';
+                    return;
+                }
+
+                container.innerHTML = this.playlists.map(playlist => `
+                    <div class="playlist-item" onclick="videosMedia.loadPlaylist('${playlist.id}')">
+                        <div class="playlist-name">${playlist.name}</div>
+                        <div class="playlist-info">${playlist.videos.length} videos</div>
+                    </div>
+                `).join('');
+            }
+
+            loadPlaylist(playlistId) {
+                const playlist = this.playlists.find(p => p.id == playlistId);
+                if (!playlist) return;
+                
+                alert(`Loading playlist: "${playlist.name}" with ${playlist.videos.length} videos`);
+                // Playlist loading logic would be implemented here
+            }
+
+            // Comments System
+            submitComment() {
+                const commentInput = document.getElementById('comment-input');
+                const commentText = commentInput.value.trim();
+                
+                if (!commentText || !this.currentVideo) return;
+
+                const comment = {
+                    id: Date.now(),
+                    videoId: this.currentVideo.id,
+                    author: 'You', // In real app, would get from user session
+                    text: commentText,
+                    timestamp: new Date().toISOString(),
+                    likes: 0
+                };
+
+                this.comments.push(comment);
+                this.saveComments();
+                this.renderComments();
+                
+                commentInput.value = '';
+                alert('Comment posted! 💬');
+            }
+
+            renderComments() {
+                const container = document.getElementById('comments-list');
+                if (!this.currentVideo) return;
+
+                const videoComments = this.comments.filter(c => c.videoId === this.currentVideo.id);
+                
+                if (videoComments.length === 0) {
+                    container.innerHTML = '<div style="color: var(--text-secondary);">Be the first to comment on this video!</div>';
+                    return;
+                }
+
+                container.innerHTML = videoComments.map(comment => `
+                    <div class="comment-item">
+                        <div class="comment-author">${comment.author}</div>
+                        <div class="comment-text">${comment.text}</div>
+                        <div class="comment-meta">
+                            <span>${new Date(comment.timestamp).toLocaleDateString()}</span>
+                            <div class="comment-actions">
+                                <span class="comment-action" onclick="videosMedia.likeComment('${comment.id}')">👍 ${comment.likes}</span>
+                                <span class="comment-action">💬 Reply</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            likeComment(commentId) {
+                const comment = this.comments.find(c => c.id == commentId);
+                if (comment) {
+                    comment.likes++;
+                    this.saveComments();
+                    this.renderComments();
+                }
+            }
+
+            updateWatchStats() {
+                document.getElementById('videos-watched').textContent = this.watchStats.completedVideos.length;
+                document.getElementById('watch-time').textContent = `${Math.round(this.watchStats.totalWatchTime / 3600)}h`;
+                document.getElementById('learning-streak').textContent = this.watchStats.streak;
+                document.getElementById('favorites-count').textContent = this.watchStats.favorites.length;
+            }
+
+            // Quick Actions
+            addToFavorites() {
+                if (!this.currentVideo) return;
+                
+                const videoId = this.currentVideo.id;
+                if (!this.watchStats.favorites.includes(videoId)) {
+                    this.watchStats.favorites.push(videoId);
+                    this.saveWatchStats();
+                    this.updateWatchStats();
+                    alert('⭐ Added to favorites!');
+                } else {
+                    alert('Already in favorites!');
+                }
+            }
+
+            addToPlaylist() {
+                if (!this.currentVideo) return;
+                
+                if (this.playlists.length === 0) {
+                    alert('Create a playlist first!');
+                    return;
+                }
+                
+                // Simplified - in real app would show playlist selection
+                alert('Feature coming soon: Choose playlist to add video to');
+            }
+
+            shareVideo() {
+                if (!this.currentVideo) return;
+                
+                const shareText = `Check out this spiritual teaching: "${this.currentVideo.title}" - ${window.location.href}`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: this.currentVideo.title,
+                        text: this.currentVideo.description,
+                        url: window.location.href
+                    });
+                } else {
+                    navigator.clipboard.writeText(shareText);
+                    alert('📤 Share link copied to clipboard!');
+                }
+            }
+
+            reportIssue() {
+                if (!this.currentVideo) return;
+                
+                const issue = prompt('Please describe the issue with this video:');
+                if (issue) {
+                    alert('🚨 Issue reported. Thank you for helping us improve!');
+                    console.log(`Issue reported for ${this.currentVideo.id}: ${issue}`);
+                }
+            }
+
+            closePlaylistModal() {
+                document.getElementById('playlist-modal').style.display = 'none';
+                document.getElementById('playlist-name').value = '';
+                document.getElementById('playlist-description').value = '';
+            }
+
+            setupEventListeners() {
+                // Close modal when clicking outside
+                document.getElementById('playlist-modal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) {
+                        this.closePlaylistModal();
+                    }
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (!this.currentVideo) return;
+                    
+                    switch(e.code) {
+                        case 'Space':
+                            e.preventDefault();
+                            this.togglePlayPause();
+                            break;
+                        case 'ArrowLeft':
+                            e.preventDefault();
+                            this.skipTime(-10);
+                            break;
+                        case 'ArrowRight':
+                            e.preventDefault();
+                            this.skipTime(10);
+                            break;
+                    }
+                });
+            }
+
+            // Data persistence methods
+            loadPlaylists() {
+                return JSON.parse(localStorage.getItem('videosMedia_playlists') || '[]');
+            }
+
+            savePlaylists() {
+                localStorage.setItem('videosMedia_playlists', JSON.stringify(this.playlists));
+            }
+
+            loadWatchHistory() {
+                return JSON.parse(localStorage.getItem('videosMedia_watchHistory') || '[]');
+            }
+
+            saveWatchHistory() {
+                localStorage.setItem('videosMedia_watchHistory', JSON.stringify(this.watchHistory));
+            }
+
+            loadWatchStats() {
+                return JSON.parse(localStorage.getItem('videosMedia_watchStats') || JSON.stringify({
+                    completedVideos: [],
+                    totalWatchTime: 0,
+                    streak: 0,
+                    favorites: [],
+                    lastWatchDate: null
+                }));
+            }
+
+            saveWatchStats() {
+                localStorage.setItem('videosMedia_watchStats', JSON.stringify(this.watchStats));
+            }
+
+            loadComments() {
+                return JSON.parse(localStorage.getItem('videosMedia_comments') || '[]');
+            }
+
+            saveComments() {
+                localStorage.setItem('videosMedia_comments', JSON.stringify(this.comments));
+            }
+        }
+
+        // Global functions
+        function goBackToDashboard() {
+            try {
+                // Try to send message to parent window (if in iframe)
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage('backToDashboard', '*');
+                } else {
+                    // Fallback navigation
+                    window.location.href = '../members-new.html';
+                }
+            } catch (error) {
+                console.error('Navigation error:', error);
+                window.location.href = '../members-new.html';
+            }
+        }
+
+        function loadCategory(category) {
+            videosMedia.loadCategory(category);
+        }
+
+        function searchMedia() {
+            videosMedia.searchMedia();
+        }
+
+        function createPlaylist() {
+            videosMedia.createPlaylist();
+        }
+
+        function savePlaylist() {
+            videosMedia.savePlaylist();
+        }
+
+        function closePlaylistModal() {
+            videosMedia.closePlaylistModal();
+        }
+
+        function submitComment() {
+            videosMedia.submitComment();
+        }
+
+        function skipTime(seconds) {
+            videosMedia.skipTime(seconds);
+        }
+
+        function toggleMute() {
+            videosMedia.toggleMute();
+        }
+
+        function setVolume(event) {
+            videosMedia.setVolume(event);
+        }
+
+        function toggleFullscreen() {
+            videosMedia.toggleFullscreen();
+        }
+
+        function addToFavorites() {
+            videosMedia.addToFavorites();
+        }
+
+        function addToPlaylist() {
+            videosMedia.addToPlaylist();
+        }
+
+        function shareVideo() {
+            videosMedia.shareVideo();
+        }
+
+        function reportIssue() {
+            videosMedia.reportIssue();
+        }
+
+        // Initialize Videos & Media System
+        let videosMedia;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            videosMedia = new VideosMediaSystem();
+            
+            console.log('🎬 Videos & Media section loaded successfully');
+        });
+
+        // Section validation
+        if (window.DivineTemplateUtils) {
+            window.DivineTemplateUtils.validateSectionFunctions('Videos & Media', [
+                'playVideo', 'createPlaylist', 'submitComment', 'addToFavorites'
+            ]);
+        }
+    </script>
+
+    <!-- Load universal validation script -->
+    <script src="../js/section-validation.js" defer></script>
+</body>
+</html>
