@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Divine Temple - Sacred Members Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Performance Optimized CSS -->
+    <link rel="stylesheet" href="css/performance-optimized.css">
+    
+    <!-- Performance Optimization Script -->
+    <script src="js/performance-optimizer.js" defer></script>
     <style>
         :root {
             --primary-gold: #D4AF37;
@@ -315,6 +321,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 2rem;
+            contain: layout style paint;
         }
 
         .nav-card {
@@ -323,12 +330,18 @@
             border-radius: 25px;
             padding: 2.5rem;
             cursor: pointer;
-            transition: all 0.4s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(20px);
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            will-change: transform;
+            contain: layout style paint;
         }
 
         .nav-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-10px) translateZ(0);
             border-color: var(--accent-gold);
             box-shadow: 0 20px 40px rgba(245, 158, 11, 0.3);
         }
@@ -1391,6 +1404,13 @@
             console.log('🏛️ Divine Temple Portal Initializing...');
             console.log('📅 Date:', new Date().toISOString());
             
+            // Initialize Performance Optimizer
+            if (window.performanceOptimizer) {
+                window.performanceOptimizer.optimizeCriticalSection('auth-overlay');
+                window.performanceOptimizer.lazyLoadImages();
+                console.log('🚀 Performance optimizations applied');
+            }
+            
             // Clear any existing session for fresh start
             sessionStorage.removeItem('divineAuth');
             sessionStorage.removeItem('memberData');
@@ -1475,6 +1495,235 @@
         console.log('%cdivineTemple.getState() - View current state', 'color: #8B5CF6;');
         console.log('%cdivineTemple.test() - Run system test', 'color: #8B5CF6;');
         console.log('%cdivineTemple.showSection("oracle-divination") - Open section', 'color: #8B5CF6;');
+    </script>
+    
+    <!-- Performance Optimizer -->
+    <script src="js/performance-optimizer.js"></script>
+    
+    <!-- Accessibility & UX Enhancement -->
+    <script src="js/accessibility-ux.js"></script>
+    
+    <!-- SEO Optimizer -->
+    <script src="js/seo-optimizer.js"></script>
+    
+    <!-- Final Testing Suite -->
+    <script src="js/final-testing.js"></script>
+    
+    <!-- Initialize Final Polish -->
+    <script>
+        // Initialize performance monitoring and final enhancements
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add final polish CSS
+            const finalPolishStyles = document.createElement('style');
+            finalPolishStyles.textContent = `
+                /* Final Polish - Enhanced Visual Consistency */
+                :root {
+                    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    --shadow-soft: 0 4px 20px rgba(139, 92, 246, 0.15);
+                    --shadow-hover: 0 8px 30px rgba(139, 92, 246, 0.25);
+                    --border-radius-modern: 12px;
+                }
+                
+                /* Enhanced Card Interactions */
+                .nav-card, .card, .video-card {
+                    transition: var(--transition-smooth);
+                    border-radius: var(--border-radius-modern);
+                    box-shadow: var(--shadow-soft);
+                }
+                
+                .nav-card:hover, .card:hover, .video-card:hover {
+                    transform: translateY(-4px) scale(1.02);
+                    box-shadow: var(--shadow-hover);
+                }
+                
+                .nav-card:active, .card:active, .video-card:active {
+                    transform: translateY(-2px) scale(1.01);
+                }
+                
+                /* Enhanced Typography */
+                h1, h2, h3, h4, h5, h6 {
+                    font-weight: 600;
+                    line-height: 1.4;
+                    letter-spacing: -0.025em;
+                }
+                
+                /* Improved Button Styles */
+                button, .btn {
+                    font-weight: 600;
+                    border-radius: 8px;
+                    transition: var(--transition-smooth);
+                    cursor: pointer;
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                button::before, .btn::before {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 0;
+                    height: 0;
+                    background: rgba(255, 255, 255, 0.2);
+                    border-radius: 50%;
+                    transform: translate(-50%, -50%);
+                    transition: width 0.6s, height 0.6s;
+                }
+                
+                button:active::before, .btn:active::before {
+                    width: 300px;
+                    height: 300px;
+                }
+                
+                /* Enhanced Loading States */
+                .loading {
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                .loading::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+                    animation: shimmer 1.5s infinite;
+                }
+                
+                @keyframes shimmer {
+                    0% { left: -100%; }
+                    100% { left: 100%; }
+                }
+                
+                /* Micro-interactions */
+                .nav-card, .card {
+                    --scale: 1;
+                    transform: scale(var(--scale));
+                }
+                
+                .nav-card:hover, .card:hover {
+                    --scale: 1.02;
+                }
+                
+                /* Accessibility Enhancements */
+                @media (prefers-reduced-motion: reduce) {
+                    *, *::before, *::after {
+                        animation-duration: 0.01ms !important;
+                        animation-iteration-count: 1 !important;
+                        transition-duration: 0.01ms !important;
+                    }
+                }
+                
+                /* High Contrast Mode Support */
+                @media (prefers-contrast: high) {
+                    .nav-card, .card {
+                        border: 2px solid currentColor;
+                    }
+                }
+                
+                /* Focus Improvements */
+                .nav-card:focus-visible, .card:focus-visible, button:focus-visible {
+                    outline: 3px solid var(--accent-purple);
+                    outline-offset: 2px;
+                    box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.2);
+                }
+                
+                /* Enhanced Scroll Behavior */
+                html {
+                    scroll-behavior: smooth;
+                }
+                
+                /* Perfect Grid Layouts */
+                .nav-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                    gap: 1.5rem;
+                    align-items: start;
+                }
+                
+                /* Mobile Optimizations */
+                @media (max-width: 768px) {
+                    .nav-grid {
+                        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                        gap: 1rem;
+                    }
+                    
+                    .nav-card, .card {
+                        padding: 1rem;
+                    }
+                    
+                    h1 { font-size: 2rem; }
+                    h2 { font-size: 1.5rem; }
+                    h3 { font-size: 1.25rem; }
+                }
+                
+                /* Advanced Animations */
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                
+                .animate-fade-in-up {
+                    animation: fadeInUp 0.6s ease-out;
+                }
+                
+                /* Stagger animation for cards */
+                .nav-card:nth-child(1) { animation-delay: 0.1s; }
+                .nav-card:nth-child(2) { animation-delay: 0.2s; }
+                .nav-card:nth-child(3) { animation-delay: 0.3s; }
+                .nav-card:nth-child(4) { animation-delay: 0.4s; }
+                .nav-card:nth-child(5) { animation-delay: 0.5s; }
+                .nav-card:nth-child(6) { animation-delay: 0.6s; }
+            `;
+            document.head.appendChild(finalPolishStyles);
+            
+            // Add entrance animations to cards
+            setTimeout(() => {
+                document.querySelectorAll('.nav-card, .card').forEach(card => {
+                    card.classList.add('animate-fade-in-up');
+                });
+            }, 100);
+            
+            // Initialize final systems
+            console.log('🌟 Divine Temple Members Portal initialized with final polish');
+            console.log('♿ Accessibility features active');
+            console.log('🔍 SEO optimization complete');
+            console.log('🧪 Testing suite ready');
+            
+            // Run a quick validation after initialization
+            if (window.finalTestingSuite) {
+                setTimeout(() => {
+                    console.log('🔍 Running quick validation...');
+                    window.finalTestingSuite.runSingleValidator('navigation').then(result => {
+                        console.log('✅ Navigation validation:', result.passed ? 'PASSED' : 'NEEDS ATTENTION');
+                    }).catch(console.error);
+                }, 2000);
+            }
+            
+            // Announce completion to accessibility systems
+            if (window.accessibilityManager) {
+                window.accessibilityManager.announce('Divine Temple fully loaded and accessible');
+            }
+            
+            // Final UX notification
+            if (window.uxEnhancementManager) {
+                setTimeout(() => {
+                    window.uxEnhancementManager.showNotification(
+                        'Welcome to Divine Temple - Your spiritual sanctuary awaits',
+                        'spiritual',
+                        6000
+                    );
+                }, 1000);
+            }
+        });
     </script>
 </body>
 </html>

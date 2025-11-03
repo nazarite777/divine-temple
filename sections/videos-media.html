@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Videos & Media - Divine Temple</title>
+    
+    <!-- Performance Optimized CSS -->
+    <link rel="stylesheet" href="../css/performance-optimized.css">
+    
     <style>
         :root {
             --accent-gold: #d4af37;
@@ -160,6 +164,7 @@
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
+            contain: layout style paint;
         }
 
         .video-card {
@@ -167,12 +172,18 @@
             border-radius: 15px;
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: transform var(--transition-duration) var(--ease-smooth),
+                        border-color var(--transition-duration) var(--ease-smooth),
+                        box-shadow var(--transition-duration) var(--ease-smooth);
             border: 1px solid transparent;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            contain: layout style paint;
+            will-change: transform;
         }
 
         .video-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px) translateZ(0);
             border-color: var(--accent-gold);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
@@ -1012,8 +1023,18 @@
                 const grid = document.getElementById('videos-grid');
                 const videos = this.getVideosByCategory(this.currentCategory);
                 
-                grid.innerHTML = videos.map(video => `
-                    <div class="video-card" onclick="videosMedia.playVideo('${video.id}')">
+                // Clear existing content
+                grid.innerHTML = '';
+                
+                // Performance optimization: render in batches
+                const batchSize = window.performanceOptimizer?.isMobile ? 6 : 12;
+                
+                videos.forEach((video, index) => {
+                    const videoCard = document.createElement('div');
+                    videoCard.className = 'video-card lazy-loading';
+                    videoCard.onclick = () => this.playVideo(video.id);
+                    
+                    videoCard.innerHTML = `
                         <div class="video-thumbnail">
                             <div style="font-size: 3rem;">${video.thumbnail}</div>
                             <div class="play-button">▶️</div>
@@ -1029,8 +1050,21 @@
                                 <div class="progress-fill" style="width: ${this.getVideoProgress(video.id)}%"></div>
                             </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                    
+                    grid.appendChild(videoCard);
+                    
+                    // Stagger loading for smooth animation
+                    setTimeout(() => {
+                        videoCard.classList.add('loaded');
+                    }, (index % batchSize) * 50);
+                });
+                
+                // Apply performance optimizations
+                if (window.performanceOptimizer) {
+                    window.performanceOptimizer.lazyLoadSections(grid);
+                    window.performanceOptimizer.optimizeElement(grid, { lazyLoad: true });
+                }
             }
 
             getVideosByCategory(category) {
@@ -1657,10 +1691,40 @@
         let videosMedia;
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Load performance optimizer if not already loaded
+            if (!window.performanceOptimizer && !window.PerformanceOptimizer) {
+                const script = document.createElement('script');
+                script.src = '../js/performance-optimizer.js';
+                script.onload = () => {
+                    window.performanceOptimizer = new window.PerformanceOptimizer();
+                    initializeVideosMedia();
+                };
+                document.head.appendChild(script);
+            } else {
+                initializeVideosMedia();
+            }
+        });
+
+        function initializeVideosMedia() {
             videosMedia = new VideosMediaSystem();
             
+            // Apply performance optimizations
+            if (window.performanceOptimizer) {
+                window.performanceOptimizer.optimizeCriticalSection('videos-grid');
+                window.performanceOptimizer.lazyLoadImages();
+                
+                // Optimize media controls
+                const mediaControls = document.querySelectorAll('.control-btn, .video-card');
+                mediaControls.forEach(element => {
+                    window.performanceOptimizer.optimizeElement(element, { 
+                        enableAnimations: true,
+                        lazyLoad: false 
+                    });
+                });
+            }
+            
             console.log('🎬 Videos & Media section loaded successfully');
-        });
+        }
 
         // Section validation
         if (window.DivineTemplateUtils) {
