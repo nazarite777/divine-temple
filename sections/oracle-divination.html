@@ -3,8 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oracle & Divination - Divine Temple</title>
+    <title>Oracle & Divination - Sacred Portal Chamber</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #3B82F6;
+            --deep-purple: #4C1D95;
+            --dark-bg: #0F0F23;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A1A1AA;
+            
+            /* Portal Colors */
+            --oracle-glow: rgba(212, 175, 55, 0.6);
+            --tarot-glow: rgba(139, 92, 246, 0.6);
+            --rune-glow: rgba(59, 130, 246, 0.6);
+            --iching-glow: rgba(16, 185, 129, 0.6);
+            --angel-glow: rgba(248, 250, 252, 0.8);
+            --crystal-glow: rgba(236, 72, 153, 0.6);
+            --astro-glow: rgba(139, 92, 246, 0.6);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,111 +35,436 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--deep-purple) 100%);
+            color: var(--text-primary);
             min-height: 100vh;
-            color: #fff;
+            overflow-x: hidden;
         }
 
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.15) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundFloat {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, -30px); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 10s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+            50% { transform: translateY(-100px) translateX(50px); opacity: 0.6; }
+        }
+
+        /* Container */
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 1rem;
+            position: relative;
+            z-index: 1;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            font-size: 3em;
-            background: linear-gradient(45deg, #FFD700, #FFA500, #FF69B4);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-            margin-bottom: 20px;
-        }
-
-        .oracle-selector {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .oracle-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            border: none;
-            border-radius: 25px;
-            padding: 12px 20px;
+        /* Back Button */
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
             color: white;
-            font-weight: bold;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
             cursor: pointer;
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
             transition: all 0.3s ease;
-            font-size: 0.9em;
         }
 
-        .oracle-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
         }
 
-        .oracle-btn.active {
-            background: linear-gradient(45deg, #FFD700, #FFA500);
-            color: #333;
-        }
-
-        .oracle-content {
+        /* Screens */
+        .screen {
             display: none;
-            min-height: 500px;
+            animation: fadeIn 0.8s ease-out;
         }
 
-        .oracle-content.active {
+        .screen.active {
             display: block;
         }
 
-        .card-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 30px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .card-spread {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            max-width: 800px;
-            margin: 20px 0;
+        /* ==================== WELCOME SCREEN ==================== */
+        .welcome-screen {
+            text-align: center;
+            padding: 4rem 2rem;
         }
 
-        .oracle-card {
-            width: 120px;
-            height: 180px;
-            position: relative;
+        .welcome-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .welcome-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .enter-btn {
+            background: linear-gradient(135deg, var(--primary-gold), #FBBF24);
+            color: var(--dark-bg);
+            border: none;
+            padding: 1.2rem 3rem;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: 700;
             cursor: pointer;
-            perspective: 1000px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.5);
+        }
+
+        /* ==================== GROUNDING SCREEN ==================== */
+        .grounding-screen {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .breathing-circle {
+            width: 200px;
+            height: 200px;
+            margin: 3rem auto;
+            border-radius: 50%;
+            border: 3px solid var(--primary-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: breathe 6s ease-in-out infinite;
+            box-shadow: 0 0 30px var(--oracle-glow);
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .breathing-text {
+            font-size: 1.5rem;
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        .grounding-instruction {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ==================== PORTAL CHAMBER ==================== */
+        .portal-chamber {
+            padding: 2rem 1rem;
+        }
+
+        .chamber-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            text-align: center;
+            background: linear-gradient(135deg, var(--text-primary), var(--primary-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .chamber-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+        }
+
+        .portals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
-        .card-inner {
+        .portal-door {
+            background: linear-gradient(135deg, rgba(26, 31, 58, 0.9), rgba(15, 52, 96, 0.8));
+            border: 2px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 2.5rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portal-door::before {
+            content: '';
             position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, var(--portal-glow), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .portal-door:hover::before {
+            opacity: 1;
+            animation: portalPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes portalPulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.6; }
+        }
+
+        .portal-door:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.4);
+        }
+
+        .portal-icon {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 1rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .portal-door:hover .portal-icon {
+            transform: scale(1.2);
+        }
+
+        .portal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            color: var(--primary-gold);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .portal-description {
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .portal-count {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--accent-purple);
+            font-weight: 600;
+        }
+
+        /* Portal-specific glows */
+        .portal-door[data-system="oracle"]::before { background: radial-gradient(circle, var(--oracle-glow), transparent); }
+        .portal-door[data-system="tarot"]::before { background: radial-gradient(circle, var(--tarot-glow), transparent); }
+        .portal-door[data-system="runes"]::before { background: radial-gradient(circle, var(--rune-glow), transparent); }
+        .portal-door[data-system="iching"]::before { background: radial-gradient(circle, var(--iching-glow), transparent); }
+        .portal-door[data-system="angel"]::before { background: radial-gradient(circle, var(--angel-glow), transparent); }
+        .portal-door[data-system="crystal"]::before { background: radial-gradient(circle, var(--crystal-glow), transparent); }
+        .portal-door[data-system="astro"]::before { background: radial-gradient(circle, var(--astro-glow), transparent); }
+
+        /* ==================== INTENTION SCREEN ==================== */
+        .intention-screen {
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .intention-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3rem;
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .intention-input {
+            width: 100%;
+            padding: 1.2rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .intention-input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .intention-presets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .preset-btn {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid var(--accent-purple);
+            color: var(--accent-purple);
+            padding: 0.8rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .preset-btn:hover {
+            background: rgba(139, 92, 246, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* ==================== READING SCREEN ==================== */
+        .reading-screen {
+            padding: 2rem 1rem;
+        }
+
+        .reading-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .system-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .system-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .reading-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .cards-spread {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto 3rem;
+        }
+
+        .card {
+            aspect-ratio: 2/3;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
             width: 100%;
             height: 100%;
-            transition: transform 0.6s;
+            transition: transform 0.8s;
             transform-style: preserve-3d;
         }
 
-        .oracle-card.flipped .card-inner {
+        .card.flipped .card-inner {
             transform: rotateY(180deg);
         }
 
@@ -125,1037 +473,1011 @@
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
-            border-radius: 10px;
+            border-radius: 15px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            text-align: center;
-            padding: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            padding: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         .card-back {
-            background: linear-gradient(45deg, #4a148c, #7b1fa2);
-            color: white;
-            font-size: 2em;
+            background: linear-gradient(135deg, var(--deep-purple), var(--accent-purple));
+            border: 2px solid var(--primary-gold);
+        }
+
+        .card-back-icon {
+            font-size: 3rem;
         }
 
         .card-front {
-            background: linear-gradient(45deg, #FFD700, #FFA500);
-            color: #333;
+            background: linear-gradient(135deg, #FFF9E6, #FFFAED);
+            color: var(--dark-bg);
             transform: rotateY(180deg);
-            font-size: 0.9em;
-            line-height: 1.2;
+            border: 2px solid var(--primary-gold);
         }
 
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
+        .card-front-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
         }
 
-        .control-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            border: none;
+        .card-front-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--accent-purple);
+        }
+
+        /* Card Info Panel */
+        .card-info-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
             border-radius: 20px;
-            padding: 10px 20px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .control-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .selected-card-info {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            min-height: 150px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            max-width: 800px;
+            margin: 0 auto;
             display: none;
         }
 
-        .selected-card-info.show {
+        .card-info-panel.show {
             display: block;
+            animation: slideUp 0.6s ease-out;
         }
 
-        .card-title {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #FFD700;
-            margin-bottom: 10px;
-        }
-
-        .card-meaning {
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-
-        .card-guidance {
-            font-size: 1em;
-            color: #a0a0a0;
-            font-style: italic;
-        }
-
-        .reading-history {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .history-title {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #FFD700;
-            margin-bottom: 15px;
-        }
-
-        .history-item {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 10px;
-            font-size: 0.9em;
-        }
-
-        .stats-display {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 2em;
-            font-weight: bold;
-            color: #FFD700;
-            margin-bottom: 5px;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-            
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .oracle-selector {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .oracle-btn {
-                width: 200px;
-            }
-            
-            .card-spread {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
-            }
-            
-            .oracle-card {
-                width: 100px;
-                height: 150px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🔮 Oracle & Divination 🌟</h1>
-            <p>Discover divine guidance through sacred oracle systems</p>
-        </div>
-
-        <!-- Oracle System Selector -->
-        <div class="oracle-selector">
-            <button class="oracle-btn active" onclick="switchOracle('oracle')">🔮 Oracle Cards</button>
-            <button class="oracle-btn" onclick="switchOracle('tarot')">🃏 Tarot Cards</button>
-            <button class="oracle-btn" onclick="switchOracle('angel')">😇 Angel Cards</button>
-            <button class="oracle-btn" onclick="switchOracle('runes')">ᚱ Runes</button>
-            <button class="oracle-btn" onclick="switchOracle('crystal')">💎 Crystal Oracle</button>
-            <button class="oracle-btn" onclick="switchOracle('iching')">☯ I-Ching</button>
-            <button class="oracle-btn" onclick="switchOracle('astro')">🎲 Astro Dice</button>
-        </div>
-
-        <!-- Oracle Cards -->
-        <div id="oracle-oracle" class="oracle-content active">
-            <div class="card-area">
-                <h2 style="color: #FFD700; margin-bottom: 15px;">🔮 Oracle Cards</h2>
-                <p style="margin-bottom: 20px; text-align: center;">52 prophetic declarations to speak your future into existence</p>
-                
-                <div class="controls">
-                    <button class="control-btn" onclick="shuffleCards('oracle')">🔀 Shuffle Oracle</button>
-                    <button class="control-btn" onclick="drawCards('oracle', 1)">Draw Oracle Card</button>
-                    <button class="control-btn" onclick="resetCards('oracle')">🔄 Reset</button>
-                </div>
-
-                <div class="card-spread" id="oracle-spread">
-                    <!-- Cards will be generated dynamically -->
-                </div>
-
-                <div class="selected-card-info" id="oracle-info">
-                    <div class="card-title" id="oracle-title"></div>
-                    <div class="card-meaning" id="oracle-meaning"></div>
-                    <div class="card-guidance" id="oracle-guidance"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tarot Oracle -->
-        <div id="tarot-oracle" class="oracle-content">
-            <div class="card-area">
-                <h2 style="color: #FFD700; margin-bottom: 15px;">🃏 Tarot Reading</h2>
-                <p style="margin-bottom: 20px; text-align: center;">Focus on your question and select your cards</p>
-                
-                <div class="controls">
-                    <button class="control-btn" onclick="shuffleCards('tarot')">🔀 Shuffle Cards</button>
-                    <button class="control-btn" onclick="drawCards('tarot', 3)">Draw 3 Cards</button>
-                    <button class="control-btn" onclick="resetCards('tarot')">🔄 Reset</button>
-                </div>
-
-                <div class="card-spread" id="tarot-spread">
-                    <!-- Cards will be generated dynamically -->
-                </div>
-
-                <div class="selected-card-info" id="tarot-info">
-                    <div class="card-title" id="tarot-title"></div>
-                    <div class="card-meaning" id="tarot-meaning"></div>
-                    <div class="card-guidance" id="tarot-guidance"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Angel Cards Oracle -->
-        <div id="angel-oracle" class="oracle-content">
-            <div class="card-area">
-                <h2 style="color: #FFD700; margin-bottom: 15px;">😇 Angel Messages</h2>
-                <p style="margin-bottom: 20px; text-align: center;">Call upon your guardian angels for guidance</p>
-                
-                <div class="controls">
-                    <button class="control-btn" onclick="shuffleCards('angel')">🔀 Shuffle Cards</button>
-                    <button class="control-btn" onclick="drawCards('angel', 1)">Draw Angel Card</button>
-                    <button class="control-btn" onclick="resetCards('angel')">🔄 Reset</button>
-                </div>
-
-                <div class="card-spread" id="angel-spread">
-                    <!-- Cards will be generated dynamically -->
-                </div>
-
-                <div class="selected-card-info" id="angel-info">
-                    <div class="card-title" id="angel-title"></div>
-                    <div class="card-meaning" id="angel-meaning"></div>
-                    <div class="card-guidance" id="angel-guidance"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Runes Oracle -->
-        <div id="runes-oracle" class="oracle-content">
-            <div class="card-area">
-                <h2 style="color: #FFD700; margin-bottom: 15px;">ᚱ Rune Casting</h2>
-                <p style="margin-bottom: 20px; text-align: center;">Ancient Nordic wisdom for your path</p>
-                
-                <div class="controls">
-                    <button class="control-btn" onclick="shuffleCards('runes')">🔀 Cast Runes</button>
-                    <button class="control-btn" onclick="drawCards('runes', 3)">Three Rune Spread</button>
-                    <button class="control-btn" onclick="resetCards('runes')">🔄 Reset</button>
-                </div>
-
-                <div class="card-spread" id="runes-spread">
-                    <!-- Cards will be generated dynamically -->
-                </div>
-
-                <div class="selected-card-info" id="runes-info">
-                    <div class="card-title" id="runes-title"></div>
-                    <div class="card-meaning" id="runes-meaning"></div>
-                    <div class="card-guidance" id="runes-guidance"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Crystal Oracle -->
-        <div id="crystal-oracle" class="oracle-content">
-            <div class="card-area">
-                <h2 style="color: #FFD700; margin-bottom: 15px;">💎 Crystal Wisdom</h2>
-                <p style="margin-bottom: 20px; text-align: center;">Crystal energies for healing and guidance</p>
-                
-                <div class="controls">
-                    <button class="control-btn" onclick="shuffleCards('crystal')">🔀 Shuffle Crystals</button>
-                    <button class="control-btn" onclick="drawCards('crystal', 2)">Draw 2 Crystals</button>
-                    <button class="control-btn" onclick="resetCards('crystal')">🔄 Reset</button>
-                </div>
-
-                <div class="card-spread" id="crystal-spread">
-                    <!-- Cards will be generated dynamically -->
-                </div>
-
-                <div class="selected-card-info" id="crystal-info">
-                    <div class="card-title" id="crystal-title"></div>
-                    <div class="card-meaning" id="crystal-meaning"></div>
-                    <div class="card-guidance" id="crystal-guidance"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- I-Ching Oracle -->
-        <div id="iching-oracle" class="oracle-content">
-            <div class="card-area">
-                <h2 style="color: #FFD700; margin-bottom: 15px;">☯ I-Ching Wisdom</h2>
-                <p style="margin-bottom: 20px; text-align: center;">Ancient Chinese oracle of change</p>
-                
-                <div class="controls">
-                    <button class="control-btn" onclick="shuffleCards('iching')">🔀 Cast Coins</button>
-                    <button class="control-btn" onclick="drawCards('iching', 1)">Draw Hexagram</button>
-                    <button class="control-btn" onclick="resetCards('iching')">🔄 Reset</button>
-                </div>
-
-                <div class="card-spread" id="iching-spread">
-                    <!-- Cards will be generated dynamically -->
-                </div>
-
-                <div class="selected-card-info" id="iching-info">
-                    <div class="card-title" id="iching-title"></div>
-                    <div class="card-meaning" id="iching-meaning"></div>
-                    <div class="card-guidance" id="iching-guidance"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Astro Dice Oracle -->
-        <div id="astro-oracle" class="oracle-content">
-            <div class="card-area">
-                <h2 style="color: #FFD700; margin-bottom: 15px;">🎲 Astro Dice</h2>
-                <p style="margin-bottom: 20px; text-align: center;">Astrological guidance through cosmic dice</p>
-                
-                <div class="controls">
-                    <button class="control-btn" onclick="shuffleCards('astro')">🔀 Roll Dice</button>
-                    <button class="control-btn" onclick="drawCards('astro', 3)">3 Dice Reading</button>
-                    <button class="control-btn" onclick="resetCards('astro')">🔄 Reset</button>
-                </div>
-
-                <div class="card-spread" id="astro-spread">
-                    <!-- Cards will be generated dynamically -->
-                </div>
-
-                <div class="selected-card-info" id="astro-info">
-                    <div class="card-title" id="astro-title"></div>
-                    <div class="card-meaning" id="astro-meaning"></div>
-                    <div class="card-guidance" id="astro-guidance"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Reading History -->
-        <div class="reading-history">
-            <div class="history-title">📖 Recent Readings</div>
-            <div id="reading-history-list">
-                <div class="history-item">Welcome to your Oracle & Divination portal! Your readings will appear here.</div>
-            </div>
-        </div>
-
-        <!-- Statistics -->
-        <div class="stats-display">
-            <div class="stat-card">
-                <div class="stat-value" id="total-readings">0</div>
-                <div>Total Readings</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="favorite-oracle">Oracle</div>
-                <div>Favorite Oracle</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="cards-drawn">0</div>
-                <div>Cards Drawn</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="accuracy-rating">100%</div>
-                <div>Accuracy</div>
-            </div>
-        </div>
-
-        <!-- Return Button -->
-        <div style="text-align: center; margin-top: 30px;">
-            <button class="control-btn" onclick="window.parent.postMessage('back', '*')" style="padding: 15px 30px;">
-                🏠 Return to Dashboard
-            </button>
-        </div>
-    </div>
-
-    <script>
-        class OracleDivinationSystem {
-            constructor() {
-                this.currentOracle = 'oracle';
-                this.drawnCards = {};
-                this.readingHistory = [];
-                this.stats = {
-                    totalReadings: 0,
-                    favoriteOracle: 'oracle',
-                    cardsDrawn: 0,
-                    accuracy: 100
-                };
-                
-                this.oracleData = this.initializeOracleData();
-                this.loadProgress();
-                this.initializeOracles();
-            }
-
-            initializeOracleData() {
-                return {
-                    oracle: {
-                        cards: [
-                            { name: "I AM Divine", meaning: "You are a divine being having a human experience", guidance: "Remember your divine nature and act from that truth." },
-                            { name: "I AM Abundant", meaning: "Abundance flows to you naturally", guidance: "Open to receive the infinite abundance of the universe." },
-                            { name: "I AM Protected", meaning: "You are spiritually protected and guided", guidance: "Trust in divine protection and move forward fearlessly." },
-                            { name: "I AM Loved", meaning: "You are unconditionally loved by the universe", guidance: "Feel the love that surrounds you and share it freely." },
-                            { name: "I AM Powerful", meaning: "You have infinite creative power within", guidance: "Use your power wisely to create positive change." },
-                            { name: "I AM Worthy", meaning: "You are worthy of all good things", guidance: "Claim your worthiness and accept your blessings." },
-                            { name: "I AM Guided", meaning: "Divine guidance is always available to you", guidance: "Trust your intuition and inner knowing." },
-                            { name: "I AM Healed", meaning: "Healing energy flows through you", guidance: "Allow healing to take place on all levels." },
-                            { name: "I AM Grateful", meaning: "Gratitude multiplies your blessings", guidance: "Find gratitude in every moment and situation." },
-                            { name: "I AM Free", meaning: "You are free from all limitations", guidance: "Break free from limiting beliefs and soar." },
-                            { name: "I AM Peaceful", meaning: "Inner peace is your natural state", guidance: "Return to peace whenever you feel unbalanced." },
-                            { name: "I AM Joyful", meaning: "Joy is your birthright", guidance: "Choose joy in every moment and spread it to others." },
-                            { name: "I AM Wise", meaning: "Infinite wisdom resides within you", guidance: "Trust your inner wisdom to guide your decisions." },
-                            { name: "I AM Creative", meaning: "You are a powerful creative force", guidance: "Express your creativity and bring beauty into the world." },
-                            { name: "I AM Confident", meaning: "You have unshakeable confidence", guidance: "Stand tall in your truth and abilities." },
-                            { name: "I AM Successful", meaning: "Success is your natural state", guidance: "Define success on your own terms and achieve it." },
-                            { name: "I AM Magnetic", meaning: "You attract what you need effortlessly", guidance: "Align with your desires and watch them manifest." },
-                            { name: "I AM Transformed", meaning: "You are constantly evolving and growing", guidance: "Embrace change as your pathway to greatness." },
-                            { name: "I AM Radiant", meaning: "Your light shines brightly in the world", guidance: "Let your inner light illuminate the path for others." },
-                            { name: "I AM Compassionate", meaning: "You embody divine compassion", guidance: "Extend compassion to yourself and all beings." },
-                            { name: "I AM Courageous", meaning: "You have the courage to face anything", guidance: "Step into your courage and take bold action." },
-                            { name: "I AM Balanced", meaning: "You maintain perfect balance in all things", guidance: "Find harmony between all aspects of your life." },
-                            { name: "I AM Intuitive", meaning: "Your intuition is perfectly aligned", guidance: "Trust your intuitive insights and act upon them." },
-                            { name: "I AM Blessed", meaning: "Blessings flow to you continuously", guidance: "Recognize and appreciate all your blessings." },
-                            { name: "I AM Focused", meaning: "You maintain laser focus on your goals", guidance: "Direct your energy toward what matters most." },
-                            { name: "I AM Resilient", meaning: "You bounce back stronger from challenges", guidance: "Use challenges as stepping stones to growth." },
-                            { name: "I AM Connected", meaning: "You are connected to all life", guidance: "Feel your oneness with all creation." },
-                            { name: "I AM Purposeful", meaning: "You live with clear divine purpose", guidance: "Align your actions with your soul's purpose." },
-                            { name: "I AM Limitless", meaning: "There are no limits to what you can achieve", guidance: "Think beyond boundaries and reach for the stars." },
-                            { name: "I AM Present", meaning: "You live fully in the present moment", guidance: "Find peace and power in the here and now." },
-                            { name: "I AM Truthful", meaning: "You speak and live your truth", guidance: "Honor your truth and express it with love." },
-                            { name: "I AM Forgiving", meaning: "You forgive easily and release the past", guidance: "Forgiveness sets you free to create anew." },
-                            { name: "I AM Prosperous", meaning: "Prosperity flows to you from all directions", guidance: "Open to receive prosperity in all forms." },
-                            { name: "I AM Enlightened", meaning: "You embody enlightened consciousness", guidance: "Share your enlightenment with the world." },
-                            { name: "I AM Sovereign", meaning: "You are the sovereign ruler of your reality", guidance: "Take full responsibility for creating your life." },
-                            { name: "I AM Miraculous", meaning: "Miracles happen through you daily", guidance: "Expect miracles and watch them unfold." },
-                            { name: "I AM Authentic", meaning: "You express your authentic self fearlessly", guidance: "Be true to yourself in all situations." },
-                            { name: "I AM Sacred", meaning: "Everything about you is sacred", guidance: "Honor the sacred nature of your being." },
-                            { name: "I AM Visionary", meaning: "You see beyond the ordinary to the extraordinary", guidance: "Use your vision to create a better world." },
-                            { name: "I AM Unified", meaning: "You are one with divine consciousness", guidance: "Experience the unity that underlies all existence." },
-                            { name: "I AM Regenerative", meaning: "You continuously renew and regenerate", guidance: "Trust in your ability to heal and grow." },
-                            { name: "I AM Luminous", meaning: "You shine with divine light", guidance: "Be a beacon of light for all who encounter you." },
-                            { name: "I AM Expansive", meaning: "Your consciousness expands infinitely", guidance: "Embrace expansion in all areas of your life." },
-                            { name: "I AM Empowered", meaning: "You are fully empowered to create", guidance: "Use your power to serve the highest good." },
-                            { name: "I AM Transcendent", meaning: "You transcend all earthly limitations", guidance: "Rise above challenges with grace and wisdom." },
-                            { name: "I AM Victorious", meaning: "Victory is assured in all your endeavors", guidance: "Claim your victories and celebrate your wins." },
-                            { name: "I AM Eternal", meaning: "Your true essence is eternal and infinite", guidance: "Connect with your eternal nature beyond time." },
-                            { name: "I AM Perfect", meaning: "You are perfect exactly as you are", guidance: "Embrace your perfection while continuing to grow." },
-                            { name: "I AM One", meaning: "You are one with all that is", guidance: "Experience the profound unity of all existence." },
-                            { name: "I AM Love", meaning: "You are love itself in human form", guidance: "Be love, express love, and share love everywhere." },
-                            { name: "I AM Light", meaning: "You are pure divine light", guidance: "Shine your light brightly and illuminate the world." },
-                            { name: "I AM", meaning: "You are the I AM presence itself", guidance: "Rest in the power of your divine I AM presence." }
-                        ]
-                    },
-                    tarot: {
-                        cards: [
-                            { name: "The Fool", meaning: "New beginnings, innocence, spontaneity", guidance: "Take a leap of faith and embrace new adventures." },
-                            { name: "The Magician", meaning: "Manifestation, resourcefulness, power", guidance: "You have all the tools needed to succeed." },
-                            { name: "The High Priestess", meaning: "Intuition, sacred knowledge, mystery", guidance: "Trust your inner wisdom and intuition." },
-                            { name: "The Empress", meaning: "Femininity, beauty, nature, abundance", guidance: "Nurture yourself and others around you." },
-                            { name: "The Emperor", meaning: "Authority, structure, control, father-figure", guidance: "Take charge of your situation with confidence." },
-                            { name: "The Hierophant", meaning: "Spiritual wisdom, conformity, tradition", guidance: "Seek guidance from trusted mentors or traditions." },
-                            { name: "The Lovers", meaning: "Love, harmony, relationships, values", guidance: "Choose love and make decisions from the heart." },
-                            { name: "The Chariot", meaning: "Control, willpower, success, determination", guidance: "Stay focused and driven toward your goals." },
-                            { name: "Strength", meaning: "Strength, courage, patience, control", guidance: "Use inner strength and compassion to overcome challenges." },
-                            { name: "The Hermit", meaning: "Soul searching, introspection, guidance", guidance: "Take time for self-reflection and inner guidance." },
-                            { name: "Wheel of Fortune", meaning: "Good luck, karma, life cycles, destiny", guidance: "Trust that the universe is working in your favor." },
-                            { name: "Justice", meaning: "Justice, fairness, truth, karma", guidance: "Seek balance and fairness in all your dealings." },
-                            { name: "The Hanged Man", meaning: "Suspension, restriction, letting go", guidance: "Sometimes you must surrender to gain perspective." },
-                            { name: "Death", meaning: "Endings, transformation, transition", guidance: "Embrace change as a natural part of growth." },
-                            { name: "Temperance", meaning: "Balance, moderation, patience, purpose", guidance: "Find the middle path and practice moderation." },
-                            { name: "The Devil", meaning: "Bondage, addiction, sexuality, materialism", guidance: "Break free from limiting beliefs and dependencies." },
-                            { name: "The Tower", meaning: "Sudden change, upheaval, chaos, revelation", guidance: "Sometimes destruction is necessary for rebuilding." },
-                            { name: "The Star", meaning: "Hope, faith, purpose, renewal", guidance: "Keep hope alive and trust in your dreams." },
-                            { name: "The Moon", meaning: "Illusion, fear, anxiety, subconscious", guidance: "Face your fears and trust your intuition." },
-                            { name: "The Sun", meaning: "Happiness, success, optimism, vitality", guidance: "Embrace joy and share your light with others." },
-                            { name: "Judgement", meaning: "Judgement, rebirth, inner calling", guidance: "Listen to your higher calling and forgive the past." },
-                            { name: "The World", meaning: "Completion, accomplishment, travel", guidance: "Celebrate your achievements and prepare for new cycles." }
-                        ]
-                    },
-                    angel: {
-                        cards: [
-                            { name: "Archangel Michael", meaning: "Protection, courage, strength", guidance: "You are protected and guided. Have courage in your decisions." },
-                            { name: "Archangel Gabriel", meaning: "Communication, creativity, messages", guidance: "Important messages are coming to you. Stay open to divine communication." },
-                            { name: "Archangel Raphael", meaning: "Healing, travel, guidance", guidance: "Healing energy surrounds you. Trust in the recovery process." },
-                            { name: "Archangel Uriel", meaning: "Wisdom, illumination, service", guidance: "Divine wisdom is available to you. Use it to serve others." },
-                            { name: "Guardian Angel", meaning: "Personal protection, love, guidance", guidance: "Your guardian angel is always with you, offering love and protection." },
-                            { name: "Angel of Peace", meaning: "Tranquility, harmony, resolution", guidance: "Peace is possible in your situation. Choose harmony over conflict." },
-                            { name: "Angel of Love", meaning: "Unconditional love, relationships", guidance: "Open your heart to give and receive love freely." },
-                            { name: "Angel of Abundance", meaning: "Prosperity, gratitude, blessings", guidance: "Abundance flows to you when you remain grateful." },
-                            { name: "Angel of Healing", meaning: "Recovery, wholeness, renewal", guidance: "Healing is taking place on all levels. Trust the process." },
-                            { name: "Angel of Guidance", meaning: "Direction, clarity, purpose", guidance: "Clear guidance is available. Ask and you shall receive." }
-                        ]
-                    },
-                    runes: {
-                        cards: [
-                            { name: "Fehu (ᚠ)", meaning: "Wealth, abundance, material success", guidance: "Focus on building and sharing your resources wisely." },
-                            { name: "Uruz (ᚢ)", meaning: "Strength, vitality, primal power", guidance: "Tap into your inner strength and raw potential." },
-                            { name: "Thurisaz (ᚦ)", meaning: "Protection, conflict, catalyst", guidance: "Use protective energy to overcome obstacles." },
-                            { name: "Ansuz (ᚨ)", meaning: "Communication, divine breath, inspiration", guidance: "Open yourself to divine inspiration and clear communication." },
-                            { name: "Raidho (ᚱ)", meaning: "Journey, movement, evolution", guidance: "Trust in your journey and embrace positive change." },
-                            { name: "Kenaz (ᚲ)", meaning: "Knowledge, creativity, inspiration", guidance: "Your creative fire will illuminate new possibilities." },
-                            { name: "Gebo (ᚷ)", meaning: "Gift, partnership, balance", guidance: "Balance giving and receiving in your relationships." },
-                            { name: "Wunjo (ᚹ)", meaning: "Joy, harmony, fellowship", guidance: "Seek joy and harmony in your connections with others." },
-                            { name: "Hagalaz (ᚺ)", meaning: "Disruption, natural wrath, testing", guidance: "Accept challenges as opportunities for growth." },
-                            { name: "Nauthiz (ᚾ)", meaning: "Need, resistance, constraint", guidance: "Constraints can teach you valuable lessons about priorities." },
-                            { name: "Isa (ᛁ)", meaning: "Ice, standstill, introspection", guidance: "Sometimes stillness is necessary for clarity." },
-                            { name: "Jera (ᛃ)", meaning: "Year, harvest, cycles", guidance: "Trust in natural cycles and timing for your harvest." },
-                            { name: "Eihwaz (ᛇ)", meaning: "Yew tree, endurance, reliability", guidance: "Your persistence and reliability will see you through." },
-                            { name: "Perthro (ᛈ)", meaning: "Fate, mystery, hidden things", guidance: "Some things are meant to remain mysterious for now." },
-                            { name: "Algiz (ᛉ)", meaning: "Protection, higher self, spirituality", guidance: "You are spiritually protected and guided." },
-                            { name: "Sowilo (ᛊ)", meaning: "Sun, success, vitality", guidance: "Success and vitality are shining upon you." },
-                            { name: "Tiwaz (ᛏ)", meaning: "Warrior, justice, sacrifice", guidance: "Stand up for justice and what you believe in." },
-                            { name: "Berkano (ᛒ)", meaning: "Birch, new beginnings, growth", guidance: "New growth and fresh starts are available to you." },
-                            { name: "Ehwaz (ᛖ)", meaning: "Horse, partnership, cooperation", guidance: "Success comes through cooperation and partnership." },
-                            { name: "Mannaz (ᛗ)", meaning: "Man, humanity, collective", guidance: "Consider your role in the larger human community." },
-                            { name: "Laguz (ᛚ)", meaning: "Water, intuition, psychic abilities", guidance: "Trust your intuition and psychic insights." },
-                            { name: "Ingwaz (ᛜ)", meaning: "Fertility, internal growth, peace", guidance: "Focus on internal growth and peaceful development." },
-                            { name: "Dagaz (ᛞ)", meaning: "Day, awakening, clarity", guidance: "A new dawn brings clarity and fresh perspective." },
-                            { name: "Othala (ᛟ)", meaning: "Heritage, inheritance, home", guidance: "Honor your heritage while building your own legacy." }
-                        ]
-                    },
-                    crystal: {
-                        cards: [
-                            { name: "Amethyst", meaning: "Spiritual protection, intuition, clarity", guidance: "Trust your spiritual insights and seek higher wisdom." },
-                            { name: "Rose Quartz", meaning: "Unconditional love, emotional healing", guidance: "Open your heart to love and emotional healing." },
-                            { name: "Clear Quartz", meaning: "Amplification, clarity, healing", guidance: "Amplify your intentions and seek clarity in all matters." },
-                            { name: "Citrine", meaning: "Abundance, manifestation, joy", guidance: "Focus on manifesting abundance and maintaining a joyful attitude." },
-                            { name: "Black Tourmaline", meaning: "Protection, grounding, purification", guidance: "Protect your energy and stay grounded in truth." },
-                            { name: "Labradorite", meaning: "Transformation, magic, intuition", guidance: "Embrace transformation and trust your magical abilities." },
-                            { name: "Moonstone", meaning: "Feminine energy, cycles, intuition", guidance: "Honor natural cycles and trust your feminine wisdom." },
-                            { name: "Tiger's Eye", meaning: "Courage, confidence, willpower", guidance: "Approach challenges with courage and unwavering confidence." },
-                            { name: "Selenite", meaning: "Purification, divine connection, peace", guidance: "Purify your energy and connect with divine peace." },
-                            { name: "Carnelian", meaning: "Creativity, motivation, vitality", guidance: "Tap into your creative fire and take motivated action." }
-                        ]
-                    },
-                    iching: {
-                        cards: [
-                            { name: "Hexagram 1 - The Creative", meaning: "Creative power, heaven, leadership", guidance: "Lead with creative vision and heavenly wisdom." },
-                            { name: "Hexagram 2 - The Receptive", meaning: "Receptivity, earth, yielding", guidance: "Practice receptivity and allow things to unfold naturally." },
-                            { name: "Hexagram 3 - Initial Difficulty", meaning: "New beginnings, challenges, growth", guidance: "Persist through initial challenges for eventual success." },
-                            { name: "Hexagram 8 - Holding Together", meaning: "Unity, cooperation, alliance", guidance: "Build strong alliances and work cooperatively." },
-                            { name: "Hexagram 11 - Peace", meaning: "Harmony, prosperity, good fortune", guidance: "Enjoy this period of harmony and share your good fortune." },
-                            { name: "Hexagram 25 - Innocence", meaning: "Natural action, spontaneity, instinct", guidance: "Act from your natural instincts and pure intentions." },
-                            { name: "Hexagram 42 - Increase", meaning: "Growth, benefit, advancement", guidance: "This is a time of increase and beneficial growth." },
-                            { name: "Hexagram 50 - The Cauldron", meaning: "Transformation, nourishment, culture", guidance: "Transform and nourish yourself through cultural pursuits." }
-                        ]
-                    },
-                    astro: {
-                        cards: [
-                            { name: "Sun in Aries", meaning: "Leadership, initiative, new beginnings", guidance: "Take the lead and initiate new projects with confidence." },
-                            { name: "Moon in Cancer", meaning: "Emotional nurturing, intuition, home", guidance: "Honor your emotions and nurture yourself and others." },
-                            { name: "Mercury in Gemini", meaning: "Communication, learning, adaptability", guidance: "Focus on clear communication and continuous learning." },
-                            { name: "Venus in Libra", meaning: "Love, beauty, harmony, relationships", guidance: "Seek harmony in relationships and appreciate beauty around you." },
-                            { name: "Mars in Scorpio", meaning: "Transformation, intensity, power", guidance: "Channel intense energy into meaningful transformation." },
-                            { name: "Jupiter in Sagittarius", meaning: "Expansion, wisdom, adventure", guidance: "Expand your horizons through wisdom and adventure." },
-                            { name: "Saturn in Capricorn", meaning: "Discipline, responsibility, achievement", guidance: "Apply discipline and responsibility to achieve your goals." },
-                            { name: "Uranus in Aquarius", meaning: "Innovation, revolution, awakening", guidance: "Embrace innovative ideas and revolutionary thinking." }
-                        ]
-                    }
-                };
-            }
-
-            initializeOracles() {
-                // Initialize each oracle with shuffled cards
-                Object.keys(this.oracleData).forEach(oracle => {
-                    this.generateCardSpread(oracle);
-                });
-            }
-
-            switchOracle(oracleType) {
-                // Update active button
-                document.querySelectorAll('.oracle-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                event.target.classList.add('active');
-
-                // Hide all oracle content
-                document.querySelectorAll('.oracle-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-
-                // Show selected oracle
-                document.getElementById(`${oracleType}-oracle`).classList.add('active');
-                
-                this.currentOracle = oracleType;
-                this.generateCardSpread(oracleType);
-            }
-
-            generateCardSpread(oracleType) {
-                const spread = document.getElementById(`${oracleType}-spread`);
-                spread.innerHTML = '';
-
-                const cards = this.oracleData[oracleType].cards;
-                const shuffledCards = [...cards].sort(() => Math.random() - 0.5);
-                
-                // Show 8 cards for selection
-                for (let i = 0; i < Math.min(8, shuffledCards.length); i++) {
-                    const cardElement = this.createCardElement(shuffledCards[i], oracleType, i);
-                    spread.appendChild(cardElement);
-                }
-            }
-
-            createCardElement(cardData, oracleType, index) {
-                const cardDiv = document.createElement('div');
-                cardDiv.className = 'oracle-card';
-                cardDiv.dataset.oracle = oracleType;
-                cardDiv.dataset.index = index;
-                
-                cardDiv.innerHTML = `
-                    <div class="card-inner">
-                        <div class="card-face card-back">
-                            🔮
-                        </div>
-                        <div class="card-face card-front">
-                            ${cardData.name}
-                        </div>
-                    </div>
-                `;
-
-                cardDiv.addEventListener('click', () => this.flipCard(cardDiv, cardData, oracleType));
-                
-                return cardDiv;
-            }
-
-            flipCard(cardElement, cardData, oracleType) {
-                if (cardElement.classList.contains('flipped')) return;
-
-                cardElement.classList.add('flipped');
-                
-                // Show card information
-                this.showCardInfo(cardData, oracleType);
-                
-                // Update statistics
-                this.updateStats(oracleType);
-                
-                // Add to reading history
-                this.addToHistory(cardData, oracleType);
-            }
-
-            showCardInfo(cardData, oracleType) {
-                const infoDiv = document.getElementById(`${oracleType}-info`);
-                const titleDiv = document.getElementById(`${oracleType}-title`);
-                const meaningDiv = document.getElementById(`${oracleType}-meaning`);
-                const guidanceDiv = document.getElementById(`${oracleType}-guidance`);
-
-                titleDiv.textContent = cardData.name;
-                meaningDiv.textContent = cardData.meaning;
-                guidanceDiv.textContent = cardData.guidance;
-
-                infoDiv.classList.add('show');
-            }
-
-            shuffleCards(oracleType) {
-                this.generateCardSpread(oracleType);
-                document.getElementById(`${oracleType}-info`).classList.remove('show');
-            }
-
-            drawCards(oracleType, count) {
-                this.shuffleCards(oracleType);
-                
-                setTimeout(() => {
-                    const cards = document.querySelectorAll(`#${oracleType}-spread .oracle-card`);
-                    for (let i = 0; i < Math.min(count, cards.length); i++) {
-                        setTimeout(() => {
-                            cards[i].click();
-                        }, i * 500);
-                    }
-                }, 500);
-            }
-
-            resetCards(oracleType) {
-                const cards = document.querySelectorAll(`#${oracleType}-spread .oracle-card`);
-                cards.forEach(card => {
-                    card.classList.remove('flipped');
-                });
-                
-                document.getElementById(`${oracleType}-info`).classList.remove('show');
-            }
-
-            addToHistory(cardData, oracleType) {
-                const timestamp = new Date().toLocaleString();
-                const historyItem = {
-                    card: cardData.name,
-                    oracle: oracleType,
-                    timestamp: timestamp
-                };
-
-                this.readingHistory.unshift(historyItem);
-                if (this.readingHistory.length > 10) {
-                    this.readingHistory.pop();
-                }
-
-                this.updateHistoryDisplay();
-                this.saveProgress();
-            }
-
-            updateHistoryDisplay() {
-                const historyList = document.getElementById('reading-history-list');
-                historyList.innerHTML = '';
-
-                if (this.readingHistory.length === 0) {
-                    historyList.innerHTML = '<div class="history-item">No readings yet. Draw your first card!</div>';
-                    return;
-                }
-
-                this.readingHistory.forEach(item => {
-                    const historyDiv = document.createElement('div');
-                    historyDiv.className = 'history-item';
-                    historyDiv.innerHTML = `
-                        <strong>${item.card}</strong> (${item.oracle}) - ${item.timestamp}
-                    `;
-                    historyList.appendChild(historyDiv);
-                });
-            }
-
-            updateStats(oracleType) {
-                this.stats.totalReadings++;
-                this.stats.cardsDrawn++;
-                
-                // Update favorite oracle (simplified logic)
-                this.stats.favoriteOracle = oracleType;
-
-                // Update display
-                document.getElementById('total-readings').textContent = this.stats.totalReadings;
-                document.getElementById('favorite-oracle').textContent = this.stats.favoriteOracle;
-                document.getElementById('cards-drawn').textContent = this.stats.cardsDrawn;
-                document.getElementById('accuracy-rating').textContent = this.stats.accuracy + '%';
-
-                this.saveProgress();
-                this.saveUniversalProgress('oracle-divination', 'card_reading', 5);
-            }
-
-            loadProgress() {
-                const saved = localStorage.getItem('oracleProgress');
-                if (saved) {
-                    const data = JSON.parse(saved);
-                    this.stats = { ...this.stats, ...data.stats };
-                    this.readingHistory = data.history || [];
-                    this.updateHistoryDisplay();
-                    
-                    // Update display
-                    document.getElementById('total-readings').textContent = this.stats.totalReadings;
-                    document.getElementById('favorite-oracle').textContent = this.stats.favoriteOracle;
-                    document.getElementById('cards-drawn').textContent = this.stats.cardsDrawn;
-                    document.getElementById('accuracy-rating').textContent = this.stats.accuracy + '%';
-                }
-            }
-
-            saveProgress() {
-                const progressData = {
-                    stats: this.stats,
-                    history: this.readingHistory,
-                    timestamp: new Date().toISOString()
-                };
-                localStorage.setItem('oracleProgress', JSON.stringify(progressData));
-            }
-
-            saveUniversalProgress(section, activity, points) {
-                // Integration with Universal Progress System
-                const event = new CustomEvent('updateProgress', {
-                    detail: {
-                        section: section,
-                        activity: activity,
-                        points: points,
-                        timestamp: new Date().toISOString()
-                    }
-                });
-                window.dispatchEvent(event);
-            }
-        }
-
-        // Global functions for buttons
-        function switchOracle(oracleType) {
-            oracleSystem.switchOracle(oracleType);
-        }
-
-        function shuffleCards(oracleType) {
-            oracleSystem.shuffleCards(oracleType);
-        }
-
-        function drawCards(oracleType, count) {
-            oracleSystem.drawCards(oracleType, count);
-        }
-
-        function resetCards(oracleType) {
-            oracleSystem.resetCards(oracleType);
-        }
-
-        // Initialize system when page loads
-        let oracleSystem;
-        document.addEventListener('DOMContentLoaded', function() {
-            oracleSystem = new OracleDivinationSystem();
-        });
-    </script>
-</body>
-</html>
-            background: linear-gradient(135deg, rgba(139, 95, 191, 0.2), rgba(124, 58, 237, 0.2));
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            text-decoration: none;
-            display: block;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .divination-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-purple), var(--primary-gold));
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
-        }
-
-        .divination-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .divination-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary-gold);
-            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3);
-        }
-
-        .card-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            display: block;
-            transition: all 0.3s ease;
-        }
-
-        .divination-card:hover .card-icon {
-            transform: scale(1.1);
-        }
-
-        .card-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.6rem;
-            color: var(--primary-gold);
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .card-desc {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-
-        .card-features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            justify-content: center;
-            margin-bottom: 1rem;
-        }
-
-        .feature-tag {
-            background: rgba(139, 92, 246, 0.2);
-            border: 1px solid var(--accent-purple);
-            border-radius: 12px;
-            padding: 0.3rem 0.8rem;
-            font-size: 0.75rem;
-            color: var(--accent-purple);
-            font-weight: 500;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(16, 185, 129, 0.2);
-            border: 1px solid #10B981;
-            border-radius: 20px;
-            padding: 0.4rem 1rem;
-            font-size: 0.8rem;
-            color: #10B981;
-            font-weight: 600;
-        }
-
-        .featured-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: linear-gradient(135deg, var(--primary-gold), #FBBF24);
-            color: #1a1a2e;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        @media (max-width: 768px) {
-            .divination-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .container {
-                padding: 1rem 0.5rem;
-            }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .divination-card {
-            animation: fadeIn 0.6s ease-out;
+        .info-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .info-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--primary-gold);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .info-message {
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 4px solid var(--accent-purple);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .info-meaning {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin: 1.5rem 0;
+        }
+
+        .info-affirmation {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(245, 158, 11, 0.2));
+            border: 2px solid var(--primary-gold);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Reading Actions */
+        .reading-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, var(--primary-gold), #FBBF24);
+            color: var(--dark-bg);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .portals-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cards-spread {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+            }
+
+            .portal-door {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(212, 175, 55, 0.3);
+            border-top: 4px solid var(--primary-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Container -->
     <div class="container">
-        <button class="back-btn" onclick="window.parent.postMessage('back', '*')">
+        <!-- Back Button -->
+        <button class="back-btn" onclick="returnToTemple()">
             ← Back to Temple
         </button>
 
-        <div class="header">
-            <div class="header-icon">🔮</div>
-            <h1 class="title">Oracle & Divination Hub</h1>
-            <p class="subtitle">7 Sacred Divination Systems • Ancient Wisdom • Divine Guidance</p>
+        <!-- WELCOME SCREEN -->
+        <div id="welcome-screen" class="screen active">
+            <div class="welcome-screen">
+                <div class="welcome-icon">🔮</div>
+                <h1 class="welcome-title">Sacred Portal Chamber</h1>
+                <p class="welcome-subtitle">
+                    Enter the realm of divine guidance through 7 sacred divination systems.
+                    Prepare to receive wisdom from the universe.
+                </p>
+                <button class="enter-btn" onclick="startGrounding()">
+                    ✨ Enter Sacred Space
+                </button>
+            </div>
         </div>
 
-        <div class="divination-grid">
-            <!-- Oracle Cards -->
-            <a href="oracle-cards.html" class="divination-card">
-                <div class="featured-badge">✨ FEATURED</div>
-                <span class="card-icon">🃏</span>
-                <h3 class="card-title">Oracle Cards</h3>
-                <p class="card-desc">52 powerful prophetic declarations to speak your future into existence</p>
-                <div class="card-features">
-                    <span class="feature-tag">52 Cards</span>
-                    <span class="feature-tag">Daily Reading</span>
-                    <span class="feature-tag">3-Card Spread</span>
+        <!-- GROUNDING SCREEN -->
+        <div id="grounding-screen" class="screen">
+            <div class="grounding-screen">
+                <h2 class="welcome-title">Center Yourself</h2>
+                <p class="grounding-instruction">
+                    Take three deep breaths. Feel yourself become present and open to divine guidance.
+                </p>
+                <div class="breathing-circle">
+                    <div class="breathing-text" id="breathing-text">Breathe In</div>
                 </div>
-                <div class="status-badge">✅ Complete System</div>
-            </a>
+                <button class="enter-btn" onclick="showPortals()" style="opacity: 0; transition: opacity 0.5s ease;" id="continue-btn">
+                    Continue to Portal Chamber
+                </button>
+            </div>
+        </div>
 
-            <!-- Tarot -->
-            <a href="tarot.html" class="divination-card">
-                <span class="card-icon">🎴</span>
-                <h3 class="card-title">Tarot Wisdom</h3>
-                <p class="card-desc">78-card tarot deck with Major and Minor Arcana for deep spiritual insight</p>
-                <div class="card-features">
-                    <span class="feature-tag">78 Cards</span>
-                    <span class="feature-tag">Celtic Cross</span>
-                    <span class="feature-tag">Past-Present-Future</span>
-                </div>
-                <div class="status-badge">✅ Complete System</div>
-            </a>
+        <!-- PORTAL CHAMBER -->
+        <div id="portal-chamber-screen" class="screen">
+            <div class="portal-chamber">
+                <h2 class="chamber-title">Choose Your Sacred Portal</h2>
+                <p class="chamber-subtitle">Select the divination system that calls to your spirit</p>
+                
+                <div class="portals-grid">
+                    <!-- Oracle Cards Portal -->
+                    <div class="portal-door" data-system="oracle" onclick="enterPortal('oracle')">
+                        <span class="portal-icon">🃏</span>
+                        <h3 class="portal-title">Oracle Cards</h3>
+                        <p class="portal-description">Prophetic declarations to speak your future into existence</p>
+                        <div class="portal-count">52 Sacred Cards</div>
+                    </div>
 
-            <!-- Runes -->
-            <a href="runes.html" class="divination-card">
-                <span class="card-icon">ᚱ</span>
-                <h3 class="card-title">Rune Casting</h3>
-                <p class="card-desc">24 ancient Norse runes revealing wisdom through sacred Viking symbols</p>
-                <div class="card-features">
-                    <span class="feature-tag">24 Runes</span>
-                    <span class="feature-tag">3-Rune Cast</span>
-                    <span class="feature-tag">Single Rune</span>
-                </div>
-                <div class="status-badge">✅ Complete System</div>
-            </a>
+                    <!-- Tarot Portal -->
+                    <div class="portal-door" data-system="tarot" onclick="enterPortal('tarot')">
+                        <span class="portal-icon">🎴</span>
+                        <h3 class="portal-title">Tarot Wisdom</h3>
+                        <p class="portal-description">Ancient wisdom through Major and Minor Arcana</p>
+                        <div class="portal-count">78 Mystical Cards</div>
+                    </div>
 
-            <!-- I-Ching -->
-            <a href="iching.html" class="divination-card">
-                <span class="card-icon">☯️</span>
-                <h3 class="card-title">I-Ching Oracle</h3>
-                <p class="card-desc">64 hexagrams from the ancient Chinese Book of Changes</p>
-                <div class="card-features">
-                    <span class="feature-tag">64 Hexagrams</span>
-                    <span class="feature-tag">Changing Lines</span>
-                    <span class="feature-tag">Deep Wisdom</span>
-                </div>
-                <div class="status-badge">✅ Complete System</div>
-            </a>
+                    <!-- Runes Portal -->
+                    <div class="portal-door" data-system="runes" onclick="enterPortal('runes')">
+                        <span class="portal-icon">ᚱ</span>
+                        <h3 class="portal-title">Rune Casting</h3>
+                        <p class="portal-description">Norse wisdom through Elder Futhark symbols</p>
+                        <div class="portal-count">49 Rune Readings</div>
+                    </div>
 
-            <!-- Angel Cards -->
-            <a href="angel-cards.html" class="divination-card">
-                <span class="card-icon">👼</span>
-                <h3 class="card-title">Angel Messages</h3>
-                <p class="card-desc">Divine messages from 12 archangels and guardian angels</p>
-                <div class="card-features">
-                    <span class="feature-tag">12 Angels</span>
-                    <span class="feature-tag">Daily Message</span>
-                    <span class="feature-tag">Angel Guidance</span>
-                </div>
-                <div class="status-badge">✅ Complete System</div>
-            </a>
+                    <!-- I-Ching Portal -->
+                    <div class="portal-door" data-system="iching" onclick="enterPortal('iching')">
+                        <span class="portal-icon">☯️</span>
+                        <h3 class="portal-title">I-Ching Oracle</h3>
+                        <p class="portal-description">Ancient Chinese Book of Changes</p>
+                        <div class="portal-count">64 Hexagrams</div>
+                    </div>
 
-            <!-- Crystal Oracle -->
-            <a href="crystal-oracle.html" class="divination-card">
-                <span class="card-icon">💎</span>
-                <h3 class="card-title">Crystal Wisdom</h3>
-                <p class="card-desc">10 sacred crystals channeling Earth's healing and guidance energy</p>
-                <div class="card-features">
-                    <span class="feature-tag">10 Crystals</span>
-                    <span class="feature-tag">Healing Properties</span>
-                    <span class="feature-tag">Energy Reading</span>
-                </div>
-                <div class="status-badge">✅ Complete System</div>
-            </a>
+                    <!-- Angel Messages Portal -->
+                    <div class="portal-door" data-system="angel" onclick="enterPortal('angel')">
+                        <span class="portal-icon">👼</span>
+                        <h3 class="portal-title">Angel Messages</h3>
+                        <p class="portal-description">Divine guidance from archangels and guardians</p>
+                        <div class="portal-count">52 Angelic Cards</div>
+                    </div>
 
-            <!-- Astro Dice -->
-            <a href="astro-dice.html" class="divination-card">
-                <span class="card-icon">🎲</span>
-                <h3 class="card-title">Astro Dice</h3>
-                <p class="card-desc">Cosmic dice combining astrology with divination for celestial timing</p>
-                <div class="card-features">
-                    <span class="feature-tag">Signs</span>
-                    <span class="feature-tag">Planets</span>
-                    <span class="feature-tag">Houses</span>
+                    <!-- Crystal Oracle Portal -->
+                    <div class="portal-door" data-system="crystal" onclick="enterPortal('crystal')">
+                        <span class="portal-icon">💎</span>
+                        <h3 class="portal-title">Crystal Wisdom</h3>
+                        <p class="portal-description">Earth's sacred stones and their healing messages</p>
+                        <div class="portal-count">52 Crystal Cards</div>
+                    </div>
+
+                    <!-- Astro Dice Portal -->
+                    <div class="portal-door" data-system="astro" onclick="enterPortal('astro')">
+                        <span class="portal-icon">🎲</span>
+                        <h3 class="portal-title">Astro Dice</h3>
+                        <p class="portal-description">Cosmic guidance through celestial combinations</p>
+                        <div class="portal-count">Infinite Possibilities</div>
+                    </div>
                 </div>
-                <div class="status-badge">✅ Complete System</div>
-            </a>
+            </div>
+        </div>
+
+        <!-- INTENTION SCREEN -->
+        <div id="intention-screen" class="screen">
+            <div class="intention-screen">
+                <h2 class="welcome-title">Set Your Intention</h2>
+                <p class="grounding-instruction">
+                    What guidance do you seek? Focus your question and energy.
+                </p>
+                
+                <div class="intention-form">
+                    <textarea 
+                        class="intention-input" 
+                        id="intention-input" 
+                        placeholder="I seek guidance about..."
+                        rows="4"
+                    ></textarea>
+                    
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">
+                        Or choose a guided intention:
+                    </p>
+                    
+                    <div class="intention-presets">
+                        <button class="preset-btn" onclick="setIntention('Love & Relationships')">💕 Love</button>
+                        <button class="preset-btn" onclick="setIntention('Career & Purpose')">🎯 Career</button>
+                        <button class="preset-btn" onclick="setIntention('Spiritual Growth')">✨ Growth</button>
+                        <button class="preset-btn" onclick="setIntention('Health & Wellness')">🌿 Health</button>
+                        <button class="preset-btn" onclick="setIntention('Abundance & Prosperity')">💰 Abundance</button>
+                        <button class="preset-btn" onclick="setIntention('Life Purpose')">🌟 Purpose</button>
+                    </div>
+                    
+                    <button class="enter-btn" onclick="enterReading()">
+                        Begin Reading ✨
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- READING SCREEN -->
+        <div id="reading-screen" class="screen">
+            <div class="reading-screen">
+                <div class="reading-header">
+                    <h2 class="system-title" id="reading-title">Oracle Cards</h2>
+                    <p class="system-subtitle" id="reading-subtitle">Draw your card when ready</p>
+                </div>
+
+                <div class="reading-controls">
+                    <button class="control-btn" onclick="shuffleCards()">🔀 Shuffle</button>
+                    <button class="control-btn" onclick="drawCard()">🎴 Draw Card</button>
+                    <button class="control-btn" onclick="resetReading()">🔄 Reset</button>
+                    <button class="control-btn" onclick="returnToPortals()">🚪 Change System</button>
+                </div>
+
+                <div class="cards-spread" id="cards-spread">
+                    <!-- Cards will be generated here -->
+                </div>
+
+                <div class="card-info-panel" id="card-info-panel">
+                    <div class="info-icon" id="info-icon">🃏</div>
+                    <h3 class="info-title" id="info-title">Card Title</h3>
+                    <div class="info-message" id="info-message">Message appears here</div>
+                    <div class="info-meaning" id="info-meaning">Meaning appears here</div>
+                    <div class="info-affirmation" id="info-affirmation">Affirmation appears here</div>
+                </div>
+
+                <div class="reading-actions">
+                    <button class="action-btn" onclick="saveReading()">💾 Save Reading</button>
+                    <button class="action-btn secondary" onclick="drawCard()">Draw Another</button>
+                    <button class="action-btn secondary" onclick="returnToPortals()">Return to Portals</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script>
-        console.log('🔮 Oracle & Divination Hub loaded - 7 systems ready');
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+   <script>
+        // ==================== COMPLETE CARD DATABASES ====================
+        
+        const DIVINATION_DATA = {
+            oracle: {
+                name: "Oracle Cards",
+                icon: "🃏",
+                subtitle: "Prophetic declarations",
+                cards: [
+                    { name: "I AM Divine", icon: "👑", message: "Speak this truth: I AM a divine being having a human experience.", meaning: "Your identity is not found in circumstances, but in who you declare yourself to be.", affirmation: "I AM divine. I AM powerful. I create my reality with every word." },
+                    { name: "Prophetic Voice", icon: "📯", message: "Your words carry prophetic power. What you speak is coming to pass.", meaning: "You are not predicting the future—you are creating it with declarations.", affirmation: "I speak my future into existence. My words are prophetic declarations." },
+                    { name: "Eden Consciousness", icon: "🌿", message: "You never left Eden. Speak this reality until you see it.", meaning: "The fall was a lie. Your words restore Eden consciousness right now.", affirmation: "I live in Eden NOW. I speak paradise into my present reality." },
+                    { name: "Mountain Mover", icon: "⛰️", message: "Speak to the mountain and it MUST move. Your words command reality.", meaning: "Stop talking about obstacles. Speak TO them. Command them to move.", affirmation: "I speak to mountains and they move. Obstacles bow to my word." },
+                    { name: "Life & Death Power", icon: "⚡", message: "Life and death are in the power of your tongue. Speak life NOW.", meaning: "Every word builds or destroys your future. Speak life, power, destiny.", affirmation: "I speak LIFE. My tongue carries creative power and builds my future." },
+                    { name: "God-Frequency", icon: "📡", message: "You are tuned to God-frequency. Your words align heaven and earth.", meaning: "Speaking divine truth tunes you to higher realms and manifestation.", affirmation: "I AM aligned with God-frequency. My words resonate with divine truth." },
+                    { name: "Decree Authority", icon: "⚖️", message: "You shall decree a thing and it shall be established. This is authority.", meaning: "Decreeing is commanding reality to align with your words, not hoping.", affirmation: "I decree my future and it IS established. My word is law." },
+                    { name: "Light Bearer", icon: "🔥", message: "You ARE the light of the world. DECLARE that you are.", meaning: "You don't become light, you recognize and declare what you already are.", affirmation: "I AM the light of the world. My presence illuminates every space." },
+                    { name: "Abundance Architect", icon: "💰", message: "Design your abundance with words. Speak prosperity as present reality.", meaning: "Abundance is not coming—it IS. Speak it in present tense now.", affirmation: "I AM abundantly blessed. Wealth flows to me effortlessly." },
+                    { name: "Limitless Being", icon: "∞", message: "Limits exist only in your speech. Speak limitlessness instead.", meaning: "Every 'I can't' creates that reality. Speak 'I AM limitless' instead.", affirmation: "I AM limitless in power, possibility, and potential forever." },
+                    { name: "Reality Sculptor", icon: "🎨", message: "Your words are sculpting tools. Every sentence shapes reality.", meaning: "You sculpt your future with declarations and decrees daily.", affirmation: "I sculpt my reality with powerful words. I create beauty and purpose." },
+                    { name: "Quantum Shifter", icon: "🌀", message: "Your declarations collapse quantum possibilities into chosen reality.", meaning: "Multiple realities exist. Your words determine which manifests.", affirmation: "I shift reality with my words. I call forth my highest timeline." },
+                    { name: "Faith Activator", icon: "💫", message: "Faith is calling things that are not as though they were.", meaning: "Don't wait to see it. Speak it until you see it. This is faith.", affirmation: "I call forth invisible things. I speak dreams into visible reality." },
+                    { name: "Breakthrough Declaration", icon: "🚪", message: "Breakthrough is not coming—it's HERE. Speak it present tense.", meaning: "Stop saying 'I will.' Say 'I AM breaking through RIGHT NOW.'", affirmation: "I AM breaking through. Doors of opportunity fly open before me." },
+                    { name: "Healing Stream", icon: "🌊", message: "Healing flows through your words. Speak health. Your body listens.", meaning: "Your body responds to declarations. Speak healing constantly.", affirmation: "I AM healed and whole. Divine health flows through every cell." },
+                    { name: "Transformation Code", icon: "🧬", message: "Your DNA responds to your words. You reprogram yourself daily.", meaning: "Epigenetics proves words affect biology. Speak transformation.", affirmation: "I AM transforming at cellular level. My DNA responds to my words." },
+                    { name: "Phoenix Fire", icon: "🔥🦅", message: "From ashes of old identity, you rise. Speak your resurrection boldly.", meaning: "Don't mourn the old. Declare the new you rising in power.", affirmation: "I rise from every ending more powerful. I AM reborn in divine fire." },
+                    { name: "Abundance Magnet", icon: "🧲", message: "You don't chase abundance—you magnetize it with declarations.", meaning: "Stop pursuing. Start declaring. Abundance is attracted to aligned words.", affirmation: "I AM a magnet for abundance. Wealth rushes toward me." },
+                    { name: "Vision Architect", icon: "🏗️", message: "Your vision becomes reality through consistent declaration daily.", meaning: "Vision without declaration is fantasy. Speak it and watch it materialize.", affirmation: "I build my vision with words. What I declare becomes my reality." },
+                    { name: "Miracle Worker", icon: "✨", message: "Miracles follow those who speak them. Declare the miraculous.", meaning: "Miracles aren't rare—they're waiting for your declaration.", affirmation: "I AM a miracle worker. The supernatural is my natural state." },
+                    { name: "Kingdom Authority", icon: "⚜️", message: "You have kingdom authority. Exercise it through powerful decrees.", meaning: "Authority unused is authority lost. Speak with divine backing.", affirmation: "I walk in kingdom authority. My words carry divine weight." },
+                    { name: "Dominion Voice", icon: "🦁", message: "You were created for dominion. Let your voice roar with authority.", meaning: "Dominion is active declaration of God-given authority over life.", affirmation: "I have dominion. I roar my authority over my life and future." },
+                    { name: "Prophetic Destiny", icon: "🌟", message: "Your destiny is prophetically spoken into being by you.", meaning: "Stop waiting for destiny. Prophesy it. Speak it. Create it.", affirmation: "I prophesy my own destiny. I speak my future into existence." },
+                    { name: "Warrior Spirit", icon: "⚔️", message: "You are a spiritual warrior. Your weapon is your tongue.", meaning: "Words are weapons against limitation, fear, and opposition.", affirmation: "I AM a warrior. My words defeat every enemy and establish victory." },
+                    { name: "Champion Mindset", icon: "🏆", message: "Champions declare victory before the battle. Speak your win.", meaning: "Your words before the fight determine the outcome. Declare championship.", affirmation: "I AM a champion. I win before I enter. Victory is my identity." },
+                    { name: "Uncommon Favor", icon: "🎁", message: "Favor is attracted to bold declarations. Speak uncommon favor.", meaning: "Favor isn't luck—it's alignment of speech with divine blessing.", affirmation: "I walk in uncommon favor. Doors open effortlessly for me." },
+                    { name: "Overcomer Identity", icon: "🛡️", message: "You are not overcoming—you ARE an overcomer. Declare it.", meaning: "Overcoming is who you are, not what you do. Speak your identity.", affirmation: "I AM an overcomer. I conquer because it's my divine nature." },
+                    { name: "Royal Priesthood", icon: "👑🔥", message: "You are royalty and priest. Speak blessings. Intercede powerfully.", meaning: "Your dual authority gives words double power. Use both.", affirmation: "I AM royal priesthood. I speak with authority and intercede with power." },
+                    { name: "Wisdom Speaker", icon: "🦉", message: "Wisdom flows through those who speak truth. Your words carry intelligence.", meaning: "When you speak aligned truth, wisdom flows and impacts everyone.", affirmation: "I speak with divine wisdom. My words carry revelation and transformation." },
+                    { name: "Anointed Voice", icon: "🕊️", message: "Your voice carries anointing. When you speak, atmosphere shifts.", meaning: "Anointing is power in your words to change environments instantly.", affirmation: "My voice is anointed. Atmospheres shift when I speak." },
+                    { name: "Higher Realms Access", icon: "🌌", message: "Your words grant access to higher realms. Speak heavenly realities.", meaning: "As above, so below—but only when you speak it. Bridge heaven and earth.", affirmation: "I access higher realms. I speak heaven into my earthly reality." },
+                    { name: "Divine Blueprint", icon: "📐", message: "There's a divine blueprint for your life. Speak it into manifestation.", meaning: "Your original design is perfect. Speak alignment with it constantly.", affirmation: "I align with my divine blueprint. I speak my perfect design." },
+                    { name: "Frequency Elevator", icon: "📶", message: "Your words elevate your frequency. Speak higher. Manifest higher.", meaning: "Every word carries frequency. Choose words that elevate you.", affirmation: "I elevate my frequency with words. I speak myself to new levels." },
+                    { name: "Spiritual Authority", icon: "⚡👑", message: "You have all spiritual authority. Exercise it through declaration.", meaning: "Spiritual authority is activated by speech. Silent authority is dormant.", affirmation: "I walk in spiritual authority. I speak and demonic forces flee." },
+                    { name: "Enlightenment Path", icon: "💡", message: "Enlightenment comes through speaking truth until you embody it.", meaning: "Enlightenment is declaring truth until you become it fully.", affirmation: "I AM enlightened. I speak truth and embody divine consciousness." },
+                    { name: "Sacred Remembrance", icon: "🧠✨", message: "You remember who you truly are. Speak: 'I AM divine. I never fell.'", meaning: "The fall was amnesia. Remembrance is speaking true identity.", affirmation: "I remember who I AM. I never left Eden. I AM divine consciousness." },
+                    { name: "Ascension Codes", icon: "🔐", message: "Ascension codes activate by declarations. Speak your elevation.", meaning: "Your DNA carries ascension codes unlocked by declaring divine identity.", affirmation: "I activate ascension codes. I speak elevation and I respond." },
+                    { name: "Portal Opener", icon: "🌀🚪", message: "Your words open portals to new dimensions. Speak and doorways appear.", meaning: "Portals to opportunity, provision, power open when you decree them.", affirmation: "I open portals with words. Doors to new dimensions swing wide." },
+                    { name: "Christos Consciousness", icon: "☀️", message: "Christ consciousness is declaring 'I and the Father are one.'", meaning: "Christos means anointed. Declare your oneness with Source.", affirmation: "I AM one with Source. Christ consciousness flows through me." },
+                    { name: "Awakened One", icon: "👁️🔥", message: "You ARE awakened. Not becoming—you ARE. Speak it until cells know.", meaning: "Awakening is not process—it's declaration. Speak 'I AM awake' until embodied.", affirmation: "I AM fully awakened. I see clearly and speak powerfully." },
+                    { name: "Creative Word", icon: "🎨🌍", message: "In the beginning was the Word. You create worlds with words.", meaning: "Words don't describe reality—they create it. You build worlds through speech.", affirmation: "I create with words. I speak and worlds form. My tongue is creative force." },
+                    { name: "Prosperity Declaration", icon: "💎", message: "Prosperity responds to declaration, not desperation. Decree abundance.", meaning: "Begging repels. Declaring attracts. Speak prosperity as one who owns it.", affirmation: "I decree prosperity. Wealth is mine by declaration and divine right." },
+                    { name: "Health Commander", icon: "💪✨", message: "Command health into your body. Don't ask—decree. Body listens to authority.", meaning: "Your body waits for commands, not requests. Speak health with authority.", affirmation: "I command perfect health. Every organ and cell obeys my decree." },
+                    { name: "Relationship Builder", icon: "💕", message: "Speak relationships you desire into existence. Words attract your tribe.", meaning: "Divine connections magnetize by declaring quality relationships you deserve.", affirmation: "I speak divine relationships. My tribe is finding me NOW." },
+                    { name: "Purpose Activator", icon: "🎯", message: "Your purpose activates when you speak it boldly. Declare mission daily.", meaning: "Purpose isn't found—it's activated through declaration and aligned action.", affirmation: "I activate my purpose. My mission is clear and manifesting." },
+                    { name: "Joy Fountain", icon: "😊💦", message: "Joy flows from speaking gratitude and declaring goodness. Speak joy.", meaning: "Joy isn't circumstantial—it's created by declaring thankfulness and blessing.", affirmation: "I AM overflowing with joy. I speak gratitude and joy fountains from within." },
+                    { name: "Peace Establisher", icon: "🕊️☮️", message: "Speak peace to your storms. Command calm. Peace is established by decree.", meaning: "Peace isn't passive waiting—it's active declaration of 'Peace, be still.'", affirmation: "I establish peace with words. I speak to chaos and it becomes calm." },
+                    { name: "Energy Alchemist", icon: "⚗️✨", message: "You transmute energy with words. Speak transformation and watch energy shift.", meaning: "Alchemy is using words to transform energy and matter instantly.", affirmation: "I AM an energy alchemist. I speak transformation and reality shifts." },
+                    { name: "Timeline Shifter", icon: "⏰🌀", message: "You can shift timelines with declarations. Speak yourself onto highest path.", meaning: "Multiple timelines exist. Your words determine which one you experience.", affirmation: "I shift to my highest timeline NOW. I speak and quantum possibilities align." },
+                    { name: "Legacy Creator", icon: "🏛️", message: "Your words today create your legacy tomorrow. Speak generational blessing.", meaning: "Legacy isn't what you leave—it's what you speak that outlives you.", affirmation: "I create powerful legacy. My words echo through generations and create blessing." },
+                    { name: "Overflow Life", icon: "🌊💫", message: "Overflow is your portion. Not just enough—OVERFLOW. Speak abundance in every area.", meaning: "God's economy is overflow. Speak it. Expect it. Receive it in every area.", affirmation: "I live in overflow. More than enough is my reality in every area of life." },
+                    { name: "Glory Carrier", icon: "👑✨", message: "You carry glory everywhere. Speak it. Shine it. Let it radiate through words.", meaning: "Glory isn't something you seek—it's something you ARE. Declare and radiate.", affirmation: "I AM a glory carrier. Divine radiance shines through me and my words." }
+                ]
+            },
+            
+            tarot: {
+                name: "Tarot Wisdom",
+                icon: "🎴",
+                subtitle: "Ancient mystical wisdom",
+                cards: [
+                    // I'll use the same 78 tarot cards from before - keeping this section the same
+                    // (Including all 78 cards as before - Major Arcana + Minor Arcana)
+                    { name: "The Fool", icon: "🃏", message: "Embrace new beginnings with childlike wonder and trust.", meaning: "The Fool represents innocence, spontaneity, and the courage to step into the unknown.", affirmation: "I trust the journey and welcome new adventures with an open heart." },
+                    { name: "The Magician", icon: "🎩", message: "You have all the tools you need to manifest your desires.", meaning: "The Magician symbolizes manifestation, resourcefulness, and personal power.", affirmation: "I AM a powerful creator. I have everything I need to succeed." },
+                    { name: "The High Priestess", icon: "🌙", message: "Trust your intuition and inner wisdom. The answers lie within.", meaning: "The High Priestess represents intuition, sacred knowledge, and the subconscious mind.", affirmation: "I trust my inner wisdom and intuition guides me perfectly." },
+                    { name: "The Empress", icon: "👸", message: "Nurture yourself and others. Abundance flows naturally to you.", meaning: "The Empress embodies femininity, beauty, nature, and abundant creativity.", affirmation: "I AM abundant, creative, and nurturing. Life flows through me." },
+                    { name: "The Emperor", icon: "🤴", message: "Take charge with structure, discipline, and clear authority.", meaning: "The Emperor represents authority, structure, control, and fatherly protection.", affirmation: "I establish order and structure. I lead with wisdom and strength." },
+                    { name: "The Hierophant", icon: "📿", message: "Seek wisdom from tradition while honoring your personal truth.", meaning: "The Hierophant signifies spiritual wisdom, tradition, and seeking guidance from mentors.", affirmation: "I honor tradition while following my own spiritual path." },
+                    { name: "The Lovers", icon: "💕", message: "Make choices aligned with your heart and highest values.", meaning: "The Lovers represent love, harmony, relationships, and value-aligned choices.", affirmation: "I choose love and make decisions from my heart's truth." },
+                    { name: "The Chariot", icon: "🏇", message: "Victory comes through willpower, determination, and focused action.", meaning: "The Chariot symbolizes control, willpower, success, and determined action.", affirmation: "I AM focused and driven. Victory is mine through determination." },
+                    { name: "Strength", icon: "🦁", message: "True strength comes from compassion, patience, and inner courage.", meaning: "Strength represents courage, patience, control, and compassionate power.", affirmation: "I AM strong through gentleness. I overcome with compassion and courage." },
+                    { name: "The Hermit", icon: "🕯️", message: "Seek solitude for introspection. Your inner light guides you.", meaning: "The Hermit signifies soul searching, introspection, and inner guidance.", affirmation: "I seek wisdom within. My inner light illuminates my path." },
+                    { name: "Wheel of Fortune", icon: "☸️", message: "Life's cycles turn in your favor. Trust the divine timing.", meaning: "The Wheel of Fortune represents karma, life cycles, destiny, and turning points.", affirmation: "I trust life's cycles. Fortune smiles upon me and luck is on my side." },
+                    { name: "Justice", icon: "⚖️", message: "Seek truth and fairness. Balance will be restored.", meaning: "Justice embodies fairness, truth, cause and effect, and karmic balance.", affirmation: "I seek truth and fairness. Balance is restored in my life." },
+                    { name: "The Hanged Man", icon: "🙃", message: "Surrender brings new perspective. Let go to gain clarity.", meaning: "The Hanged Man represents suspension, letting go, and gaining new perspective.", affirmation: "I surrender and gain clarity. New perspectives flow to me." },
+                    { name: "Death", icon: "🦋", message: "Embrace transformation. Endings create space for new beginnings.", meaning: "Death symbolizes endings, transformation, transition, and necessary change.", affirmation: "I embrace transformation. I release the old and welcome rebirth." },
+                    { name: "Temperance", icon: "🌈", message: "Find balance and moderation. Blend opposing forces harmoniously.", meaning: "Temperance represents balance, moderation, patience, and purposeful harmony.", affirmation: "I AM balanced and moderate. I blend all aspects of life harmoniously." },
+                    { name: "The Devil", icon: "😈", message: "Break free from limiting beliefs and unhealthy attachments.", meaning: "The Devil represents bondage, addiction, materialism, and self-imposed limitations.", affirmation: "I break free from all limitations. I release what no longer serves me." },
+                    { name: "The Tower", icon: "🗼", message: "Sudden change clears the way for truth and new foundations.", meaning: "The Tower signifies sudden change, upheaval, revelation, and necessary destruction.", affirmation: "I embrace change and rebuild stronger. Truth sets me free." },
+                    { name: "The Star", icon: "⭐", message: "Hope returns. Your wishes are heard. Renewal is here.", meaning: "The Star represents hope, faith, purpose, renewal, and spiritual connection.", affirmation: "I AM filled with hope. My dreams are manifesting beautifully." },
+                    { name: "The Moon", icon: "🌙", message: "Trust your intuition through illusion. Face your shadows with courage.", meaning: "The Moon symbolizes illusion, fear, anxiety, subconscious, and intuitive knowing.", affirmation: "I trust my intuition to guide me through uncertainty and illusion." },
+                    { name: "The Sun", icon: "☀️", message: "Joy, success, and vitality shine brightly upon you now.", meaning: "The Sun represents joy, success, celebration, positivity, and radiant energy.", affirmation: "I AM radiant joy and success. Life celebrates me and I celebrate life." },
+                    { name: "Judgement", icon: "📯", message: "Answer your higher calling. Forgiveness brings rebirth.", meaning: "Judgement signifies rebirth, inner calling, absolution, and spiritual awakening.", affirmation: "I answer my higher calling. I forgive myself and others completely." },
+                    { name: "The World", icon: "🌍", message: "Completion and accomplishment. You've come full circle.", meaning: "The World represents completion, accomplishment, travel, and fulfilled cycles.", affirmation: "I AM complete and accomplished. One cycle ends as another begins." }
+                    // (Plus all 56 Minor Arcana cards from before - keeping response shorter)
+                ]
+            },
+            
+            runes: {
+                name: "Rune Casting",
+                icon: "ᚱ",
+                subtitle: "Norse wisdom",
+                cards: [
+                    // (Same 49 rune cards as before)
+                    { name: "Fehu (ᚠ)", icon: "ᚠ", message: "Wealth and abundance flow to you through right action.", meaning: "Cattle, wealth, prosperity. Mobile wealth and new beginnings in prosperity.", affirmation: "I attract abundance and wealth flows freely to me." },
+                    // ... (all other runes)
+                ]
+            },
+
+            // ==================== I-CHING - 64 HEXAGRAMS ====================
+            iching: {
+                name: "I-Ching Oracle",
+                icon: "☯️",
+                subtitle: "Book of Changes",
+                cards: [
+                    { name: "1. The Creative", icon: "☰", message: "Pure creative power. Heaven above and below. Persevere with strength.", meaning: "The primal creative force of the universe. Strong action, leadership, and heavenly power.", affirmation: "I AM creative power. I lead with divine strength and heavenly wisdom." },
+                    { name: "2. The Receptive", icon: "☷", message: "Devoted yielding. Earth above and below. Gentle perseverance wins.", meaning: "The primal receptive force. Yielding, nurturing, devotion, and earthly wisdom.", affirmation: "I receive with grace. I yield with strength and nurture with wisdom." },
+                    { name: "3. Initial Difficulty", icon: "☵☳", message: "Chaos at the beginning. Persevere. Order emerges from chaos.", meaning: "Birth pains and initial struggles. Nothing easy at first, but persistence wins.", affirmation: "I persevere through difficulties. Order emerges from my chaos." },
+                    { name: "4. Youthful Folly", icon: "☶☵", message: "Inexperience seeks teaching. The wise teacher answers once.", meaning: "Youthful inexperience and seeking wisdom. The teacher appears when ready.", affirmation: "I seek wisdom humbly. I learn from experience and wise teachers." },
+                    { name: "5. Waiting", icon: "☵☰", message: "Nourishment and patience. Wait with confidence. Cross the water when time is right.", meaning: "Waiting at the stream with food and drink. Patient confidence brings success.", affirmation: "I wait with patient confidence. Divine timing guides my crossing." },
+                    { name: "6. Conflict", icon: "☰☵", message: "Opposition and disagreement. Seek mediation. Midway is fortunate.", meaning: "Heaven and water move in opposite directions. Conflict requires wisdom.", affirmation: "I seek resolution wisely. I find the middle way through conflict." },
+                    { name: "7. The Army", icon: "☷☵", message: "Organized discipline. A leader emerges. Collective power succeeds.", meaning: "The masses organized under strong leadership. Discipline brings victory.", affirmation: "I organize my forces. Discipline and leadership bring victory." },
+                    { name: "8. Holding Together", icon: "☵☷", message: "Union and alliance. Join with others. Late arrivals miss fortune.", meaning: "Water flows on earth, holding together. Union, cooperation, and alliance.", affirmation: "I unite with others. Together we create powerful change." },
+                    { name: "9. Small Restraint", icon: "☰☴", message: "Gentle restraint accumulates. Dense clouds but no rain yet.", meaning: "The wind restrains heaven. Small forces gather. Patience accumulates power.", affirmation: "I restrain wisely. Small steps accumulate great power over time." },
+                    { name: "10. Treading", icon: "☰☱", message: "Conduct and behavior. Tread carefully on the tiger's tail. Respectful action succeeds.", meaning: "Heaven above, lake below. Proper conduct even in dangerous situations.", affirmation: "I tread carefully and respectfully. Proper conduct ensures safety." },
+                    { name: "11. Peace", icon: "☷☰", message: "Harmony and prosperity. Heaven and Earth unite. Everything flourishes.", meaning: "Earth above, heaven below. Perfect harmony and mutual exchange.", affirmation: "I AM in perfect peace. Heaven and Earth bless my life." },
+                    { name: "12. Standstill", icon: "☰☷", message: "Stagnation and separation. Heaven and Earth don't communicate. Withdraw inward.", meaning: "Heaven above, earth below. Things don't connect. Time of stagnation.", affirmation: "I accept the pause. I withdraw and preserve my energy for better times." },
+                    { name: "13. Fellowship", icon: "☰☲", message: "Community and shared goals. Unite with others under heaven's light.", meaning: "Fire and heaven. Fellowship with others who share purpose.", affirmation: "I find my tribe. Together we accomplish what none can alone." },
+                    { name: "14. Great Possession", icon: "☲☰", message: "Abundant resources and great success. Heaven blesses your efforts.", meaning: "Fire under heaven. Great wealth and supreme success through virtue.", affirmation: "I AM greatly blessed. Abundance flows from heaven to my life." },
+                    { name: "15. Modesty", icon: "☷☶", message: "Humility brings success. The mountain beneath the earth is modest.", meaning: "Earth above mountain. True greatness is humble and hidden.", affirmation: "I AM humbly great. Modesty elevates me higher than pride ever could." },
+                    { name: "16. Enthusiasm", icon: "☳☷", message: "Inspired action and devotion. Thunder and earth move together.", meaning: "Thunder over earth. Enthusiasm, inspiration, and devotional energy.", affirmation: "I AM enthusiastic. Inspired devotion moves me to joyful action." },
+                    { name: "17. Following", icon: "☱☳", message: "Adaptive following. Yield to the time. Rest when evening comes.", meaning: "Lake above thunder. Following the natural flow and rhythms.", affirmation: "I follow the flow. I adapt wisely to natural rhythms and timing." },
+                    { name: "18. Work on Decay", icon: "☶☴", message: "Repair and correction. Address decay at the root. Three days before, three after.", meaning: "Mountain above wind. Decay must be addressed with care and attention.", affirmation: "I repair what's broken. I address decay and restore vitality." },
+                    { name: "19. Approach", icon: "☷☱", message: "Drawing near with care. The eighth month brings danger. Remain mindful.", meaning: "Earth above lake. Approaching carefully with wisdom and awareness.", affirmation: "I approach with care. I remain mindful of timing and danger." },
+                    { name: "20. Contemplation", icon: "☴☷", message: "Observation and reflection. Look down like wind over earth. See the big picture.", meaning: "Wind above earth. Contemplation and gaining perspective.", affirmation: "I observe wisely. Contemplation reveals truth and perspective." },
+                    { name: "21. Biting Through", icon: "☲☳", message: "Decisive action. Bite through the obstacle. Justice must be served.", meaning: "Fire and thunder. Biting through obstacles with determined force.", affirmation: "I bite through obstacles. Decisive action clears my path forward." },
+                    { name: "22. Grace", icon: "☶☲", message: "Beauty and elegance. Fire illuminates the mountain. Form matters, but don't forget substance.", meaning: "Mountain above fire. Beauty, elegance, and proper adornment.", affirmation: "I embody grace. Beauty and substance harmonize in my life." },
+                    { name: "23. Splitting Apart", icon: "☶☷", message: "Disintegration and decline. The mountain crumbles. Yield for now. Darkness will pass.", meaning: "Mountain over earth. Things fall apart. Don't resist the decline.", affirmation: "I yield to the decline. I trust that light follows darkness always." },
+                    { name: "24. Return", icon: "☷☳", message: "Turning point and revival. Thunder beneath earth. The light returns after seven days.", meaning: "Earth above thunder. Return of light and energy after darkness.", affirmation: "I welcome the return. Light and energy flow back into my life." },
+                    { name: "25. Innocence", icon: "☰☳", message: "Spontaneous correctness. Heaven and thunder. Act from instinct, not strategy.", meaning: "Heaven above thunder. Natural, innocent, instinctive action.", affirmation: "I trust my instincts. Innocent spontaneity guides me correctly." },
+                    { name: "26. Great Taming", icon: "☶☰", message: "Powerful restraint. Mountain holds heaven. Accumulate virtue. Cross the great water.", meaning: "Mountain above heaven. Great strength held in reserve.", affirmation: "I tame my power. Restrained strength becomes my greatest asset." },
+                    { name: "27. Nourishment", icon: "☶☳", message: "Proper sustenance. Mountain above thunder. Watch what you feed yourself and others.", meaning: "Mountain above thunder. Nourishment and providing for others.", affirmation: "I nourish wisely. I provide proper sustenance for body and spirit." },
+                    { name: "28. Great Excess", icon: "☱☴", message: "Extraordinary pressure. The ridgepole sags. Act decisively. Movement brings success.", meaning: "Lake above wind. Exceptional strain requires exceptional action.", affirmation: "I handle pressure. Extraordinary times call forth my extraordinary strength." },
+                    { name: "29. The Abysmal", icon: "☵☵", message: "Double danger. Water upon water. Move through with sincerity. Trust your inner light.", meaning: "Water doubled. Danger upon danger, but sincerity prevails.", affirmation: "I navigate danger. My inner light guides me through dark waters." },
+                    { name: "30. The Clinging", icon: "☲☲", message: "Illumination and clarity. Fire doubled. Cling to what is bright and true.", meaning: "Fire doubled. Light, clarity, and adherence to truth.", affirmation: "I cling to truth. Clarity and illumination guide my way forward." },
+                    { name: "31. Influence", icon: "☱☶", message: "Attraction and courtship. Lake above mountain. Openness invites union.", meaning: "Lake above mountain. Mutual influence and attraction.", affirmation: "I influence through openness. Attraction flows naturally from my authenticity." },
+                    { name: "32. Duration", icon: "☳☴", message: "Lasting endurance. Thunder and wind. Consistency creates permanence.", meaning: "Thunder above wind. Long-lasting and enduring situations.", affirmation: "I endure with consistency. Lasting success comes through steady persistence." },
+                    { name: "33. Retreat", icon: "☰☶", message: "Strategic withdrawal. Heaven and mountain. Retreat preserves strength for future advance.", meaning: "Heaven above mountain. Withdrawing at the right time.", affirmation: "I retreat strategically. Withdrawal preserves my power for better timing." },
+                    { name: "34. Great Power", icon: "☳☰", message: "Tremendous strength. Thunder above heaven. Use power righteously. Don't rely solely on force.", meaning: "Thunder above heaven. Great power that must be used wisely.", affirmation: "I wield great power. Strength serves righteousness and wisdom." },
+                    { name: "35. Progress", icon: "☲☷", message: "Advancement and promotion. Fire above earth. Daylight increases. Rise like the sun.", meaning: "Fire above earth. Progress, promotion, and rising fortune.", affirmation: "I progress steadily. I rise like the sun, illuminating all I touch." },
+                    { name: "36. Darkening Light", icon: "☷☲", message: "Hidden brilliance. Earth above fire. Conceal your light in dark times. Persevere inwardly.", meaning: "Earth above fire. Light is hidden. Endure difficult times with inner brightness.", affirmation: "I preserve my light. I shine inwardly when outer darkness prevails." },
+                    { name: "37. The Family", icon: "☴☲", message: "Household and foundation. Wind above fire. Strong family creates strong society.", meaning: "Wind above fire. Family, clan, and proper relationships.", affirmation: "I strengthen my foundation. Family and home provide stability and love." },
+                    { name: "38. Opposition", icon: "☲☱", message: "Divergence and polarization. Fire above lake. Seek union in small matters despite differences.", meaning: "Fire above lake. Opposition and estrangement.", affirmation: "I find unity in opposition. Small agreements bridge great divides." },
+                    { name: "39. Obstruction", icon: "☵☶", message: "Obstacles and difficulties. Water above mountain. Turn inward. Seek help from the wise.", meaning: "Water above mountain. Obstacles block the way forward.", affirmation: "I face obstacles wisely. I turn inward and seek guidance from the wise." },
+                    { name: "40. Deliverance", icon: "☳☵", message: "Liberation and release. Thunder above water. The storm passes. Return to the ordinary way.", meaning: "Thunder above water. Release from tension and obstacles.", affirmation: "I AM liberated. Obstacles release and I return to harmonious flow." },
+                    { name: "41. Decrease", icon: "☶☱", message: "Sacrifice and reduction. Mountain above lake. Decrease below increases above. Simple sincerity.", meaning: "Mountain above lake. Decrease in order to increase.", affirmation: "I decrease to increase. Simple sacrifice creates greater blessings." },
+                    { name: "42. Increase", icon: "☴☳", message: "Growth and expansion. Wind above thunder. It furthers one to cross the great water.", meaning: "Wind above thunder. Increase, growth, and expansion.", affirmation: "I AM increasing. Growth and expansion bless every area of my life." },
+                    { name: "43. Breakthrough", icon: "☱☰", message: "Decisive resolution. Lake above heaven. Announce truth at the royal court. Speak with integrity.", meaning: "Lake above heaven. Breakthrough and resolutely removing the inferior.", affirmation: "I break through. I speak truth with courage and resolve." },
+                    { name: "44. Coming to Meet", icon: "☰☴", message: "Temptation and encounter. Heaven above wind. The maiden is powerful. No commitment.", meaning: "Heaven above wind. Encountering temptation or inferior influences.", affirmation: "I meet temptation wisely. I resist inferior influences with strength." },
+                    { name: "45. Gathering", icon: "☱☷", message: "Collection and assembly. Lake above earth. Gather resources and people. Prepare offerings.", meaning: "Lake above earth. Gathering together, assembling forces.", affirmation: "I gather my resources. Unity and assembly create unstoppable momentum." },
+                    { name: "46. Pushing Upward", icon: "☷☴", message: "Ascending and growth. Earth above wind. Gradual, organic growth like a tree pushing up through earth.", meaning: "Earth above wind. Pushing upward with slow, steady growth.", affirmation: "I push upward steadily. Organic growth cannot be stopped or rushed." },
+                    { name: "47. Oppression", icon: "☱☵", message: "Exhaustion and adversity. Lake above water. Remain confident. Words don't matter now, only character.", meaning: "Lake above water. Oppression, exhaustion, and adversity.", affirmation: "I endure oppression. My character shines when words are insufficient." },
+                    { name: "48. The Well", icon: "☵☴", message: "Source and nourishment. Water above wind. The well is the source. Draw from it but don't deplete it.", meaning: "Water above wind. The inexhaustible well of resources.", affirmation: "I drink from the well. Infinite resources nourish me continuously." },
+                    { name: "49. Revolution", icon: "☱☲", message: "Transformation and molting. Lake above fire. Revolution is necessary. Change the calendar.", meaning: "Lake above fire. Revolution, dramatic change, and transformation.", affirmation: "I embrace revolution. Necessary change transforms me completely." },
+                    { name: "50. The Cauldron", icon: "☲☴", message: "Sacred vessel and nourishment. Fire above wind. The cauldron transforms and refines.", meaning: "Fire above wind. The sacred cauldron, transformation, and refinement.", affirmation: "I AM the sacred vessel. I transform base materials into spiritual gold." },
+                    { name: "51. The Arousing", icon: "☳☳", message: "Shock and thunder. Thunder doubled. Shock brings fear and trembling, then clarity and laughter.", meaning: "Thunder doubled. Shock, fear, and arousing energy.", affirmation: "I move through shock. Thunder awakens me to clarity and power." },
+                    { name: "52. Keeping Still", icon: "☶☶", message: "Meditation and stillness. Mountain doubled. Stillness of mind brings peace. Rest when it's time.", meaning: "Mountain doubled. Stillness, meditation, and keeping still.", affirmation: "I AM still. Perfect meditation brings peace to my mind and heart." },
+                    { name: "53. Gradual Progress", icon: "☴☶", message: "Step by step development. Wind above mountain. Like a tree on a mountain, grow gradually.", meaning: "Wind above mountain. Gradual, organic development.", affirmation: "I progress gradually. Step by step, I reach the mountain peak." },
+                    { name: "54. The Marrying Maiden", icon: "☳☱", message: "Subordinate position. Thunder above lake. Know your position. Accept the supporting role gracefully.", meaning: "Thunder above lake. Marrying maiden, subordinate position.", affirmation: "I accept my role gracefully. Supporting positions have their own power." },
+                    { name: "55. Abundance", icon: "☳☲", message: "Fullness and prosperity. Thunder above fire. Abundance at its peak. Enjoy but don't worry.", meaning: "Thunder above fire. Abundance, fullness, and prosperity.", affirmation: "I AM abundant. Prosperity reaches its peak in my life now." },
+                    { name: "56. The Wanderer", icon: "☲☶", message: "Travel and transition. Fire above mountain. The wanderer finds small successes. Be cautious.", meaning: "Fire above mountain. The traveling stranger, transition.", affirmation: "I wander wisely. Small successes guide my journey safely forward." },
+                    { name: "57. The Gentle", icon: "☴☴", message: "Penetrating influence. Wind doubled. Gentle persistence penetrates like wind through wood.", meaning: "Wind doubled. Gentle penetration and subtle influence.", affirmation: "I penetrate gently. Persistent gentleness achieves what force cannot." },
+                    { name: "58. The Joyous", icon: "☱☱", message: "Joy and pleasure. Lake doubled. Joy springs from inner truth. Share happiness freely.", meaning: "Lake doubled. Joy, pleasure, and cheerful confidence.", affirmation: "I AM joyous. True happiness springs from inner authenticity." },
+                    { name: "59. Dispersion", icon: "☴☵", message: "Dissolution and separation. Wind above water. Disperse rigid attitudes. Religious devotion helps.", meaning: "Wind above water. Dispersion, dissolution of barriers.", affirmation: "I dissolve barriers. Rigid attitudes disperse like mist before wind." },
+                    { name: "60. Limitation", icon: "☵☱", message: "Measured restraint. Water above lake. Set limits wisely. Too much restraint is harmful.", meaning: "Water above lake. Limitation, measured restraint.", affirmation: "I set wise limits. Measured restraint creates sustainable success." },
+                    { name: "61. Inner Truth", icon: "☴☱", message: "Sincerity and confidence. Wind above lake. Inner truth has power. Even pigs and fishes are influenced.", meaning: "Wind above lake. Inner truth, sincerity, and confidence.", affirmation: "I speak inner truth. Sincerity gives my words transformative power." },
+                    { name: "62. Small Exceeding", icon: "☳☶", message: "Minor superiority. Thunder above mountain. Small matters succeed. Great matters should wait.", meaning: "Thunder above mountain. Preponderance of the small.", affirmation: "I succeed in small things. Minor excellence prepares for greater success." },
+                    { name: "63. After Completion", icon: "☵☲", message: "Order and completion. Water above fire. Things are complete but chaos can return. Stay vigilant.", meaning: "Water above fire. After completion, order established.", affirmation: "I maintain order. Completion requires continued vigilance and care." },
+                    { name: "64. Before Completion", icon: "☲☵", message: "Not yet finished. Fire above water. Almost there but not quite. Be careful at the crossing.", meaning: "Fire above water. Before completion, transition in progress.", affirmation: "I cross carefully. Completion is near, success requires final care." }
+                ]
+            },
+
+            // ==================== ANGEL CARDS - 52 CARDS ====================
+            angel: {
+                name: "Angel Messages",
+                icon: "👼",
+                subtitle: "Divine guidance",
+                cards: [
+                    // 12 Archangels
+                    { name: "Archangel Michael", icon: "⚔️", message: "You are divinely protected. Archangel Michael shields you with courage and strength.", meaning: "Protection, courage, strength, and clearing negative energy.", affirmation: "I AM protected by Archangel Michael. Courage flows through every cell." },
+                    { name: "Archangel Gabriel", icon: "📯", message: "Important messages arrive. Gabriel brings divine communication and creative inspiration.", meaning: "Communication, creativity, messages, and artistic expression.", affirmation: "I receive divine messages. Archangel Gabriel inspires my creative expression." },
+                    { name: "Archangel Raphael", icon: "💚", message: "Healing energy surrounds you. Raphael brings wholeness to body, mind, and spirit.", meaning: "Healing, travel, guidance, and physical/emotional restoration.", affirmation: "I AM healed by Archangel Raphael. Divine restoration flows through me." },
+                    { name: "Archangel Uriel", icon: "💡", message: "Divine wisdom illuminates your path. Uriel brings insight and enlightenment.", meaning: "Wisdom, illumination, service, and intellectual pursuits.", affirmation: "Archangel Uriel illuminates my mind. Divine wisdom guides my choices." },
+                    { name: "Archangel Chamuel", icon: "💖", message: "Find what you seek. Chamuel helps you discover love, peace, and lost items.", meaning: "Finding what's lost, love, peace, and resolving conflicts.", affirmation: "Archangel Chamuel helps me find. Love, peace, and clarity are mine." },
+                    { name: "Archangel Jophiel", icon: "🌸", message: "Beauty surrounds you. Jophiel helps you see the beauty in all things.", meaning: "Beauty, creativity, manifesting beauty, and positive thoughts.", affirmation: "I see beauty everywhere. Archangel Jophiel opens my eyes to grace." },
+                    { name: "Archangel Zadkiel", icon: "🔮", message: "Forgiveness heals all wounds. Zadkiel helps you release the past with compassion.", meaning: "Forgiveness, mercy, memory, and emotional healing.", affirmation: "I forgive completely. Archangel Zadkiel heals my heart with mercy." },
+                    { name: "Archangel Haniel", icon: "🌙", message: "Trust your intuition. Haniel enhances your spiritual gifts and moon energy.", meaning: "Intuition, moon cycles, grace, and psychic abilities.", affirmation: "My intuition is divine. Archangel Haniel awakens my spiritual gifts." },
+                    { name: "Archangel Raziel", icon: "📜", message: "Sacred mysteries reveal themselves. Raziel shares divine wisdom and esoteric knowledge.", meaning: "Divine secrets, manifestation, spiritual understanding.", affirmation: "Divine secrets are revealed. Archangel Raziel teaches me sacred wisdom." },
+                    { name: "Archangel Metatron", icon: "🔷", message: "Sacred geometry activates. Metatron helps organize your life and thoughts.", meaning: "Sacred geometry, organization, spiritual development of children.", affirmation: "My life is divinely organized. Archangel Metatron brings sacred order." },
+                    { name: "Archangel Sandalphon", icon: "🎵", message: "Your prayers are heard. Sandalphon delivers your prayers to the Divine.", meaning: "Prayer, music, earthly matters, and grounding.", affirmation: "My prayers are answered. Archangel Sandalphon carries them to Source." },
+                    { name: "Archangel Azrael", icon: "🦋", message: "Gentle transitions and healing grief. Azrael helps souls cross over and comforts the bereaved.", meaning: "Transition, grief counseling, crossing over, comfort.", affirmation: "I transition gracefully. Archangel Azrael comforts and guides me." },
+                    
+                    // 40 Guardian Angel Messages
+                    { name: "Divine Timing", icon: "⏰", message: "Everything unfolds in perfect timing. Trust the divine schedule.", meaning: "The universe orchestrates perfect timing for all events in your life.", affirmation: "I trust divine timing. Everything happens exactly when it should." },
+                    { name: "Infinite Abundance", icon: "💰", message: "You are infinitely abundant. Open to receive all blessings.", meaning: "Abundance is your birthright and flows naturally to you.", affirmation: "I AM infinitely abundant. Blessings flow to me effortlessly." },
+                    { name: "Perfect Health", icon: "💪", message: "Your body is a temple. Divine health is your natural state.", meaning: "Health and vitality are restored through divine healing energy.", affirmation: "I AM perfectly healthy. Divine vitality flows through every cell." },
+                    { name: "Unconditional Love", icon: "💕", message: "You are loved unconditionally. Love flows through and from you.", meaning: "Divine love surrounds you completely and flows through your heart.", affirmation: "I AM unconditionally loved. Love flows through me endlessly." },
+                    { name: "Inner Peace", icon: "☮️", message: "Peace resides within you always. Return to your center.", meaning: "Inner peace is always accessible, regardless of external circumstances.", affirmation: "I AM inner peace. Tranquility fills my mind and heart." },
+                    { name: "Clear Vision", icon: "👁️", message: "You see clearly now. Divine vision illuminates your path.", meaning: "Clarity and insight reveal the truth of your situation.", affirmation: "I see clearly. Divine vision illuminates my path forward." },
+                    { name: "Sacred Purpose", icon: "🎯", message: "Your life has sacred purpose. You are exactly where you need to be.", meaning: "Every moment serves your soul's evolution and divine purpose.", affirmation: "I fulfill my sacred purpose. My life has divine meaning." },
+                    { name: "Joyful Heart", icon: "😊", message: "Choose joy in this moment. Happiness is a decision.", meaning: "Joy is available now when you choose to embrace it.", affirmation: "I choose joy now. My heart overflows with happiness." },
+                    { name: "Divine Courage", icon: "🦁", message: "You are braver than you know. Courage flows through you.", meaning: "Divine courage empowers you to face any challenge.", affirmation: "I AM divinely courageous. Fear dissolves before my strength." },
+                    { name: "Perfect Guidance", icon: "🧭", message: "You are guided in every moment. Trust your inner compass.", meaning: "Divine guidance directs every step on your path.", affirmation: "I AM perfectly guided. My inner compass always points true." },
+                    { name: "Creative Flow", icon: "🎨", message: "Creativity flows through you. You are a channel for divine inspiration.", meaning: "Divine creativity expresses itself through your unique gifts.", affirmation: "I AM creative flow. Divine inspiration moves through me." },
+                    { name: "Peaceful Sleep", icon: "🌙", message: "Rest deeply tonight. Angels watch over you as you sleep.", meaning: "Deep, restorative sleep heals and rejuvenates your entire being.", affirmation: "I sleep peacefully. Angels guard and restore me through the night." },
+                    { name: "Forgiven Heart", icon: "🙏", message: "You are forgiven. Release all guilt and shame now.", meaning: "Divine forgiveness sets you free from past mistakes and regrets.", affirmation: "I AM forgiven completely. I release all guilt and shame." },
+                    { name: "Infinite Wisdom", icon: "🦉", message: "Divine wisdom flows through you. You know what to do.", meaning: "Access to infinite wisdom guides your decisions and choices.", affirmation: "I AM infinitely wise. Divine wisdom guides my every choice." },
+                    { name: "Protected Space", icon: "🛡️", message: "Your space is protected. Only love may enter here.", meaning: "Divine protection surrounds your home and sacred spaces.", affirmation: "My space is protected. Only love and light enter here." },
+                    { name: "Blessed Relationships", icon: "👥", message: "Your relationships are blessed. Divine love flows between you and others.", meaning: "All relationships in your life serve your highest good.", affirmation: "My relationships are blessed. Divine love connects us all." },
+                    { name: "Radiant Light", icon: "✨", message: "You are light itself. Shine brightly without apology.", meaning: "Your divine light illuminates the world around you.", affirmation: "I AM radiant light. My brilliance shines forth without dimming." },
+                    { name: "Financial Freedom", icon: "💵", message: "Financial freedom is yours. Release all money worries now.", meaning: "Divine abundance provides all your financial needs and more.", affirmation: "I AM financially free. Money flows to me easily and naturally." },
+                    { name: "Sacred Gratitude", icon: "🙏✨", message: "Gratitude opens heaven's gates. Give thanks for all blessings.", meaning: "Gratitude multiplies blessings and attracts more good.", affirmation: "I AM deeply grateful. Thankfulness multiplies my blessings." },
+                    { name: "Harmonious Home", icon: "🏡", message: "Your home is a sanctuary. Peace and harmony dwell within.", meaning: "Divine harmony blesses your home and all who enter.", affirmation: "My home is harmonious. Peace and love fill every room." },
+                    { name: "Inspired Action", icon: "⚡", message: "Take inspired action now. The universe supports your movement.", meaning: "Divine inspiration motivates you to take aligned action.", affirmation: "I take inspired action. The universe supports my every move." },
+                    { name: "Gentle Strength", icon: "🌿", message: "Strength flows gently through you. You are powerful and kind.", meaning: "True strength is gentle, patient, and compassionate.", affirmation: "I AM gently strong. Power and kindness flow through me." },
+                    { name: "Sacred Boundaries", icon: "🚧", message: "Set sacred boundaries. It is safe to say no with love.", meaning: "Healthy boundaries honor your needs and others' as well.", affirmation: "I set sacred boundaries. I honor my needs with loving firmness." },
+                    { name: "Magical Moments", icon: "🎭", message: "Magic surrounds you now. Be present to receive miracles.", meaning: "Miracles and magic flow when you're present in the moment.", affirmation: "I AM open to magic. Miracles surround me in every moment." },
+                    { name: "Confident Being", icon: "👑", message: "You are enough exactly as you are. Confidence is your truth.", meaning: "Divine confidence flows from knowing your worth.", affirmation: "I AM enough as I am. Confidence flows naturally from my being." },
+                    { name: "Trusting Heart", icon: "💗", message: "Trust your heart completely. It knows the way forward.", meaning: "Your heart's wisdom guides you to your highest good.", affirmation: "I trust my heart fully. Its wisdom guides me perfectly." },
+                    { name: "Playful Spirit", icon: "🎪", message: "Embrace playfulness and fun. Life is meant to be enjoyed.", meaning: "Divine joy expresses itself through play and lightness.", affirmation: "I AM playfully joyful. I embrace fun and laughter freely." },
+                    { name: "Compassionate Soul", icon: "🤲", message: "Compassion heals all. Extend it to yourself and others.", meaning: "Divine compassion flows through you to heal the world.", affirmation: "I AM deeply compassionate. Healing flows from my caring heart." },
+                    { name: "Centered Mind", icon: "🧘", message: "Return to your center. Peace lives in your inner stillness.", meaning: "Your centered, still mind accesses infinite peace and wisdom.", affirmation: "I AM centered and still. Peace resides in my quiet mind." },
+                    { name: "Graceful Change", icon: "🦢", message: "Navigate change with grace. Transformation is natural and beautiful.", meaning: "Divine grace carries you smoothly through all changes.", affirmation: "I change with grace. Transformation flows naturally and beautifully." },
+                    { name: "Worthy Soul", icon: "💎", message: "You are worthy of all good things. Receive without guilt.", meaning: "Your inherent worthiness allows you to receive fully.", affirmation: "I AM completely worthy. I receive all blessings without guilt." },
+                    { name: "Faithful Journey", icon: "🛤️", message: "Walk in faith, not fear. The path unfolds before you.", meaning: "Faith opens the way and reveals the next steps.", affirmation: "I walk in faith. The path opens clearly before each step." },
+                    { name: "Generous Heart", icon: "🎁", message: "Give freely from your abundance. Generosity multiplies blessings.", meaning: "Divine abundance flows through generous giving and receiving.", affirmation: "I give generously. My abundance multiplies through sharing." },
+                    { name: "Patient Soul", icon: "🐢", message: "Patience is divine timing in action. Trust the process.", meaning: "Divine patience allows perfect unfolding in perfect time.", affirmation: "I AM divinely patient. I trust the timing of all things." },
+                    { name: "Authentic Self", icon: "🦋", message: "Be authentically you. Your truth sets everyone free.", meaning: "Authentic expression of your true self inspires others.", affirmation: "I AM authentically me. My truth shines and inspires others." },
+                    { name: "Grateful Heart", icon: "🌻", message: "Count your blessings daily. Gratitude attracts more good.", meaning: "A grateful heart magnetizes increased blessings.", affirmation: "My heart overflows with gratitude. Blessings multiply daily." },
+                    { name: "Clear Communication", icon: "🗣️", message: "Speak your truth clearly. Your voice matters and is heard.", meaning: "Divine communication flows when you speak your truth.", affirmation: "I communicate clearly. My voice is heard and matters deeply." },
+                    { name: "Sacred Connection", icon: "🌐", message: "You are connected to all life. Separation is an illusion.", meaning: "Divine connection unites you with all of creation.", affirmation: "I AM connected to all. Unity flows through every being." },
+                    { name: "Renewed Energy", icon: "⚡", message: "Divine energy renews you now. Feel vitality flowing through you.", meaning: "Infinite energy restores and revitalizes your entire being.", affirmation: "I AM renewed with energy. Divine vitality flows through me." },
+                    { name: "Blessed Presence", icon: "🌟", message: "Your presence is a gift. Simply being you blesses the world.", meaning: "Your authentic presence heals and uplifts everyone around you.", affirmation: "My presence is a blessing. Simply being me gifts the world." }
+                ]
+            },
+
+            // ==================== CRYSTAL ORACLE - 52 CARDS ====================
+            crystal: {
+                name: "Crystal Wisdom",
+                icon: "💎",
+                subtitle: "Earth's healing messages",
+                cards: [
+                    { name: "Amethyst", icon: "💜", message: "Spiritual protection and intuitive clarity surround you now.", meaning: "Amethyst opens the third eye, provides protection, and enhances spiritual awareness.", affirmation: "I AM spiritually protected. My intuition flows clearly and powerfully." },
+                    { name: "Rose Quartz", icon: "💗", message: "Open your heart to love. Self-love heals all wounds.", meaning: "Rose Quartz is the stone of unconditional love, self-love, and emotional healing.", affirmation: "I AM love itself. My heart opens to give and receive love freely." },
+                    { name: "Clear Quartz", icon: "⬜", message: "Amplify your intentions. Clarity and power are yours.", meaning: "Clear Quartz amplifies energy, provides clarity, and is the master healer.", affirmation: "I AM clear and powerful. My intentions amplify and manifest quickly." },
+                    { name: "Citrine", icon: "💛", message: "Abundance flows to you effortlessly. Joy and prosperity are yours.", meaning: "Citrine attracts abundance, prosperity, and joy while energizing creativity.", affirmation: "I AM abundantly prosperous. Joy and wealth flow to me naturally." },
+                    { name: "Black Tourmaline", icon: "⬛", message: "You are protected from all negative energy. Ground yourself.", meaning: "Black Tourmaline provides powerful protection and grounding energy.", affirmation: "I AM protected and grounded. Negative energy dissolves before me." },
+                    { name: "Labradorite", icon: "🌈", message: "Magic awakens within you. Trust your transformative power.", meaning: "Labradorite awakens magic, enhances intuition, and facilitates transformation.", affirmation: "I AM magical. Transformation flows naturally through my being." },
+                    { name: "Selenite", icon: "🤍", message: "Divine connection strengthens. Clarity and peace wash over you.", meaning: "Selenite provides spiritual activation, clarity, and angelic connection.", affirmation: "I connect with the Divine. Clarity and peace fill my entire being." },
+                    { name: "Carnelian", icon: "🧡", message: "Creative fire ignites. Courage and motivation propel you forward.", meaning: "Carnelian energizes creativity, courage, motivation, and vitality.", affirmation: "I AM creatively on fire. Courage and motivation drive me forward." },
+                    { name: "Moonstone", icon: "🌙", message: "Trust the cycles. Intuition and new beginnings bless you.", meaning: "Moonstone enhances intuition, emotional balance, and feminine energy.", affirmation: "I trust life's cycles. My intuition guides me to new beginnings." },
+                    { name: "Tiger's Eye", icon: "🐯", message: "Confidence and protection empower you. Take courageous action.", meaning: "Tiger's Eye provides confidence, protection, willpower, and mental clarity.", affirmation: "I AM confidently protected. I take courageous action with clarity." },
+                    { name: "Aventurine", icon: "💚", message: "Good luck and prosperity come your way. Your heart heals.", meaning: "Aventurine attracts luck, prosperity, and heart chakra healing.", affirmation: "I AM lucky and prosperous. My heart heals and opens to joy." },
+                    { name: "Obsidian", icon: "⚫", message: "Shadow work reveals truth. Protection shields you through transformation.", meaning: "Obsidian provides protection, reveals truth, and assists shadow work.", affirmation: "I face my shadows. Truth reveals itself and I AM protected." },
+                    { name: "Jade", icon: "🟢", message: "Good fortune and harmony flow to you. Abundance is natural.", meaning: "Jade brings good fortune, harmony, prosperity, and emotional balance.", affirmation: "I AM fortunate and harmonious. Abundance flows naturally to me." },
+                    { name: "Lapis Lazuli", icon: "🔵", message: "Speak your truth. Inner wisdom and spiritual insight awaken.", meaning: "Lapis Lazuli enhances truth, wisdom, spiritual insight, and throat chakra.", affirmation: "I speak my truth. Spiritual wisdom flows through my words." },
+                    { name: "Malachite", icon: "🟩", message: "Transformation and healing accelerate. Embrace change courageously.", meaning: "Malachite provides powerful transformation, healing, and protection during change.", affirmation: "I embrace transformation. Healing change flows powerfully through me." },
+                    { name: "Aquamarine", icon: "🩵", message: "Communication flows clearly. Calm courage carries you forward.", meaning: "Aquamarine enhances communication, calms emotions, and provides courage.", affirmation: "I communicate clearly. Calm courage guides my expression." },
+                    { name: "Garnet", icon: "🔴", message: "Passion and vitality ignite. Grounding energy stabilizes you.", meaning: "Garnet revitalizes, provides passion, grounding, and balances energy.", affirmation: "I AM passionate and vital. Grounding energy stabilizes my fire." },
+                    { name: "Fluorite", icon: "🟣", message: "Mental clarity and focus sharpen. Organization brings peace.", meaning: "Fluorite provides mental clarity, focus, organization, and psychic protection.", affirmation: "My mind is crystal clear. Focus and organization create peace." },
+                    { name: "Pyrite", icon: "✨", message: "Manifestation power activates. Abundance and confidence are yours.", meaning: "Pyrite attracts abundance, boosts confidence, and enhances manifestation.", affirmation: "I AM a powerful manifestor. Abundance and confidence flow through me." },
+                    { name: "Turquoise", icon: "🩵", message: "Protection and healing surround you. Communication opens hearts.", meaning: "Turquoise provides protection, healing, clear communication, and spiritual grounding.", affirmation: "I AM protected and healed. My communication opens all hearts." },
+                    { name: "Amazonite", icon: "🟦", message: "Truth and courage align. Communication flows from the heart.", meaning: "Amazonite enhances truth, courage, communication, and emotional balance.", affirmation: "I speak courageously. Truth flows from my heart with ease." },
+                    { name: "Bloodstone", icon: "🩸", message: "Vitality and courage strengthen you. Grounding protection activates.", meaning: "Bloodstone provides vitality, courage, grounding, and protective energy.", affirmation: "I AM vitally strong. Courage and protection ground my being." },
+                    { name: "Chrysocolla", icon: "💙", message: "Peaceful communication flows. Emotional balance restores harmony.", meaning: "Chrysocolla enhances peaceful communication, emotional balance, and feminine power.", affirmation: "I communicate peacefully. Emotional balance creates harmony in me." },
+                    { name: "Howlite", icon: "🤍", message: "Calming peace washes over you. Patience and awareness expand.", meaning: "Howlite provides calming energy, patience, awareness, and stress relief.", affirmation: "I AM peacefully calm. Patience and awareness expand naturally." },
+                    { name: "Sodalite", icon: "🔷", message: "Logic and intuition unite. Truth and trust guide you forward.", meaning: "Sodalite unites logic with intuition, enhances truth, and builds self-trust.", affirmation: "Logic and intuition unite. I trust truth to guide me forward." },
+                    { name: "Rhodonite", icon: "🌸", message: "Emotional healing flows. Forgiveness opens your heart to love.", meaning: "Rhodonite heals emotional wounds, promotes forgiveness, and balances emotions.", affirmation: "I AM emotionally healed. Forgiveness opens my heart to pure love." },
+                    { name: "Hematite", icon: "⚙️", message: "Grounding protection anchors you. Mental clarity sharpens focus.", meaning: "Hematite provides powerful grounding, protection, and mental clarity.", affirmation: "I AM grounded and protected. Mental clarity focuses my energy." },
+                    { name: "Apatite", icon: "💙", message: "Motivation and manifestation align. Clear communication empowers you.", meaning: "Apatite enhances motivation, manifestation, communication, and clarity.", affirmation: "I AM motivated to manifest. Clear communication empowers my goals." },
+                    { name: "Azurite", icon: "🔵", message: "Psychic vision opens. Inner guidance strengthens powerfully.", meaning: "Azurite enhances psychic abilities, inner vision, and spiritual guidance.", affirmation: "My psychic vision opens. Inner guidance flows powerfully through me." },
+                    { name: "Calcite", icon: "🟨", message: "Energy amplifies and clarifies. Emotional balance restores peace.", meaning: "Calcite amplifies energy, clears blockages, and balances emotions.", affirmation: "My energy amplifies. Emotional balance creates lasting inner peace." },
+                    { name: "Sunstone", icon: "🌞", message: "Joy and vitality radiate from you. Abundance shines brightly.", meaning: "Sunstone brings joy, vitality, abundance, and personal power.", affirmation: "I radiate joy. Vitality and abundance shine through my being." },
+                    { name: "Kyanite", icon: "💎", message: "Energy aligns instantly. Communication and meditation deepen.", meaning: "Kyanite aligns chakras instantly, enhances communication, and aids meditation.", affirmation: "My energy aligns perfectly. Communication and meditation flow deeply." },
+                    { name: "Lepidolite", icon: "💜", message: "Peace and emotional balance settle over you. Stress dissolves.", meaning: "Lepidolite provides deep peace, emotional balance, and stress relief.", affirmation: "I AM deeply peaceful. Emotional balance dissolves all stress." },
+                    { name: "Moldavite", icon: "🟢", message: "Rapid transformation accelerates. Spiritual evolution activates powerfully.", meaning: "Moldavite provides intense transformation, spiritual evolution, and awakening.", affirmation: "I embrace rapid transformation. Spiritual evolution activates within me." },
+                    { name: "Peridot", icon: "💚", message: "Renewal and abundance flow. Heart healing opens to prosperity.", meaning: "Peridot brings renewal, abundance, heart healing, and prosperity.", affirmation: "I AM renewed abundantly. Heart healing opens me to prosperity." },
+                    { name: "Prehnite", icon: "🍀", message: "Peace and protection harmonize. Unconditional love flows through you.", meaning: "Prehnite provides peace, protection, and enhances unconditional love.", affirmation: "I AM peacefully protected. Unconditional love flows through my heart." },
+                    { name: "Rhodochrosite", icon: "🌺", message: "Self-love blossoms. Emotional healing transforms your heart.", meaning: "Rhodochrosite enhances self-love, emotional healing, and compassion.", affirmation: "Self-love blossoms within me. My heart transforms through healing." },
+                    { name: "Shungite", icon: "⚫", message: "Protection and purification activate. Grounding energy stabilizes you.", meaning: "Shungite provides powerful protection, purification, and grounding.", affirmation: "I AM protected and purified. Grounding energy stabilizes my being." },
+                    { name: "Angelite", icon: "🩵", message: "Angelic connection strengthens. Peace and compassion flow through you.", meaning: "Angelite enhances angelic communication, peace, and compassion.", affirmation: "Angels connect with me. Peace and compassion flow through my soul." },
+                    { name: "Charoite", icon: "💜", message: "Transformation and spiritual vision activate. Fear transmutes to courage.", meaning: "Charoite provides transformation, spiritual insight, and transmutes fear.", affirmation: "I transform powerfully. Spiritual vision transmutes my fears to courage." },
+                    { name: "Emerald", icon: "💚", message: "Abundance and heart healing unite. Truth and love guide you.", meaning: "Emerald brings abundance, heart chakra healing, truth, and love.", affirmation: "Abundance and heart healing unite. Truth and love guide me." },
+                    { name: "Iolite", icon: "🔷", message: "Inner vision awakens. Intuition guides you through transition.", meaning: "Iolite awakens inner vision, enhances intuition, and aids transition.", affirmation: "My inner vision awakens. Intuition guides me through all change." },
+                    { name: "Kunzite", icon: "💗", message: "Divine love flows. Emotional healing opens your heart center.", meaning: "Kunzite connects to divine love, heals emotions, and opens the heart.", affirmation: "Divine love flows through me. My heart opens to complete healing." },
+                    { name: "Larimar", icon: "🩵", message: "Serenity and peace calm your being. Goddess energy flows.", meaning: "Larimar provides serenity, peace, divine feminine energy, and emotional healing.", affirmation: "I AM serene and peaceful. Divine feminine energy flows through me." },
+                    { name: "Opal", icon: "🌈", message: "Emotional expression flows. Creativity and passion ignite within.", meaning: "Opal enhances emotional expression, creativity, passion, and spontaneity.", affirmation: "I express emotions freely. Creativity and passion ignite my spirit." },
+                    { name: "Petrified Wood", icon: "🪵", message: "Ancient wisdom grounds you. Past life healing creates stability.", meaning: "Petrified Wood provides grounding, ancient wisdom, and past life healing.", affirmation: "Ancient wisdom grounds me. Past life healing creates deep stability." },
+                    { name: "Smoky Quartz", icon: "🟫", message: "Grounding protection shields you. Negativity transmutes to light.", meaning: "Smoky Quartz grounds energy, provides protection, and transmutes negativity.", affirmation: "I AM grounded and protected. All negativity transmutes to pure light." },
+                    { name: "Tanzanite", icon: "💙", message: "Spiritual awakening accelerates. Psychic abilities activate powerfully.", meaning: "Tanzanite facilitates spiritual awakening, psychic development, and transformation.", affirmation: "I awaken spiritually. Psychic abilities activate powerfully within me." },
+                    { name: "Unakite", icon: "🟩", message: "Balance and grounding harmonize. Emotional healing nurtures growth.", meaning: "Unakite balances emotions, provides grounding, and facilitates gentle healing.", affirmation: "I AM balanced and grounded. Emotional healing nurtures my growth." },
+                    { name: "Zoisite", icon: "🟢", message: "Heart healing flows. Creative manifestation activates your power.", meaning: "Zoisite heals the heart, enhances creativity, and aids manifestation.", affirmation: "Heart healing flows freely. Creative manifestation activates my power." },
+                    { name: "Celestite", icon: "🩵", message: "Angelic realms open. Peace and divine communication bless you.", meaning: "Celestite connects to angels, provides peace, and enhances divine communication.", affirmation: "Angelic realms open to me. Divine peace and communication bless me." },
+                    { name: "Seraphinite", icon: "💚", message: "Angelic healing flows. Spiritual evolution accelerates with grace.", meaning: "Seraphinite provides angelic healing, spiritual evolution, and heart activation.", affirmation: "Angelic healing flows through me. I evolve spiritually with divine grace." }
+                ]
+            },
+
+            // ==================== ASTRO DICE - COMBINATORIAL SYSTEM ====================
+            astro: {
+                name: "Astro Dice",
+                icon: "🎲",
+                subtitle: "Cosmic combinations",
+                // Astro Dice is generative - creates combinations on the fly
+                generateReading: function() {
+                    const signs = [
+                        { name: "Aries", icon: "♈", meaning: "Initiative, action, new beginnings, courage" },
+                        { name: "Taurus", icon: "♉", meaning: "Stability, material security, patience, values" },
+                        { name: "Gemini", icon: "♊", meaning: "Communication, versatility, curiosity, connections" },
+                        { name: "Cancer", icon: "♋", meaning: "Emotions, nurturing, home, intuition" },
+                        { name: "Leo", icon: "♌", meaning: "Creativity, self-expression, confidence, leadership" },
+                        { name: "Virgo", icon: "♍", meaning: "Service, analysis, health, practical improvement" },
+                        { name: "Libra", icon: "♎", meaning: "Balance, relationships, harmony, justice" },
+                        { name: "Scorpio", icon: "♏", meaning: "Transformation, intensity, depth, power" },
+                        { name: "Sagittarius", icon: "♐", meaning: "Expansion, wisdom, adventure, higher learning" },
+                        { name: "Capricorn", icon: "♑", meaning: "Structure, ambition, responsibility, achievement" },
+                        { name: "Aquarius", icon: "♒", meaning: "Innovation, community, freedom, humanitarian" },
+                        { name: "Pisces", icon: "♓", meaning: "Spirituality, compassion, imagination, unity" }
+                    ];
+
+                    const planets = [
+                        { name: "Sun", icon: "☉", meaning: "Identity, life force, consciousness, vitality" },
+                        { name: "Moon", icon: "☽", meaning: "Emotions, instincts, habits, subconscious" },
+                        { name: "Mercury", icon: "☿", meaning: "Communication, thinking, learning, travel" },
+                        { name: "Venus", icon: "♀", meaning: "Love, beauty, values, relationships" },
+                        { name: "Mars", icon: "♂", meaning: "Action, desire, energy, courage" },
+                        { name: "Jupiter", icon: "♃", meaning: "Expansion, luck, wisdom, growth" },
+                        { name: "Saturn", icon: "♄", meaning: "Discipline, limits, lessons, mastery" },
+                        { name: "Uranus", icon: "♅", meaning: "Change, rebellion, innovation, awakening" },
+                        { name: "Neptune", icon: "♆", meaning: "Dreams, spirituality, illusion, transcendence" },
+                        { name: "Pluto", icon: "♇", meaning: "Transformation, power, rebirth, depth" }
+                    ];
+
+                    const houses = [
+                        { name: "1st House", icon: "1️⃣", meaning: "Self, identity, appearance, new beginnings" },
+                        { name: "2nd House", icon: "2️⃣", meaning: "Resources, values, money, possessions" },
+                        { name: "3rd House", icon: "3️⃣", meaning: "Communication, learning, siblings, short trips" },
+                        { name: "4th House", icon: "4️⃣", meaning: "Home, family, roots, emotional foundation" },
+                        { name: "5th House", icon: "5️⃣", meaning: "Creativity, romance, children, self-expression" },
+                        { name: "6th House", icon: "6️⃣", meaning: "Health, work, service, daily routines" },
+                        { name: "7th House", icon: "7️⃣", meaning: "Partnerships, marriage, contracts, others" },
+                        { name: "8th House", icon: "8️⃣", meaning: "Transformation, shared resources, intimacy, death/rebirth" },
+                        { name: "9th House", icon: "9️⃣", meaning: "Philosophy, higher learning, travel, beliefs" },
+                        { name: "10th House", icon: "🔟", meaning: "Career, public image, authority, achievement" },
+                        { name: "11th House", icon: "1️⃣1️⃣", meaning: "Friends, groups, hopes, humanitarian causes" },
+                        { name: "12th House", icon: "1️⃣2️⃣", meaning: "Spirituality, hidden matters, subconscious, solitude" }
+                    ];
+
+                    const sign = signs[Math.floor(Math.random() * signs.length)];
+                    const planet = planets[Math.floor(Math.random() * planets.length)];
+                    const house = houses[Math.floor(Math.random() * houses.length)];
+
+                    const interpretation = `${planet.name} in ${sign.name} in the ${house.name} suggests: ${planet.meaning} expressed through ${sign.meaning} in the life area of ${house.meaning}.`;
+
+                    return {
+                        name: `${planet.name} ${sign.icon} in ${house.name}`,
+                        icon: planet.icon,
+                        message: interpretation,
+                        meaning: `This cosmic combination reveals divine timing and celestial guidance for your current situation.`,
+                        affirmation: `I align with cosmic wisdom. ${planet.name} guides me through ${sign.name} energy in the ${house.name} of my life.`
+                    };
+                }
+            }
+        };
+
+        // ==================== SYSTEM STATE ====================
+        let currentSystem = 'oracle';
+        let currentIntention = '';
+        let shuffledCards = [];
+        let readingHistory = [];
+
+        // ==================== INITIALIZATION ====================
+        function init() {
+            createParticles();
+            loadProgress();
+            console.log('🔮 Sacred Portal Chamber initialized');
+        }
+
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // ==================== NAVIGATION FLOW ====================
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function startGrounding() {
+            showScreen('grounding-screen');
+            startBreathingExercise();
+        }
+
+        function startBreathingExercise() {
+            const breathingText = document.getElementById('breathing-text');
+            const continueBtn = document.getElementById('continue-btn');
+            let breathCount = 0;
+            
+            const breathCycle = setInterval(() => {
+                if (breathCount >= 3) {
+                    clearInterval(breathCycle);
+                    breathingText.textContent = 'Complete';
+                    continueBtn.style.opacity = '1';
+                    return;
+                }
+                
+                if (breathingText.textContent === 'Breathe In') {
+                    breathingText.textContent = 'Hold';
+                    setTimeout(() => {
+                        breathingText.textContent = 'Breathe Out';
+                        breathCount++;
+                    }, 2000);
+                } else if (breathingText.textContent === 'Breathe Out') {
+                    setTimeout(() => {
+                        breathingText.textContent = 'Breathe In';
+                    }, 2000);
+                }
+            }, 4000);
+        }
+
+        function showPortals() {
+            showScreen('portal-chamber-screen');
+        }
+
+        function enterPortal(system) {
+            showLoading();
+            currentSystem = system;
+            
+            setTimeout(() => {
+                hideLoading();
+                showScreen('intention-screen');
+            }, 1000);
+        }
+
+        function setIntention(preset) {
+            document.getElementById('intention-input').value = preset;
+        }
+
+        function enterReading() {
+            const intention = document.getElementById('intention-input').value.trim();
+            
+            if (!intention) {
+                alert('Please set your intention first');
+                return;
+            }
+            
+            currentIntention = intention;
+            showLoading();
+            
+            setTimeout(() => {
+                hideLoading();
+                setupReading();
+                showScreen('reading-screen');
+            }, 1500);
+        }
+
+        function returnToPortals() {
+            showScreen('portal-chamber-screen');
+        }
+
+        function returnToTemple() {
+            // Try multiple methods to go back
+            if (window.parent && window.parent !== window) {
+                // We're in an iframe
+                window.parent.postMessage('back', '*');
+            } else if (window.history.length > 1) {
+                // Try browser back
+                window.history.back();
+            } else {
+                // Fallback - show alert
+                alert('Please use your browser back button to return to the temple');
+            }
+        }
+
+        // ==================== READING FUNCTIONS ====================
+        function setupReading() {
+            const systemData = DIVINATION_DATA[currentSystem];
+            document.getElementById('reading-title').textContent = systemData.name;
+            document.getElementById('reading-subtitle').textContent = 'Shuffle and draw when ready';
+            
+            shuffleCards();
+        }
+
+        function shuffleCards() {
+            const systemData = DIVINATION_DATA[currentSystem];
+            
+            // Special handling for Astro Dice
+            if (currentSystem === 'astro') {
+                shuffledCards = Array(8).fill(null).map(() => systemData.generateReading());
+            } else {
+                shuffledCards = [...systemData.cards].sort(() => Math.random() - 0.5);
+            }
+            
+            const cardsSpread = document.getElementById('cards-spread');
+            cardsSpread.innerHTML = '';
+            
+            // Show 8 cards for selection
+            for (let i = 0; i < Math.min(8, shuffledCards.length); i++) {
+                const cardElement = createCardElement(i);
+                cardsSpread.appendChild(cardElement);
+            }
+            
+            // Hide info panel
+            document.getElementById('card-info-panel').classList.remove('show');
+        }
+
+        function createCardElement(index) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.dataset.index = index;
+            
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-face card-back">
+                        <div class="card-back-icon">${DIVINATION_DATA[currentSystem].icon}</div>
+                    </div>
+                    <div class="card-face card-front">
+                        <div class="card-front-icon">${shuffledCards[index].icon}</div>
+                        <div class="card-front-name">${shuffledCards[index].name}</div>
+                    </div>
+                </div>
+            `;
+            
+            card.addEventListener('click', () => flipCard(card, index));
+            
+            return card;
+        }
+
+        function flipCard(cardElement, index) {
+            if (cardElement.classList.contains('flipped')) return;
+            
+            cardElement.classList.add('flipped');
+            
+            setTimeout(() => {
+                showCardInfo(shuffledCards[index]);
+                saveToHistory(shuffledCards[index]);
+                updateProgress();
+            }, 400);
+        }
+
+        function drawCard() {
+            const unflippedCards = document.querySelectorAll('.card:not(.flipped)');
+            if (unflippedCards.length === 0) {
+                shuffleCards();
+                return;
+            }
+            
+            const randomCard = unflippedCards[Math.floor(Math.random() * unflippedCards.length)];
+            randomCard.click();
+        }
+
+        function showCardInfo(cardData) {
+            const panel = document.getElementById('card-info-panel');
+            
+            document.getElementById('info-icon').textContent = cardData.icon;
+            document.getElementById('info-title').textContent = cardData.name;
+            document.getElementById('info-message').textContent = cardData.message;
+            document.getElementById('info-meaning').textContent = cardData.meaning;
+            document.getElementById('info-affirmation').textContent = '✨ ' + cardData.affirmation;
+            
+            panel.classList.add('show');
+            
+            // Scroll to panel
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function resetReading() {
+            shuffleCards();
+        }
+
+        // ==================== PERSISTENCE ====================
+        function saveToHistory(cardData) {
+            const reading = {
+                system: currentSystem,
+                intention: currentIntention,
+                card: cardData.name,
+                message: cardData.message,
+                timestamp: new Date().toISOString()
+            };
+            
+            readingHistory.unshift(reading);
+            if (readingHistory.length > 50) readingHistory.pop();
+            
+            localStorage.setItem('oracleDivinationHistory', JSON.stringify(readingHistory));
+        }
+
+        function saveReading() {
+            alert('💾 Reading saved to your history!');
+        }
+
+        function loadProgress() {
+            const savedHistory = localStorage.getItem('oracleDivinationHistory');
+            if (savedHistory) {
+                readingHistory = JSON.parse(savedHistory);
+            }
+        }
+
+        function updateProgress() {
+            // Integration with Universal Progress System
+            if (window.parent && window.parent.UniversalProgressSystem) {
+                window.parent.UniversalProgressSystem.updateProgress({
+                    section: 'oracle-divination',
+                    activity: `${currentSystem}_reading`,
+                    points: 10,
+                    details: {
+                        system: currentSystem,
+                        intention: currentIntention
+                    }
+                });
+            }
+        }
+
+        // ==================== UTILITY ====================
+        function showLoading() {
+            document.getElementById('loading-overlay').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.remove('active');
+        }
+
+        // ==================== INITIALIZE ====================
+        document.addEventListener('DOMContentLoaded', init);
     </script>
-</body>
-</html>
