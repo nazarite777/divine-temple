@@ -77,6 +77,7 @@ const ADMIN_CREDENTIALS = {
     username: 'nazir23',
     password: 'Nazir777',
     email: 'nazir@edenconsciousness.com',
+    altEmail: 'nazir@edenconsiousness.com', // Alternative spelling
     displayName: 'Nazir El - Creator',
     role: 'admin'
 };
@@ -86,9 +87,28 @@ const FirebaseAuth = {
     // Admin authentication bypass for creator
     async authenticateAdmin(usernameOrEmail, password) {
         try {
-            // Check admin credentials first
-            if ((usernameOrEmail === ADMIN_CREDENTIALS.username || usernameOrEmail === ADMIN_CREDENTIALS.email) 
-                && password === ADMIN_CREDENTIALS.password) {
+            console.log('🔱 Checking admin credentials...');
+            console.log('📧 Input username/email:', usernameOrEmail);
+            console.log('🔑 Input password length:', password?.length);
+            console.log('✅ Expected username:', ADMIN_CREDENTIALS.username);
+            console.log('✅ Expected email:', ADMIN_CREDENTIALS.email);
+            console.log('✅ Expected alt email:', ADMIN_CREDENTIALS.altEmail);
+            
+            // Check admin credentials with multiple email options
+            const isValidUser = (
+                usernameOrEmail === ADMIN_CREDENTIALS.username ||
+                usernameOrEmail === ADMIN_CREDENTIALS.email ||
+                usernameOrEmail === ADMIN_CREDENTIALS.altEmail ||
+                usernameOrEmail.toLowerCase() === 'nazir23' ||
+                usernameOrEmail.toLowerCase().includes('nazir@eden')
+            );
+            
+            const isValidPassword = password === ADMIN_CREDENTIALS.password;
+            
+            console.log('🔍 User check result:', isValidUser);
+            console.log('🔍 Password check result:', isValidPassword);
+            
+            if (isValidUser && isValidPassword) {
                 
                 // Create admin session
                 const adminUser = {

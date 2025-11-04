@@ -1145,9 +1145,16 @@
             submitBtn.disabled = true;
 
             try {
+                console.log('🔥 Firebase Config available:', !!window.FirebaseConfig);
+                console.log('🔑 Admin auth function available:', !!(window.FirebaseConfig && FirebaseConfig.auth.authenticateAdmin));
+                
                 // ⭐ FIRST: Check for ADMIN credentials (nazir23 / Nazir777)
+                console.log('🔱 Attempting admin authentication...');
+                
                 if (window.FirebaseConfig && FirebaseConfig.auth.authenticateAdmin) {
                     const adminResult = await FirebaseConfig.auth.authenticateAdmin(email, password);
+                    
+                    console.log('🔍 Admin auth result:', adminResult);
                     
                     if (adminResult.success) {
                         console.log('🔱 ADMIN AUTHENTICATION SUCCESSFUL:', adminResult.user.displayName);
@@ -1182,10 +1189,15 @@
                         }, 2000);
                         
                         return; // Exit function - admin authenticated
+                    } else {
+                        console.log('❌ Admin auth failed:', adminResult.error);
                     }
+                } else {
+                    console.log('⚠️ Firebase or admin auth not available');
                 }
                 
                 // SECOND: Regular Firebase authentication
+                console.log('🔥 Attempting Firebase authentication...');
                 if (!window.FirebaseConfig) {
                     throw new Error('Firebase not initialized');
                 }
@@ -1854,6 +1866,37 @@
             showDashboard: showDashboard,
             showSection: showSection,
             logout: logout,
+            
+            // Debug admin credentials
+            testAdminLogin: async function() {
+                console.log('🔱 Testing admin login...');
+                if (window.FirebaseConfig && FirebaseConfig.auth.authenticateAdmin) {
+                    const result = await FirebaseConfig.auth.authenticateAdmin('nazir23', 'Nazir777');
+                    console.log('Result:', result);
+                    return result;
+                } else {
+                    console.log('❌ Firebase config not available');
+                    return false;
+                }
+            },
+            
+            // Force admin login
+            forceAdminLogin: function() {
+                console.log('🔱 Force admin login...');
+                sessionStorage.setItem('divineAuth', 'true');
+                sessionStorage.setItem('adminAuth', 'true');
+                sessionStorage.setItem('memberData', JSON.stringify({
+                    uid: 'admin_nazir_creator',
+                    email: 'nazir@edenconsciousness.com',
+                    displayName: 'Nazir El - Creator',
+                    role: 'admin',
+                    isAdmin: true
+                }));
+                
+                hideAuthOverlay();
+                showDashboard();
+                console.log('✅ Admin logged in (forced)');
+            },
             
             // Debug info
             getState: function() {
