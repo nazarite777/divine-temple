@@ -72,8 +72,68 @@ function onAuthStateChanged(callback) {
     return auth.onAuthStateChanged(callback);
 }
 
+// Admin credentials for creator access
+const ADMIN_CREDENTIALS = {
+    username: 'nazir23',
+    password: 'Nazir777',
+    email: 'nazir@edenconsciousness.com',
+    displayName: 'Nazir El - Creator',
+    role: 'admin'
+};
+
 // User management functions
 const FirebaseAuth = {
+    // Admin authentication bypass for creator
+    async authenticateAdmin(usernameOrEmail, password) {
+        try {
+            // Check admin credentials first
+            if ((usernameOrEmail === ADMIN_CREDENTIALS.username || usernameOrEmail === ADMIN_CREDENTIALS.email) 
+                && password === ADMIN_CREDENTIALS.password) {
+                
+                // Create admin session
+                const adminUser = {
+                    uid: 'admin_nazir_creator',
+                    email: ADMIN_CREDENTIALS.email,
+                    displayName: ADMIN_CREDENTIALS.displayName,
+                    role: 'admin',
+                    isAdmin: true,
+                    createdAt: new Date(),
+                    lastLogin: new Date(),
+                    permissions: ['all']
+                };
+                
+                // Store admin session locally
+                localStorage.setItem('divineAuth', 'true');
+                localStorage.setItem('adminAuth', 'true');
+                localStorage.setItem('currentUser', JSON.stringify(adminUser));
+                sessionStorage.setItem('divineAuth', 'true');
+                sessionStorage.setItem('memberData', JSON.stringify(adminUser));
+                
+                console.log('🔱 ADMIN ACCESS GRANTED:', ADMIN_CREDENTIALS.displayName);
+                return { success: true, user: adminUser, isAdmin: true };
+            }
+            
+            return { success: false, error: 'Invalid admin credentials' };
+        } catch (error) {
+            console.error('❌ Admin authentication failed:', error);
+            return { success: false, error: error.message };
+        }
+    },
+
+    // Check if current user is admin
+    isAdmin() {
+        return localStorage.getItem('adminAuth') === 'true';
+    },
+
+    // Get current user (admin or Firebase)
+    getCurrentUser() {
+        const adminAuth = localStorage.getItem('adminAuth') === 'true';
+        if (adminAuth) {
+            return JSON.parse(localStorage.getItem('currentUser') || '{}');
+        }
+        return auth.currentUser;
+    },
+
     // Sign up new user
     async createUser(email, password, displayName) {
         try {

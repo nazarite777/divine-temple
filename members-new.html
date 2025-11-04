@@ -837,6 +837,21 @@
                         <span class="feature-tag">Meditation Library</span>
                     </div>
                 </div>
+
+                <!-- ADMIN PANEL (Only visible to admin) -->
+                <div class="nav-card admin-only" onclick="showAdminPanel()" style="display: none; background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1)); border: 2px solid #F59E0B; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);">
+                    <span class="nav-icon">🔱</span>
+                    <h4 class="nav-title" style="color: #F59E0B;">Admin Control Panel</h4>
+                    <p class="nav-description">
+                        Creator dashboard for managing users, content, analytics, and system administration.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag" style="background: #F59E0B; color: white;">User Management</span>
+                        <span class="feature-tag" style="background: #F59E0B; color: white;">Analytics</span>
+                        <span class="feature-tag" style="background: #F59E0B; color: white;">Content Mod</span>
+                        <span class="feature-tag" style="background: #F59E0B; color: white;">System Status</span>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
@@ -1109,7 +1124,7 @@
 
         async function authenticateUser(event) {
             event.preventDefault();
-            console.log('🔐 Attempting Firebase authentication...');
+            console.log('🔐 Attempting authentication...');
 
             const email = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
@@ -1117,7 +1132,7 @@
             const successDiv = document.getElementById('auth-success');
             const submitBtn = event.target.querySelector('button[type="submit"]');
 
-            console.log('� Email entered:', email);
+            console.log('📧 Email/Username entered:', email);
             console.log('🔑 Password length:', password.length);
 
             // Clear previous messages
@@ -1130,7 +1145,47 @@
             submitBtn.disabled = true;
 
             try {
-                // Wait for Firebase to be initialized
+                // ⭐ FIRST: Check for ADMIN credentials (nazir23 / Nazir777)
+                if (window.FirebaseConfig && FirebaseConfig.auth.authenticateAdmin) {
+                    const adminResult = await FirebaseConfig.auth.authenticateAdmin(email, password);
+                    
+                    if (adminResult.success) {
+                        console.log('🔱 ADMIN AUTHENTICATION SUCCESSFUL:', adminResult.user.displayName);
+                        
+                        // Show admin success message
+                        successDiv.innerHTML = `
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔱</div>
+                                <div style="font-weight: 600; color: var(--accent-gold);">ADMIN ACCESS GRANTED</div>
+                                <div style="font-size: 0.9rem; opacity: 0.8;">Welcome back, Creator Nazir El</div>
+                            </div>
+                        `;
+                        successDiv.classList.add('show');
+                        
+                        // Track admin login
+                        if (FirebaseConfig.analytics) {
+                            FirebaseConfig.analytics.trackEvent('admin_login_success', {
+                                user_role: 'creator',
+                                timestamp: new Date().toISOString()
+                            });
+                        }
+                        
+                        // Store admin session
+                        sessionStorage.setItem('divineAuth', 'true');
+                        sessionStorage.setItem('adminAuth', 'true');
+                        sessionStorage.setItem('memberData', JSON.stringify(adminResult.user));
+                        
+                        // Show dashboard after brief delay
+                        setTimeout(() => {
+                            hideAuthOverlay();
+                            showDashboard();
+                        }, 2000);
+                        
+                        return; // Exit function - admin authenticated
+                    }
+                }
+                
+                // SECOND: Regular Firebase authentication
                 if (!window.FirebaseConfig) {
                     throw new Error('Firebase not initialized');
                 }
@@ -1221,16 +1276,30 @@
         async function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 try {
-                    // Firebase sign out
-                    if (window.FirebaseConfig && FirebaseConfig.auth.isAuthenticated()) {
-                        await FirebaseConfig.auth.signOut();
-                        FirebaseConfig.analytics.trackEvent('logout');
+                    const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
+                    
+                    if (isAdmin) {
+                        console.log('🔱 Admin logout');
+                        // Track admin logout
+                        if (window.FirebaseConfig && FirebaseConfig.analytics) {
+                            FirebaseConfig.analytics.trackEvent('admin_logout');
+                        }
+                    } else {
+                        // Firebase sign out for regular users
+                        if (window.FirebaseConfig && FirebaseConfig.auth.isAuthenticated()) {
+                            await FirebaseConfig.auth.signOut();
+                            FirebaseConfig.analytics.trackEvent('logout');
+                        }
                     }
                     
-                    // Clear local storage
+                    // Clear ALL storage
                     sessionStorage.removeItem('divineAuth');
+                    sessionStorage.removeItem('adminAuth');
                     sessionStorage.removeItem('memberData');
                     sessionStorage.removeItem('firebaseUser');
+                    localStorage.removeItem('adminAuth');
+                    localStorage.removeItem('currentUser');
+                    localStorage.removeItem('divineAuth');
                     
                     console.log('✅ Logout successful');
                     showAuthOverlay();
@@ -1238,6 +1307,7 @@
                     console.error('❌ Logout failed:', error);
                     // Fallback - clear local storage anyway
                     sessionStorage.clear();
+                    localStorage.clear();
                     showAuthOverlay();
                 }
             }
@@ -1355,16 +1425,36 @@
                 console.log('✅ Dashboard activated');
             }
             
-            // Show and update member badge
+            // Show and update member badge with admin status
             const memberBadge = document.getElementById('member-badge');
             const memberDisplay = document.getElementById('member-display');
+            const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
             
             if (memberBadge) {
                 memberBadge.style.display = 'flex';
+                
+                // Add admin styling if admin
+                if (isAdmin) {
+                    memberBadge.style.background = 'linear-gradient(135deg, #F59E0B, #FBBF24)';
+                    memberBadge.style.border = '2px solid #F59E0B';
+                    memberBadge.style.boxShadow = '0 0 20px rgba(245, 158, 11, 0.4)';
+                }
             }
             
             if (memberDisplay && memberData) {
-                memberDisplay.textContent = memberData.name || memberData.username;
+                const displayName = isAdmin ? 
+                    `🔱 ${memberData.displayName || 'Nazir El - Creator'}` : 
+                    (memberData.name || memberData.username || memberData.displayName);
+                    
+                memberDisplay.textContent = displayName;
+                
+                // Add admin title if admin
+                if (isAdmin) {
+                    memberDisplay.innerHTML = `
+                        <div style="font-weight: 600; color: #0A0E27;">${memberData.displayName || 'Nazir El - Creator'}</div>
+                        <div style="font-size: 0.8rem; opacity: 0.8; color: #0A0E27;">🔱 DIVINE TEMPLE CREATOR</div>
+                    `;
+                }
             }
             
             // Hide section container if visible
@@ -1372,6 +1462,15 @@
             if (sectionContainer) {
                 sectionContainer.classList.remove('active');
                 sectionContainer.style.display = 'none';
+            }
+            
+            // Show admin elements if admin
+            if (sessionStorage.getItem('adminAuth') === 'true') {
+                const adminCard = document.querySelector('.admin-only');
+                if (adminCard) {
+                    adminCard.style.display = 'block';
+                    console.log('🔱 Admin navigation card shown');
+                }
             }
             
             // Scroll to top
@@ -1437,6 +1536,167 @@
                 console.log('🔄 Loading section URL:', SECTION_MAP[sectionId]);
                 sectionFrame.src = SECTION_MAP[sectionId];
             }
+        }
+
+        // ========================================
+        // ADMIN FUNCTIONS
+        // ========================================
+
+        function showAdminPanel() {
+            console.log('🔱 Opening Admin Control Panel...');
+            
+            // Verify admin status
+            const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
+            if (!isAdmin) {
+                alert('❌ Access denied. Admin privileges required.');
+                return;
+            }
+            
+            // Hide dashboard
+            const dashboard = document.getElementById('dashboard');
+            if (dashboard) {
+                dashboard.classList.remove('active');
+                dashboard.style.display = 'none';
+            }
+            
+            // Create admin panel overlay
+            const adminPanel = document.createElement('div');
+            adminPanel.id = 'admin-panel';
+            adminPanel.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, #0A0E27, #1a1f3a);
+                z-index: 10000;
+                padding: 2rem;
+                overflow-y: auto;
+                color: white;
+            `;
+            
+            adminPanel.innerHTML = `
+                <div style="max-width: 1200px; margin: 0 auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #F59E0B;">
+                        <div>
+                            <h1 style="color: #F59E0B; font-size: 2.5rem; margin: 0; font-family: 'Playfair Display', serif;">🔱 Admin Control Panel</h1>
+                            <p style="color: #A1A1AA; margin: 0.5rem 0 0 0;">Divine Temple Creator Dashboard</p>
+                        </div>
+                        <button onclick="closeAdminPanel()" style="background: #F59E0B; color: #0A0E27; border: none; padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 1rem;">
+                            ← Return to Temple
+                        </button>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                        <!-- User Management -->
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 2rem; border: 1px solid rgba(245, 158, 11, 0.3);">
+                            <h3 style="color: #F59E0B; margin-bottom: 1rem;">👥 User Management</h3>
+                            <p style="color: #A1A1AA; margin-bottom: 1.5rem;">Monitor and manage user accounts</p>
+                            <button onclick="viewUsers()" style="background: #8B5CF6; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; width: 100%;">
+                                View All Users
+                            </button>
+                        </div>
+                        
+                        <!-- Analytics -->
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 2rem; border: 1px solid rgba(245, 158, 11, 0.3);">
+                            <h3 style="color: #F59E0B; margin-bottom: 1rem;">📊 Analytics Dashboard</h3>
+                            <p style="color: #A1A1AA; margin-bottom: 1.5rem;">View site statistics and user behavior</p>
+                            <button onclick="viewAnalytics()" style="background: #10B981; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; width: 100%;">
+                                View Analytics
+                            </button>
+                        </div>
+                        
+                        <!-- Content Moderation -->
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 2rem; border: 1px solid rgba(245, 158, 11, 0.3);">
+                            <h3 style="color: #F59E0B; margin-bottom: 1rem;">🛡️ Content Moderation</h3>
+                            <p style="color: #A1A1AA; margin-bottom: 1.5rem;">Review testimonials and support tickets</p>
+                            <button onclick="moderateContent()" style="background: #F59E0B; color: #0A0E27; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; width: 100%;">
+                                Review Content
+                            </button>
+                        </div>
+                        
+                        <!-- System Status -->
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 2rem; border: 1px solid rgba(245, 158, 11, 0.3);">
+                            <h3 style="color: #F59E0B; margin-bottom: 1rem;">⚙️ System Status</h3>
+                            <p style="color: #A1A1AA; margin-bottom: 1.5rem;">Firebase and system health</p>
+                            <button onclick="checkSystemStatus()" style="background: #3B82F6; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; width: 100%;">
+                                Check Status
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="admin-content" style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 2rem; border: 1px solid rgba(245, 158, 11, 0.3); min-height: 400px;">
+                        <h3 style="color: #F59E0B; margin-bottom: 1rem;">🔱 Welcome, Creator Nazir El</h3>
+                        <p style="color: #A1A1AA;">Select an option above to manage your Divine Temple.</p>
+                        <div style="margin-top: 2rem; padding: 1rem; background: rgba(245, 158, 11, 0.1); border-radius: 10px; border-left: 4px solid #F59E0B;">
+                            <h4 style="color: #F59E0B; margin: 0 0 0.5rem 0;">Admin Credentials Active</h4>
+                            <p style="margin: 0; color: #A1A1AA;">Username: nazir23 | Full Access Granted</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(adminPanel);
+            console.log('🔱 Admin panel opened');
+        }
+
+        function closeAdminPanel() {
+            const adminPanel = document.getElementById('admin-panel');
+            if (adminPanel) {
+                adminPanel.remove();
+            }
+            returnToDashboard();
+        }
+
+        function viewUsers() {
+            const content = document.getElementById('admin-content');
+            content.innerHTML = `
+                <h3 style="color: #F59E0B; margin-bottom: 1rem;">👥 User Management</h3>
+                <p style="color: #A1A1AA;">Firebase Authentication Users</p>
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(139, 92, 246, 0.1); border-radius: 10px;">
+                    <p style="color: #8B5CF6; margin: 0;">Connected to Firebase project: sacred-community</p>
+                </div>
+            `;
+        }
+
+        function viewAnalytics() {
+            const content = document.getElementById('admin-content');
+            content.innerHTML = `
+                <h3 style="color: #F59E0B; margin-bottom: 1rem;">📊 Analytics Dashboard</h3>
+                <p style="color: #A1A1AA;">Google Analytics and Firebase Analytics</p>
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 10px;">
+                    <p style="color: #10B981; margin: 0;">Analytics ID: G-83D6SSJKMH | Tracking Active</p>
+                </div>
+            `;
+        }
+
+        function moderateContent() {
+            const content = document.getElementById('admin-content');
+            content.innerHTML = `
+                <h3 style="color: #F59E0B; margin-bottom: 1rem;">🛡️ Content Moderation</h3>
+                <p style="color: #A1A1AA;">Review testimonials and support tickets</p>
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(245, 158, 11, 0.1); border-radius: 10px;">
+                    <p style="color: #F59E0B; margin: 0;">All testimonials require admin approval before going live</p>
+                </div>
+            `;
+        }
+
+        function checkSystemStatus() {
+            const content = document.getElementById('admin-content');
+            const firebaseStatus = window.FirebaseConfig ? '🟢 Online' : '🔴 Offline';
+            content.innerHTML = `
+                <h3 style="color: #F59E0B; margin-bottom: 1rem;">⚙️ System Status</h3>
+                <div style="display: grid; gap: 1rem; margin-top: 1rem;">
+                    <div style="padding: 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                        <h4 style="color: #3B82F6; margin: 0 0 0.5rem 0;">🔥 Firebase Status</h4>
+                        <p style="margin: 0; color: #A1A1AA;">Connection: ${firebaseStatus}</p>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                        <h4 style="color: #3B82F6; margin: 0 0 0.5rem 0;">🔐 Authentication</h4>
+                        <p style="margin: 0; color: #A1A1AA;">Admin Session: 🟢 Active (nazir23)</p>
+                    </div>
+                </div>
+            `;
         }
 
         function returnToDashboard() {
