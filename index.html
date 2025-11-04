@@ -37,6 +37,13 @@
         window.edenMetrics = { start: window.performanceStart };
     </script>
     
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    <script src="js/firebase-config.js" defer></script>
+    
     <style>
         :root {
             --bg-primary: #0A0E27;
@@ -1212,6 +1219,40 @@
                         console.log('Performance Observer not fully supported');
                     }
                 }
+            }
+        });
+        
+        // Firebase Analytics Integration
+        window.addEventListener('load', () => {
+            if (window.FirebaseConfig) {
+                // Track page view
+                FirebaseConfig.analytics.trackPageView('home', 'Eden Consciousness - Home');
+                
+                // Track user engagement
+                setTimeout(() => {
+                    FirebaseConfig.analytics.trackEvent('page_engagement', {
+                        engagement_time: 30,
+                        page_name: 'home'
+                    });
+                }, 30000); // Track after 30 seconds
+                
+                // Track scroll depth
+                let maxScroll = 0;
+                window.addEventListener('scroll', () => {
+                    const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+                    if (scrollPercent > maxScroll) {
+                        maxScroll = scrollPercent;
+                        if (maxScroll >= 25 && maxScroll < 50) {
+                            FirebaseConfig.analytics.trackEvent('scroll_depth', { depth: '25%' });
+                        } else if (maxScroll >= 50 && maxScroll < 75) {
+                            FirebaseConfig.analytics.trackEvent('scroll_depth', { depth: '50%' });
+                        } else if (maxScroll >= 75 && maxScroll < 90) {
+                            FirebaseConfig.analytics.trackEvent('scroll_depth', { depth: '75%' });
+                        } else if (maxScroll >= 90) {
+                            FirebaseConfig.analytics.trackEvent('scroll_depth', { depth: '90%' });
+                        }
+                    }
+                });
             }
         });
         

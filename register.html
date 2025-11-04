@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Join the Divine Temple - Sacred Registration</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
     <style>
         :root {
             --primary-purple: #4f46e5;
@@ -663,7 +670,7 @@
             }, 5000);
         }
 
-        // Form submission
+        // Form submission with Firebase
         document.getElementById('registration-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -674,41 +681,94 @@
             const registerBtn = document.getElementById('register-btn');
             registerBtn.disabled = true;
             registerBtn.classList.add('loading');
+            
+            const originalText = registerBtn.textContent;
+            registerBtn.textContent = '🔥 Creating Sacred Account...';
 
             try {
                 const formData = new FormData(e.target);
                 const userData = Object.fromEntries(formData.entries());
 
-                // Add newsletter preference
-                userData.newsletter_signup = document.getElementById('newsletter-agreement').checked;
+                // Validate required fields
+                if (!userData.email || !userData.password || !userData.displayName) {
+                    throw new Error('Please fill in all required fields');
+                }
 
-                const response = await fetch('/api/auth.php?action=register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(userData)
-                });
+                // Check password confirmation
+                if (userData.password !== userData.confirmPassword) {
+                    throw new Error('Passwords do not match');
+                }
 
-                const result = await response.json();
+                // Wait for Firebase to be initialized
+                if (!window.FirebaseConfig) {
+                    throw new Error('Sacred services not yet ready. Please try again in a moment.');
+                }
+
+                console.log('🔥 Creating Firebase user...');
+                
+                // Create Firebase user
+                const result = await FirebaseConfig.auth.createUser(
+                    userData.email,
+                    userData.password,
+                    userData.displayName
+                );
 
                 if (result.success) {
-                    showMessage(result.message, 'success');
+                    console.log('✅ Firebase user created successfully');
                     
-                    // Show email verification notice
-                    setTimeout(() => {
-                        showEmailVerificationModal(userData.email);
-                    }, 2000);
+                    // Track successful registration
+                    FirebaseConfig.analytics.trackEvent('sign_up', {
+                        method: 'email',
+                        user_id: result.user.uid
+                    });
+
+                    showMessage('🎉 Sacred account created successfully! Welcome to the Divine Temple.', 'success');
+                    
+                    // Show email verification notice if user email not verified
+                    if (!result.user.emailVerified) {
+                        setTimeout(() => {
+                            showEmailVerificationModal(userData.email);
+                        }, 2000);
+                    } else {
+                        // Redirect to member portal after successful registration
+                        setTimeout(() => {
+                            window.location.href = 'members-new.html';
+                        }, 3000);
+                    }
                 } else {
-                    showMessage(result.message, 'error');
+                    throw new Error(result.error || 'Registration failed');
                 }
 
             } catch (error) {
                 console.error('Registration error:', error);
-                showMessage('A sacred disturbance occurred. Please try again.', 'error');
+                
+                let errorMessage = '⚠️ Sacred registration encountered an issue: ';
+                
+                // Handle specific Firebase auth errors
+                if (error.message.includes('email-already-in-use')) {
+                    errorMessage += 'An account with this email already exists. Please try signing in instead.';
+                } else if (error.message.includes('weak-password')) {
+                    errorMessage += 'Please choose a stronger password (at least 6 characters).';
+                } else if (error.message.includes('invalid-email')) {
+                    errorMessage += 'Please enter a valid email address.';
+                } else {
+                    errorMessage += error.message || 'Please try again in a moment.';
+                }
+                
+                showMessage(errorMessage, 'error');
+                
+                // Track failed registration
+                if (window.FirebaseConfig) {
+                    FirebaseConfig.analytics.trackEvent('sign_up_failed', {
+                        error_type: error.code || 'unknown',
+                        method: 'email'
+                    });
+                }
+                
             } finally {
                 registerBtn.disabled = false;
                 registerBtn.classList.remove('loading');
+                registerBtn.textContent = originalText;
             }
         });
 

@@ -6,6 +6,13 @@
     <title>Divine Temple - Sacred Members Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    
     <!-- Performance Optimized CSS -->
     <link rel="stylesheet" href="css/performance-optimized.css">
     
@@ -537,8 +544,8 @@
 
             <form id="auth-form" onsubmit="authenticateUser(event)">
                 <div class="input-group">
-                    <label>Username</label>
-                    <input type="text" id="username" required placeholder="Enter username" autocomplete="username">
+                    <label>Sacred Email</label>
+                    <input type="email" id="username" required placeholder="Enter your email" autocomplete="email">
                 </div>
 
                 <div class="input-group">
@@ -862,11 +869,7 @@
         // CONFIGURATION
         // ========================================
         
-        const CREDENTIALS = {
-            username: 'nazir23',
-            password: 'Nazir777'
-        };
-
+        // Section mapping for navigation
         const SECTION_MAP = {
             'oracle-cards': 'sections/oracle-cards.html',
             'sacred-geometry': 'sections/sacred-geometry.html',
@@ -1104,52 +1107,180 @@
             }
         }
 
-        function authenticateUser(event) {
+        async function authenticateUser(event) {
             event.preventDefault();
-            console.log('🔐 Attempting authentication...');
+            console.log('🔐 Attempting Firebase authentication...');
 
-            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const errorDiv = document.getElementById('auth-error');
             const successDiv = document.getElementById('auth-success');
+            const submitBtn = event.target.querySelector('button[type="submit"]');
 
-            console.log('📝 Username entered:', username);
+            console.log('� Email entered:', email);
             console.log('🔑 Password length:', password.length);
 
             // Clear previous messages
             errorDiv.classList.remove('show');
             successDiv.classList.remove('show');
+            
+            // Show loading state
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '⏳ Authenticating...';
+            submitBtn.disabled = true;
 
-            if (username === CREDENTIALS.username && password === CREDENTIALS.password) {
-                console.log('✅ Credentials match!');
+            try {
+                // Wait for Firebase to be initialized
+                if (!window.FirebaseConfig) {
+                    throw new Error('Firebase not initialized');
+                }
                 
-                const memberData = {
-                    username: username,
-                    name: 'Nazir El',
-                    loginTime: new Date().toISOString(),
-                    joinDate: '2024-01-01'
-                };
+                // Attempt Firebase authentication
+                const result = await FirebaseConfig.auth.signIn(email, password);
+                
+                if (result.success) {
+                    console.log('✅ Firebase authentication successful');
+                    
+                    // Get user data from Firestore
+                    const userData = await FirebaseConfig.data.getUserData();
+                    
+                    const memberData = {
+                        uid: result.user.uid,
+                        email: result.user.email,
+                        displayName: result.user.displayName || userData?.displayName || 'Sacred Member',
+                        loginTime: new Date().toISOString(),
+                        membershipLevel: userData?.membershipLevel || 'basic',
+                        joinDate: userData?.createdAt?.toDate?.()?.toISOString() || new Date().toISOString()
+                    };
 
-                // Store authentication
-                sessionStorage.setItem('divineAuth', 'true');
-                sessionStorage.setItem('memberData', JSON.stringify(memberData));
+                    // Store authentication
+                    sessionStorage.setItem('divineAuth', 'true');
+                    sessionStorage.setItem('memberData', JSON.stringify(memberData));
+                    sessionStorage.setItem('firebaseUser', JSON.stringify({
+                        uid: result.user.uid,
+                        email: result.user.email,
+                        displayName: memberData.displayName
+                    }));
 
-                // Show success message
-                successDiv.textContent = '✨ Welcome, Nazir El! ✨';
-                successDiv.classList.add('show');
+                    // Show success message
+                    successDiv.textContent = `✨ Welcome, ${memberData.displayName}! ✨`;
+                    successDiv.classList.add('show');
 
-                console.log('✅ Authentication successful - transitioning to dashboard');
+                    // Track successful login
+                    FirebaseConfig.analytics.trackEvent('login', {
+                        method: 'email',
+                        user_id: result.user.uid
+                    });
 
-                // Redirect to dashboard
-                setTimeout(() => {
-                    showDashboard(memberData);
-                }, 1000);
-            } else {
-                console.log('❌ Authentication failed');
-                console.log('Expected username:', CREDENTIALS.username);
-                console.log('Expected password length:', CREDENTIALS.password.length);
-                errorDiv.textContent = '❌ Invalid credentials. Please try again.';
+                    console.log('✅ Authentication successful - transitioning to dashboard');
+
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        showDashboard(memberData);
+                    }, 1500);
+                    
+                } else {
+                    throw new Error(result.error || 'Authentication failed');
+                }
+                
+            } catch (error) {
+                console.error('❌ Authentication failed:', error);
+                
+                let errorMessage = '❌ Authentication failed. ';
+                
+                // Handle specific Firebase auth errors
+                if (error.message.includes('user-not-found')) {
+                    errorMessage += 'No account found with this email.';
+                } else if (error.message.includes('wrong-password')) {
+                    errorMessage += 'Incorrect password.';
+                } else if (error.message.includes('invalid-email')) {
+                    errorMessage += 'Please enter a valid email address.';
+                } else if (error.message.includes('too-many-requests')) {
+                    errorMessage += 'Too many failed attempts. Please try again later.';
+                } else {
+                    errorMessage += 'Please check your credentials and try again.';
+                }
+                
+                errorDiv.textContent = errorMessage;
                 errorDiv.classList.add('show');
+                
+                // Track failed login attempt
+                if (window.FirebaseConfig) {
+                    FirebaseConfig.analytics.trackEvent('login_failed', {
+                        error_type: error.code || 'unknown',
+                        method: 'email'
+                    });
+                }
+            } finally {
+                // Reset button state
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                try {
+                    // Firebase sign out
+                    if (window.FirebaseConfig && FirebaseConfig.auth.isAuthenticated()) {
+                        await FirebaseConfig.auth.signOut();
+                        FirebaseConfig.analytics.trackEvent('logout');
+                    }
+                    
+                    // Clear local storage
+                    sessionStorage.removeItem('divineAuth');
+                    sessionStorage.removeItem('memberData');
+                    sessionStorage.removeItem('firebaseUser');
+                    
+                    console.log('✅ Logout successful');
+                    showAuthOverlay();
+                } catch (error) {
+                    console.error('❌ Logout failed:', error);
+                    // Fallback - clear local storage anyway
+                    sessionStorage.clear();
+                    showAuthOverlay();
+                }
+            }
+        }
+
+        // Check authentication status on page load
+        async function checkAuthStatus() {
+            if (window.FirebaseConfig) {
+                FirebaseConfig.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        console.log('🔐 User authenticated via Firebase:', user.email);
+                        
+                        // Get user data and show dashboard
+                        const userData = await FirebaseConfig.data.getUserData();
+                        const memberData = {
+                            uid: user.uid,
+                            email: user.email,
+                            displayName: user.displayName || userData?.displayName || 'Sacred Member',
+                            loginTime: new Date().toISOString(),
+                            membershipLevel: userData?.membershipLevel || 'basic',
+                            joinDate: userData?.createdAt?.toDate?.()?.toISOString() || new Date().toISOString()
+                        };
+                        
+                        sessionStorage.setItem('divineAuth', 'true');
+                        sessionStorage.setItem('memberData', JSON.stringify(memberData));
+                        showDashboard(memberData);
+                    } else {
+                        console.log('🔓 No authenticated user');
+                        if (sessionStorage.getItem('divineAuth') === 'true') {
+                            // Clear stale session
+                            sessionStorage.clear();
+                        }
+                        showAuthOverlay();
+                    }
+                });
+            } else {
+                // Fallback to session storage check
+                if (sessionStorage.getItem('divineAuth') === 'true') {
+                    const memberData = JSON.parse(sessionStorage.getItem('memberData') || '{}');
+                    showDashboard(memberData);
+                } else {
+                    showAuthOverlay();
+                }
             }
         }
 
@@ -1411,16 +1542,16 @@
                 console.log('🚀 Performance optimizations applied');
             }
             
-            // Clear any existing session for fresh start
-            sessionStorage.removeItem('divineAuth');
-            sessionStorage.removeItem('memberData');
-            
             // Initialize Universal Progress System
             window.UniversalProgressSystem.init();
             console.log('🎮 Universal Progress System ready');
             
-            // Force initial state - always show auth overlay
-            const authOverlay = document.getElementById('auth-overlay');
+            // Initialize Firebase authentication check
+            setTimeout(() => {
+                checkAuthStatus();
+            }, 1000); // Wait for Firebase to load
+            
+            console.log('🔐 Firebase authentication check initiated');
             const dashboard = document.getElementById('dashboard');
             const memberBadge = document.getElementById('member-badge');
             
