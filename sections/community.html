@@ -5,15 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sacred Community - Divine Temple</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs (CDN - No npm needed!) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
     <style>
         :root {
-            --accent-gold: #d4af37;
-            --accent-purple: #8b5cf6;
-            --accent-blue: #3b82f6;
-            --accent-green: #10b981;
-            --accent-rose: #f43f5e;
+            --primary-gold: #D4AF37;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #3B82F6;
+            --accent-green: #10B981;
+            --accent-rose: #F43F5E;
+            --dark-bg: #0F0F23;
+            --deep-purple: #4C1D95;
             --glass-bg: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #FFFFFF;
             --text-secondary: rgba(255, 255, 255, 0.8);
             --text-muted: rgba(255, 255, 255, 0.6);
             --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.12);
@@ -31,9 +42,8 @@
             background: linear-gradient(135deg, #0a0a1e 0%, #1a1a2e 25%, #16213e 50%, #0f3460 100%);
             min-height: 100vh;
             font-family: 'Inter', sans-serif;
-            color: white;
+            color: var(--text-primary);
             overflow-x: hidden;
-            position: relative;
         }
         
         body::before {
@@ -45,694 +55,133 @@
             height: 100%;
             background: 
                 radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
             pointer-events: none;
             z-index: -1;
         }
         
-        .floating-particles {
+        /* Loading Overlay */
+        .loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: var(--accent-gold);
-            border-radius: 50%;
-            opacity: 0.6;
-            animation: float 8s infinite ease-in-out;
-        }
-        
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0px) rotate(0deg);
-                opacity: 0.6;
-            }
-            50% {
-                transform: translateY(-20px) rotate(180deg);
-                opacity: 0.8;
-            }
-        }
-        
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-            backdrop-filter: blur(20px);
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 25px;
-            color: white;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-bottom: 2.5rem;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 1rem;
-            box-shadow: var(--shadow-soft);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .back-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.6s;
-        }
-        
-        .back-btn:hover::before {
-            left: 100%;
-        }
-        
-        .back-btn:hover {
-            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
-            border-color: var(--accent-gold);
-            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3);
-            transform: translateY(-2px);
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 4rem;
-            position: relative;
-        }
-        
-        .header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple), var(--accent-blue));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            position: relative;
-        }
-        
-        .header .subtitle {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
-        }
-        
-        .community-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-        
-        .stat-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-medium);
-            border-color: var(--accent-gold);
-        }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--accent-gold);
-            margin-bottom: 0.5rem;
-        }
-        
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 3rem;
-            margin-bottom: 3rem;
-        }
-        
-        @media (max-width: 1200px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-        }
-        
-        .primary-section {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-        
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-        
-        .section-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 2.5rem;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .section-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-gold), var(--accent-purple), var(--accent-blue));
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-        
-        .section-card:hover::before {
-            transform: scaleX(1);
-        }
-        
-        .section-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-strong);
-            border-color: var(--accent-gold);
-        }
-        
-        .section-header {
+            background: rgba(0, 0, 0, 0.9);
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
+            justify-content: center;
+            z-index: 10000;
+            backdrop-filter: blur(10px);
         }
         
-        .section-icon {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: white;
-        }
-        
-        .tab-navigation {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            padding: 0.5rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .tab-btn {
-            padding: 0.75rem 1.5rem;
-            background: transparent;
-            border: none;
-            border-radius: 10px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-        
-        .tab-btn.active {
-            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
-            color: white;
-            box-shadow: var(--shadow-soft);
-        }
-        
-        .tab-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-        }
-        
-        .tab-content {
+        .loading-overlay.hidden {
             display: none;
         }
         
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Forum Styles */
-        .forum-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .forum-item {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 15px;
-            padding: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .forum-item:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--accent-gold);
-            transform: translateX(5px);
-        }
-        
-        .forum-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .forum-title {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: white;
-            margin-bottom: 0.5rem;
-        }
-        
-        .forum-description {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-        
-        .forum-stats {
-            display: flex;
-            gap: 2rem;
-            margin-top: 1rem;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-        
-        .forum-stat {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        /* Meditation Room Styles */
-        .meditation-rooms {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .room-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 15px;
-            padding: 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .room-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-gold), var(--accent-purple));
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-        
-        .room-card:hover::before {
-            transform: scaleX(1);
-        }
-        
-        .room-card:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--accent-gold);
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-medium);
-        }
-        
-        .room-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-        
-        .room-name {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: white;
-        }
-        
-        .room-participants {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-        
-        .room-status {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-        
-        .status-active {
-            background: linear-gradient(135deg, var(--accent-green), #059669);
-        }
-        
-        .status-scheduled {
-            background: linear-gradient(135deg, var(--accent-blue), #1e40af);
-        }
-        
-        .status-private {
-            background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
-        }
-        
-        /* Events Calendar Styles */
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 2rem;
-        }
-        
-        .calendar-header {
-            background: var(--accent-gold);
-            color: white;
-            padding: 1rem;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        
-        .calendar-day {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 1rem;
-            min-height: 80px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .calendar-day:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-        
-        .calendar-day.has-events {
-            background: rgba(212, 175, 55, 0.1);
-        }
-        
-        .calendar-day.has-events::after {
-            content: '';
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            width: 6px;
-            height: 6px;
-            background: var(--accent-gold);
-            border-radius: 50%;
-        }
-        
-        .day-number {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .day-events {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
-        
-        /* Event List */
-        .event-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .event-item {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .event-item:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--accent-gold);
-        }
-        
-        .event-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .event-time {
-            background: var(--accent-blue);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        
-        .event-title {
-            font-weight: 600;
-            color: white;
-            margin-bottom: 0.5rem;
-        }
-        
-        .event-description {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-        
-        /* Member Directory */
-        .member-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .member-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 15px;
-            padding: 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .member-card:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--accent-gold);
-            transform: translateY(-3px);
-        }
-        
-        .member-avatar {
+        .spinner {
             width: 60px;
             height: 60px;
+            border: 4px solid rgba(212, 175, 55, 0.3);
+            border-top: 4px solid var(--primary-gold);
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 1.5rem;
-            color: white;
+            animation: spin 1s linear infinite;
         }
         
-        .member-name {
-            font-weight: 600;
-            color: white;
-            margin-bottom: 0.5rem;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
-        .member-status {
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            margin-bottom: 1rem;
-        }
-        
-        .member-badges {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .badge {
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-        
-        .badge-guide {
-            background: linear-gradient(135deg, var(--accent-gold), #b8860b);
-        }
-        
-        .badge-healer {
-            background: linear-gradient(135deg, var(--accent-green), #059669);
-        }
-        
-        .badge-mystic {
-            background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
-        }
-        
-        /* Quick Actions */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .quick-action {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .quick-action:hover {
-            background: var(--accent-gold);
-            color: white;
-            transform: translateY(-2px);
-        }
-        
-        .quick-action-icon {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-        
-        /* Modal Styles */
-        .modal {
-            display: none;
+        /* Authentication Screen */
+        .auth-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            animation: fadeIn 0.3s ease;
+            background: linear-gradient(135deg, var(--dark-bg), var(--deep-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 1rem;
         }
         
-        .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .auth-screen.hidden {
+            display: none;
+        }
+        
+        .auth-container {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
-            padding: 2.5rem;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
+            padding: 3rem;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
         }
         
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
+        .auth-logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
         }
         
-        .modal-title {
+        .auth-title {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
         }
         
-        .close-btn {
-            background: none;
+        .auth-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem;
+            border-radius: 12px;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: 0.75rem;
+            background: transparent;
             border: none;
             color: var(--text-secondary);
-            font-size: 1.5rem;
+            border-radius: 8px;
             cursor: pointer;
-            transition: color 0.3s ease;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-family: inherit;
         }
         
-        .close-btn:hover {
+        .auth-tab.active {
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
             color: white;
         }
         
-        /* Form Styles */
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
         .form-group {
             margin-bottom: 1.5rem;
+            text-align: left;
         }
         
         .form-label {
@@ -740,49 +189,48 @@
             margin-bottom: 0.5rem;
             font-weight: 500;
             color: var(--text-secondary);
+            font-size: 0.9rem;
         }
         
-        .form-input,
-        .form-textarea,
-        .form-select {
+        .form-input {
             width: 100%;
-            padding: 0.75rem 1rem;
-            background: rgba(255, 255, 255, 0.05);
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            border-radius: 12px;
             color: white;
             font-family: inherit;
+            font-size: 0.95rem;
             transition: all 0.3s ease;
         }
         
-        .form-input:focus,
-        .form-textarea:focus,
-        .form-select:focus {
+        .form-input:focus {
             outline: none;
-            border-color: var(--accent-gold);
+            border-color: var(--primary-gold);
+            background: rgba(255, 255, 255, 0.12);
             box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
         }
         
-        .form-textarea {
-            resize: vertical;
-            min-height: 100px;
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
         }
         
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.875rem 1.5rem;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
+            font-size: 0.95rem;
+            font-family: inherit;
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
             color: white;
+            margin-bottom: 1rem;
         }
         
         .btn-primary:hover {
@@ -790,1264 +238,1740 @@
             box-shadow: var(--shadow-medium);
         }
         
-        .btn-secondary {
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-google {
+            width: 100%;
+            background: white;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        
+        .btn-google:hover {
+            background: #f5f5f5;
+        }
+        
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
             background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .error-message {
+            background: rgba(244, 63, 94, 0.2);
+            border: 1px solid var(--accent-rose);
+            color: var(--accent-rose);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        /* Main App Container */
+        .app-container {
+            display: none;
+        }
+        
+        .app-container.active {
+            display: block;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 0;
+        }
+        
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-search {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 2rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            padding-left: 2.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.9rem;
         }
         
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            background: rgba(255, 255, 255, 0.08);
         }
         
-        /* Responsive Design */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .nav-icon-btn {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+        
+        .nav-icon-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-gold);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 18px;
+            height: 18px;
+            background: var(--accent-rose);
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+        
+        .user-avatar:hover {
+            border-color: var(--primary-gold);
+            transform: scale(1.05);
+        }
+        
+        /* Main Layout */
+        .main-layout {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            display: grid;
+            grid-template-columns: 280px 1fr 350px;
+            gap: 2rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr 350px;
+            }
+            .sidebar-left {
+                display: none;
+            }
+        }
+        
         @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-            
-            .header h1 {
-                font-size: 2.5rem;
-            }
-            
-            .community-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .tab-navigation {
-                flex-wrap: wrap;
-            }
-            
-            .meditation-rooms {
+            .main-layout {
                 grid-template-columns: 1fr;
             }
-            
-            .calendar-grid {
-                grid-template-columns: repeat(7, minmax(40px, 1fr));
+            .sidebar-right {
+                display: none;
             }
-            
-            .calendar-day {
-                padding: 0.5rem;
-                min-height: 60px;
+            .nav-search {
+                display: none;
             }
-            
-            .member-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+        
+        .sidebar-menu {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.875rem 1rem;
+            color: var(--text-secondary);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .menu-item:hover,
+        .menu-item.active {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--primary-gold);
+        }
+        
+        .menu-icon {
+            font-size: 1.3rem;
+            width: 24px;
+            text-align: center;
+        }
+        
+        /* Main Feed */
+        .feed-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        /* Create Post Card */
+        .create-post-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+        }
+        
+        .create-post-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .create-post-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .create-post-input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+        }
+        
+        .create-post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .post-action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .btn-post {
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-post:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .btn-post:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Post Card */
+        .post-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .post-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .post-author-info {
+            flex: 1;
+        }
+        
+        .post-author-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .post-timestamp {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .post-content {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+        }
+        
+        .post-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--glass-border);
+        }
+        
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .post-action:hover {
+            color: var(--primary-gold);
+        }
+        
+        .post-action.liked {
+            color: var(--accent-rose);
+        }
+        
+        /* Chat Panel */
+        .chat-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            height: calc(100vh - 200px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .chat-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .chat-rooms {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+        
+        .chat-room-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.875rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .chat-room-item:hover,
+        .chat-room-item.active {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .chat-room-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        
+        .chat-room-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .chat-room-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .chat-room-preview {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        /* Chat Window */
+        .chat-window {
+            position: fixed;
+            bottom: 0;
+            right: 2rem;
+            width: 400px;
+            height: 600px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px 20px 0 0;
+            display: none;
+            flex-direction: column;
+            box-shadow: var(--shadow-strong);
+            z-index: 1000;
+        }
+        
+        .chat-window.open {
+            display: flex;
+        }
+        
+        .chat-window-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .chat-window-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .close-chat-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.3rem;
+            transition: color 0.3s ease;
+        }
+        
+        .close-chat-btn:hover {
+            color: white;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .chat-message {
+            display: flex;
+            gap: 0.75rem;
+            animation: fadeInUp 0.3s ease;
+        }
+        
+        .chat-message.own {
+            flex-direction: row-reverse;
+        }
+        
+        .chat-message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .chat-message-content {
+            max-width: 70%;
+        }
+        
+        .chat-message-bubble {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.25rem;
+            word-wrap: break-word;
+        }
+        
+        .chat-message.own .chat-message-bubble {
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+        }
+        
+        .chat-message-time {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            padding: 0 0.5rem;
+        }
+        
+        .chat-input-container {
+            padding: 1rem;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            color: white;
+            font-family: inherit;
+        }
+        
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+        }
+        
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .send-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Right Sidebar */
+        .online-members {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+        
+        .member-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .member-avatar {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .online-indicator {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            border: 2px solid var(--dark-bg);
+        }
+        
+        .member-name {
+            flex: 1;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        /* Notification Toast */
+        .notification-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow-strong);
+            z-index: 10001;
+            animation: slideInRight 0.3s ease;
+            max-width: 350px;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .toast-success {
+            border-left: 4px solid var(--accent-green);
+        }
+        
+        .toast-error {
+            border-left: 4px solid var(--accent-rose);
+        }
+        
+        .toast-info {
+            border-left: 4px solid var(--accent-blue);
+        }
+        
+        /* Scrollbar Styles */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.5);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
 <body>
-    <div class="floating-particles"></div>
-    
-    <div class="container">
-        <button class="back-btn" onclick="goBackToDashboard()">
-            <span>←</span>
-            <span>Back to Dashboard</span>
-        </button>
-        
-        <div class="header">
-            <h1>🤝 Sacred Community</h1>
-            <p class="subtitle">Connect with fellow spiritual seekers and share your divine journey together</p>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Authentication Screen -->
+    <div class="auth-screen" id="authScreen">
+        <div class="auth-container">
+            <div class="auth-logo">🕊️</div>
+            <h1 class="auth-title">Sacred Community</h1>
+            <p class="auth-subtitle">Connect with fellow spiritual seekers on your divine journey</p>
+            
+            <div class="error-message" id="authError"></div>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+                <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    Sign In
+                </button>
+            </form>
+            
+            <!-- Signup Form -->
+            <form class="auth-form" id="signupForm" onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label class="form-label">Display Name</label>
+                    <input type="text" class="form-input" placeholder="Your spiritual name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" placeholder="••••••••" minlength="6" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="signupBtn">
+                    Create Account
+                </button>
+            </form>
+            
+            <div class="auth-divider">or continue with</div>
+            
+            <button class="btn btn-google" onclick="handleGoogleSignIn()">
+                <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"></path><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2.01c-.7.47-1.6.74-2.7.74-2.06 0-3.8-1.4-4.42-3.27H1.88v2.07A7.97 7.97 0 0 0 8.98 17z"></path><path fill="#FBBC05" d="M4.56 10.52A4.77 4.77 0 0 1 4.3 9c0-.53.09-1.04.26-1.52V5.41H1.88A7.97 7.97 0 0 0 1 9c0 1.29.32 2.51.88 3.59l2.68-2.07z"></path><path fill="#EA4335" d="M8.98 3.58c1.16 0 2.2.4 3.03 1.19l2.26-2.26A7.97 7.97 0 0 0 8.98 1a7.97 7.97 0 0 0-7.1 4.41l2.68 2.07c.62-1.88 2.36-3.27 4.42-3.27z"></path></svg>
+                Sign in with Google
+            </button>
         </div>
-        
-        <div class="community-stats">
-            <div class="stat-card">
-                <div class="stat-number">1,247</div>
-                <div class="stat-label">Active Members</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">356</div>
-                <div class="stat-label">Group Sessions</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">89</div>
-                <div class="stat-label">Ongoing Discussions</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">42</div>
-                <div class="stat-label">Events This Week</div>
-            </div>
-        </div>
-        
-        <div class="main-content">
-            <div class="primary-section">
-                <!-- Group Meditation Rooms -->
-                <div class="section-card">
-                    <div class="section-header">
-                        <div class="section-icon">🧘‍♀️</div>
-                        <h2 class="section-title">Group Meditation Rooms</h2>
-                    </div>
-                    
-                    <div class="quick-actions">
-                        <div class="quick-action" onclick="createMeditationRoom()">
-                            <span class="quick-action-icon">➕</span>
-                            <span>Create Room</span>
-                        </div>
-                        <div class="quick-action" onclick="joinRandomRoom()">
-                            <span class="quick-action-icon">🎲</span>
-                            <span>Join Random</span>
-                        </div>
-                        <div class="quick-action" onclick="scheduleMeditation()">
-                            <span class="quick-action-icon">📅</span>
-                            <span>Schedule Session</span>
-                        </div>
-                    </div>
-                    
-                    <div class="meditation-rooms">
-                        <div class="room-card" onclick="joinMeditationRoom('morning-peace')">
-                            <div class="room-icon">🌅</div>
-                            <div class="room-name">Morning Peace Circle</div>
-                            <div class="room-participants">12 members meditating</div>
-                            <div class="room-status status-active">🟢 Active Now</div>
-                        </div>
-                        
-                        <div class="room-card" onclick="joinMeditationRoom('chakra-alignment')">
-                            <div class="room-icon">🌈</div>
-                            <div class="room-name">Chakra Alignment</div>
-                            <div class="room-participants">8 members meditating</div>
-                            <div class="room-status status-active">🟢 Active Now</div>
-                        </div>
-                        
-                        <div class="room-card" onclick="joinMeditationRoom('sunset-gratitude')">
-                            <div class="room-icon">🌇</div>
-                            <div class="room-name">Sunset Gratitude</div>
-                            <div class="room-participants">Starting in 30 minutes</div>
-                            <div class="room-status status-scheduled">📅 Scheduled</div>
-                        </div>
-                        
-                        <div class="room-card" onclick="joinMeditationRoom('advanced-practice')">
-                            <div class="room-icon">🔮</div>
-                            <div class="room-name">Advanced Practice</div>
-                            <div class="room-participants">Invite only</div>
-                            <div class="room-status status-private">🔒 Private</div>
-                        </div>
-                    </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div class="app-container" id="appContainer">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="nav-content">
+                <div class="nav-logo">
+                    <span>🕊️</span>
+                    <span>Sacred Community</span>
                 </div>
                 
-                <!-- Discussion Forums -->
-                <div class="section-card">
-                    <div class="section-header">
-                        <div class="section-icon">💬</div>
-                        <h2 class="section-title">Sacred Discussions</h2>
-                    </div>
-                    
-                    <div class="tab-navigation">
-                        <button class="tab-btn active" onclick="showTab('general-discussions')">General</button>
-                        <button class="tab-btn" onclick="showTab('spiritual-guidance')">Guidance</button>
-                        <button class="tab-btn" onclick="showTab('healing-support')">Healing</button>
-                        <button class="tab-btn" onclick="showTab('study-groups')">Study Groups</button>
-                    </div>
-                    
-                    <div id="general-discussions" class="tab-content active">
-                        <div class="forum-list">
-                            <div class="forum-item" onclick="openDiscussion('daily-insights')">
-                                <div class="forum-title">💫 Daily Spiritual Insights</div>
-                                <div class="forum-description">Share your daily revelations and spiritual discoveries</div>
-                                <div class="forum-stats">
-                                    <div class="forum-stat">
-                                        <span>💬</span>
-                                        <span>234 posts</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>👥</span>
-                                        <span>89 members</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>🕒</span>
-                                        <span>2 hours ago</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="forum-item" onclick="openDiscussion('meditation-techniques')">
-                                <div class="forum-title">🧘‍♂️ Meditation Techniques & Tips</div>
-                                <div class="forum-description">Exchange meditation practices and deepen your understanding</div>
-                                <div class="forum-stats">
-                                    <div class="forum-stat">
-                                        <span>💬</span>
-                                        <span>156 posts</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>👥</span>
-                                        <span>67 members</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>🕒</span>
-                                        <span>5 hours ago</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="forum-item" onclick="openDiscussion('sacred-texts')">
-                                <div class="forum-title">📚 Sacred Text Discussions</div>
-                                <div class="forum-description">Explore ancient wisdom and modern interpretations</div>
-                                <div class="forum-stats">
-                                    <div class="forum-stat">
-                                        <span>💬</span>
-                                        <span>98 posts</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>👥</span>
-                                        <span>43 members</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>🕒</span>
-                                        <span>1 day ago</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="spiritual-guidance" class="tab-content">
-                        <div class="forum-list">
-                            <div class="forum-item" onclick="openDiscussion('life-purpose')">
-                                <div class="forum-title">🎯 Finding Your Life Purpose</div>
-                                <div class="forum-description">Guidance for discovering your spiritual mission</div>
-                                <div class="forum-stats">
-                                    <div class="forum-stat">
-                                        <span>💬</span>
-                                        <span>78 posts</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>👥</span>
-                                        <span>34 members</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>🕒</span>
-                                        <span>3 hours ago</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="forum-item" onclick="openDiscussion('spiritual-challenges')">
-                                <div class="forum-title">⚡ Overcoming Spiritual Challenges</div>
-                                <div class="forum-description">Support for navigating difficult spiritual experiences</div>
-                                <div class="forum-stats">
-                                    <div class="forum-stat">
-                                        <span>💬</span>
-                                        <span>122 posts</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>👥</span>
-                                        <span>56 members</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>🕒</span>
-                                        <span>1 hour ago</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="healing-support" class="tab-content">
-                        <div class="forum-list">
-                            <div class="forum-item" onclick="openDiscussion('energy-healing')">
-                                <div class="forum-title">⚡ Energy Healing Circle</div>
-                                <div class="forum-description">Share healing experiences and offer distant healing</div>
-                                <div class="forum-stats">
-                                    <div class="forum-stat">
-                                        <span>💬</span>
-                                        <span>189 posts</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>👥</span>
-                                        <span>78 members</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>🕒</span>
-                                        <span>30 minutes ago</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="forum-item" onclick="openDiscussion('emotional-support')">
-                                <div class="forum-title">💚 Emotional Support Network</div>
-                                <div class="forum-description">Safe space for emotional healing and support</div>
-                                <div class="forum-stats">
-                                    <div class="forum-stat">
-                                        <span>💬</span>
-                                        <span>267 posts</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>👥</span>
-                                        <span>92 members</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>🕒</span>
-                                        <span>45 minutes ago</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="study-groups" class="tab-content">
-                        <div class="forum-list">
-                            <div class="forum-item" onclick="openDiscussion('kabbalah-study')">
-                                <div class="forum-title">🔯 Kabbalah Study Group</div>
-                                <div class="forum-description">Weekly sessions exploring mystical Jewish wisdom</div>
-                                <div class="forum-stats">
-                                    <div class="forum-stat">
-                                        <span>💬</span>
-                                        <span>45 posts</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>👥</span>
-                                        <span>23 members</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>🕒</span>
-                                        <span>2 days ago</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="forum-item" onclick="openDiscussion('tarot-study')">
-                                <div class="forum-title">🔮 Tarot Study Circle</div>
-                                <div class="forum-description">Learn and practice tarot reading together</div>
-                                <div class="forum-stats">
-                                    <div class="forum-stat">
-                                        <span>💬</span>
-                                        <span>67 posts</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>👥</span>
-                                        <span>31 members</span>
-                                    </div>
-                                    <div class="forum-stat">
-                                        <span>🕒</span>
-                                        <span>6 hours ago</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="sidebar">
-                <!-- Community Events Calendar -->
-                <div class="section-card">
-                    <div class="section-header">
-                        <div class="section-icon">📅</div>
-                        <h3 class="section-title">Sacred Calendar</h3>
-                    </div>
-                    
-                    <div class="event-list">
-                        <div class="event-item" onclick="openEvent('full-moon-ceremony')">
-                            <div class="event-header">
-                                <div class="event-time">Today 8PM</div>
-                            </div>
-                            <div class="event-title">🌕 Full Moon Ceremony</div>
-                            <div class="event-description">Group ritual for release and manifestation</div>
-                        </div>
-                        
-                        <div class="event-item" onclick="openEvent('crystal-healing-workshop')">
-                            <div class="event-header">
-                                <div class="event-time">Tomorrow 2PM</div>
-                            </div>
-                            <div class="event-title">💎 Crystal Healing Workshop</div>
-                            <div class="event-description">Learn advanced crystal therapy techniques</div>
-                        </div>
-                        
-                        <div class="event-item" onclick="openEvent('new-member-welcome')">
-                            <div class="event-header">
-                                <div class="event-time">Friday 7PM</div>
-                            </div>
-                            <div class="event-title">🤗 New Member Welcome Circle</div>
-                            <div class="event-description">Welcome newcomers to our sacred community</div>
-                        </div>
-                    </div>
-                    
-                    <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="viewFullCalendar()">
-                        View Full Calendar
-                    </button>
+                <div class="nav-search">
+                    <input type="text" class="search-input" placeholder="🔍 Search posts, members, topics...">
                 </div>
                 
-                <!-- Active Members -->
-                <div class="section-card">
-                    <div class="section-header">
-                        <div class="section-icon">👥</div>
-                        <h3 class="section-title">Active Members</h3>
+                <div class="nav-actions">
+                    <div class="nav-icon-btn" onclick="toggleNotifications()">
+                        <span>🔔</span>
+                        <span class="notification-badge" id="notificationBadge">0</span>
                     </div>
-                    
-                    <div class="member-grid">
-                        <div class="member-card" onclick="viewMemberProfile('sarah')">
-                            <div class="member-avatar">S</div>
-                            <div class="member-name">Sarah Light</div>
-                            <div class="member-status">🟢 Online</div>
-                            <div class="member-badges">
-                                <div class="badge badge-guide">Guide</div>
-                            </div>
-                        </div>
-                        
-                        <div class="member-card" onclick="viewMemberProfile('michael')">
-                            <div class="member-avatar">M</div>
-                            <div class="member-name">Michael Zen</div>
-                            <div class="member-status">🔴 Meditating</div>
-                            <div class="member-badges">
-                                <div class="badge badge-healer">Healer</div>
-                            </div>
-                        </div>
-                        
-                        <div class="member-card" onclick="viewMemberProfile('luna')">
-                            <div class="member-avatar">L</div>
-                            <div class="member-name">Luna Moon</div>
-                            <div class="member-status">🟡 Away</div>
-                            <div class="member-badges">
-                                <div class="badge badge-mystic">Mystic</div>
-                            </div>
-                        </div>
-                        
-                        <div class="member-card" onclick="viewMemberProfile('david')">
-                            <div class="member-avatar">D</div>
-                            <div class="member-name">David Peace</div>
-                            <div class="member-status">🟢 Online</div>
-                            <div class="member-badges">
-                                <div class="badge badge-guide">Guide</div>
-                                <div class="badge badge-healer">Healer</div>
-                            </div>
-                        </div>
+                    <div class="nav-icon-btn" onclick="openMessenger()">
+                        <span>💬</span>
+                        <span class="notification-badge" id="messageBadge">0</span>
                     </div>
-                    
-                    <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;" onclick="viewAllMembers()">
-                        View All Members
-                    </button>
+                    <div class="user-avatar" onclick="toggleUserMenu()" id="userAvatar">
+                        U
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Left Sidebar -->
+            <div class="sidebar sidebar-left">
+                <div class="sidebar-menu">
+                    <div class="menu-item active">
+                        <span class="menu-icon">🏠</span>
+                        <span>Home</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">🔥</span>
+                        <span>Trending</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">🧘</span>
+                        <span>Meditation Rooms</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">💬</span>
+                        <span>Discussions</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">📅</span>
+                        <span>Events</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">👥</span>
+                        <span>Members</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">⚙️</span>
+                        <span>Settings</span>
+                    </div>
+                    <div class="menu-item" onclick="handleSignOut()">
+                        <span class="menu-icon">🚪</span>
+                        <span>Sign Out</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Feed -->
+            <div class="feed-container">
+                <!-- Create Post -->
+                <div class="create-post-card">
+                    <div class="create-post-header">
+                        <div class="user-avatar" id="createPostAvatar">U</div>
+                        <textarea 
+                            class="create-post-input" 
+                            placeholder="Share your spiritual insights..."
+                            id="postContent"
+                        ></textarea>
+                    </div>
+                    <div class="create-post-actions">
+                        <div class="post-action-btns">
+                            <label class="action-btn">
+                                <span>📷</span>
+                                <span>Photo</span>
+                                <input type="file" accept="image/*" style="display:none" id="postImageInput" onchange="handleImageSelect(event)">
+                            </label>
+                            <div class="action-btn">
+                                <span>😊</span>
+                                <span>Feeling</span>
+                            </div>
+                            <div class="action-btn">
+                                <span>🔮</span>
+                                <span>Oracle</span>
+                            </div>
+                        </div>
+                        <button class="btn-post" onclick="createPost()">Post</button>
+                    </div>
+                </div>
+
+                <!-- Feed Posts -->
+                <div id="feedPosts">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✨</div>
+                        <p>Be the first to share something sacred!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="sidebar sidebar-right">
+                <!-- Online Members -->
+                <div class="online-members">
+                    <h3 class="section-title">🟢 Online Now</h3>
+                    <div id="onlineMembers">
+                        <p style="color: var(--text-muted); font-size: 0.85rem; padding: 1rem;">Loading members...</p>
+                    </div>
+                </div>
+
+                <!-- Chat Panel -->
+                <div class="chat-panel">
+                    <div class="chat-header">
+                        <h3 class="chat-title">💬 Messages</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Active conversations</p>
+                    </div>
+                    <div class="chat-rooms" id="chatRoomsList">
+                        <p style="color: var(--text-muted); font-size: 0.85rem; padding: 1rem;">Loading chat rooms...</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    </style>
-</head>
-<body>
-    <div class="section-container">
-        <button class="back-btn" onclick="goBackToDashboard()">
-            <span class="back-icon">←</span>
-            <span>Back to Dashboard</span>
-        </button>
-        
-        <div class="section-header">
-            <h1>🤝 Community</h1>
-            <p>Connect with fellow spiritual seekers and share your divine journey</p>
+
+    <!-- Chat Window -->
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-window-header">
+            <div class="chat-window-title">
+                <div class="chat-message-avatar">G</div>
+                <span id="chatWindowTitle">General Chat</span>
+            </div>
+            <button class="close-chat-btn" onclick="closeChatWindow()">×</button>
         </div>
-        
-        <div class="community-info">
-            <h3>💬 Sacred Communication Hub</h3>
-            <p>Foster meaningful connections with fellow divine seekers through secure, spiritually-focused communication tools and healing circles.</p>
-            
-            <div class="communication-features">
-                <div class="comm-feature">
-                    <strong>💬 Real-time Chat</strong><br>
-                    Instant messaging
-                </div>
-                <div class="comm-feature">
-                    <strong>🔒 Private Rooms</strong><br>
-                    Secure conversations
-                </div>
-                <div class="comm-feature">
-                    <strong>🎭 Group Circles</strong><br>
-                    Spiritual gatherings
-                </div>
-                <div class="comm-feature">
-                    <strong>💚 Healing Support</strong><br>
-                    Emotional guidance
-                </div>
-            </div>
+        <div class="chat-messages" id="chatMessages">
+            <!-- Messages will load here -->
         </div>
-        
-        <div class="community-grid">
-            <div class="community-card implemented" onclick="openCommunityHub()">
-                <div class="community-icon">🤝</div>
-                <h3>Community Hub</h3>
-                <p>Connect with fellow seekers through advanced communication tools, forums, and spiritual fellowship</p>
-                <ul class="feature-list">
-                    <li>💬 Real-time messaging system</li>
-                    <li>📝 Discussion forums & topics</li>
-                    <li>🧘‍♂️ Group meditation scheduling</li>
-                    <li>❓ Spiritual Q&A community</li>
-                    <li>✨ Divine inspiration sharing</li>
-                    <li>📊 Member interaction analytics</li>
-                </ul>
-                <div class="tool-status status-complete">✅ Fully Implemented</div>
-            </div>
-            
-            <div class="community-card" onclick="openHealingCircle()">
-                <div class="community-icon">💚</div>
-                <h3>Healing Circle</h3>
-                <p>Comprehensive healing support through group sessions, trauma recovery, and emotional transformation</p>
-                <ul class="feature-list">
-                    <li>🔄 Weekly healing circle sessions</li>
-                    <li>🛡️ Trauma recovery support groups</li>
-                    <li>⚡ Distance energy healing</li>
-                    <li>💭 Emotional release practices</li>
-                    <li>🏺 Sacred space holding</li>
-                    <li>📋 Healing progress tracking</li>
-                </ul>
-                <div class="tool-status status-complete">✅ Fully Implemented</div>
-            </div>
-        </div>
-        
-        <div style="text-align: center; margin-top: 3rem; padding: 2.5rem; background: var(--glass-bg); border-radius: 20px; border: 1px solid var(--glass-border);">
-            <h3>🌟 Future Communication Features</h3>
-            <p>Advanced community tools in development to enhance your spiritual connections:</p>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
-                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 12px;">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📅</div>
-                    <strong>Event Calendar</strong><br>
-                    <small>Schedule group activities</small>
-                </div>
-                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 12px;">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎭</div>
-                    <strong>Sacred Circles</strong><br>
-                    <small>Private group spaces</small>
-                </div>
-                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 12px;">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📝</div>
-                    <strong>Member Stories</strong><br>
-                    <small>Share your journey</small>
-                </div>
-                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 12px;">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎯</div>
-                    <strong>Group Challenges</strong><br>
-                    <small>Collective growth goals</small>
-                </div>
-                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 12px;">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📱</div>
-                    <strong>Mobile App</strong><br>
-                    <small>Community on-the-go</small>
-                </div>
-                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 12px;">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔔</div>
-                    <strong>Smart Notifications</strong><br>
-                    <small>Divine timing alerts</small>
-                </div>
-            </div>
-        </div>
-    
-    <!-- Modals -->
-    <div id="meditationRoomModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Create Meditation Room</h3>
-                <button class="close-btn" onclick="closeModal('meditationRoomModal')">&times;</button>
-            </div>
-            <form onsubmit="createNewMeditationRoom(event)">
-                <div class="form-group">
-                    <label class="form-label">Room Name</label>
-                    <input type="text" class="form-input" placeholder="Enter room name" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Meditation Type</label>
-                    <select class="form-select" required>
-                        <option value="">Select type</option>
-                        <option value="mindfulness">Mindfulness</option>
-                        <option value="chakra">Chakra Balancing</option>
-                        <option value="loving-kindness">Loving Kindness</option>
-                        <option value="transcendental">Transcendental</option>
-                        <option value="guided">Guided Visualization</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Duration (minutes)</label>
-                    <select class="form-select" required>
-                        <option value="15">15 minutes</option>
-                        <option value="30">30 minutes</option>
-                        <option value="45">45 minutes</option>
-                        <option value="60">60 minutes</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Room Description</label>
-                    <textarea class="form-textarea" placeholder="Describe the meditation session..."></textarea>
-                </div>
-                <div style="display: flex; gap: 1rem;">
-                    <button type="submit" class="btn btn-primary">Create Room</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('meditationRoomModal')">Cancel</button>
-                </div>
-            </form>
+        <div class="chat-input-container">
+            <input 
+                type="text" 
+                class="chat-input" 
+                placeholder="Type a message..."
+                id="chatMessageInput"
+                onkeypress="handleChatKeyPress(event)"
+            >
+            <button class="send-btn" onclick="sendChatMessage()">➤</button>
         </div>
     </div>
-    
-    <div id="discussionModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Start New Discussion</h3>
-                <button class="close-btn" onclick="closeModal('discussionModal')">&times;</button>
-            </div>
-            <form onsubmit="createNewDiscussion(event)">
-                <div class="form-group">
-                    <label class="form-label">Discussion Title</label>
-                    <input type="text" class="form-input" placeholder="Enter discussion title" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Category</label>
-                    <select class="form-select" required>
-                        <option value="">Select category</option>
-                        <option value="general">General Discussion</option>
-                        <option value="guidance">Spiritual Guidance</option>
-                        <option value="healing">Healing Support</option>
-                        <option value="study">Study Group</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Discussion Content</label>
-                    <textarea class="form-textarea" placeholder="Share your thoughts..." required></textarea>
-                </div>
-                <div style="display: flex; gap: 1rem;">
-                    <button type="submit" class="btn btn-primary">Start Discussion</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('discussionModal')">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <div id="eventModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Create Community Event</h3>
-                <button class="close-btn" onclick="closeModal('eventModal')">&times;</button>
-            </div>
-            <form onsubmit="createNewEvent(event)">
-                <div class="form-group">
-                    <label class="form-label">Event Title</label>
-                    <input type="text" class="form-input" placeholder="Enter event title" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Event Type</label>
-                    <select class="form-select" required>
-                        <option value="">Select type</option>
-                        <option value="meditation">Group Meditation</option>
-                        <option value="workshop">Workshop</option>
-                        <option value="ceremony">Sacred Ceremony</option>
-                        <option value="discussion">Discussion Circle</option>
-                        <option value="healing">Healing Session</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Date & Time</label>
-                    <input type="datetime-local" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Event Description</label>
-                    <textarea class="form-textarea" placeholder="Describe the event..." required></textarea>
-                </div>
-                <div style="display: flex; gap: 1rem;">
-                    <button type="submit" class="btn btn-primary">Create Event</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('eventModal')">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
+
     <script>
-        class CommunitySystem {
-            constructor() {
-                this.meditationRooms = new Map();
-                this.discussions = new Map();
-                this.events = new Map();
-                this.members = new Map();
-                this.currentUser = {
-                    id: 'user_' + Date.now(),
-                    name: 'Spiritual Seeker',
-                    status: 'online',
-                    badges: ['seeker']
-                };
-                
-                this.init();
-            }
+        // ==================== FIREBASE CONFIGURATION ====================
+        
+        // YOUR ACTUAL FIREBASE CONFIG - READY TO GO!
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOyZPb4gfYE5q_RwmYaKG6cpTvrE-3LxI",
+            authDomain: "sacred-community.firebaseapp.com",
+            projectId: "sacred-community",
+            storageBucket: "sacred-community.firebasestorage.app",
+            messagingSenderId: "582271923489",
+            appId: "1:582271923489:web:aa46a8bb5ac0859fe83a60",
+            measurementId: "G-83D6SSJKMH",
+            // Add this after creating Realtime Database in Firebase Console
+            databaseURL: "https://sacred-community-default-rtdb.firebaseio.com"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        const rtdb = firebase.database();
+
+        console.log('✅ Firebase initialized successfully!');
+
+        // ==================== GLOBAL STATE ====================
+        let currentUser = null;
+        let currentChatRoom = null;
+        let unsubscribeFeeds = [];
+        let selectedImage = null;
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🕊️ Sacred Community initializing...');
             
-            init() {
-                this.createFloatingParticles();
-                this.loadSampleData();
-                this.updateCommunityStats();
-                this.initializeEventListeners();
-                this.startRealTimeUpdates();
-                this.trackUserProgress();
-            }
-            
-            createFloatingParticles() {
-                const particleContainer = document.querySelector('.floating-particles');
-                const particleCount = 20;
-                
-                for (let i = 0; i < particleCount; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.left = Math.random() * 100 + '%';
-                    particle.style.top = Math.random() * 100 + '%';
-                    particle.style.animationDelay = Math.random() * 8 + 's';
-                    particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
-                    particleContainer.appendChild(particle);
-                }
-            }
-            
-            loadSampleData() {
-                // Load sample meditation rooms
-                this.meditationRooms.set('morning-peace', {
-                    id: 'morning-peace',
-                    name: 'Morning Peace Circle',
-                    type: 'mindfulness',
-                    participants: 12,
-                    status: 'active',
-                    duration: 30,
-                    description: 'Start your day with mindful awareness and inner peace'
-                });
-                
-                this.meditationRooms.set('chakra-alignment', {
-                    id: 'chakra-alignment',
-                    name: 'Chakra Alignment',
-                    type: 'chakra',
-                    participants: 8,
-                    status: 'active',
-                    duration: 45,
-                    description: 'Balance and align your energy centers'
-                });
-                
-                // Load sample discussions
-                this.discussions.set('daily-insights', {
-                    id: 'daily-insights',
-                    title: 'Daily Spiritual Insights',
-                    category: 'general',
-                    posts: 234,
-                    members: 89,
-                    lastActivity: '2 hours ago',
-                    description: 'Share your daily revelations and spiritual discoveries'
-                });
-                
-                // Load sample events
-                this.events.set('full-moon-ceremony', {
-                    id: 'full-moon-ceremony',
-                    title: 'Full Moon Ceremony',
-                    type: 'ceremony',
-                    date: new Date(),
-                    time: '8:00 PM',
-                    description: 'Group ritual for release and manifestation'
-                });
-                
-                // Load sample members
-                this.members.set('sarah', {
-                    id: 'sarah',
-                    name: 'Sarah Light',
-                    status: 'online',
-                    badges: ['guide'],
-                    avatar: 'S'
-                });
-            }
-            
-            updateCommunityStats() {
-                // Update stats with real-time data
-                const stats = {
-                    activeMembers: 1247 + Math.floor(Math.random() * 10),
-                    groupSessions: 356 + Math.floor(Math.random() * 5),
-                    discussions: 89 + Math.floor(Math.random() * 3),
-                    eventsThisWeek: 42 + Math.floor(Math.random() * 2)
-                };
-                
-                // Animate stat updates
-                this.animateStatUpdate('activeMembers', stats.activeMembers);
-                this.animateStatUpdate('groupSessions', stats.groupSessions);
-                this.animateStatUpdate('discussions', stats.discussions);
-                this.animateStatUpdate('eventsThisWeek', stats.eventsThisWeek);
-            }
-            
-            animateStatUpdate(statType, newValue) {
-                const statElements = document.querySelectorAll('.stat-number');
-                statElements.forEach(element => {
-                    if (element.textContent && Math.abs(parseInt(element.textContent) - newValue) < 100) {
-                        let currentValue = parseInt(element.textContent);
-                        const increment = newValue > currentValue ? 1 : -1;
-                        const interval = setInterval(() => {
-                            currentValue += increment;
-                            element.textContent = currentValue.toLocaleString();
-                            if (currentValue === newValue) {
-                                clearInterval(interval);
-                            }
-                        }, 50);
-                    }
-                });
-            }
-            
-            initializeEventListeners() {
-                // Close modals when clicking outside
-                document.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('modal')) {
-                        this.closeModal(e.target.id);
-                    }
-                });
-                
-                // Handle escape key for modals
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape') {
-                        const openModal = document.querySelector('.modal[style*="block"]');
-                        if (openModal) {
-                            this.closeModal(openModal.id);
-                        }
-                    }
-                });
-            }
-            
-            startRealTimeUpdates() {
-                // Simulate real-time updates
-                setInterval(() => {
-                    this.updateMeditationRoomParticipants();
-                    this.updateDiscussionActivity();
-                    this.updateMemberStatuses();
-                }, 30000); // Update every 30 seconds
-            }
-            
-            updateMeditationRoomParticipants() {
-                const roomCards = document.querySelectorAll('.room-card');
-                roomCards.forEach(card => {
-                    const participantsElement = card.querySelector('.room-participants');
-                    if (participantsElement && participantsElement.textContent.includes('members meditating')) {
-                        const currentCount = parseInt(participantsElement.textContent);
-                        const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
-                        const newCount = Math.max(1, currentCount + change);
-                        participantsElement.textContent = `${newCount} members meditating`;
-                    }
-                });
-            }
-            
-            updateDiscussionActivity() {
-                const forumItems = document.querySelectorAll('.forum-item');
-                forumItems.forEach(item => {
-                    const timeElement = item.querySelector('.forum-stat:last-child span:last-child');
-                    if (timeElement && Math.random() < 0.1) { // 10% chance of update
-                        const timeOptions = ['just now', '1 minute ago', '5 minutes ago', '30 minutes ago'];
-                        timeElement.textContent = timeOptions[Math.floor(Math.random() * timeOptions.length)];
-                    }
-                });
-            }
-            
-            updateMemberStatuses() {
-                const memberCards = document.querySelectorAll('.member-card');
-                memberCards.forEach(card => {
-                    const statusElement = card.querySelector('.member-status');
-                    if (statusElement && Math.random() < 0.05) { // 5% chance of status change
-                        const statuses = ['🟢 Online', '🔴 Meditating', '🟡 Away', '🔵 In Session'];
-                        statusElement.textContent = statuses[Math.floor(Math.random() * statuses.length)];
-                    }
-                });
-            }
-            
-            trackUserProgress() {
-                // Track community engagement for Universal Progress System
-                const progressData = {
-                    section: 'Community',
-                    activity: 'community_visit',
-                    timestamp: new Date().toISOString(),
-                    engagementLevel: 'active'
-                };
-                
-                this.updateUniversalProgress(progressData);
-            }
-            
-            updateUniversalProgress(data) {
-                if (window.parent && window.parent.UniversalProgressSystem) {
-                    window.parent.UniversalProgressSystem.updateProgress(data);
+            // Check auth state
+            auth.onAuthStateChanged((user) => {
+                hideLoading();
+                if (user) {
+                    currentUser = user;
+                    initializeApp(user);
                 } else {
-                    // Store locally if parent system not available
-                    const communityProgress = JSON.parse(localStorage.getItem('divineTemple_communityProgress') || '[]');
-                    communityProgress.push(data);
-                    localStorage.setItem('divineTemple_communityProgress', JSON.stringify(communityProgress));
+                    showAuthScreen();
                 }
+            });
+        });
+
+        function initializeApp(user) {
+            console.log('✅ User authenticated:', user.email);
+            
+            // Hide auth screen, show app
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('appContainer').classList.add('active');
+            
+            // Set user avatar
+            const initial = user.displayName ? user.displayName[0].toUpperCase() : user.email[0].toUpperCase();
+            document.querySelectorAll('.user-avatar, #createPostAvatar, #userAvatar').forEach(el => {
+                el.textContent = initial;
+            });
+            
+            // Load app data
+            loadFeedPosts();
+            loadChatRooms();
+            loadOnlineMembers();
+            setupPresence(user.uid);
+            listenForNotifications(user.uid);
+            
+            console.log('🎉 Sacred Community loaded successfully!');
+            showToast('Welcome to Sacred Community! 🕊️', 'success');
+        }
+
+        // ==================== AUTHENTICATION ====================
+        function switchAuthTab(tab) {
+            const tabs = document.querySelectorAll('.auth-tab');
+            const forms = document.querySelectorAll('.auth-form');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            forms.forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'login') {
+                tabs[0].classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('signupForm').classList.add('active');
             }
             
-            // Modal management
-            openModal(modalId) {
-                const modal = document.getElementById(modalId);
-                if (modal) {
-                    modal.style.display = 'block';
-                    document.body.style.overflow = 'hidden';
-                }
-            }
+            hideAuthError();
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const form = e.target;
+            const email = form[0].value;
+            const password = form[1].value;
+            const btn = document.getElementById('loginBtn');
             
-            closeModal(modalId) {
-                const modal = document.getElementById(modalId);
-                if (modal) {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                }
-            }
-            
-            // Tab management
-            showTab(tabId) {
-                // Hide all tab contents
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
+            try {
+                btn.disabled = true;
+                btn.textContent = 'Signing in...';
+                showLoading();
                 
-                // Remove active class from all tab buttons
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
+                await auth.signInWithEmailAndPassword(email, password);
                 
-                // Show selected tab content
-                const selectedTab = document.getElementById(tabId);
-                if (selectedTab) {
-                    selectedTab.classList.add('active');
-                }
-                
-                // Add active class to clicked button
-                const clickedBtn = event.target;
-                clickedBtn.classList.add('active');
-            }
-            
-            // Meditation room functions
-            createMeditationRoom() {
-                this.openModal('meditationRoomModal');
-            }
-            
-            joinMeditationRoom(roomId) {
-                const room = this.meditationRooms.get(roomId);
-                if (room) {
-                    // Track activity
-                    this.updateUniversalProgress({
-                        section: 'Community',
-                        activity: 'meditation_room_join',
-                        roomId: roomId,
-                        timestamp: new Date().toISOString()
-                    });
-                    
-                    // Show joining notification
-                    this.showNotification(`Joining ${room.name}...`, 'success');
-                    
-                    // Simulate joining process
-                    setTimeout(() => {
-                        this.showNotification(`Welcome to ${room.name}! 🧘‍♀️`, 'success');
-                    }, 1500);
-                } else {
-                    this.showNotification('Room not found', 'error');
-                }
-            }
-            
-            joinRandomRoom() {
-                const activeRooms = Array.from(this.meditationRooms.values()).filter(room => room.status === 'active');
-                if (activeRooms.length > 0) {
-                    const randomRoom = activeRooms[Math.floor(Math.random() * activeRooms.length)];
-                    this.joinMeditationRoom(randomRoom.id);
-                } else {
-                    this.showNotification('No active rooms available. Create one!', 'info');
-                }
-            }
-            
-            scheduleMeditation() {
-                this.openModal('eventModal');
-            }
-            
-            createNewMeditationRoom(event) {
-                event.preventDefault();
-                const formData = new FormData(event.target);
-                const roomData = {
-                    id: 'room_' + Date.now(),
-                    name: formData.get('roomName') || 'New Meditation Room',
-                    type: formData.get('meditationType'),
-                    duration: parseInt(formData.get('duration')),
-                    description: formData.get('description'),
-                    participants: 1,
-                    status: 'active',
-                    creator: this.currentUser.id
-                };
-                
-                this.meditationRooms.set(roomData.id, roomData);
-                this.closeModal('meditationRoomModal');
-                this.showNotification(`Created "${roomData.name}" successfully!`, 'success');
-                
-                // Track creation
-                this.updateUniversalProgress({
-                    section: 'Community',
-                    activity: 'meditation_room_create',
-                    roomId: roomData.id,
-                    timestamp: new Date().toISOString()
-                });
-            }
-            
-            // Discussion functions
-            openDiscussion(discussionId) {
-                const discussion = this.discussions.get(discussionId);
-                if (discussion) {
-                    this.showNotification(`Opening "${discussion.title}"...`, 'info');
-                    
-                    // Track activity
-                    this.updateUniversalProgress({
-                        section: 'Community',
-                        activity: 'discussion_view',
-                        discussionId: discussionId,
-                        timestamp: new Date().toISOString()
-                    });
-                }
-            }
-            
-            createNewDiscussion(event) {
-                event.preventDefault();
-                const formData = new FormData(event.target);
-                const discussionData = {
-                    id: 'discussion_' + Date.now(),
-                    title: formData.get('title'),
-                    category: formData.get('category'),
-                    content: formData.get('content'),
-                    posts: 1,
-                    members: 1,
-                    lastActivity: 'just now',
-                    creator: this.currentUser.id
-                };
-                
-                this.discussions.set(discussionData.id, discussionData);
-                this.closeModal('discussionModal');
-                this.showNotification(`Discussion "${discussionData.title}" created!`, 'success');
-                
-                // Track creation
-                this.updateUniversalProgress({
-                    section: 'Community',
-                    activity: 'discussion_create',
-                    discussionId: discussionData.id,
-                    timestamp: new Date().toISOString()
-                });
-            }
-            
-            // Event functions
-            openEvent(eventId) {
-                const event = this.events.get(eventId);
-                if (event) {
-                    this.showNotification(`Viewing "${event.title}"...`, 'info');
-                    
-                    // Track activity
-                    this.updateUniversalProgress({
-                        section: 'Community',
-                        activity: 'event_view',
-                        eventId: eventId,
-                        timestamp: new Date().toISOString()
-                    });
-                }
-            }
-            
-            viewFullCalendar() {
-                this.showNotification('Opening full community calendar...', 'info');
-                
-                // Track activity
-                this.updateUniversalProgress({
-                    section: 'Community',
-                    activity: 'calendar_view',
-                    timestamp: new Date().toISOString()
-                });
-            }
-            
-            createNewEvent(event) {
-                event.preventDefault();
-                const formData = new FormData(event.target);
-                const eventData = {
-                    id: 'event_' + Date.now(),
-                    title: formData.get('title'),
-                    type: formData.get('type'),
-                    date: new Date(formData.get('datetime')),
-                    description: formData.get('description'),
-                    creator: this.currentUser.id
-                };
-                
-                this.events.set(eventData.id, eventData);
-                this.closeModal('eventModal');
-                this.showNotification(`Event "${eventData.title}" scheduled!`, 'success');
-                
-                // Track creation
-                this.updateUniversalProgress({
-                    section: 'Community',
-                    activity: 'event_create',
-                    eventId: eventData.id,
-                    timestamp: new Date().toISOString()
-                });
-            }
-            
-            // Member functions
-            viewMemberProfile(memberId) {
-                const member = this.members.get(memberId);
-                if (member) {
-                    this.showNotification(`Viewing ${member.name}'s profile...`, 'info');
-                    
-                    // Track activity
-                    this.updateUniversalProgress({
-                        section: 'Community',
-                        activity: 'member_profile_view',
-                        memberId: memberId,
-                        timestamp: new Date().toISOString()
-                    });
-                }
-            }
-            
-            viewAllMembers() {
-                this.showNotification('Loading member directory...', 'info');
-                
-                // Track activity
-                this.updateUniversalProgress({
-                    section: 'Community',
-                    activity: 'member_directory_view',
-                    timestamp: new Date().toISOString()
-                });
-            }
-            
-            // Utility functions
-            showNotification(message, type = 'info') {
-                const notification = document.createElement('div');
-                notification.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: ${type === 'success' ? 'linear-gradient(135deg, var(--accent-green), #059669)' : 
-                                type === 'error' ? 'linear-gradient(135deg, var(--accent-rose), #dc2626)' :
-                                'linear-gradient(135deg, var(--accent-blue), #1e40af)'};
-                    color: white;
-                    padding: 1rem 1.5rem;
-                    border-radius: 12px;
-                    box-shadow: var(--shadow-medium);
-                    z-index: 10000;
-                    font-family: Inter, sans-serif;
-                    font-weight: 500;
-                    max-width: 350px;
-                    backdrop-filter: blur(20px);
-                    animation: slideIn 0.3s ease;
-                `;
-                notification.innerHTML = message;
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    notification.style.animation = 'fadeOut 0.3s ease';
-                    setTimeout(() => notification.remove(), 300);
-                }, 4000);
+                // Success handled by onAuthStateChanged
+            } catch (error) {
+                console.error('Login error:', error);
+                showAuthError(getFirebaseErrorMessage(error.code));
+                hideLoading();
+                btn.disabled = false;
+                btn.textContent = 'Sign In';
             }
         }
-        
-        // Global functions for backward compatibility
-        let communitySystem;
-        
-        function goBackToDashboard() {
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            const form = e.target;
+            const displayName = form[0].value;
+            const email = form[1].value;
+            const password = form[2].value;
+            const btn = document.getElementById('signupBtn');
+            
             try {
-                if (window.parent && window.parent.showSection) {
-                    window.parent.showSection('dashboard');
+                btn.disabled = true;
+                btn.textContent = 'Creating account...';
+                showLoading();
+                
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await userCredential.user.updateProfile({ displayName });
+                
+                // Create user document in Firestore
+                await db.collection('users').doc(userCredential.user.uid).set({
+                    displayName,
+                    email,
+                    photoURL: null,
+                    bio: 'New spiritual seeker 🕊️',
+                    badges: ['seeker'],
+                    followers: [],
+                    following: [],
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Success handled by onAuthStateChanged
+            } catch (error) {
+                console.error('Signup error:', error);
+                showAuthError(getFirebaseErrorMessage(error.code));
+                hideLoading();
+                btn.disabled = false;
+                btn.textContent = 'Create Account';
+            }
+        }
+
+        async function handleGoogleSignIn() {
+            try {
+                showLoading();
+                const provider = new firebase.auth.GoogleAuthProvider();
+                const result = await auth.signInWithPopup(provider);
+                
+                // Check if user doc exists, create if not
+                const userDoc = await db.collection('users').doc(result.user.uid).get();
+                if (!userDoc.exists) {
+                    await db.collection('users').doc(result.user.uid).set({
+                        displayName: result.user.displayName,
+                        email: result.user.email,
+                        photoURL: result.user.photoURL,
+                        bio: 'New spiritual seeker 🕊️',
+                        badges: ['seeker'],
+                        followers: [],
+                        following: [],
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                
+                // Success handled by onAuthStateChanged
+            } catch (error) {
+                console.error('Google sign-in error:', error);
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    showAuthError(getFirebaseErrorMessage(error.code));
+                }
+                hideLoading();
+            }
+        }
+
+        async function handleSignOut() {
+            if (!confirm('Are you sure you want to sign out?')) {
+                return;
+            }
+            
+            try {
+                showLoading();
+                
+                // Set offline status
+                if (currentUser) {
+                    await rtdb.ref(`presence/${currentUser.uid}`).set({
+                        status: 'offline',
+                        lastSeen: firebase.database.ServerValue.TIMESTAMP
+                    });
+                }
+                
+                // Unsubscribe from all listeners
+                unsubscribeFeeds.forEach(unsub => unsub());
+                unsubscribeFeeds = [];
+                
+                await auth.signOut();
+                
+                // Reload page to reset state
+                window.location.reload();
+            } catch (error) {
+                console.error('Sign out error:', error);
+                showToast('Error signing out', 'error');
+                hideLoading();
+            }
+        }
+
+        // ==================== FEED POSTS ====================
+        function loadFeedPosts() {
+            const feedContainer = document.getElementById('feedPosts');
+            feedContainer.innerHTML = ''; // Clear loading message
+            
+            // Real-time listener for posts
+            const unsubscribe = db.collection('posts')
+                .orderBy('createdAt', 'desc')
+                .limit(20)
+                .onSnapshot((snapshot) => {
+                    if (snapshot.empty) {
+                        feedContainer.innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-state-icon">✨</div>
+                                <p>Be the first to share something sacred!</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    snapshot.docChanges().forEach((change) => {
+                        if (change.type === 'added') {
+                            const post = { id: change.doc.id, ...change.doc.data() };
+                            const postElement = createPostElement(post);
+                            
+                            // Insert at the beginning for new posts
+                            if (feedContainer.firstChild && feedContainer.firstChild.classList.contains('empty-state')) {
+                                feedContainer.innerHTML = '';
+                            }
+                            feedContainer.insertBefore(postElement, feedContainer.firstChild);
+                        }
+                        
+                        if (change.type === 'modified') {
+                            const postElement = document.querySelector(`[data-post-id="${change.doc.id}"]`);
+                            if (postElement) {
+                                const updatedPost = { id: change.doc.id, ...change.doc.data() };
+                                const newElement = createPostElement(updatedPost);
+                                postElement.replaceWith(newElement);
+                            }
+                        }
+                    });
+                }, (error) => {
+                    console.error('Error loading posts:', error);
+                    showToast('Error loading posts', 'error');
+                });
+            
+            unsubscribeFeeds.push(unsubscribe);
+        }
+
+        function createPostElement(post) {
+            const div = document.createElement('div');
+            div.className = 'post-card';
+            div.dataset.postId = post.id;
+            
+            const timeAgo = post.createdAt ? getTimeAgo(post.createdAt.toDate()) : 'Just now';
+            const userInitial = post.authorName ? post.authorName[0].toUpperCase() : 'U';
+            const isLiked = post.likes && currentUser && post.likes.includes(currentUser.uid);
+            const likesCount = post.likes ? post.likes.length : 0;
+            
+            div.innerHTML = `
+                <div class="post-header">
+                    <div class="post-avatar">${userInitial}</div>
+                    <div class="post-author-info">
+                        <div class="post-author-name">${escapeHtml(post.authorName || 'Anonymous')}</div>
+                        <div class="post-timestamp">${timeAgo}</div>
+                    </div>
+                </div>
+                <div class="post-content">${escapeHtml(post.content)}</div>
+                ${post.imageUrl ? `<img src="${post.imageUrl}" alt="Post image" class="post-image" loading="lazy">` : ''}
+                <div class="post-actions">
+                    <div class="post-action ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}')">
+                        <span>${isLiked ? '❤️' : '🤍'}</span>
+                        <span id="likes-${post.id}">${likesCount}</span>
+                    </div>
+                    <div class="post-action" onclick="commentOnPost('${post.id}')">
+                        <span>💬</span>
+                        <span>${post.commentsCount || 0}</span>
+                    </div>
+                    <div class="post-action">
+                        <span>🔄</span>
+                        <span>Share</span>
+                    </div>
+                </div>
+            `;
+            
+            return div;
+        }
+
+        async function createPost() {
+            const content = document.getElementById('postContent').value.trim();
+            
+            if (!content && !selectedImage) {
+                showToast('Please write something or add an image', 'error');
+                return;
+            }
+            
+            if (!currentUser) {
+                showToast('Please sign in to post', 'error');
+                return;
+            }
+            
+            try {
+                showLoading();
+                
+                let imageUrl = null;
+                if (selectedImage) {
+                    const imageRef = storage.ref(`posts/${currentUser.uid}/${Date.now()}_${selectedImage.name}`);
+                    await imageRef.put(selectedImage);
+                    imageUrl = await imageRef.getDownloadURL();
+                }
+                
+                await db.collection('posts').add({
+                    content,
+                    imageUrl,
+                    authorId: currentUser.uid,
+                    authorName: currentUser.displayName || currentUser.email,
+                    likes: [],
+                    commentsCount: 0,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                document.getElementById('postContent').value = '';
+                selectedImage = null;
+                document.getElementById('postImageInput').value = '';
+                
+                hideLoading();
+                showToast('Post shared! ✨', 'success');
+            } catch (error) {
+                console.error('Error creating post:', error);
+                hideLoading();
+                showToast('Error creating post: ' + error.message, 'error');
+            }
+        }
+
+        function handleImageSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('Image must be less than 5MB', 'error');
+                    e.target.value = '';
+                    return;
+                }
+                selectedImage = file;
+                showToast('Image selected! 📷', 'success');
+            }
+        }
+
+        async function toggleLike(postId) {
+            if (!currentUser) {
+                showToast('Please sign in to like posts', 'error');
+                return;
+            }
+            
+            try {
+                const postRef = db.collection('posts').doc(postId);
+                const post = await postRef.get();
+                
+                if (!post.exists) {
+                    showToast('Post not found', 'error');
+                    return;
+                }
+                
+                const likes = post.data().likes || [];
+                
+                if (likes.includes(currentUser.uid)) {
+                    await postRef.update({
+                        likes: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
+                    });
                 } else {
-                    window.location.href = '../members.html';
+                    await postRef.update({
+                        likes: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
+                    });
                 }
             } catch (error) {
-                console.error('Navigation error:', error);
-                window.location.href = '../members.html';
+                console.error('Error toggling like:', error);
+                showToast('Error updating like', 'error');
             }
         }
-        
-        function showTab(tabId) {
-            if (communitySystem) {
-                communitySystem.showTab(tabId);
-            }
-        }
-        
-        function createMeditationRoom() {
-            if (communitySystem) {
-                communitySystem.createMeditationRoom();
-            }
-        }
-        
-        function joinMeditationRoom(roomId) {
-            if (communitySystem) {
-                communitySystem.joinMeditationRoom(roomId);
-            }
-        }
-        
-        function joinRandomRoom() {
-            if (communitySystem) {
-                communitySystem.joinRandomRoom();
-            }
-        }
-        
-        function scheduleMeditation() {
-            if (communitySystem) {
-                communitySystem.scheduleMeditation();
-            }
-        }
-        
-        function openDiscussion(discussionId) {
-            if (communitySystem) {
-                communitySystem.openDiscussion(discussionId);
-            }
-        }
-        
-        function openEvent(eventId) {
-            if (communitySystem) {
-                communitySystem.openEvent(eventId);
-            }
-        }
-        
-        function viewFullCalendar() {
-            if (communitySystem) {
-                communitySystem.viewFullCalendar();
-            }
-        }
-        
-        function viewMemberProfile(memberId) {
-            if (communitySystem) {
-                communitySystem.viewMemberProfile(memberId);
-            }
-        }
-        
-        function viewAllMembers() {
-            if (communitySystem) {
-                communitySystem.viewAllMembers();
-            }
-        }
-        
-        function closeModal(modalId) {
-            if (communitySystem) {
-                communitySystem.closeModal(modalId);
-            }
-        }
-        
-        function createNewMeditationRoom(event) {
-            if (communitySystem) {
-                communitySystem.createNewMeditationRoom(event);
-            }
-        }
-        
-        function createNewDiscussion(event) {
-            if (communitySystem) {
-                communitySystem.createNewDiscussion(event);
-            }
-        }
-        
-        function createNewEvent(event) {
-            if (communitySystem) {
-                communitySystem.createNewEvent(event);
-            }
-        }
-        
-        // Initialize system when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            communitySystem = new CommunitySystem();
+
+        // ==================== CHAT SYSTEM ====================
+        function loadChatRooms() {
+            const roomsList = document.getElementById('chatRoomsList');
             
-            // Add animation styles
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes slideIn {
-                    from {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
+            // Create default rooms if they don't exist
+            const defaultRooms = [
+                { id: 'general', name: '💬 General Chat', type: 'public', lastMessage: 'Welcome to the community!' },
+                { id: 'meditation', name: '🧘 Meditation Talk', type: 'public', lastMessage: 'Share your meditation experiences' },
+                { id: 'healing', name: '💚 Healing Circle', type: 'public', lastMessage: 'Support and healing energy' }
+            ];
+            
+            defaultRooms.forEach(room => {
+                db.collection('chatRooms').doc(room.id).set(room, { merge: true });
+            });
+            
+            // Listen to chat rooms
+            const unsubscribe = db.collection('chatRooms')
+                .onSnapshot((snapshot) => {
+                    roomsList.innerHTML = '';
+                    snapshot.forEach((doc) => {
+                        const room = { id: doc.id, ...doc.data() };
+                        const roomElement = createChatRoomElement(room);
+                        roomsList.appendChild(roomElement);
+                    });
+                }, (error) => {
+                    console.error('Error loading chat rooms:', error);
+                });
+            
+            unsubscribeFeeds.push(unsubscribe);
+        }
+
+        function createChatRoomElement(room) {
+            const div = document.createElement('div');
+            div.className = 'chat-room-item';
+            div.onclick = () => openChatRoom(room.id, room.name);
+            
+            const icon = room.name.split(' ')[0];
+            
+            div.innerHTML = `
+                <div class="chat-room-avatar">${icon}</div>
+                <div class="chat-room-info">
+                    <div class="chat-room-name">${escapeHtml(room.name)}</div>
+                    <div class="chat-room-preview">${escapeHtml(room.lastMessage || 'No messages yet')}</div>
+                </div>
+            `;
+            
+            return div;
+        }
+
+        function openChatRoom(roomId, roomName) {
+            currentChatRoom = roomId;
+            document.getElementById('chatWindowTitle').textContent = roomName;
+            document.getElementById('chatWindow').classList.add('open');
+            
+            // Load messages
+            loadChatMessages(roomId);
+        }
+
+        function loadChatMessages(roomId) {
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 1rem;">Loading messages...</p>';
+            
+            // Listen to messages
+            const unsubscribe = db.collection('chatRooms').doc(roomId).collection('messages')
+                .orderBy('timestamp', 'asc')
+                .limit(50)
+                .onSnapshot((snapshot) => {
+                    messagesContainer.innerHTML = '';
+                    
+                    snapshot.forEach((doc) => {
+                        const message = { id: doc.id, ...doc.data() };
+                        const messageElement = createChatMessageElement(message);
+                        messagesContainer.appendChild(messageElement);
+                    });
+                    
+                    // Scroll to bottom
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, (error) => {
+                    console.error('Error loading messages:', error);
+                    messagesContainer.innerHTML = '<p style="text-align: center; color: var(--accent-rose); padding: 1rem;">Error loading messages</p>';
+                });
+            
+            // Clean up previous listener
+            if (window.currentChatUnsubscribe) {
+                window.currentChatUnsubscribe();
+            }
+            window.currentChatUnsubscribe = unsubscribe;
+        }
+
+        function createChatMessageElement(message) {
+            const div = document.createElement('div');
+            const isOwn = currentUser && message.userId === currentUser.uid;
+            div.className = `chat-message ${isOwn ? 'own' : ''}`;
+            
+            const userInitial = message.userName ? message.userName[0].toUpperCase() : 'U';
+            const time = message.timestamp ? new Date(message.timestamp.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+            
+            div.innerHTML = `
+                <div class="chat-message-avatar">${userInitial}</div>
+                <div class="chat-message-content">
+                    <div class="chat-message-bubble">${escapeHtml(message.content)}</div>
+                    <div class="chat-message-time">${time}</div>
+                </div>
+            `;
+            
+            return div;
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatMessageInput');
+            const content = input.value.trim();
+            
+            if (!content || !currentChatRoom) return;
+            
+            if (!currentUser) {
+                showToast('Please sign in to chat', 'error');
+                return;
+            }
+            
+            try {
+                await db.collection('chatRooms').doc(currentChatRoom).collection('messages').add({
+                    content,
+                    userId: currentUser.uid,
+                    userName: currentUser.displayName || currentUser.email,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Update last message in room
+                await db.collection('chatRooms').doc(currentChatRoom).update({
+                    lastMessage: content.substring(0, 50),
+                    lastMessageTime: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                input.value = '';
+            } catch (error) {
+                console.error('Error sending message:', error);
+                showToast('Error sending message', 'error');
+            }
+        }
+
+        function handleChatKeyPress(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendChatMessage();
+            }
+        }
+
+        function closeChatWindow() {
+            document.getElementById('chatWindow').classList.remove('open');
+            currentChatRoom = null;
+            
+            // Clean up message listener
+            if (window.currentChatUnsubscribe) {
+                window.currentChatUnsubscribe();
+                window.currentChatUnsubscribe = null;
+            }
+        }
+
+        // ==================== PRESENCE SYSTEM ====================
+        function setupPresence(userId) {
+            const userStatusRef = rtdb.ref(`presence/${userId}`);
+            
+            // Set up online status
+            rtdb.ref('.info/connected').on('value', (snapshot) => {
+                if (snapshot.val() === true) {
+                    userStatusRef.set({
+                        status: 'online',
+                        lastSeen: firebase.database.ServerValue.TIMESTAMP
+                    });
+                    
+                    // Set offline on disconnect
+                    userStatusRef.onDisconnect().set({
+                        status: 'offline',
+                        lastSeen: firebase.database.ServerValue.TIMESTAMP
+                    });
+                }
+            });
+        }
+
+        function loadOnlineMembers() {
+            const membersContainer = document.getElementById('onlineMembers');
+            
+            rtdb.ref('presence').on('value', (snapshot) => {
+                const presence = snapshot.val() || {};
+                const onlineUsers = Object.entries(presence)
+                    .filter(([uid, data]) => data.status === 'online' && uid !== currentUser?.uid)
+                    .slice(0, 10);
+                
+                membersContainer.innerHTML = '';
+                
+                if (onlineUsers.length === 0) {
+                    membersContainer.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem; padding: 1rem;">No one else online</p>';
+                    return;
                 }
                 
-                @keyframes fadeOut {
-                    from {
-                        opacity: 1;
-                    }
-                    to {
-                        opacity: 0;
-                    }
-                }
-            `;
-            document.head.appendChild(style);
+                onlineUsers.forEach(([uid, data]) => {
+                    // Get user info from Firestore
+                    db.collection('users').doc(uid).get().then((doc) => {
+                        if (doc.exists) {
+                            const user = doc.data();
+                            const memberElement = createMemberElement(user, uid);
+                            membersContainer.appendChild(memberElement);
+                        }
+                    }).catch(error => {
+                        console.error('Error loading user:', error);
+                    });
+                });
+            });
+        }
+
+        function createMemberElement(user, uid) {
+            const div = document.createElement('div');
+            div.className = 'member-item';
+            div.onclick = () => openDirectMessage(uid, user.displayName);
             
-            console.log('🤝 Sacred Community System initialized');
-        });
+            const initial = user.displayName ? user.displayName[0].toUpperCase() : 'U';
+            
+            div.innerHTML = `
+                <div class="member-avatar">
+                    ${initial}
+                    <div class="online-indicator"></div>
+                </div>
+                <div class="member-name">${escapeHtml(user.displayName || 'Anonymous')}</div>
+            `;
+            
+            return div;
+        }
+
+        function openDirectMessage(userId, userName) {
+            showToast(`DM feature coming soon! You wanted to chat with ${userName}`, 'info');
+        }
+
+        // ==================== NOTIFICATIONS ====================
+        function listenForNotifications(userId) {
+            // Listen to notifications collection
+            db.collection('notifications')
+                .where('userId', '==', userId)
+                .where('read', '==', false)
+                .onSnapshot((snapshot) => {
+                    const unreadCount = snapshot.size;
+                    const badge = document.getElementById('notificationBadge');
+                    if (badge) {
+                        badge.textContent = unreadCount;
+                        badge.style.display = unreadCount > 0 ? 'flex' : 'none';
+                    }
+                });
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        function showAuthScreen() {
+            document.getElementById('authScreen').classList.remove('hidden');
+            document.getElementById('appContainer').classList.remove('active');
+        }
+
+        function showAuthError(message) {
+            const errorEl = document.getElementById('authError');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        function hideAuthError() {
+            document.getElementById('authError').classList.remove('show');
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `notification-toast toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideInRight 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+            if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
+            return date.toLocaleDateString();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function getFirebaseErrorMessage(code) {
+            const messages = {
+                'auth/email-already-in-use': 'This email is already registered. Please sign in instead.',
+                'auth/invalid-email': 'Please enter a valid email address.',
+                'auth/operation-not-allowed': 'This sign-in method is not enabled.',
+                'auth/weak-password': 'Password should be at least 6 characters.',
+                'auth/user-disabled': 'This account has been disabled.',
+                'auth/user-not-found': 'No account found with this email.',
+                'auth/wrong-password': 'Incorrect password. Please try again.',
+                'auth/too-many-requests': 'Too many failed attempts. Please try again later.',
+                'auth/popup-blocked': 'Pop-up was blocked. Please allow pop-ups for this site.',
+                'auth/popup-closed-by-user': 'Sign-in cancelled.',
+            };
+            return messages[code] || 'An error occurred. Please try again.';
+        }
+
+        // ==================== EVENT HANDLERS ====================
+        function toggleNotifications() {
+            showToast('Notifications feature coming soon! 🔔', 'info');
+        }
+
+        function openMessenger() {
+            showToast('Opening messenger...', 'info');
+        }
+
+        function toggleUserMenu() {
+            showToast('User settings coming soon! ⚙️', 'info');
+        }
+
+        function commentOnPost(postId) {
+            showToast('Comments feature coming soon! 💬', 'info');
+        }
+
+        console.log('🕊️ Sacred Community script loaded successfully!');
     </script>
 </body>
 </html>
