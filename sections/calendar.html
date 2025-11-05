@@ -1569,10 +1569,19 @@
                 this.userData.journal.unshift(entry);
                 await this.saveUserData();
                 await this.logActivity('journal');
-                
+
+                // 🎯 AWARD XP FOR JOURNAL ENTRY
+                if (window.progressSystem) {
+                    await window.progressSystem.awardXP(50, 'Sacred journal entry', 'calendar');
+                    await window.progressSystem.logActivity('journal_entry', 'calendar', {
+                        mood,
+                        hasGratitude: !!gratitude
+                    });
+                }
+
                 this.updateJournalView();
                 this.generateCalendar(); // Refresh to show journal dot
-                
+
                 showToast('Journal entry saved! 📝', 'success');
                 window.currentJournalDate = null;
             }

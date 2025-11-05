@@ -1468,17 +1468,13 @@
             }
         }
 
-        function updateProgress() {
-            // Integration with Universal Progress System
-            if (window.parent && window.parent.UniversalProgressSystem) {
-                window.parent.UniversalProgressSystem.updateProgress({
-                    section: 'oracle-divination',
-                    activity: `${currentSystem}_reading`,
-                    points: 10,
-                    details: {
-                        system: currentSystem,
-                        intention: currentIntention
-                    }
+        async function updateProgress() {
+            // 🎯 AWARD XP IN UNIVERSAL PROGRESS SYSTEM
+            if (window.progressSystem) {
+                await window.progressSystem.awardXP(30, 'Oracle card reading', 'oracle-divination');
+                await window.progressSystem.logActivity('oracle_reading', 'oracle-divination', {
+                    system: currentSystem,
+                    intention: currentIntention
                 });
             }
         }

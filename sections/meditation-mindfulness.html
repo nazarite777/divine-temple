@@ -1033,7 +1033,7 @@
                 this.progress.sessions++;
                 this.updateStreak();
                 this.checkAchievements(minutes);
-                
+
                 this.progress.sessionHistory.unshift({
                     type: this.currentSession?.type || 'unknown',
                     duration: minutes,
@@ -1045,6 +1045,17 @@
                 }
 
                 await this.saveProgress();
+
+                // 🎯 AWARD XP IN UNIVERSAL PROGRESS SYSTEM
+                const xp = minutes * 10; // 10 XP per minute of meditation
+                if (window.progressSystem) {
+                    await window.progressSystem.awardXP(xp, `${minutes}-minute meditation session`, 'meditation-mindfulness');
+                    await window.progressSystem.logActivity('meditation', 'meditation-mindfulness', {
+                        duration: minutes,
+                        type: this.currentSession?.type || 'unknown'
+                    });
+                }
+
                 this.showCompletionNotification(minutes);
             }
 

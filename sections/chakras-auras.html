@@ -921,7 +921,7 @@
             updatePlayButton();
         }
 
-        function stopSound() {
+        async function stopSound() {
             if (currentOscillators.length > 0) {
                 const fadeTime = 0.3;
                 currentOscillators.forEach(({osc, gain}) => {
@@ -929,6 +929,16 @@
                     osc.stop(audioContext.currentTime + fadeTime);
                 });
                 currentOscillators = [];
+
+                // 🎯 AWARD XP FOR CHAKRA HEALING SESSION
+                if (window.progressSystem) {
+                    const chakraData = CHAKRA_DATA[currentChakra];
+                    await window.progressSystem.awardXP(40, `${chakraData.name} healing session`, 'chakras-auras');
+                    await window.progressSystem.logActivity('chakra_healing', 'chakras-auras', {
+                        chakra: currentChakra,
+                        frequency: chakraData.frequency
+                    });
+                }
             }
             isPlaying = false;
             updatePlayButton();

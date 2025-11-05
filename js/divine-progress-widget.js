@@ -599,16 +599,20 @@ class DivineProgressWidget {
 
         document.body.appendChild(celebration);
 
+        // ✨ CREATE PARTICLE EFFECTS
+        this.createParticleExplosion(celebration);
+
         // Play celebration sound if available
         if (window.divineAudio) {
             divineAudio.playBell(528, 3);
             setTimeout(() => divineAudio.playBell(639, 3), 500);
+            setTimeout(() => divineAudio.playBell(741, 3), 1000);
         }
 
         setTimeout(() => {
             celebration.style.animation = 'fadeOut 0.5s ease';
             setTimeout(() => celebration.remove(), 500);
-        }, 3000);
+        }, 4000);
     }
 
     showAchievementPopup(achievement) {
@@ -697,6 +701,58 @@ class DivineProgressWidget {
             popup.style.animation = 'slideOutRight 0.5s ease';
             setTimeout(() => popup.remove(), 500);
         }, 5000);
+    }
+
+    createParticleExplosion(container) {
+        const particles = 50;
+        const colors = ['#D4AF37', '#FFD700', '#8B5CF6', '#4fc3f7', '#66bb6a', '#ff6b6b'];
+        const symbols = ['✨', '🌟', '⭐', '💫', '✴️', '🔆'];
+
+        for (let i = 0; i < particles; i++) {
+            const particle = document.createElement('div');
+            const isSymbol = Math.random() > 0.5;
+
+            particle.style.position = 'fixed';
+            particle.style.left = '50%';
+            particle.style.top = '50%';
+            particle.style.transform = 'translate(-50%, -50%)';
+            particle.style.pointerEvents = 'none';
+            particle.style.zIndex = '999998';
+
+            if (isSymbol) {
+                particle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                particle.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            } else {
+                particle.style.width = (Math.random() * 8 + 4) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.borderRadius = '50%';
+            }
+
+            const angle = (Math.PI * 2 * i) / particles;
+            const velocity = Math.random() * 300 + 200;
+            const tx = Math.cos(angle) * velocity;
+            const ty = Math.sin(angle) * velocity;
+
+            particle.animate([
+                {
+                    transform: 'translate(-50%, -50%) scale(1)',
+                    opacity: 1
+                },
+                {
+                    transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0)`,
+                    opacity: 0
+                }
+            ], {
+                duration: Math.random() * 1000 + 1500,
+                easing: 'cubic-bezier(0, .9, .57, 1)',
+                fill: 'forwards'
+            });
+
+            container.appendChild(particle);
+
+            setTimeout(() => particle.remove(), 2500);
+        }
     }
 
     openProgressDashboard() {
