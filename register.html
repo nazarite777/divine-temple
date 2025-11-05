@@ -670,6 +670,47 @@
             }, 5000);
         }
 
+        // Mailchimp integration
+        async function subscribeToMailchimp(email, firstName) {
+            try {
+                // Using the existing Mailchimp list
+                const MAILCHIMP_URL = 'https://us9.list-manage.com/subscribe/post-json?u=53f0baf84fb1bc8c515e6f731&id=0005a32626&f_id=007053e1f0';
+
+                const formData = new FormData();
+                formData.append('EMAIL', email);
+                formData.append('FNAME', firstName);
+                formData.append('b_53f0baf84fb1bc8c515e6f731_0005a32626', ''); // Bot field
+
+                // Use JSONP for cross-origin request
+                const url = MAILCHIMP_URL + '&' + new URLSearchParams(formData).toString() + '&c=mailchimpCallback';
+
+                return new Promise((resolve) => {
+                    window.mailchimpCallback = function(data) {
+                        if (data.result === 'success') {
+                            console.log('✅ Added to Mailchimp:', email);
+                            resolve(true);
+                        } else {
+                            console.log('⚠️ Mailchimp subscription issue:', data.msg);
+                            resolve(false);
+                        }
+                    };
+
+                    const script = document.createElement('script');
+                    script.src = url;
+                    document.body.appendChild(script);
+
+                    // Cleanup after 5 seconds
+                    setTimeout(() => {
+                        script.remove();
+                        resolve(false);
+                    }, 5000);
+                });
+            } catch (error) {
+                console.error('❌ Mailchimp error:', error);
+                return false;
+            }
+        }
+
         // Form submission with Firebase
         document.getElementById('registration-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -681,22 +722,22 @@
             const registerBtn = document.getElementById('register-btn');
             registerBtn.disabled = true;
             registerBtn.classList.add('loading');
-            
-            const originalText = registerBtn.textContent;
-            registerBtn.textContent = '🔥 Creating Sacred Account...';
 
             try {
                 const formData = new FormData(e.target);
                 const userData = Object.fromEntries(formData.entries());
 
-                // Validate required fields
-                if (!userData.email || !userData.password || !userData.displayName) {
-                    throw new Error('Please fill in all required fields');
-                }
+                // Get the form fields with correct names
+                const fullName = userData.full_name || '';
+                const email = userData.email;
+                const password = userData.password;
+                const username = userData.username;
+                const spiritualPath = userData.spiritual_path || 'Seeker';
+                const newsletterOptIn = document.getElementById('newsletter-agreement').checked;
 
-                // Check password confirmation
-                if (userData.password !== userData.confirmPassword) {
-                    throw new Error('Passwords do not match');
+                // Validate required fields
+                if (!email || !password || !fullName) {
+                    throw new Error('Please fill in all required fields');
                 }
 
                 // Wait for Firebase to be initialized
@@ -705,45 +746,64 @@
                 }
 
                 console.log('🔥 Creating Firebase user...');
-                
+
                 // Create Firebase user
                 const result = await FirebaseConfig.auth.createUser(
-                    userData.email,
-                    userData.password,
-                    userData.displayName
+                    email,
+                    password,
+                    fullName
                 );
 
                 if (result.success) {
                     console.log('✅ Firebase user created successfully');
-                    
+
+                    // Save additional user data to Firestore
+                    try {
+                        await firebase.firestore().collection('users').doc(result.user.uid).update({
+                            username: username,
+                            spiritualPath: spiritualPath,
+                            spiritualName: userData.spiritual_name || '',
+                            birthDate: userData.birth_date || null,
+                            meditationExperience: userData.meditation_experience || 'Beginner',
+                            sacredIntentions: userData.sacred_intentions || '',
+                            membershipLevel: 'free', // Default to free membership
+                            newsletterOptIn: newsletterOptIn,
+                            registrationDate: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        console.log('✅ Additional user data saved');
+                    } catch (firestoreError) {
+                        console.error('⚠️ Could not save additional data:', firestoreError);
+                    }
+
+                    // Subscribe to Mailchimp if opted in
+                    if (newsletterOptIn) {
+                        console.log('📧 Subscribing to newsletter...');
+                        await subscribeToMailchimp(email, fullName.split(' ')[0]);
+                    }
+
                     // Track successful registration
                     FirebaseConfig.analytics.trackEvent('sign_up', {
                         method: 'email',
-                        user_id: result.user.uid
+                        user_id: result.user.uid,
+                        membership_level: 'free',
+                        spiritual_path: spiritualPath
                     });
 
                     showMessage('🎉 Sacred account created successfully! Welcome to the Divine Temple.', 'success');
-                    
-                    // Show email verification notice if user email not verified
-                    if (!result.user.emailVerified) {
-                        setTimeout(() => {
-                            showEmailVerificationModal(userData.email);
-                        }, 2000);
-                    } else {
-                        // Redirect to login page to choose tier
-                        setTimeout(() => {
-                            window.location.href = 'login.html';
-                        }, 3000);
-                    }
+
+                    // Redirect to free dashboard
+                    setTimeout(() => {
+                        window.location.href = 'free-dashboard.html';
+                    }, 2000);
                 } else {
                     throw new Error(result.error || 'Registration failed');
                 }
 
             } catch (error) {
                 console.error('Registration error:', error);
-                
+
                 let errorMessage = '⚠️ Sacred registration encountered an issue: ';
-                
+
                 // Handle specific Firebase auth errors
                 if (error.message.includes('email-already-in-use')) {
                     errorMessage += 'An account with this email already exists. Please try signing in instead.';
@@ -754,9 +814,9 @@
                 } else {
                     errorMessage += error.message || 'Please try again in a moment.';
                 }
-                
+
                 showMessage(errorMessage, 'error');
-                
+
                 // Track failed registration
                 if (window.FirebaseConfig) {
                     FirebaseConfig.analytics.trackEvent('sign_up_failed', {
@@ -764,11 +824,10 @@
                         method: 'email'
                     });
                 }
-                
+
             } finally {
                 registerBtn.disabled = false;
                 registerBtn.classList.remove('loading');
-                registerBtn.textContent = originalText;
             }
         });
 
