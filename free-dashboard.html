@@ -433,9 +433,10 @@
         </div>
     </div>
 
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <!-- Firebase - UPDATED to match login.html version -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
     <!-- Freemium Config -->
     <script src="js/freemium-config.js"></script>
@@ -456,6 +457,15 @@
             firebase.initializeApp(firebaseConfig);
         }
 
+        // Set auth persistence to LOCAL (survives browser refreshes)
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(() => {
+                console.log('✅ Firebase auth persistence set to LOCAL');
+            })
+            .catch((error) => {
+                console.error('❌ Error setting persistence:', error);
+            });
+
         // Check authentication
         firebase.auth().onAuthStateChanged((user) => {
             console.log('🔍 FREE-DASHBOARD: Auth state changed');
@@ -474,13 +484,8 @@
             } else {
                 // No user is signed in, redirect to login
                 console.log('❌ FREE-DASHBOARD: No user signed in');
-                console.log('   Redirecting to login.html in 2 seconds...');
-
-                // Add delay to see console messages
-                setTimeout(() => {
-                    console.log('   NOW redirecting to login.html');
-                    window.location.href = 'login.html';
-                }, 2000);
+                console.log('   Redirecting to login.html');
+                window.location.href = 'login.html';
             }
         });
 
