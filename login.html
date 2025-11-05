@@ -448,6 +448,28 @@
             }
         }
 
+        // Check URL parameters for pre-filled email and returning user
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const emailParam = urlParams.get('email');
+            const returningUser = urlParams.get('returning');
+
+            if (emailParam) {
+                // Pre-fill email field
+                document.getElementById('email').value = decodeURIComponent(emailParam);
+
+                if (returningUser === 'true') {
+                    // Show welcome back message
+                    showSuccess('✨ Welcome back! Please enter your password to continue.');
+
+                    // Focus on password field for convenience
+                    setTimeout(() => {
+                        document.getElementById('password').focus();
+                    }, 500);
+                }
+            }
+        });
+
         // Check if user is already logged in
         firebase.auth().onAuthStateChanged(async (user) => {
             if (user) {
