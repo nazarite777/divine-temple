@@ -6,7 +6,7 @@
 
 const FREEMIUM_CONFIG = {
     // 📚 Your Medium Blog URL
-    mediumBlogUrl: 'https://medium.com/@edenconsciousnesssdt',
+    mediumBlogUrl: 'https://medium.com/@edenconsciousnesssdt/article-1-manifestation-mastery-the-as-if-principle-that-manifested-300-in-30-minutes-9a4abe990c05',
 
     // 📧 Support Email
     supportEmail: 'support@divinetemple.com',
