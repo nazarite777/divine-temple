@@ -333,6 +333,12 @@
             const card = getRandomCard();
             displayCards([card], 'Single Card Reading');
             currentReading = [card];
+
+            // Award XP for tarot reading
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(15, 'Single tarot card drawn', 'tarot');
+                window.progressSystem.logActivity('tarot_single', 'tarot', {card: card.name});
+            }
         }
 
         function drawThree() {
@@ -343,6 +349,12 @@
             ];
             displayCards(cards, 'Three Card Spread');
             currentReading = cards;
+
+            // Award XP for three-card spread
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(25, 'Three-card tarot spread', 'tarot');
+                window.progressSystem.logActivity('tarot_three', 'tarot');
+            }
         }
 
         function drawCeltic() {
@@ -385,6 +397,12 @@ function save() {
         saved.unshift(reading);
         saved.splice(10);
         localStorage.setItem('tarotReadings', JSON.stringify(saved));
+
+        // Award XP for saving reading
+        if (window.progressSystem) {
+            window.progressSystem.awardXP(10, 'Tarot reading saved', 'tarot');
+        }
+
         showNotification('🎴 Reading saved!');
     }
 

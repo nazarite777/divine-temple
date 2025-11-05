@@ -133,6 +133,13 @@
 
         function drawCrystal() {
             const crystal = crystals[Math.floor(Math.random() * crystals.length)];
+
+            // Award XP for crystal oracle reading
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(15, `Crystal oracle: ${crystal.name}`, 'crystal-oracle');
+                window.progressSystem.logActivity('crystal_reading', 'crystal-oracle', {crystal: crystal.name});
+            }
+
             document.getElementById('result').innerHTML = `
                 <div class="crystal-card">
                     <div style="font-size: 5rem; margin-bottom: 1rem;">${crystal.icon}</div>
