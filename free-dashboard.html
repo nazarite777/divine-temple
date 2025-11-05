@@ -590,7 +590,15 @@
         }
 
         // Check authentication
+        let authCheckTimeout = null;
+
         firebase.auth().onAuthStateChanged((user) => {
+            // Clear any pending timeout
+            if (authCheckTimeout) {
+                clearTimeout(authCheckTimeout);
+                authCheckTimeout = null;
+            }
+
             if (user) {
                 // User is signed in
                 document.getElementById('userEmail').textContent = user.email;
@@ -602,8 +610,29 @@
                 document.getElementById('authLoading').classList.add('hidden');
                 document.body.classList.add('loaded');
             } else {
-                // No user is signed in, redirect to login
-                window.location.href = 'login.html';
+                // Check if we have user data in localStorage (user just logged in)
+                const hasStoredAuth = localStorage.getItem('membershipLevel') &&
+                                     localStorage.getItem('userEmail') &&
+                                     localStorage.getItem('userId');
+
+                if (hasStoredAuth) {
+                    // User just logged in, give Firebase time to restore the session
+                    console.log('🔄 Waiting for Firebase to restore session...');
+
+                    // Set a timeout to redirect if session isn't restored within 5 seconds
+                    authCheckTimeout = setTimeout(() => {
+                        console.error('❌ Session not restored, redirecting to login');
+                        // Clear localStorage before redirecting
+                        localStorage.removeItem('membershipLevel');
+                        localStorage.removeItem('userEmail');
+                        localStorage.removeItem('userId');
+                        window.location.href = 'login.html';
+                    }, 5000);
+                } else {
+                    // No stored auth data, user genuinely not logged in
+                    console.log('❌ No user session found, redirecting to login');
+                    window.location.href = 'login.html';
+                }
             }
         });
 
