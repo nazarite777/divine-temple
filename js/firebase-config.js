@@ -72,85 +72,32 @@ function onAuthStateChanged(callback) {
     return auth.onAuthStateChanged(callback);
 }
 
-// Admin credentials for creator access
-const ADMIN_CREDENTIALS = {
-    username: 'nazir23',
-    password: 'Nazir777',
-    email: 'nazir@edenconsciousness.com',
-    altEmail: 'nazir@edenconsiousness.com', // Alternative spelling
-    displayName: 'Nazir El - Creator',
-    role: 'admin'
-};
+// Admin email addresses (no password in code for security)
+const ADMIN_EMAILS = [
+    'nazir@edenconsciousness.com',
+    'nazir@edenconsiousness.com' // Alternative spelling
+];
 
 // User management functions
 const FirebaseAuth = {
-    // Admin authentication bypass for creator
-    async authenticateAdmin(usernameOrEmail, password) {
-        try {
-            console.log('🔱 Checking admin credentials...');
-            console.log('📧 Input username/email:', usernameOrEmail);
-            console.log('🔑 Input password length:', password?.length);
-            console.log('✅ Expected username:', ADMIN_CREDENTIALS.username);
-            console.log('✅ Expected email:', ADMIN_CREDENTIALS.email);
-            console.log('✅ Expected alt email:', ADMIN_CREDENTIALS.altEmail);
-            
-            // Check admin credentials with multiple email options
-            const isValidUser = (
-                usernameOrEmail === ADMIN_CREDENTIALS.username ||
-                usernameOrEmail === ADMIN_CREDENTIALS.email ||
-                usernameOrEmail === ADMIN_CREDENTIALS.altEmail ||
-                usernameOrEmail.toLowerCase() === 'nazir23' ||
-                usernameOrEmail.toLowerCase().includes('nazir@eden')
-            );
-            
-            const isValidPassword = password === ADMIN_CREDENTIALS.password;
-            
-            console.log('🔍 User check result:', isValidUser);
-            console.log('🔍 Password check result:', isValidPassword);
-            
-            if (isValidUser && isValidPassword) {
-                
-                // Create admin session
-                const adminUser = {
-                    uid: 'admin_nazir_creator',
-                    email: ADMIN_CREDENTIALS.email,
-                    displayName: ADMIN_CREDENTIALS.displayName,
-                    role: 'admin',
-                    isAdmin: true,
-                    createdAt: new Date(),
-                    lastLogin: new Date(),
-                    permissions: ['all']
-                };
-                
-                // Store admin session locally
-                localStorage.setItem('divineAuth', 'true');
-                localStorage.setItem('adminAuth', 'true');
-                localStorage.setItem('currentUser', JSON.stringify(adminUser));
-                sessionStorage.setItem('divineAuth', 'true');
-                sessionStorage.setItem('memberData', JSON.stringify(adminUser));
-                
-                console.log('🔱 ADMIN ACCESS GRANTED:', ADMIN_CREDENTIALS.displayName);
-                return { success: true, user: adminUser, isAdmin: true };
-            }
-            
-            return { success: false, error: 'Invalid admin credentials' };
-        } catch (error) {
-            console.error('❌ Admin authentication failed:', error);
-            return { success: false, error: error.message };
-        }
+    // Check if email belongs to admin
+    isAdminEmail(email) {
+        if (!email) return false;
+        const lowerEmail = email.toLowerCase();
+        return ADMIN_EMAILS.some(adminEmail => lowerEmail === adminEmail.toLowerCase());
     },
 
-    // Check if current user is admin
+    // Check if current user is admin (based on email)
     isAdmin() {
-        return localStorage.getItem('adminAuth') === 'true';
+        const user = auth.currentUser;
+        if (user && this.isAdminEmail(user.email)) {
+            return true;
+        }
+        return false;
     },
 
-    // Get current user (admin or Firebase)
+    // Get current user
     getCurrentUser() {
-        const adminAuth = localStorage.getItem('adminAuth') === 'true';
-        if (adminAuth) {
-            return JSON.parse(localStorage.getItem('currentUser') || '{}');
-        }
         return auth.currentUser;
     },
 
