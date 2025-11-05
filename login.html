@@ -353,19 +353,47 @@
                 const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
                 const user = userCredential.user;
 
-                // Store user tier
-                localStorage.setItem('userTier', selectedTier);
+                // Get user's actual membership level from Firestore
+                let actualMembershipLevel = 'free'; // Default
+                try {
+                    const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        actualMembershipLevel = userData.membershipLevel || 'free';
 
-                // Log email collection for marketing
-                console.log('Email collected:', email, 'Tier:', selectedTier);
+                        // Update last login
+                        await firebase.firestore().collection('users').doc(user.uid).update({
+                            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                } catch (firestoreError) {
+                    console.warn('Could not fetch membership level:', firestoreError);
+                }
+
+                // Store actual membership level (not the selected tier)
+                localStorage.setItem('membershipLevel', actualMembershipLevel);
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userId', user.uid);
+
+                // Track login event
+                if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
+                    window.FirebaseConfig.analytics.trackEvent('login', {
+                        method: 'email',
+                        user_id: user.uid,
+                        membership_level: actualMembershipLevel
+                    });
+                }
+
+                console.log('✅ User logged in:', email, 'Membership:', actualMembershipLevel);
 
                 showSuccess('Welcome back! Redirecting...');
 
-                // Redirect based on tier
+                // Redirect based on ACTUAL membership level from database
                 setTimeout(() => {
-                    if (selectedTier === 'free') {
+                    if (actualMembershipLevel === 'free' || actualMembershipLevel === 'basic') {
                         window.location.href = 'free-dashboard.html';
                     } else {
+                        // Premium members: founding, student, monthly
                         window.location.href = 'members-new.html';
                     }
                 }, 1000);
@@ -421,15 +449,30 @@
         }
 
         // Check if user is already logged in
-        firebase.auth().onAuthStateChanged((user) => {
+        firebase.auth().onAuthStateChanged(async (user) => {
             if (user) {
-                // User is already signed in, redirect based on stored tier
-                const userTier = localStorage.getItem('userTier') || 'free';
+                // User is already signed in, check their actual membership level
+                try {
+                    const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+                    let membershipLevel = 'free';
 
-                if (userTier === 'free') {
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        membershipLevel = userData.membershipLevel || 'free';
+                    }
+
+                    localStorage.setItem('membershipLevel', membershipLevel);
+
+                    // Redirect based on actual membership level
+                    if (membershipLevel === 'free' || membershipLevel === 'basic') {
+                        window.location.href = 'free-dashboard.html';
+                    } else {
+                        window.location.href = 'members-new.html';
+                    }
+                } catch (error) {
+                    console.error('Error checking membership:', error);
+                    // Default to free on error
                     window.location.href = 'free-dashboard.html';
-                } else {
-                    window.location.href = 'members-new.html';
                 }
             }
         });
