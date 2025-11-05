@@ -889,16 +889,25 @@
 
                 if (!this.currentBook) return;
 
+                // 🎯 AWARD XP FOR STARTING TO READ BOOK
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(20, `Started reading: ${this.currentBook.title}`, 'sacred-books');
+                    window.progressSystem.logActivity('book_reading', 'sacred-books', {
+                        bookId: this.currentBook.id,
+                        title: this.currentBook.title
+                    });
+                }
+
                 // Update UI
                 document.getElementById('current-book-title').textContent = this.currentBook.title;
-                
+
                 // Load saved chapter or start from beginning
                 const progress = this.userProgress[bookId] || { chapter: 0, progress: 0 };
                 this.currentChapter = progress.chapter;
-                
+
                 this.renderCurrentChapter();
                 this.updateActiveBook(bookId);
-                
+
                 console.log(`📖 Loaded "${this.currentBook.title}"`);
             }
 
@@ -1010,7 +1019,16 @@
                 this.notes.push(note);
                 this.saveNotes();
                 this.renderNotes();
-                
+
+                // 🎯 AWARD XP FOR SAVING NOTE
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(10, 'Study note saved', 'sacred-books');
+                    window.progressSystem.logActivity('book_note', 'sacred-books', {
+                        bookId: this.currentBook.id,
+                        chapter: this.currentChapter
+                    });
+                }
+
                 noteInput.value = '';
                 alert('Note saved! 📝');
             }
@@ -1062,8 +1080,17 @@
             joinStudyGroup(groupId) {
                 const group = this.studyGroups.find(g => g.id === groupId);
                 if (group) {
+                    // 🎯 AWARD XP FOR JOINING STUDY GROUP
+                    if (window.progressSystem) {
+                        window.progressSystem.awardXP(30, `Joined study group: ${group.name}`, 'sacred-books');
+                        window.progressSystem.logActivity('study_group_join', 'sacred-books', {
+                            groupId: group.id,
+                            groupName: group.name
+                        });
+                    }
+
                     alert(`You've joined "${group.name}"! 👥\n\nNext meeting: ${group.schedule}\nYou'll receive email notifications about upcoming sessions.`);
-                    
+
                     // Load the group's current book
                     this.loadBook(group.currentBook);
                 }
