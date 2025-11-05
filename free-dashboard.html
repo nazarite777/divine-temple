@@ -591,6 +591,30 @@
 
         // Check authentication
         let authCheckTimeout = null;
+        let authResolved = false;
+
+        // Check if we have stored auth data from login
+        const storedEmail = localStorage.getItem('userEmail');
+        const storedMembership = localStorage.getItem('membershipLevel');
+
+        if (storedEmail && storedMembership) {
+            // User recently logged in, show the page immediately
+            console.log('✅ Found stored auth, showing dashboard for:', storedEmail);
+            document.getElementById('userEmail').textContent = storedEmail;
+            document.getElementById('authLoading').classList.add('hidden');
+            document.body.classList.add('loaded');
+
+            // Set a timeout to redirect if Firebase doesn't confirm auth within 10 seconds
+            authCheckTimeout = setTimeout(() => {
+                if (!authResolved) {
+                    console.error('❌ Firebase session not confirmed, redirecting to login');
+                    localStorage.removeItem('membershipLevel');
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('userId');
+                    window.location.href = 'login.html';
+                }
+            }, 10000);
+        }
 
         firebase.auth().onAuthStateChanged((user) => {
             // Clear any pending timeout
@@ -600,39 +624,26 @@
             }
 
             if (user) {
-                // User is signed in
+                // User is signed in and confirmed by Firebase
+                authResolved = true;
                 document.getElementById('userEmail').textContent = user.email;
 
                 // Check if user has premium access
                 checkUserTier(user);
 
-                // Show the page after auth confirmed
+                // Show the page after auth confirmed (if not already shown)
                 document.getElementById('authLoading').classList.add('hidden');
                 document.body.classList.add('loaded');
+
+                console.log('✅ Firebase session confirmed for:', user.email);
             } else {
-                // Check if we have user data in localStorage (user just logged in)
-                const hasStoredAuth = localStorage.getItem('membershipLevel') &&
-                                     localStorage.getItem('userEmail') &&
-                                     localStorage.getItem('userId');
-
-                if (hasStoredAuth) {
-                    // User just logged in, give Firebase time to restore the session
-                    console.log('🔄 Waiting for Firebase to restore session...');
-
-                    // Set a timeout to redirect if session isn't restored within 5 seconds
-                    authCheckTimeout = setTimeout(() => {
-                        console.error('❌ Session not restored, redirecting to login');
-                        // Clear localStorage before redirecting
-                        localStorage.removeItem('membershipLevel');
-                        localStorage.removeItem('userEmail');
-                        localStorage.removeItem('userId');
-                        window.location.href = 'login.html';
-                    }, 5000);
-                } else {
-                    // No stored auth data, user genuinely not logged in
+                // No user from Firebase
+                if (!storedEmail) {
+                    // No stored auth data either, genuinely not logged in
                     console.log('❌ No user session found, redirecting to login');
                     window.location.href = 'login.html';
                 }
+                // If we have storedEmail, we already showed the page and set a timeout
             }
         });
 
