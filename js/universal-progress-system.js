@@ -186,13 +186,23 @@ class UniversalProgressSystem {
 
         const oldLevel = this.userData.level;
 
+        // Apply booster multipliers from reward shop
+        let finalAmount = amount;
+        if (window.rewardShop && window.rewardShop.isInitialized) {
+            const multiplier = window.rewardShop.getActiveBoosterMultiplier();
+            if (multiplier > 1) {
+                finalAmount = Math.floor(amount * multiplier);
+                console.log(`⚡ XP Booster active! ${amount} → ${finalAmount} XP (${multiplier}x)`);
+            }
+        }
+
         // Add to total XP
-        this.userData.totalXP += amount;
-        this.userData.currentLevelXP += amount;
+        this.userData.totalXP += finalAmount;
+        this.userData.currentLevelXP += finalAmount;
 
         // Add to section XP if specified
         if (section && this.userData.sections[section]) {
-            this.userData.sections[section].xp += amount;
+            this.userData.sections[section].xp += finalAmount;
         }
 
         // Check for level up
@@ -333,14 +343,22 @@ class UniversalProgressSystem {
             }
         }
 
+        // Dispatch event for other systems (daily quests, insights)
+        window.dispatchEvent(new CustomEvent('activityLogged', {
+            detail: { type: activityType, section, data, activity }
+        }));
+
         // Update stats based on activity type
         const xpRewards = {
             'meditation': { xp: 50, stat: 'meditations' },
-            'oracle-reading': { xp: 30, stat: 'oracleReadings' },
-            'journal-entry': { xp: 40, stat: 'journalEntries' },
+            'oracle_reading': { xp: 30, stat: 'oracleReadings' },
+            'journal_entry': { xp: 40, stat: 'journalEntries' },
+            'journal': { xp: 40, stat: 'journalEntries' },
+            'gratitude': { xp: 20, stat: 'gratitudeEntries' },
+            'prayer': { xp: 30, stat: 'prayers' },
             'book-read': { xp: 100, stat: 'booksRead' },
             'video-watched': { xp: 20, stat: 'videosWatched' },
-            'chakra-session': { xp: 60, stat: 'chakraBalancingSessions' },
+            'chakra_healing': { xp: 60, stat: 'chakraBalancingSessions' },
             'practice-completed': { xp: 50, stat: 'practicesCompleted' },
             'community-post': { xp: 25, stat: 'communityPosts' }
         };
