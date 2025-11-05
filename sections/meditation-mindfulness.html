@@ -10,7 +10,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    
+
+    <!-- Divine Temple Systems -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/divine-audio-engine.js"></script>
+    <script src="../js/universal-progress-system.js"></script>
+    <script src="../js/divine-progress-widget.js"></script>
+
     <style>
         :root {
             --primary-gold: #D4AF37;
@@ -723,6 +729,9 @@
             <p class="meditation-subtitle">Find peace, balance, and inner wisdom through guided practices</p>
         </div>
 
+        <!-- Divine Progress Widget -->
+        <div id="divine-progress-widget"></div>
+
         <!-- Progress Stats -->
         <div class="progress-stats" id="progress-stats">
             <div class="stat-card">
@@ -1024,7 +1033,7 @@
                 this.progress.sessions++;
                 this.updateStreak();
                 this.checkAchievements(minutes);
-                
+
                 this.progress.sessionHistory.unshift({
                     type: this.currentSession?.type || 'unknown',
                     duration: minutes,
@@ -1036,6 +1045,17 @@
                 }
 
                 await this.saveProgress();
+
+                // 🎯 AWARD XP IN UNIVERSAL PROGRESS SYSTEM
+                const xp = minutes * 10; // 10 XP per minute of meditation
+                if (window.progressSystem) {
+                    await window.progressSystem.awardXP(xp, `${minutes}-minute meditation session`, 'meditation-mindfulness');
+                    await window.progressSystem.logActivity('meditation', 'meditation-mindfulness', {
+                        duration: minutes,
+                        type: this.currentSession?.type || 'unknown'
+                    });
+                }
+
                 this.showCompletionNotification(minutes);
             }
 
