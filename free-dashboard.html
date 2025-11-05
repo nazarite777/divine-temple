@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divine Temple - Free Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gold: #d4af37;
+            --deep-purple: #8b5cf6;
+            --soft-blue: #3b82f6;
+            --dark-bg: #0f0f1e;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-glow: rgba(212, 175, 55, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(15, 15, 30, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-glow);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-gold), var(--deep-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .free-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            animation: glow-pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .welcome-banner h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-banner p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Calendar Section */
+        .calendar-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-gold), var(--deep-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .calendar-frame {
+            width: 100%;
+            height: 800px;
+            border: 2px solid var(--border-glow);
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Upgrade CTA */
+        .upgrade-cta {
+            background: linear-gradient(135deg, var(--deep-purple), var(--soft-blue));
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upgrade-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .upgrade-cta h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .upgrade-cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-btn {
+            background: white;
+            color: var(--deep-purple);
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .cta-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .cta-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-gold);
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        .locked-badge {
+            display: inline-block;
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* User Info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .welcome-banner {
+                padding: 2rem 1rem;
+            }
+
+            .welcome-banner h1 {
+                font-size: 1.8rem;
+            }
+
+            .upgrade-cta h2 {
+                font-size: 1.8rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .calendar-frame {
+                height: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">⚡ Divine Temple</div>
+        <div class="user-info">
+            <span class="free-badge">✨ Free Access</span>
+            <span id="userEmail" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;"></span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+            <h1>🌟 Welcome to Divine Temple Free Access</h1>
+            <p>Explore the sacred Enochian calendar and discover cosmic timing for your spiritual journey</p>
+        </div>
+
+        <!-- Calendar Section -->
+        <div class="calendar-section">
+            <h2 class="section-title">📅 Sacred Enochian Calendar</h2>
+            <iframe
+                src="sections/enochian-calendar.html"
+                class="calendar-frame"
+                frameborder="0"
+            ></iframe>
+        </div>
+
+        <!-- Locked Features Preview -->
+        <div class="calendar-section">
+            <h2 class="section-title">🔒 Premium Features</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.7); margin-bottom: 2rem;">
+                Unlock the full Divine Temple experience with these powerful spiritual tools
+            </p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧘</div>
+                    <h3>Meditation Center</h3>
+                    <p>Guided meditations, breathing exercises, and mindfulness practices</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔮</div>
+                    <h3>Oracle & Divination</h3>
+                    <p>Tarot readings, I Ching, runes, and sacred geometry tools</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Energy Healing</h3>
+                    <p>Chakra balancing, aura cleansing, crystal healing database</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🙏</div>
+                    <h3>Devotion & Growth</h3>
+                    <p>Prayer wheel, mantra practice, gratitude journal</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📖</div>
+                    <h3>Sacred Knowledge</h3>
+                    <p>Ancient texts, mystical teachings, dream journal</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎵</div>
+                    <h3>Spiritual Music</h3>
+                    <p>Solfeggio frequencies, binaural beats, healing sounds</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>Community</h3>
+                    <p>Connect with fellow seekers, share experiences</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Progress Tracking</h3>
+                    <p>XP system, daily quests, achievements, insights</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upgrade CTA -->
+        <div class="upgrade-cta">
+            <h2>✨ Unlock Your Full Spiritual Potential</h2>
+            <p>Get access to all 14 powerful spiritual tools, progress tracking, and our supportive community</p>
+            <div class="cta-buttons">
+                <a href="#" id="mediumBlogLink" class="cta-btn" target="_blank">
+                    📚 Read More on Medium
+                </a>
+                <a href="mailto:support@divinetemple.com?subject=Premium Access" class="cta-btn secondary">
+                    💎 Get Premium Access
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+    <!-- Freemium Config -->
+    <script src="js/freemium-config.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBl3r7LQ-pdz8KVP-7QnCuCJfOvEpzF-7M",
+            authDomain: "divine-temple-b7dcf.firebaseapp.com",
+            projectId: "divine-temple-b7dcf",
+            storageBucket: "divine-temple-b7dcf.firebasestorage.app",
+            messagingSenderId: "467831209971",
+            appId: "1:467831209971:web:d52e36ca71e3c72bca8870"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        // Check authentication
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in
+                document.getElementById('userEmail').textContent = user.email;
+
+                // Check if user has premium access
+                checkUserTier(user);
+            } else {
+                // No user is signed in, redirect to login
+                window.location.href = 'login.html';
+            }
+        });
+
+        function checkUserTier(user) {
+            // Check localStorage for user tier
+            const userTier = localStorage.getItem('userTier') || 'free';
+
+            // If user has premium, redirect to full dashboard
+            if (userTier === 'premium') {
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        function logout() {
+            firebase.auth().signOut().then(() => {
+                localStorage.removeItem('userTier');
+                window.location.href = 'login.html';
+            }).catch((error) => {
+                console.error('Logout error:', error);
+                alert('Error logging out. Please try again.');
+            });
+        }
+
+        // Load configuration settings
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.FREEMIUM_CONFIG) {
+                // Set Medium blog URL from config
+                document.getElementById('mediumBlogLink').href = FREEMIUM_CONFIG.mediumBlogUrl;
+
+                // Update support email link
+                const supportLinks = document.querySelectorAll('[href^="mailto:support@divinetemple.com"]');
+                supportLinks.forEach(link => {
+                    link.href = `mailto:${FREEMIUM_CONFIG.supportEmail}?subject=Premium Access`;
+                });
+
+                console.log('✅ Freemium config loaded:', FREEMIUM_CONFIG);
+            }
+        });
+    </script>
+</body>
+</html>
