@@ -471,18 +471,24 @@
         });
 
         function checkUserTier(user) {
-            // Check localStorage for user tier
-            const userTier = localStorage.getItem('userTier') || 'free';
+            // Check localStorage for user tier (using correct key: membershipLevel)
+            const membershipLevel = localStorage.getItem('membershipLevel') || 'free';
 
             // If user has premium, redirect to full dashboard
-            if (userTier === 'premium') {
-                window.location.href = 'dashboard.html';
+            if (membershipLevel !== 'free' && membershipLevel !== 'basic') {
+                // Premium members: founding, student, monthly
+                window.location.href = 'members-new.html';
             }
+
+            console.log('✅ Free member authenticated:', user.email, 'Level:', membershipLevel);
         }
 
         function logout() {
             firebase.auth().signOut().then(() => {
-                localStorage.removeItem('userTier');
+                // Clear all user-related localStorage
+                localStorage.removeItem('membershipLevel');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userId');
                 window.location.href = 'login.html';
             }).catch((error) => {
                 console.error('Logout error:', error);
