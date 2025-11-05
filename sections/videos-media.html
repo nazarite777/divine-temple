@@ -1355,6 +1355,42 @@
                 return null;
             }
 
+            playVideo(videoId) {
+                const video = this.findVideoById(videoId);
+                if (!video) return;
+
+                // Update watch history
+                const historyItem = {
+                    videoId: video.id,
+                    lastWatched: new Date().toISOString(),
+                    progress: 0
+                };
+
+                const existingIndex = this.watchHistory.findIndex(item => item.videoId === videoId);
+                if (existingIndex >= 0) {
+                    this.watchHistory[existingIndex] = historyItem;
+                } else {
+                    this.watchHistory.unshift(historyItem);
+                    if (this.watchHistory.length > 20) this.watchHistory.pop();
+                }
+
+                this.saveData();
+                this.renderWatchHistory();
+
+                // 🎯 AWARD XP FOR WATCHING VIDEO
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(15, `Watched: ${video.title}`, 'videos-media');
+                    window.progressSystem.logActivity('video_watch', 'videos-media', {
+                        videoId: video.id,
+                        title: video.title,
+                        category: video.category || this.currentCategory
+                    });
+                }
+
+                // Display video (placeholder for actual video player)
+                alert(`🎬 Now playing: ${video.title}\n\n${video.description}\n\nDuration: ${video.duration}`);
+            }
+
             loadCategory(category) {
                 this.currentCategory = category;
                 
@@ -1409,7 +1445,15 @@
                 this.savePlaylists();
                 this.renderPlaylists();
                 this.closePlaylistModal();
-                
+
+                // 🎯 AWARD XP FOR CREATING PLAYLIST
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(20, `Playlist created: ${name}`, 'videos-media');
+                    window.progressSystem.logActivity('playlist_creation', 'videos-media', {
+                        playlistName: name
+                    });
+                }
+
                 alert(`Playlist "${name}" created! 📝`);
             }
 
@@ -1456,7 +1500,15 @@
                 this.comments.push(comment);
                 this.saveComments();
                 this.renderComments();
-                
+
+                // 🎯 AWARD XP FOR COMMENTING
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(10, 'Video comment posted', 'videos-media');
+                    window.progressSystem.logActivity('video_comment', 'videos-media', {
+                        videoId: this.currentVideo.id
+                    });
+                }
+
                 commentInput.value = '';
                 alert('Comment posted! 💬');
             }
@@ -1512,6 +1564,16 @@
                     this.watchStats.favorites.push(videoId);
                     this.saveWatchStats();
                     this.updateWatchStats();
+
+                    // 🎯 AWARD XP FOR ADDING FAVORITE
+                    if (window.progressSystem) {
+                        window.progressSystem.awardXP(5, 'Video added to favorites', 'videos-media');
+                        window.progressSystem.logActivity('favorite_add', 'videos-media', {
+                            videoId: this.currentVideo.id,
+                            title: this.currentVideo.title
+                        });
+                    }
+
                     alert('⭐ Added to favorites!');
                 } else {
                     alert('Already in favorites!');
