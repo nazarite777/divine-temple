@@ -1078,62 +1078,13 @@
 
             try {
                 console.log('🔥 Firebase Config available:', !!window.FirebaseConfig);
-                console.log('🔑 Admin auth function available:', !!(window.FirebaseConfig && FirebaseConfig.auth.authenticateAdmin));
-                
-                // ⭐ FIRST: Check for ADMIN credentials (nazir23 / Nazir777)
-                console.log('🔱 Attempting admin authentication...');
-                
-                if (window.FirebaseConfig && FirebaseConfig.auth.authenticateAdmin) {
-                    const adminResult = await FirebaseConfig.auth.authenticateAdmin(email, password);
-                    
-                    console.log('🔍 Admin auth result:', adminResult);
-                    
-                    if (adminResult.success) {
-                        console.log('🔱 ADMIN AUTHENTICATION SUCCESSFUL:', adminResult.user.displayName);
-                        
-                        // Show admin success message
-                        successDiv.innerHTML = `
-                            <div style="text-align: center;">
-                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔱</div>
-                                <div style="font-weight: 600; color: var(--accent-gold);">ADMIN ACCESS GRANTED</div>
-                                <div style="font-size: 0.9rem; opacity: 0.8;">Welcome back, Creator Nazir El</div>
-                            </div>
-                        `;
-                        successDiv.classList.add('show');
-                        
-                        // Track admin login
-                        if (FirebaseConfig.analytics) {
-                            FirebaseConfig.analytics.trackEvent('admin_login_success', {
-                                user_role: 'creator',
-                                timestamp: new Date().toISOString()
-                            });
-                        }
-                        
-                        // Store admin session
-                        sessionStorage.setItem('divineAuth', 'true');
-                        sessionStorage.setItem('adminAuth', 'true');
-                        sessionStorage.setItem('memberData', JSON.stringify(adminResult.user));
-                        
-                        // Show dashboard after brief delay
-                        setTimeout(() => {
-                            hideAuthOverlay();
-                            showDashboard();
-                        }, 2000);
-                        
-                        return; // Exit function - admin authenticated
-                    } else {
-                        console.log('❌ Admin auth failed:', adminResult.error);
-                    }
-                } else {
-                    console.log('⚠️ Firebase or admin auth not available');
-                }
-                
-                // SECOND: Regular Firebase authentication
+
+                // Firebase authentication
                 console.log('🔥 Attempting Firebase authentication...');
                 if (!window.FirebaseConfig) {
                     throw new Error('Firebase not initialized');
                 }
-                
+
                 // Attempt Firebase authentication
                 const result = await FirebaseConfig.auth.signIn(email, password);
                 
@@ -1152,6 +1103,13 @@
                         joinDate: userData?.createdAt?.toDate?.()?.toISOString() || new Date().toISOString()
                     };
 
+                    // Check if user is admin (based on email)
+                    const isAdmin = FirebaseConfig.auth.isAdminEmail(result.user.email);
+                    if (isAdmin) {
+                        sessionStorage.setItem('adminAuth', 'true');
+                        console.log('🔱 Admin access granted for:', result.user.email);
+                    }
+
                     // Store authentication
                     sessionStorage.setItem('divineAuth', 'true');
                     sessionStorage.setItem('memberData', JSON.stringify(memberData));
@@ -1162,7 +1120,17 @@
                     }));
 
                     // Show success message
-                    successDiv.textContent = `✨ Welcome, ${memberData.displayName}! ✨`;
+                    if (isAdmin) {
+                        successDiv.innerHTML = `
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔱</div>
+                                <div style="font-weight: 600; color: var(--accent-gold);">ADMIN ACCESS GRANTED</div>
+                                <div style="font-size: 0.9rem; opacity: 0.8;">Welcome back, ${memberData.displayName}</div>
+                            </div>
+                        `;
+                    } else {
+                        successDiv.textContent = `✨ Welcome, ${memberData.displayName}! ✨`;
+                    }
                     successDiv.classList.add('show');
 
                     // Track successful login
@@ -1798,19 +1766,6 @@
             showDashboard: showDashboard,
             showSection: showSection,
             logout: logout,
-            
-            // Debug admin credentials
-            testAdminLogin: async function() {
-                console.log('🔱 Testing admin login...');
-                if (window.FirebaseConfig && FirebaseConfig.auth.authenticateAdmin) {
-                    const result = await FirebaseConfig.auth.authenticateAdmin('nazir23', 'Nazir777');
-                    console.log('Result:', result);
-                    return result;
-                } else {
-                    console.log('❌ Firebase config not available');
-                    return false;
-                }
-            },
             
             // Force admin login
             forceAdminLogin: function() {
