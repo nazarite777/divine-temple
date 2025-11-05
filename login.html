@@ -365,6 +365,27 @@
                         await firebase.firestore().collection('users').doc(user.uid).update({
                             lastLogin: firebase.firestore.FieldValue.serverTimestamp()
                         });
+                    } else {
+                        // User document doesn't exist - create it now
+                        console.log('⚠️ User document missing, creating now...');
+                        await firebase.firestore().collection('users').doc(user.uid).set({
+                            email: user.email,
+                            displayName: user.displayName || email.split('@')[0],
+                            membershipLevel: 'free',
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                            preferences: {
+                                theme: 'sacred',
+                                notifications: true
+                            },
+                            progress: {
+                                sectionsVisited: [],
+                                completedActions: [],
+                                lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                            }
+                        });
+                        console.log('✅ User document created successfully');
+                        actualMembershipLevel = 'free';
                     }
                 } catch (firestoreError) {
                     console.warn('Could not fetch membership level:', firestoreError);
