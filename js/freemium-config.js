@@ -6,8 +6,7 @@
 
 const FREEMIUM_CONFIG = {
     // 📚 Your Medium Blog URL
-    // Replace with your actual Medium article/blog URL
-    mediumBlogUrl: 'https://medium.com/@yourhandle/divine-temple-unlock-full-access',
+    mediumBlogUrl: 'https://medium.com/@edenconsciousnesssdt',
 
     // 📧 Support Email
     supportEmail: 'support@divinetemple.com',
