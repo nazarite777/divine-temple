@@ -1537,10 +1537,16 @@
         function revealSelectedCards() {
             document.getElementById('card-selection').style.display = 'none';
             document.getElementById('reading-results').style.display = 'block';
-            
+
+            // Award XP for completing reading
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(20, 'Oracle reading completed', 'spiritual-tools');
+                window.progressSystem.logActivity('oracle_reading', 'spiritual-tools', {type: currentReading.type});
+            }
+
             const revealedContainer = document.getElementById('revealed-cards');
             revealedContainer.innerHTML = '';
-            
+
             const positions = getReadingPositions(currentReading.type);
             
             currentReading.selectedCards.forEach((card, index) => {
@@ -1672,11 +1678,16 @@
                     affirmation: card.data.affirmation
                 }))
             };
-            
+
             const savedReadings = JSON.parse(localStorage.getItem('oracleReadings') || '[]');
             savedReadings.push(readingData);
             localStorage.setItem('oracleReadings', JSON.stringify(savedReadings));
-            
+
+            // Award XP for saving reading
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(15, 'Reading saved to journal', 'spiritual-tools');
+            }
+
             alert('🔮 Reading saved to your spiritual journal! ✨');
         }
         
@@ -1853,6 +1864,12 @@
             link.download = 'sacred-art-' + Date.now() + '.png';
             link.href = canvas.toDataURL();
             link.click();
+
+            // Award XP for creating sacred art
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(25, 'Created sacred art', 'spiritual-tools');
+                window.progressSystem.logActivity('sacred_art_created', 'spiritual-tools');
+            }
         }
         
         function generateInspiration() {
@@ -2061,13 +2078,19 @@
                 "Your greatest wounds often contain your greatest wisdom.",
                 "Integration happens through compassionate witnessing, not judgment."
             ];
-            
+
             const insight = insights[Math.floor(Math.random() * insights.length)];
             document.getElementById('shadow-insight').innerHTML = `
                 <div class="insight-card">
                     <p class="insight-text">"${insight}"</p>
                 </div>
             `;
+
+            // Award XP for completing shadow assessment
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(40, 'Completed shadow work assessment', 'spiritual-tools');
+                window.progressSystem.logActivity('shadow_assessment', 'spiritual-tools');
+            }
         }
         
         function loadIntegrationExercise() {
@@ -2157,7 +2180,13 @@
                 const entries = JSON.parse(localStorage.getItem('shadowJournalEntries') || '[]');
                 entries.push({ timestamp, entry: journal });
                 localStorage.setItem('shadowJournalEntries', JSON.stringify(entries));
-                
+
+                // Award XP for shadow journal entry
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(20, 'Shadow journal entry saved', 'spiritual-tools');
+                    window.progressSystem.logActivity('shadow_journal', 'spiritual-tools');
+                }
+
                 alert('Journal entry saved! 📖');
                 document.getElementById('shadow-journal').value = '';
             }
