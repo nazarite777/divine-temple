@@ -458,15 +458,29 @@
 
         // Check authentication
         firebase.auth().onAuthStateChanged((user) => {
+            console.log('🔍 FREE-DASHBOARD: Auth state changed');
+            console.log('   User:', user ? user.email : 'null');
+            console.log('   Current URL:', window.location.href);
+            console.log('   localStorage membershipLevel:', localStorage.getItem('membershipLevel'));
+
             if (user) {
                 // User is signed in
+                console.log('✅ FREE-DASHBOARD: User authenticated, setting email in UI');
                 document.getElementById('userEmail').textContent = user.email;
 
                 // Check if user has premium access
+                console.log('🔍 FREE-DASHBOARD: Checking user tier...');
                 checkUserTier(user);
             } else {
                 // No user is signed in, redirect to login
-                window.location.href = 'login.html';
+                console.log('❌ FREE-DASHBOARD: No user signed in');
+                console.log('   Redirecting to login.html in 2 seconds...');
+
+                // Add delay to see console messages
+                setTimeout(() => {
+                    console.log('   NOW redirecting to login.html');
+                    window.location.href = 'login.html';
+                }, 2000);
             }
         });
 
@@ -474,10 +488,16 @@
             // Check localStorage for user tier (using correct key: membershipLevel)
             const membershipLevel = localStorage.getItem('membershipLevel') || 'free';
 
+            console.log('🔍 CHECKTIER: membershipLevel =', membershipLevel);
+            console.log('   Is free or basic?', membershipLevel === 'free' || membershipLevel === 'basic');
+
             // If user has premium, redirect to full dashboard
             if (membershipLevel !== 'free' && membershipLevel !== 'basic') {
                 // Premium members: founding, student, monthly
+                console.log('💎 CHECKTIER: Premium member detected, redirecting to members-new.html');
                 window.location.href = 'members-new.html';
+            } else {
+                console.log('✅ CHECKTIER: Free member confirmed, staying on free-dashboard');
             }
 
             console.log('✅ Free member authenticated:', user.email, 'Level:', membershipLevel);
