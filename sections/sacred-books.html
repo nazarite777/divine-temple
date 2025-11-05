@@ -78,13 +78,26 @@
             transform: translateY(-2px);
         }
 
-        /* Main Layout */
+        /* Main Layout - Mobile First */
         .books-layout {
             display: grid;
-            grid-template-columns: 300px 1fr 350px;
+            grid-template-columns: 1fr;
             gap: 2rem;
             min-height: 80vh;
-            contain: layout style paint;
+        }
+
+        /* Tablet and up */
+        @media (min-width: 768px) {
+            .books-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Desktop */
+        @media (min-width: 1400px) {
+            .books-layout {
+                grid-template-columns: minmax(250px, 1fr) 2fr minmax(280px, 1fr);
+            }
         }
 
         .books-sidebar {
@@ -93,7 +106,6 @@
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 1.5rem;
-            height: fit-content;
         }
 
         .books-main {
@@ -102,7 +114,6 @@
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 2rem;
-            overflow: hidden;
         }
 
         .books-tools {
@@ -111,7 +122,6 @@
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 1.5rem;
-            height: fit-content;
         }
 
         /* Book Library Sidebar */
@@ -144,8 +154,10 @@
         }
 
         .book-list {
-            max-height: 400px;
-            overflow-y: auto;
+            /* Removed max-height and overflow for better mobile experience */
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
         .book-item {
@@ -232,11 +244,18 @@
         }
 
         .reader-content {
-            max-height: 60vh;
-            overflow-y: auto;
+            /* Let content flow naturally on mobile */
             padding-right: 1rem;
             line-height: 1.7;
             font-size: 1rem;
+        }
+
+        /* Add max-height only on larger screens */
+        @media (min-width: 1024px) {
+            .reader-content {
+                max-height: 70vh;
+                overflow-y: auto;
+            }
         }
 
         .reader-content h2 {
@@ -322,8 +341,7 @@
         }
 
         .tool-content {
-            max-height: 200px;
-            overflow-y: auto;
+            /* Removed max-height for better mobile experience */
         }
 
         .note-input {

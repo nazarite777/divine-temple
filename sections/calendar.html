@@ -198,14 +198,14 @@
         /* Main Layout */
         .calendar-main-interface {
             display: grid;
-            grid-template-columns: 1fr 400px;
+            grid-template-columns: 1fr;
             gap: 2rem;
             margin-bottom: 2rem;
         }
 
-        @media (max-width: 1200px) {
+        @media (min-width: 1200px) {
             .calendar-main-interface {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1.5fr 1fr;
             }
         }
 
@@ -815,8 +815,11 @@
 
         <div class="calendar-header">
             <div class="calendar-logo">📅</div>
-            <h1 class="calendar-title">Enoch Calendar</h1>
-            <p class="calendar-subtitle">Sacred 364-day calendar • 52 perfect weeks • Hebrew months aligned with divine timing</p>
+            <h1 class="calendar-title">Sacred Calendar</h1>
+            <p class="calendar-subtitle">
+                Enochian Calendar (364 days, 52 perfect weeks) with Gregorian reference<br>
+                <span style="font-size: 0.9rem; opacity: 0.8;">Hebrew months aligned with divine timing • Spring Equinox foundation</span>
+            </p>
         </div>
 
         <!-- Tab Navigation -->
@@ -1159,6 +1162,19 @@
                 return (index % 7) + 1;
             }
 
+            // Convert Enochian day index to Gregorian date
+            getGregorianDate(index) {
+                const daysFromReference = Math.floor((index + (Math.floor((new Date() - this.REFERENCE_DATE) / (1000 * 60 * 60 * 24)) / 364) * 364));
+                const gregorianDate = new Date(this.REFERENCE_DATE);
+                gregorianDate.setDate(gregorianDate.getDate() + daysFromReference);
+                return gregorianDate;
+            }
+
+            formatGregorianShort(date) {
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                return `${months[date.getMonth()]} ${date.getDate()}`;
+            }
+
             // ==================== FIREBASE DATA ====================
             async loadUserData() {
                 if (!this.currentUser) return;
@@ -1322,10 +1338,13 @@
                 div.onclick = () => this.openDayModal(month, day, globalIndex, isQuarterDay);
 
                 const lunarPhase = this.getLunarPhase(day);
-                
+                const gregorianDate = this.getGregorianDate(globalIndex);
+                const gregorianStr = this.formatGregorianShort(gregorianDate);
+
                 div.innerHTML = `
                     <div class="day-number" ${isSabbath ? 'style="color:var(--primary-gold)"' : ''}>${isQuarterDay ? 'Q' : day}</div>
                     <div class="day-lunar">${lunarPhase}</div>
+                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-top: 0.25rem;">${gregorianStr}</div>
                     <div class="day-events">
                         ${hasJournal ? '<span class="event-dot event-journal"></span>' : ''}
                         ${hasActivity ? '<span class="event-dot event-meditation"></span>' : ''}
