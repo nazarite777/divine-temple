@@ -2130,7 +2130,15 @@
                     data: dataURL,
                     timestamp: new Date().toISOString()
                 });
-                
+
+                // 🎯 AWARD XP FOR SACRED GEOMETRY CREATION
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(30, 'Sacred geometry created', 'sacred-arts-sound');
+                    window.progressSystem.logActivity('geometry_creation', 'sacred-arts-sound', {
+                        type: 'sacred_geometry'
+                    });
+                }
+
                 // Visual feedback
                 this.showNotification('Sacred geometry saved to gallery! ✨');
             }
@@ -2247,11 +2255,19 @@
                     data: dataURL,
                     timestamp: new Date().toISOString()
                 });
-                
+
                 this.creativeStats.mandalasCreated++;
                 this.saveStats();
                 this.updateStats();
-                
+
+                // 🎯 AWARD XP FOR MANDALA CREATION
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(35, 'Mandala artwork created', 'sacred-arts-sound');
+                    window.progressSystem.logActivity('mandala_creation', 'sacred-arts-sound', {
+                        symmetry: this.mandalaTool.symmetry
+                    });
+                }
+
                 this.showNotification('Mandala saved to sacred gallery! 🌸');
             }
 
@@ -2421,6 +2437,16 @@
                 cancelAnimationFrame(this.visualMeditation.animationId);
                 document.getElementById('meditation-controls').style.display = 'none';
                 this.meditationCtx.clearRect(0, 0, this.meditationCanvas.width, this.meditationCanvas.height);
+
+                // 🎯 AWARD XP FOR VISUAL MEDITATION
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(25, 'Visual meditation session completed', 'sacred-arts-sound');
+                    window.progressSystem.logActivity('visual_meditation', 'sacred-arts-sound', {
+                        type: this.visualMeditation.type
+                    });
+                }
+
+                this.showNotification('Visual meditation session complete! 🧘✨');
             }
 
             setMeditationSpeed(value) {
@@ -2454,7 +2480,15 @@
                 
                 // Store reference for cleanup
                 this.audioSystem.oscillators.push(oscillator);
-                
+
+                // 🎯 AWARD XP FOR SOUND HEALING
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(20, 'Sound healing session started', 'sacred-arts-sound');
+                    window.progressSystem.logActivity('sound_healing', 'sacred-arts-sound', {
+                        type: 'ambient_music'
+                    });
+                }
+
                 this.showNotification('Ambient sacred music started 🎵');
             }
 
