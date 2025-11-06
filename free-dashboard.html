@@ -566,24 +566,40 @@
         </div>
     </div>
 
-    <!-- Firebase -->
+    <!-- Firebase - UPDATED to match login.html version -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-    <!-- Use same Firebase config as login page -->
-    <script src="js/firebase-config.js"></script>
 
     <!-- Freemium Config -->
     <script src="js/freemium-config.js"></script>
 
     <script>
-        // Initialize Firebase using the shared config (sacred-community project)
-        if (typeof initializeFirebase === 'function') {
-            initializeFirebase();
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBl3r7LQ-pdz8KVP-7QnCuCJfOvEpzF-7M",
+            authDomain: "divine-temple-b7dcf.firebaseapp.com",
+            projectId: "divine-temple-b7dcf",
+            storageBucket: "divine-temple-b7dcf.firebasestorage.app",
+            messagingSenderId: "467831209971",
+            appId: "1:467831209971:web:d52e36ca71e3c72bca8870"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
         }
 
-        // Check authentication with improved race condition handling
+        // Set auth persistence to LOCAL (survives browser refreshes)
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(() => {
+                console.log('✅ Firebase auth persistence set to LOCAL');
+            })
+            .catch((error) => {
+                console.error('❌ Error setting persistence:', error);
+            });
+
+        // Check authentication
         let authCheckTimeout = null;
         let authResolved = false;
         let firebaseInitialized = false;
@@ -622,45 +638,28 @@
 
         // Firebase auth state listener
         firebase.auth().onAuthStateChanged((user) => {
-            firebaseInitialized = true;
-
-            // Clear timeout if one exists
-            if (authCheckTimeout) {
-                clearTimeout(authCheckTimeout);
-                authCheckTimeout = null;
-            }
+            console.log('🔍 FREE-DASHBOARD: Auth state changed');
+            console.log('   User:', user ? user.email : 'null');
+            console.log('   Current URL:', window.location.href);
+            console.log('   localStorage membershipLevel:', localStorage.getItem('membershipLevel'));
 
             if (user) {
-                // User confirmed by Firebase!
-                authResolved = true;
-                console.log('✅ Firebase confirmed user:', user.email);
-
-                // Update display
+                // User is signed in
+                console.log('✅ FREE-DASHBOARD: User authenticated, setting email in UI');
                 document.getElementById('userEmail').textContent = user.email;
 
-                // Ensure localStorage is up to date
-                localStorage.setItem('userEmail', user.email);
-                localStorage.setItem('userId', user.uid);
-
-                // Check tier (might redirect to premium dashboard)
+                // Check if user has premium access
+                console.log('🔍 FREE-DASHBOARD: Checking user tier...');
                 checkUserTier(user);
 
                 // Show page
                 document.getElementById('authLoading').classList.add('hidden');
                 document.body.classList.add('loaded');
             } else {
-                // Firebase says no user
-                console.log('⚠️ Firebase auth state: no user');
-
-                // Only redirect if we have no stored auth OR Firebase has initialized
-                if (!storedEmail || !storedMembership || !storedUserId) {
-                    console.log('❌ No stored auth and no Firebase user - redirecting to login');
-                    window.location.href = 'login.html';
-                } else {
-                    // We have stored auth but Firebase says no user
-                    // This can happen briefly after login - wait a bit before giving up
-                    console.log('🔄 Stored auth exists but Firebase not ready - waiting...');
-                }
+                // No user is signed in, redirect to login
+                console.log('❌ FREE-DASHBOARD: No user signed in');
+                console.log('   Redirecting to login.html');
+                window.location.href = 'login.html';
             }
         });
 
@@ -668,10 +667,16 @@
             // Check localStorage for user tier (using correct key: membershipLevel)
             const membershipLevel = localStorage.getItem('membershipLevel') || 'free';
 
+            console.log('🔍 CHECKTIER: membershipLevel =', membershipLevel);
+            console.log('   Is free or basic?', membershipLevel === 'free' || membershipLevel === 'basic');
+
             // If user has premium, redirect to full dashboard
             if (membershipLevel !== 'free' && membershipLevel !== 'basic') {
                 // Premium members: founding, student, monthly
+                console.log('💎 CHECKTIER: Premium member detected, redirecting to members-new.html');
                 window.location.href = 'members-new.html';
+            } else {
+                console.log('✅ CHECKTIER: Free member confirmed, staying on free-dashboard');
             }
 
             console.log('✅ Free member authenticated:', user.email, 'Level:', membershipLevel);
