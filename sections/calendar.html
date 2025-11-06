@@ -1036,23 +1036,22 @@
     <script>
         // ==================== FIREBASE SETUP ====================
         // Firebase is already initialized by firebase-config.js
-        // Get references to auth and db
-        let auth, db;
+        // auth and db are global variables from firebase-config.js - just use them directly
+        console.log('📅 [FIREBASE SETUP] Waiting for firebase-config.js to initialize...');
 
-        // Wait for firebase-config.js to initialize
-        function initializeFirebaseRefs() {
+        // Check if Firebase is ready
+        function checkFirebaseReady() {
             if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
-                auth = firebase.auth();
-                db = firebase.firestore();
-                console.log('✅ Firebase references initialized for calendar');
-                return true;
+                if (typeof auth !== 'undefined' && typeof db !== 'undefined') {
+                    console.log('✅ [FIREBASE SETUP] Firebase ready - auth and db available');
+                    return true;
+                } else {
+                    console.log('⏳ [FIREBASE SETUP] Firebase app exists but auth/db not yet initialized');
+                    return false;
+                }
             }
+            console.log('⏳ [FIREBASE SETUP] Firebase not yet loaded');
             return false;
-        }
-
-        // Try to initialize immediately, or wait a bit
-        if (!initializeFirebaseRefs()) {
-            setTimeout(initializeFirebaseRefs, 100);
         }
 
         // ==================== ENOCH CALENDAR CONSTANTS ====================
@@ -1123,25 +1122,40 @@
             }
 
             async init() {
-                // Generate calendar immediately so it's visible
-                this.generateCalendar();
-                this.updateAllViews();
-                console.log('📅 Calendar generated');
+                console.log('📅 [init] Initializing calendar system...');
+                console.log(`📅 [init] Today index: ${this.todayIndex}`);
+                console.log(`📅 [init] View month: ${this.viewMonth}, View year: ${this.viewYear}`);
+
+                try {
+                    // Generate calendar immediately so it's visible
+                    console.log('📅 [init] Calling generateCalendar()...');
+                    this.generateCalendar();
+
+                    console.log('📅 [init] Calling updateAllViews()...');
+                    this.updateAllViews();
+
+                    console.log('✅ [init] Calendar generated successfully');
+                } catch (error) {
+                    console.error('❌ [init] Error generating calendar:', error);
+                    throw error;
+                }
 
                 // Then check for auth and load user data if available
                 if (auth) {
+                    console.log('📅 [init] Setting up auth state listener...');
                     auth.onAuthStateChanged(async (user) => {
                         if (user) {
+                            console.log('📅 [init] User logged in:', user.email);
                             this.currentUser = user;
                             await this.loadUserData();
                             this.updateAllViews();
-                            console.log('✅ User data loaded for:', user.email);
+                            console.log('✅ [init] User data loaded');
                         } else {
-                            console.log('ℹ️  Calendar running in guest mode (no user logged in)');
+                            console.log('ℹ️ [init] Calendar running in guest mode (no user logged in)');
                         }
                     });
                 } else {
-                    console.log('ℹ️ Firebase auth not available, calendar running in offline mode');
+                    console.log('ℹ️ [init] Firebase auth not available, calendar running in offline mode');
                 }
             }
 
@@ -1316,14 +1330,31 @@
 
             // ==================== CALENDAR GENERATION ====================
             generateCalendar() {
+                console.log('📅 [generateCalendar] Starting calendar generation...');
+                console.log(`📅 [generateCalendar] viewMonth: ${this.viewMonth}, viewYear: ${this.viewYear}`);
+
                 const grid = document.getElementById('calendar-grid');
                 const monthDisplay = document.getElementById('current-month');
 
+                if (!grid) {
+                    console.error('❌ [generateCalendar] calendar-grid element not found!');
+                    return;
+                }
+                if (!monthDisplay) {
+                    console.error('❌ [generateCalendar] current-month element not found!');
+                    return;
+                }
+
+                console.log('✅ [generateCalendar] Grid and month display found');
+
                 // Clear existing days
-                grid.querySelectorAll('.calendar-day').forEach(day => day.remove());
+                const existingDays = grid.querySelectorAll('.calendar-day');
+                console.log(`📅 [generateCalendar] Clearing ${existingDays.length} existing days`);
+                existingDays.forEach(day => day.remove());
 
                 const month = HEBREW_MONTHS[this.viewMonth - 1];
                 monthDisplay.innerHTML = `${month.emoji} ${month.name} - Year ${this.viewYear} <span style="font-size:0.8rem;color:var(--text-muted)">(${month.season})</span>`;
+                console.log(`✅ [generateCalendar] Month display set: ${month.name}`);
 
                 // Calculate starting index for this month
                 let startIndex = 0;
@@ -1333,11 +1364,15 @@
 
                 // Generate days
                 const daysInMonth = [3, 6, 9, 12].includes(this.viewMonth) ? 31 : 30;
+                console.log(`📅 [generateCalendar] Generating ${daysInMonth} days for ${month.name}`);
+
                 for (let day = 1; day <= daysInMonth; day++) {
                     const dayIndex = startIndex + day - 1;
                     const dayElement = this.createDayElement(this.viewMonth, day, dayIndex);
                     grid.appendChild(dayElement);
                 }
+
+                console.log(`✅✅ [generateCalendar] Calendar generated successfully! ${daysInMonth} days added to grid`);
             }
 
             createDayElement(month, day, globalIndex) {
@@ -1795,21 +1830,52 @@
         let enochCalendar;
 
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('📅 Calendar DOM loaded');
+            console.log('📅 [CALENDAR] DOM Content Loaded');
+            console.log('📅 [CALENDAR] Checking for required elements...');
+
+            const grid = document.getElementById('calendar-grid');
+            const monthDisplay = document.getElementById('current-month');
+
+            if (!grid) {
+                console.error('❌ [CALENDAR] calendar-grid element not found!');
+                return;
+            }
+            if (!monthDisplay) {
+                console.error('❌ [CALENDAR] current-month element not found!');
+                return;
+            }
+
+            console.log('✅ [CALENDAR] Required elements found');
+            console.log('📅 [CALENDAR] Checking Firebase availability...');
 
             // Ensure Firebase is initialized before creating calendar
-            function startCalendar() {
-                if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
-                    // Make sure auth and db are set
-                    if (!auth || !db) {
-                        initializeFirebaseRefs();
-                    }
+            let attempts = 0;
+            const maxAttempts = 30; // 3 seconds total
 
-                    enochCalendar = new EnochCalendarSystem();
-                    console.log('✅ Enoch Calendar System loaded successfully');
+            function startCalendar() {
+                attempts++;
+                console.log(`📅 [CALENDAR] Initialization attempt ${attempts}/${maxAttempts}`);
+
+                if (checkFirebaseReady()) {
+                    // Firebase is ready! Create calendar
+                    try {
+                        console.log('📅 [CALENDAR] Creating EnochCalendarSystem...');
+                        enochCalendar = new EnochCalendarSystem();
+                        console.log('✅✅✅ [CALENDAR] Calendar System loaded successfully! ✅✅✅');
+                    } catch (error) {
+                        console.error('❌ [CALENDAR] Error creating calendar:', error);
+                        console.error('❌ [CALENDAR] Error stack:', error.stack);
+                        showCalendarError('Error initializing calendar: ' + error.message);
+                    }
                 } else {
-                    console.log('⏳ Waiting for Firebase to initialize...');
-                    setTimeout(startCalendar, 100);
+                    // Not ready yet, retry
+                    if (attempts < maxAttempts) {
+                        console.log(`⏳ [CALENDAR] Retrying in 100ms... (${attempts}/${maxAttempts})`);
+                        setTimeout(startCalendar, 100);
+                    } else {
+                        console.error('❌ [CALENDAR] Timeout waiting for Firebase after 3 seconds');
+                        showCalendarError('Calendar initialization timeout. Please refresh the page.');
+                    }
                 }
             }
 
@@ -1825,6 +1891,13 @@
                 });
             }
         });
+
+        function showCalendarError(message) {
+            const monthDisplay = document.getElementById('current-month');
+            if (monthDisplay) {
+                monthDisplay.innerHTML = `<div style="color: #fca5a5; padding: 2rem; text-align: center;">⚠️ ${message}</div>`;
+            }
+        }
 
         function previousMonth() {
             enochCalendar.previousMonth();
