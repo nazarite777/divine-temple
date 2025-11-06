@@ -1216,63 +1216,285 @@
 
         // ==================== BACKGROUND MUSIC SYSTEM ====================
         let audioContext;
-        let gainNode;
-        let oscillator1, oscillator2, oscillator3;
+        let masterGain;
+        let natureSounds = {};
         let isPlaying = false;
+        let soundIntervals = {};
 
         function initAudio() {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            gainNode = audioContext.createGain();
-            gainNode.connect(audioContext.destination);
+            masterGain = audioContext.createGain();
+            masterGain.connect(audioContext.destination);
 
-            // Start with low volume (15%)
-            const savedVolume = localStorage.getItem('spiritualMusicVolume') || 15;
-            gainNode.gain.value = savedVolume / 100;
+            // Start with low volume (20%)
+            const savedVolume = localStorage.getItem('spiritualMusicVolume') || 20;
+            masterGain.gain.value = savedVolume / 100;
             document.getElementById('volumeSlider').value = savedVolume;
         }
 
-        function create432HzAmbience() {
+        // Create white noise buffer for various nature sounds
+        function createNoiseBuffer(duration = 2) {
+            const bufferSize = audioContext.sampleRate * duration;
+            const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            return buffer;
+        }
+
+        // Create pink noise for fire crackling
+        function createPinkNoiseBuffer(duration = 2) {
+            const bufferSize = audioContext.sampleRate * duration;
+            const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+            const data = buffer.getChannelData(0);
+            let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                b0 = 0.99886 * b0 + white * 0.0555179;
+                b1 = 0.99332 * b1 + white * 0.0750759;
+                b2 = 0.96900 * b2 + white * 0.1538520;
+                b3 = 0.86650 * b3 + white * 0.3104856;
+                b4 = 0.55000 * b4 + white * 0.5329522;
+                b5 = -0.7616 * b5 - white * 0.0168980;
+                data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                data[i] *= 0.11;
+                b6 = white * 0.115926;
+            }
+            return buffer;
+        }
+
+        // 432Hz Healing Tones with earthy harmonics
+        function createHealingTones() {
+            const tones = [];
+            const frequencies = [
+                { freq: 432, type: 'sine', gain: 0.15 },      // Base 432Hz
+                { freq: 216, type: 'sine', gain: 0.12 },      // Octave below (earthy)
+                { freq: 288, type: 'triangle', gain: 0.08 },  // Perfect fourth (grounding)
+                { freq: 324, type: 'sine', gain: 0.06 },      // Rich harmonic
+                { freq: 108, type: 'sine', gain: 0.10 }       // Deep earth tone
+            ];
+
+            frequencies.forEach((tone, i) => {
+                const osc = audioContext.createOscillator();
+                osc.type = tone.type;
+                osc.frequency.value = tone.freq;
+
+                const gain = audioContext.createGain();
+                gain.gain.value = tone.gain;
+
+                // Add gentle LFO modulation for organic warmth
+                if (i < 2) {
+                    const lfo = audioContext.createOscillator();
+                    lfo.frequency.value = 0.05 + (i * 0.03);
+                    const lfoGain = audioContext.createGain();
+                    lfoGain.gain.value = 1.5;
+                    lfo.connect(lfoGain).connect(osc.frequency);
+                    lfo.start();
+                    tones.push(lfo);
+                }
+
+                osc.connect(gain).connect(masterGain);
+                osc.start();
+                tones.push(osc);
+            });
+
+            return tones;
+        }
+
+        // Rain sound (filtered white noise)
+        function createRain() {
+            const noise = audioContext.createBufferSource();
+            noise.buffer = createNoiseBuffer();
+            noise.loop = true;
+
+            const filter = audioContext.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 1000;
+            filter.Q.value = 0.5;
+
+            const gain = audioContext.createGain();
+            gain.gain.value = 0.08;
+
+            noise.connect(filter).connect(gain).connect(masterGain);
+            noise.start();
+
+            return { source: noise, filter, gain };
+        }
+
+        // Fire crackling (pink noise with modulation)
+        function createFire() {
+            const noise = audioContext.createBufferSource();
+            noise.buffer = createPinkNoiseBuffer();
+            noise.loop = true;
+            noise.playbackRate.value = 0.8;
+
+            const filter = audioContext.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.value = 800;
+            filter.Q.value = 1;
+
+            const gain = audioContext.createGain();
+            gain.gain.value = 0.06;
+
+            // Add random crackle modulation
+            const lfo = audioContext.createOscillator();
+            lfo.frequency.value = 3;
+            const lfoGain = audioContext.createGain();
+            lfoGain.gain.value = 0.03;
+            lfo.connect(lfoGain).connect(gain.gain);
+            lfo.start();
+
+            noise.connect(filter).connect(gain).connect(masterGain);
+            noise.start();
+
+            return { source: noise, filter, gain, lfo };
+        }
+
+        // Crickets (periodic chirps)
+        function createCricketChirp() {
+            const osc = audioContext.createOscillator();
+            osc.frequency.value = 3800 + Math.random() * 400;
+            osc.type = 'sine';
+
+            const gain = audioContext.createGain();
+            gain.gain.setValueAtTime(0, audioContext.currentTime);
+            gain.gain.linearRampToValueAtTime(0.02, audioContext.currentTime + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);
+
+            osc.connect(gain).connect(masterGain);
+            osc.start();
+            osc.stop(audioContext.currentTime + 0.15);
+        }
+
+        function startCrickets() {
+            const chirp = () => {
+                createCricketChirp();
+                setTimeout(chirp, 100 + Math.random() * 200);
+            };
+            chirp();
+        }
+
+        // Birds chirping (periodic calls)
+        function createBirdChirp() {
+            const frequencies = [2000, 2400, 2800, 3200, 2600];
+            const pattern = frequencies.map(f => f + Math.random() * 200);
+
+            pattern.forEach((freq, i) => {
+                const osc = audioContext.createOscillator();
+                osc.frequency.value = freq;
+                osc.type = 'sine';
+
+                const gain = audioContext.createGain();
+                const startTime = audioContext.currentTime + (i * 0.08);
+                gain.gain.setValueAtTime(0, startTime);
+                gain.gain.linearRampToValueAtTime(0.015, startTime + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.12);
+
+                osc.connect(gain).connect(masterGain);
+                osc.start(startTime);
+                osc.stop(startTime + 0.12);
+            });
+        }
+
+        function startBirds() {
+            soundIntervals.birds = setInterval(() => {
+                if (Math.random() > 0.3) {
+                    createBirdChirp();
+                }
+            }, 3000 + Math.random() * 4000);
+        }
+
+        // Gong (spiritual bell)
+        function createGong() {
+            const frequencies = [108, 216, 324, 432, 648]; // Sacred frequencies
+
+            frequencies.forEach((freq, i) => {
+                const osc = audioContext.createOscillator();
+                osc.frequency.value = freq + Math.random() * 5;
+                osc.type = 'sine';
+
+                const gain = audioContext.createGain();
+                gain.gain.setValueAtTime(0, audioContext.currentTime);
+                gain.gain.linearRampToValueAtTime(0.08 / (i + 1), audioContext.currentTime + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 8);
+
+                const filter = audioContext.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 2000;
+                filter.Q.value = 1;
+
+                osc.connect(filter).connect(gain).connect(masterGain);
+                osc.start();
+                osc.stop(audioContext.currentTime + 8);
+            });
+        }
+
+        function startGongs() {
+            // Play gong every 45-90 seconds
+            soundIntervals.gong = setInterval(() => {
+                createGong();
+            }, 45000 + Math.random() * 45000);
+        }
+
+        // Thunder (occasional rumble)
+        function createThunder() {
+            const osc1 = audioContext.createOscillator();
+            osc1.frequency.value = 40;
+            osc1.type = 'sawtooth';
+
+            const osc2 = audioContext.createOscillator();
+            osc2.frequency.value = 35;
+            osc2.type = 'triangle';
+
+            const noise = audioContext.createBufferSource();
+            noise.buffer = createNoiseBuffer(3);
+
+            const filter = audioContext.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 200;
+
+            const gain = audioContext.createGain();
+            gain.gain.setValueAtTime(0, audioContext.currentTime);
+            gain.gain.linearRampToValueAtTime(0.12, audioContext.currentTime + 0.3);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 3);
+
+            osc1.connect(gain);
+            osc2.connect(gain);
+            noise.connect(filter).connect(gain);
+            gain.connect(masterGain);
+
+            osc1.start();
+            osc2.start();
+            noise.start();
+            osc1.stop(audioContext.currentTime + 3);
+            osc2.stop(audioContext.currentTime + 3);
+        }
+
+        function startThunder() {
+            // Thunder every 2-5 minutes
+            soundIntervals.thunder = setInterval(() => {
+                if (Math.random() > 0.6) {
+                    createThunder();
+                }
+            }, 120000 + Math.random() * 180000);
+        }
+
+        function createNatureSoundscape() {
             if (!audioContext) initAudio();
 
-            // 432Hz base frequency (healing frequency)
-            oscillator1 = audioContext.createOscillator();
-            oscillator1.type = 'sine';
-            oscillator1.frequency.value = 432;
+            // Healing tones
+            natureSounds.tones = createHealingTones();
 
-            // Harmonic overtones for richness
-            oscillator2 = audioContext.createOscillator();
-            oscillator2.type = 'sine';
-            oscillator2.frequency.value = 432 * 1.5; // Perfect fifth
+            // Continuous nature sounds
+            natureSounds.rain = createRain();
+            natureSounds.fire = createFire();
 
-            oscillator3 = audioContext.createOscillator();
-            oscillator3.type = 'triangle';
-            oscillator3.frequency.value = 216; // Octave below
-
-            // Create individual gain nodes for each oscillator
-            const gain1 = audioContext.createGain();
-            const gain2 = audioContext.createGain();
-            const gain3 = audioContext.createGain();
-
-            gain1.gain.value = 0.3;
-            gain2.gain.value = 0.15;
-            gain3.gain.value = 0.2;
-
-            oscillator1.connect(gain1).connect(gainNode);
-            oscillator2.connect(gain2).connect(gainNode);
-            oscillator3.connect(gain3).connect(gainNode);
-
-            // Add gentle modulation for organic feel
-            const lfo = audioContext.createOscillator();
-            lfo.frequency.value = 0.1; // Very slow modulation
-            const lfoGain = audioContext.createGain();
-            lfoGain.gain.value = 2;
-            lfo.connect(lfoGain).connect(oscillator1.frequency);
-            lfo.connect(lfoGain).connect(oscillator2.frequency);
-
-            oscillator1.start();
-            oscillator2.start();
-            oscillator3.start();
-            lfo.start();
+            // Periodic sounds
+            startCrickets();
+            startBirds();
+            startGongs();
+            startThunder();
 
             isPlaying = true;
             document.getElementById('audioIcon').classList.add('playing');
@@ -1280,10 +1502,21 @@
         }
 
         function stopAmbience() {
-            if (oscillator1) oscillator1.stop();
-            if (oscillator2) oscillator2.stop();
-            if (oscillator3) oscillator3.stop();
-            oscillator1 = oscillator2 = oscillator3 = null;
+            // Stop all oscillators and sources
+            if (natureSounds.tones) {
+                natureSounds.tones.forEach(node => {
+                    try { node.stop(); } catch(e) {}
+                });
+            }
+            if (natureSounds.rain?.source) natureSounds.rain.source.stop();
+            if (natureSounds.fire?.source) natureSounds.fire.source.stop();
+            if (natureSounds.fire?.lfo) natureSounds.fire.lfo.stop();
+
+            // Clear intervals
+            Object.values(soundIntervals).forEach(interval => clearInterval(interval));
+            soundIntervals = {};
+
+            natureSounds = {};
             isPlaying = false;
             document.getElementById('audioIcon').classList.remove('playing');
             document.getElementById('audioIcon').textContent = '🔇';
@@ -1293,7 +1526,7 @@
             if (isPlaying) {
                 stopAmbience();
             } else {
-                create432HzAmbience();
+                createNatureSoundscape();
             }
         }
 
@@ -1307,8 +1540,8 @@
         // Volume control
         document.getElementById('volumeSlider').addEventListener('input', (e) => {
             const volume = e.target.value / 100;
-            if (gainNode) {
-                gainNode.gain.value = volume;
+            if (masterGain) {
+                masterGain.gain.value = volume;
             }
             localStorage.setItem('spiritualMusicVolume', e.target.value);
         });
@@ -1318,7 +1551,7 @@
         function startMusicOnInteraction() {
             if (!musicStarted) {
                 initAudio();
-                create432HzAmbience();
+                createNatureSoundscape();
                 musicStarted = true;
                 // Remove listeners after first interaction
                 document.removeEventListener('click', startMusicOnInteraction);
