@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Divine Temple - Free Access</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs - LOAD FIRST -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
     <style>
         :root {
             --primary-gold: #d4af37;
@@ -27,12 +33,6 @@
             color: white;
             min-height: 100vh;
             overflow-x: hidden;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        body.loaded {
-            opacity: 1;
         }
 
         /* Loading Screen */
@@ -566,11 +566,6 @@
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
     <!-- Freemium Config -->
     <script src="js/freemium-config.js"></script>
 
@@ -590,131 +585,113 @@
             firebase.initializeApp(firebaseConfig);
         }
 
-        // Set auth persistence to LOCAL
-        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-            .catch((error) => {
-                console.error('❌ Error setting persistence:', error);
-            });
+        console.log('🔍 FREE-DASHBOARD: Starting initialization...');
 
-        console.log('🔍 FREE-DASHBOARD: Initializing...');
+        // CRITICAL: Wait for Firebase to fully initialize before doing ANYTHING
+        let authReady = false;
+        let redirectTimeout = null;
 
-        // Auth checking with proper state management
-        let hasReceivedAuthState = false;
-        let isProcessingAuth = false;
+        // Set up ONE auth listener that waits properly
+        const unsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
+            // Clear any pending redirect timeout
+            if (redirectTimeout) {
+                clearTimeout(redirectTimeout);
+                redirectTimeout = null;
+            }
 
-        // Main auth state listener
-        firebase.auth().onAuthStateChanged(async (user) => {
-            // Prevent concurrent execution
-            if (isProcessingAuth) {
-                console.log('⏸️  Auth check already in progress, skipping...');
+            console.log('🔍 Auth state changed. User:', user ? user.email : 'NULL');
+            
+            if (!authReady) {
+                console.log('   First auth state received');
+                authReady = true;
+            }
+
+            if (!user) {
+                // NO USER - redirect to login after a brief delay (allow Firebase to restore session)
+                console.log('   No user detected, waiting 500ms to confirm...');
+                
+                redirectTimeout = setTimeout(() => {
+                    const currentUser = firebase.auth().currentUser;
+                    if (!currentUser) {
+                        console.log('❌ Confirmed no user - redirecting to login');
+                        window.location.href = 'login.html';
+                    } else {
+                        console.log('✅ User appeared during delay, staying');
+                    }
+                }, 500);
                 return;
             }
 
-            isProcessingAuth = true;
-            hasReceivedAuthState = true;
+            // USER EXISTS - proceed
+            console.log('✅ User authenticated:', user.email);
 
-            console.log('🔍 FREE-DASHBOARD: Auth state =', user ? user.email : 'NO USER');
+            // Update UI
+            document.getElementById('userEmail').textContent = user.email;
+            localStorage.setItem('userEmail', user.email);
+            localStorage.setItem('userId', user.uid);
 
-            if (user) {
-                // ✅ USER IS AUTHENTICATED
-                console.log('✅ User authenticated:', user.email);
+            // Check membership level
+            try {
+                const userDoc = await firebase.firestore()
+                    .collection('users')
+                    .doc(user.uid)
+                    .get();
 
-                // Update UI
-                document.getElementById('userEmail').textContent = user.email;
-
-                // Store auth data
-                localStorage.setItem('userEmail', user.email);
-                localStorage.setItem('userId', user.uid);
-
-                // Check membership level from Firestore
-                try {
-                    const userDoc = await firebase.firestore()
-                        .collection('users')
-                        .doc(user.uid)
-                        .get();
-
-                    let membershipLevel = 'free';
-
-                    if (userDoc.exists) {
-                        membershipLevel = userDoc.data().membershipLevel || 'free';
-                        
-                        // Update last active
-                        firebase.firestore()
-                            .collection('users')
-                            .doc(user.uid)
-                            .update({
-                                'progress.lastActive': firebase.firestore.FieldValue.serverTimestamp()
-                            })
-                            .catch(err => console.warn('Could not update lastActive:', err));
-                    }
-
-                    localStorage.setItem('membershipLevel', membershipLevel);
-                    console.log('   Membership:', membershipLevel);
-
-                    // Redirect premium users
-                    if (membershipLevel !== 'free' && membershipLevel !== 'basic') {
-                        console.log('💎 Premium member → redirecting to members-new.html');
-                        window.location.href = 'members-new.html';
-                        return;
-                    }
-
-                    // Show free dashboard
-                    console.log('✨ Free member → showing dashboard');
-                    document.getElementById('authLoading').classList.add('hidden');
-                    document.body.classList.add('loaded');
-
-                } catch (error) {
-                    console.error('❌ Error checking membership:', error);
-                    // On error, assume free and continue
-                    localStorage.setItem('membershipLevel', 'free');
-                    document.getElementById('authLoading').classList.add('hidden');
-                    document.body.classList.add('loaded');
+                let membershipLevel = 'free';
+                
+                if (userDoc.exists) {
+                    membershipLevel = userDoc.data().membershipLevel || 'free';
                 }
 
-            } else {
-                // ❌ NO USER AUTHENTICATED
-                console.log('❌ No user authenticated → redirecting to login');
-                window.location.href = 'login.html';
-            }
+                localStorage.setItem('membershipLevel', membershipLevel);
+                console.log('   Membership level:', membershipLevel);
 
-            isProcessingAuth = false;
+                // Redirect premium users
+                if (membershipLevel !== 'free' && membershipLevel !== 'basic') {
+                    console.log('💎 Premium user - redirecting to members-new.html');
+                    window.location.href = 'members-new.html';
+                    return;
+                }
+
+                // Free user - show dashboard
+                console.log('✨ Free user - showing dashboard');
+                document.getElementById('authLoading').classList.add('hidden');
+
+            } catch (error) {
+                console.error('Error checking membership:', error);
+                localStorage.setItem('membershipLevel', 'free');
+                document.getElementById('authLoading').classList.add('hidden');
+            }
         });
 
-        // Failsafe timeout - if auth never resolves, redirect to login
+        // Failsafe - if no auth state after 8 seconds, redirect to login
         setTimeout(() => {
-            if (!hasReceivedAuthState) {
-                console.error('⏱️  Auth timeout - no response from Firebase');
+            if (!authReady) {
+                console.error('⏱️  TIMEOUT: No auth state received in 8 seconds');
                 window.location.href = 'login.html';
             }
-        }, 10000); // 10 seconds
+        }, 8000);
 
         // Logout function
         function logout() {
-            console.log('🚪 Logging out...');
-
             firebase.auth().signOut()
                 .then(() => {
                     localStorage.clear();
                     window.location.href = 'login.html';
                 })
                 .catch((error) => {
-                    console.error('❌ Logout error:', error);
+                    console.error('Logout error:', error);
                     alert('Error logging out. Please try again.');
                 });
         }
 
-        // Load configuration
+        // Load config
         document.addEventListener('DOMContentLoaded', () => {
             if (window.FREEMIUM_CONFIG) {
                 const mediumLink = document.getElementById('mediumBlogLink');
                 if (mediumLink) {
                     mediumLink.href = FREEMIUM_CONFIG.mediumBlogUrl;
                 }
-
-                const supportLinks = document.querySelectorAll('[href^="mailto:support@divinetemple.com"]');
-                supportLinks.forEach(link => {
-                    link.href = `mailto:${FREEMIUM_CONFIG.supportEmail}?subject=Premium Access`;
-                });
             }
         });
     </script>
