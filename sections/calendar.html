@@ -1216,26 +1216,46 @@
 
             // ==================== FIREBASE DATA ====================
             async loadUserData() {
-                if (!this.currentUser) return;
+                if (!this.currentUser) {
+                    console.log('📝 [loadUserData] No user logged in, skipping load');
+                    return;
+                }
+
+                console.log('📝 [loadUserData] Loading data for user:', this.currentUser.email);
 
                 try {
                     const doc = await db.collection('enochCalendar').doc(this.currentUser.uid).get();
                     if (doc.exists) {
                         this.userData = doc.data();
+                        console.log('✅ [loadUserData] Data loaded successfully');
+                        console.log(`   - ${this.userData.journal?.length || 0} journal entries`);
+                        console.log(`   - ${this.userData.goals?.length || 0} goals`);
+                        console.log(`   - Streak: ${this.userData.stats?.streak || 0} days`);
+                    } else {
+                        console.log('ℹ️ [loadUserData] No existing data found, using defaults');
                     }
                     this.checkStreak();
                 } catch (error) {
-                    console.error('Error loading user data:', error);
+                    console.error('❌ [loadUserData] Error loading user data:', error);
                 }
             }
 
             async saveUserData() {
-                if (!this.currentUser) return;
+                if (!this.currentUser) {
+                    console.log('📝 [saveUserData] No user logged in, skipping save');
+                    return;
+                }
+
+                console.log('📝 [saveUserData] Saving data for user:', this.currentUser.email);
+                console.log(`   - ${this.userData.journal?.length || 0} journal entries`);
+                console.log(`   - ${this.userData.goals?.length || 0} goals`);
 
                 try {
                     await db.collection('enochCalendar').doc(this.currentUser.uid).set(this.userData);
+                    console.log('✅ [saveUserData] Data saved successfully to Firestore');
                 } catch (error) {
-                    console.error('Error saving user data:', error);
+                    console.error('❌ [saveUserData] Error saving user data:', error);
+                    console.error('   Error details:', error.message);
                 }
             }
 
@@ -1595,7 +1615,13 @@
 
             // ==================== JOURNAL ====================
             async createJournalEntry(mood, content, gratitude) {
+                console.log('📝 [createJournalEntry] Creating new journal entry...');
+                console.log(`   - Mood: ${mood}`);
+                console.log(`   - Content length: ${content.length} chars`);
+                console.log(`   - Gratitude: ${gratitude ? 'Yes' : 'No'}`);
+
                 if (!this.currentUser) {
+                    console.error('❌ [createJournalEntry] No user logged in!');
                     showToast('Please sign in to journal', 'error');
                     return;
                 }
@@ -1606,6 +1632,7 @@
 
                 // Use stored date if quick journaling from day modal
                 const journalDate = window.currentJournalDate || { month, day };
+                console.log(`   - Date: Month ${journalDate.month}, Day ${journalDate.day}`);
 
                 const entry = {
                     id: Date.now().toString(),
@@ -1618,6 +1645,8 @@
                 };
 
                 this.userData.journal.unshift(entry);
+                console.log(`✅ [createJournalEntry] Entry added to userData.journal (now ${this.userData.journal.length} entries)`);
+
                 await this.saveUserData();
                 await this.logActivity('journal');
 
@@ -1634,6 +1663,7 @@
                 this.generateCalendar(); // Refresh to show journal dot
 
                 showToast('Journal entry saved! 📝', 'success');
+                console.log('✅✅ [createJournalEntry] Journal entry complete!');
                 window.currentJournalDate = null;
             }
 
