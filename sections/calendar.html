@@ -1148,8 +1148,10 @@
                             console.log('📅 [init] User logged in:', user.email);
                             this.currentUser = user;
                             await this.loadUserData();
+                            console.log('📅 [init] Refreshing all views with loaded data...');
                             this.updateAllViews();
-                            console.log('✅ [init] User data loaded');
+                            this.generateCalendar(); // Regenerate calendar to show journal dots
+                            console.log('✅ [init] User data loaded and views updated');
                         } else {
                             console.log('ℹ️ [init] Calendar running in guest mode (no user logged in)');
                         }
@@ -1222,21 +1224,58 @@
                 }
 
                 console.log('📝 [loadUserData] Loading data for user:', this.currentUser.email);
+                console.log('📝 [loadUserData] User UID:', this.currentUser.uid);
+                console.log('📝 [loadUserData] Firestore path: enochCalendar/' + this.currentUser.uid);
 
                 try {
-                    const doc = await db.collection('enochCalendar').doc(this.currentUser.uid).get();
+                    const docRef = db.collection('enochCalendar').doc(this.currentUser.uid);
+                    console.log('📝 [loadUserData] Fetching document...');
+
+                    const doc = await docRef.get();
+
+                    console.log('📝 [loadUserData] Document exists:', doc.exists);
+
                     if (doc.exists) {
-                        this.userData = doc.data();
+                        const data = doc.data();
+                        console.log('📝 [loadUserData] Raw data from Firestore:', data);
+
+                        // Merge with default structure to ensure all fields exist
+                        this.userData = {
+                            goals: data.goals || [],
+                            journal: data.journal || [],
+                            achievements: data.achievements || [],
+                            stats: {
+                                streak: data.stats?.streak || 0,
+                                longestStreak: data.stats?.longestStreak || 0,
+                                meditations: data.stats?.meditations || 0,
+                                prayers: data.stats?.prayers || 0,
+                                journals: data.stats?.journals || 0,
+                                lastActivityDate: data.stats?.lastActivityDate || null
+                            }
+                        };
+
                         console.log('✅ [loadUserData] Data loaded successfully');
                         console.log(`   - ${this.userData.journal?.length || 0} journal entries`);
                         console.log(`   - ${this.userData.goals?.length || 0} goals`);
                         console.log(`   - Streak: ${this.userData.stats?.streak || 0} days`);
+
+                        // Log first journal entry as proof
+                        if (this.userData.journal.length > 0) {
+                            console.log('   - Latest journal:', {
+                                date: `Month ${this.userData.journal[0].month}, Day ${this.userData.journal[0].day}`,
+                                mood: this.userData.journal[0].mood,
+                                timestamp: this.userData.journal[0].timestamp
+                            });
+                        }
                     } else {
                         console.log('ℹ️ [loadUserData] No existing data found, using defaults');
+                        console.log('ℹ️ [loadUserData] This is expected for new users');
                     }
                     this.checkStreak();
                 } catch (error) {
                     console.error('❌ [loadUserData] Error loading user data:', error);
+                    console.error('❌ [loadUserData] Error code:', error.code);
+                    console.error('❌ [loadUserData] Error message:', error.message);
                 }
             }
 
