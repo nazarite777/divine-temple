@@ -1787,6 +1787,16 @@
         document.addEventListener('DOMContentLoaded', () => {
             enochCalendar = new EnochCalendarSystem();
             console.log('📅 Enoch Calendar System loaded');
+
+            // Hide back button if in iframe (already on dashboard)
+            if (window.parent && window.parent !== window) {
+                const backBtns = document.querySelectorAll('.back-btn');
+                backBtns.forEach(btn => {
+                    if (btn.textContent.includes('Back to Temple')) {
+                        btn.style.display = 'none';
+                    }
+                });
+            }
         });
 
         function previousMonth() {
