@@ -303,6 +303,7 @@
 
     <script>
         let selectedTier = 'free'; // Default to free tier
+        let isManualLogin = false; // Flag to prevent auto-redirect loop
 
         function selectTier(tier) {
             selectedTier = tier;
@@ -340,6 +341,9 @@
         // Handle form submission
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            // Set flag to indicate manual login in progress
+            isManualLogin = true;
 
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
@@ -422,6 +426,9 @@
             } catch (error) {
                 console.error('Login error:', error);
 
+                // Reset flag on error
+                isManualLogin = false;
+
                 let errorMessage = 'Login failed. Please try again.';
 
                 switch (error.code) {
@@ -491,9 +498,16 @@
             }
         });
 
-        // Check if user is already logged in
+        // Check if user is already logged in (but DON'T auto-redirect during manual login)
         firebase.auth().onAuthStateChanged(async (user) => {
-            if (user) {
+            console.log('🔍 LOGIN.HTML: Auth state changed');
+            console.log('   User:', user ? user.email : 'null');
+            console.log('   isManualLogin:', isManualLogin);
+
+            // Only auto-redirect if NOT in the middle of a manual login
+            if (user && !isManualLogin) {
+                console.log('🔄 Auto-login detected:', user.email);
+                
                 // User is already signed in, check their actual membership level
                 try {
                     const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
@@ -504,12 +518,13 @@
                         membershipLevel = userData.membershipLevel || 'free';
                     }
 
-                    // Store ALL required auth data (not just membershipLevel!)
+                    // Store ALL required auth data
                     localStorage.setItem('membershipLevel', membershipLevel);
                     localStorage.setItem('userEmail', user.email);
                     localStorage.setItem('userId', user.uid);
 
-                    console.log('🔄 Auto-login detected:', user.email, 'Level:', membershipLevel);
+                    console.log('   Membership level:', membershipLevel);
+                    console.log('   Redirecting to appropriate dashboard...');
 
                     // Redirect based on actual membership level
                     if (membershipLevel === 'free' || membershipLevel === 'basic') {
@@ -522,6 +537,10 @@
                     // Default to free on error
                     window.location.href = 'free-dashboard.html';
                 }
+            } else if (user && isManualLogin) {
+                console.log('✅ Manual login in progress, form handler will redirect');
+            } else {
+                console.log('👤 No user logged in, showing login form');
             }
         });
     </script>
