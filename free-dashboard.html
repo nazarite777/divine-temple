@@ -461,6 +461,203 @@
             cursor: not-allowed;
         }
 
+        /* Audio Player Styles */
+        .audio-player {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 20px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: slideInFromRight 0.5s ease;
+        }
+
+        @keyframes slideInFromRight {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .audio-player.minimized {
+            width: 60px;
+            height: 60px;
+            padding: 0;
+            border-radius: 50%;
+            justify-content: center;
+        }
+
+        .audio-player-icon {
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .audio-player-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .audio-player-icon.playing {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .audio-controls.hidden {
+            display: none;
+        }
+
+        .audio-info {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .volume-slider {
+            width: 100px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* User Stats Dashboard */
+        .stats-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-gold), var(--deep-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-action-btn {
+            background: linear-gradient(135deg, var(--deep-purple), var(--soft-blue));
+            border: none;
+            border-radius: 16px;
+            padding: 1.5rem 1rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+        }
+
+        .quick-action-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Daily Quote */
+        .daily-quote {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(139, 92, 246, 0.1));
+            border: 2px solid var(--border-glow);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .daily-quote::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 8rem;
+            opacity: 0.1;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .quote-text {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote-author {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
         /* User Info */
         .user-info {
             display: flex;
@@ -519,12 +716,76 @@
         </div>
     </div>
 
+    <!-- Audio Player -->
+    <div class="audio-player" id="audioPlayer">
+        <div class="audio-player-icon" id="audioIcon" onclick="toggleAudio()">🎵</div>
+        <div class="audio-controls" id="audioControls">
+            <span class="audio-info">Sacred Ambient</span>
+            <input type="range" min="0" max="100" value="15" class="volume-slider" id="volumeSlider">
+            <span style="cursor: pointer;" onclick="minimizePlayer()">_</span>
+        </div>
+    </div>
+
     <!-- Main Container -->
     <div class="container">
         <!-- Welcome Banner -->
         <div class="welcome-banner">
             <h1>🌟 Welcome to Divine Temple Free Access</h1>
             <p>Explore the sacred Enochian calendar and discover cosmic timing for your spiritual journey</p>
+        </div>
+
+        <!-- Daily Spiritual Quote -->
+        <div class="daily-quote">
+            <div class="quote-text" id="dailyQuote">
+                "The soul always knows what to do to heal itself. The challenge is to silence the mind."
+            </div>
+            <div class="quote-author" id="quoteAuthor">— Caroline Myss</div>
+        </div>
+
+        <!-- User Progress Dashboard -->
+        <div class="calendar-section">
+            <h2 class="section-title">📊 Your Spiritual Journey</h2>
+            <div class="stats-dashboard">
+                <div class="stat-card">
+                    <div class="stat-number" id="statJournals">0</div>
+                    <div class="stat-label">📝 Journal Entries</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="statStreak">0</div>
+                    <div class="stat-label">🔥 Day Streak</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="statDaysActive">0</div>
+                    <div class="stat-label">📅 Days Active</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="statOracleCards">0</div>
+                    <div class="stat-label">🔮 Oracle Cards Drawn</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="calendar-section">
+            <h2 class="section-title">⚡ Quick Actions</h2>
+            <div class="quick-actions">
+                <button class="quick-action-btn" onclick="openCalendarNewJournal()">
+                    <div class="quick-action-icon">📝</div>
+                    <div>New Journal</div>
+                </button>
+                <button class="quick-action-btn" onclick="openOracleCard()">
+                    <div class="quick-action-icon">🔮</div>
+                    <div>Draw Oracle</div>
+                </button>
+                <button class="quick-action-btn" onclick="scrollToCalendar()">
+                    <div class="quick-action-icon">📅</div>
+                    <div>View Calendar</div>
+                </button>
+                <button class="quick-action-btn" onclick="window.open('resources.html', '_blank')">
+                    <div class="quick-action-icon">🎁</div>
+                    <div>Free Tools</div>
+                </button>
+            </div>
         </div>
 
         <!-- Calendar Section -->
@@ -951,6 +1212,228 @@
             if (e.target === modal) {
                 closeOracleModal();
             }
+        });
+
+        // ==================== BACKGROUND MUSIC SYSTEM ====================
+        let audioContext;
+        let gainNode;
+        let oscillator1, oscillator2, oscillator3;
+        let isPlaying = false;
+
+        function initAudio() {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            gainNode = audioContext.createGain();
+            gainNode.connect(audioContext.destination);
+
+            // Start with low volume (15%)
+            const savedVolume = localStorage.getItem('spiritualMusicVolume') || 15;
+            gainNode.gain.value = savedVolume / 100;
+            document.getElementById('volumeSlider').value = savedVolume;
+        }
+
+        function create432HzAmbience() {
+            if (!audioContext) initAudio();
+
+            // 432Hz base frequency (healing frequency)
+            oscillator1 = audioContext.createOscillator();
+            oscillator1.type = 'sine';
+            oscillator1.frequency.value = 432;
+
+            // Harmonic overtones for richness
+            oscillator2 = audioContext.createOscillator();
+            oscillator2.type = 'sine';
+            oscillator2.frequency.value = 432 * 1.5; // Perfect fifth
+
+            oscillator3 = audioContext.createOscillator();
+            oscillator3.type = 'triangle';
+            oscillator3.frequency.value = 216; // Octave below
+
+            // Create individual gain nodes for each oscillator
+            const gain1 = audioContext.createGain();
+            const gain2 = audioContext.createGain();
+            const gain3 = audioContext.createGain();
+
+            gain1.gain.value = 0.3;
+            gain2.gain.value = 0.15;
+            gain3.gain.value = 0.2;
+
+            oscillator1.connect(gain1).connect(gainNode);
+            oscillator2.connect(gain2).connect(gainNode);
+            oscillator3.connect(gain3).connect(gainNode);
+
+            // Add gentle modulation for organic feel
+            const lfo = audioContext.createOscillator();
+            lfo.frequency.value = 0.1; // Very slow modulation
+            const lfoGain = audioContext.createGain();
+            lfoGain.gain.value = 2;
+            lfo.connect(lfoGain).connect(oscillator1.frequency);
+            lfo.connect(lfoGain).connect(oscillator2.frequency);
+
+            oscillator1.start();
+            oscillator2.start();
+            oscillator3.start();
+            lfo.start();
+
+            isPlaying = true;
+            document.getElementById('audioIcon').classList.add('playing');
+            document.getElementById('audioIcon').textContent = '🎵';
+        }
+
+        function stopAmbience() {
+            if (oscillator1) oscillator1.stop();
+            if (oscillator2) oscillator2.stop();
+            if (oscillator3) oscillator3.stop();
+            oscillator1 = oscillator2 = oscillator3 = null;
+            isPlaying = false;
+            document.getElementById('audioIcon').classList.remove('playing');
+            document.getElementById('audioIcon').textContent = '🔇';
+        }
+
+        function toggleAudio() {
+            if (isPlaying) {
+                stopAmbience();
+            } else {
+                create432HzAmbience();
+            }
+        }
+
+        function minimizePlayer() {
+            const player = document.getElementById('audioPlayer');
+            const controls = document.getElementById('audioControls');
+            player.classList.toggle('minimized');
+            controls.classList.toggle('hidden');
+        }
+
+        // Volume control
+        document.getElementById('volumeSlider').addEventListener('input', (e) => {
+            const volume = e.target.value / 100;
+            if (gainNode) {
+                gainNode.gain.value = volume;
+            }
+            localStorage.setItem('spiritualMusicVolume', e.target.value);
+        });
+
+        // Auto-start music after user interaction (browsers require this)
+        let musicStarted = false;
+        function startMusicOnInteraction() {
+            if (!musicStarted) {
+                initAudio();
+                create432HzAmbience();
+                musicStarted = true;
+                // Remove listeners after first interaction
+                document.removeEventListener('click', startMusicOnInteraction);
+                document.removeEventListener('keydown', startMusicOnInteraction);
+            }
+        }
+        document.addEventListener('click', startMusicOnInteraction);
+        document.addEventListener('keydown', startMusicOnInteraction);
+
+        // ==================== DAILY SPIRITUAL QUOTES ====================
+        const spiritualQuotes = [
+            { text: "The soul always knows what to do to heal itself. The challenge is to silence the mind.", author: "Caroline Myss" },
+            { text: "You are not a drop in the ocean. You are the entire ocean in a drop.", author: "Rumi" },
+            { text: "The privilege of a lifetime is to become who you truly are.", author: "Carl Jung" },
+            { text: "Your task is not to seek for love, but merely to seek and find all the barriers within yourself that you have built against it.", author: "Rumi" },
+            { text: "The wound is the place where the Light enters you.", author: "Rumi" },
+            { text: "Be empty of worrying. Think of who created thought.", author: "Rumi" },
+            { text: "Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself.", author: "Rumi" },
+            { text: "The universe is not outside of you. Look inside yourself; everything that you want, you already are.", author: "Rumi" },
+            { text: "What you seek is seeking you.", author: "Rumi" },
+            { text: "In the depth of winter, I finally learned that within me there lay an invincible summer.", author: "Albert Camus" },
+            { text: "The only way out is through.", author: "Robert Frost" },
+            { text: "Your vision will become clear only when you can look into your own heart.", author: "Carl Jung" },
+            { text: "Everything that irritates us about others can lead us to an understanding of ourselves.", author: "Carl Jung" },
+            { text: "I am not what happened to me, I am what I choose to become.", author: "Carl Jung" },
+            { text: "The meeting of two personalities is like the contact of two chemical substances: if there is any reaction, both are transformed.", author: "Carl Jung" },
+            { text: "Knowing your own darkness is the best method for dealing with the darknesses of other people.", author: "Carl Jung" },
+            { text: "Until you make the unconscious conscious, it will direct your life and you will call it fate.", author: "Carl Jung" },
+            { text: "The most terrifying thing is to accept oneself completely.", author: "Carl Jung" },
+            { text: "We cannot live the afternoon of life according to the program of life's morning.", author: "Carl Jung" },
+            { text: "The greatest discovery of my generation is that a human being can alter his life by altering his attitudes.", author: "William James" }
+        ];
+
+        function setDailyQuote() {
+            // Use date to ensure same quote all day
+            const today = new Date().toDateString();
+            const hash = today.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+            const quoteIndex = hash % spiritualQuotes.length;
+            const quote = spiritualQuotes[quoteIndex];
+
+            document.getElementById('dailyQuote').textContent = quote.text;
+            document.getElementById('quoteAuthor').textContent = `— ${quote.author}`;
+        }
+
+        // ==================== USER STATS ====================
+        function updateUserStats() {
+            // Get stats from calendar iframe or localStorage
+            const calendarIframe = document.getElementById('calendar-iframe');
+
+            // Track oracle cards drawn
+            let oracleCount = parseInt(localStorage.getItem('oracleCardsDrawn') || '0');
+            document.getElementById('statOracleCards').textContent = oracleCount;
+
+            // Try to get calendar stats (will be populated when calendar loads)
+            // For now, show 0 or localStorage cached values
+            const cachedJournals = parseInt(localStorage.getItem('cachedJournalCount') || '0');
+            const cachedStreak = parseInt(localStorage.getItem('cachedStreakCount') || '0');
+
+            document.getElementById('statJournals').textContent = cachedJournals;
+            document.getElementById('statStreak').textContent = cachedStreak;
+
+            // Calculate days active (simplified - based on first login)
+            const firstLogin = localStorage.getItem('firstLoginDate');
+            if (firstLogin) {
+                const daysActive = Math.floor((new Date() - new Date(firstLogin)) / (1000 * 60 * 60 * 24)) + 1;
+                document.getElementById('statDaysActive').textContent = daysActive;
+            } else {
+                localStorage.setItem('firstLoginDate', new Date().toISOString());
+                document.getElementById('statDaysActive').textContent = '1';
+            }
+        }
+
+        // ==================== HELPER FUNCTIONS ====================
+        function openCalendarNewJournal() {
+            const calendarIframe = document.getElementById('calendar-iframe');
+            if (calendarIframe) {
+                // Scroll to calendar
+                calendarIframe.scrollIntoView({ behavior: 'smooth' });
+                // Open calendar in new tab with journal tab active
+                window.open('sections/calendar.html?tab=journal', '_blank');
+            }
+        }
+
+        function scrollToCalendar() {
+            const calendarSection = document.querySelector('.calendar-frame');
+            if (calendarSection) {
+                calendarSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Update oracle card count when drawn
+        const originalDrawOracleCard = drawOracleCard;
+        drawOracleCard = function() {
+            originalDrawOracleCard();
+            let count = parseInt(localStorage.getItem('oracleCardsDrawn') || '0');
+            count++;
+            localStorage.setItem('oracleCardsDrawn', count);
+            document.getElementById('statOracleCards').textContent = count;
+        };
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            setDailyQuote();
+            updateUserStats();
+
+            // Listen for stats updates from calendar iframe
+            window.addEventListener('message', (event) => {
+                if (event.data.type === 'calendarStats') {
+                    document.getElementById('statJournals').textContent = event.data.journals || 0;
+                    document.getElementById('statStreak').textContent = event.data.streak || 0;
+                    // Cache for next page load
+                    localStorage.setItem('cachedJournalCount', event.data.journals || 0);
+                    localStorage.setItem('cachedStreakCount', event.data.streak || 0);
+                }
+            });
         });
 
         // Calendar iframe initialization and error handling
