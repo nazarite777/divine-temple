@@ -567,26 +567,20 @@
     </div>
 
     <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Use same Firebase config as login page -->
+    <script src="js/firebase-config.js"></script>
 
     <!-- Freemium Config -->
     <script src="js/freemium-config.js"></script>
 
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBl3r7LQ-pdz8KVP-7QnCuCJfOvEpzF-7M",
-            authDomain: "divine-temple-b7dcf.firebaseapp.com",
-            projectId: "divine-temple-b7dcf",
-            storageBucket: "divine-temple-b7dcf.firebasestorage.app",
-            messagingSenderId: "467831209971",
-            appId: "1:467831209971:web:d52e36ca71e3c72bca8870"
-        };
-
-        // Initialize Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+        // Initialize Firebase using the shared config (sacred-community project)
+        if (typeof initializeFirebase === 'function') {
+            initializeFirebase();
         }
 
         // Check authentication with improved race condition handling
