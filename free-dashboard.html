@@ -566,9 +566,10 @@
         </div>
     </div>
 
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <!-- Firebase - UPDATED to match login.html version -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
     <!-- Freemium Config -->
     <script src="js/freemium-config.js"></script>
@@ -589,50 +590,41 @@
             firebase.initializeApp(firebaseConfig);
         }
 
+        // Set auth persistence to LOCAL (survives browser refreshes)
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(() => {
+                console.log('✅ Firebase auth persistence set to LOCAL');
+            })
+            .catch((error) => {
+                console.error('❌ Error setting persistence:', error);
+            });
+
         // Check authentication
         let authCheckTimeout = null;
 
         firebase.auth().onAuthStateChanged((user) => {
-            // Clear any pending timeout
-            if (authCheckTimeout) {
-                clearTimeout(authCheckTimeout);
-                authCheckTimeout = null;
-            }
+            console.log('🔍 FREE-DASHBOARD: Auth state changed');
+            console.log('   User:', user ? user.email : 'null');
+            console.log('   Current URL:', window.location.href);
+            console.log('   localStorage membershipLevel:', localStorage.getItem('membershipLevel'));
 
             if (user) {
                 // User is signed in
+                console.log('✅ FREE-DASHBOARD: User authenticated, setting email in UI');
                 document.getElementById('userEmail').textContent = user.email;
 
                 // Check if user has premium access
+                console.log('🔍 FREE-DASHBOARD: Checking user tier...');
                 checkUserTier(user);
 
                 // Show the page after auth confirmed
                 document.getElementById('authLoading').classList.add('hidden');
                 document.body.classList.add('loaded');
             } else {
-                // Check if we have user data in localStorage (user just logged in)
-                const hasStoredAuth = localStorage.getItem('membershipLevel') &&
-                                     localStorage.getItem('userEmail') &&
-                                     localStorage.getItem('userId');
-
-                if (hasStoredAuth) {
-                    // User just logged in, give Firebase time to restore the session
-                    console.log('🔄 Waiting for Firebase to restore session...');
-
-                    // Set a timeout to redirect if session isn't restored within 5 seconds
-                    authCheckTimeout = setTimeout(() => {
-                        console.error('❌ Session not restored, redirecting to login');
-                        // Clear localStorage before redirecting
-                        localStorage.removeItem('membershipLevel');
-                        localStorage.removeItem('userEmail');
-                        localStorage.removeItem('userId');
-                        window.location.href = 'login.html';
-                    }, 5000);
-                } else {
-                    // No stored auth data, user genuinely not logged in
-                    console.log('❌ No user session found, redirecting to login');
-                    window.location.href = 'login.html';
-                }
+                // No user is signed in, redirect to login
+                console.log('❌ FREE-DASHBOARD: No user signed in');
+                console.log('   Redirecting to login.html');
+                window.location.href = 'login.html';
             }
         });
 
@@ -640,10 +632,16 @@
             // Check localStorage for user tier (using correct key: membershipLevel)
             const membershipLevel = localStorage.getItem('membershipLevel') || 'free';
 
+            console.log('🔍 CHECKTIER: membershipLevel =', membershipLevel);
+            console.log('   Is free or basic?', membershipLevel === 'free' || membershipLevel === 'basic');
+
             // If user has premium, redirect to full dashboard
             if (membershipLevel !== 'free' && membershipLevel !== 'basic') {
                 // Premium members: founding, student, monthly
+                console.log('💎 CHECKTIER: Premium member detected, redirecting to members-new.html');
                 window.location.href = 'members-new.html';
+            } else {
+                console.log('✅ CHECKTIER: Free member confirmed, staying on free-dashboard');
             }
 
             console.log('✅ Free member authenticated:', user.email, 'Level:', membershipLevel);
