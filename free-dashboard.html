@@ -10,6 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
 
     <style>
         :root {
@@ -570,29 +571,18 @@
     <script src="js/freemium-config.js"></script>
 
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBl3r7LQ-pdz8KVP-7QnCuCJfOvEpzF-7M",
-            authDomain: "divine-temple-b7dcf.firebaseapp.com",
-            projectId: "divine-temple-b7dcf",
-            storageBucket: "divine-temple-b7dcf.firebasestorage.app",
-            messagingSenderId: "467831209971",
-            appId: "1:467831209971:web:d52e36ca71e3c72bca8870"
-        };
-
-        // Initialize Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-
         console.log('🔍 FREE-DASHBOARD: Starting initialization...');
 
         // CRITICAL: Wait for Firebase to fully initialize before doing ANYTHING
         let authReady = false;
         let redirectTimeout = null;
 
-        // Set up ONE auth listener that waits properly
-        const unsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
+        // Wait for Firebase to be initialized by firebase-config.js
+        function initializeDashboard() {
+            console.log('🔍 FREE-DASHBOARD: Firebase ready, setting up auth listener...');
+
+            // Set up ONE auth listener that waits properly
+            const unsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
             // Clear any pending redirect timeout
             if (redirectTimeout) {
                 clearTimeout(redirectTimeout);
@@ -662,15 +652,16 @@
                 localStorage.setItem('membershipLevel', 'free');
                 document.getElementById('authLoading').classList.add('hidden');
             }
-        });
+            });
 
-        // Failsafe - if no auth state after 8 seconds, redirect to login
-        setTimeout(() => {
-            if (!authReady) {
-                console.error('⏱️  TIMEOUT: No auth state received in 8 seconds');
-                window.location.href = 'login.html';
-            }
-        }, 8000);
+            // Failsafe - if no auth state after 8 seconds, redirect to login
+            setTimeout(() => {
+                if (!authReady) {
+                    console.error('⏱️  TIMEOUT: No auth state received in 8 seconds');
+                    window.location.href = 'login.html';
+                }
+            }, 8000);
+        }
 
         // Logout function
         function logout() {
@@ -685,8 +676,13 @@
                 });
         }
 
-        // Load config
+        // Load config and initialize dashboard after Firebase is ready
         document.addEventListener('DOMContentLoaded', () => {
+            // Wait a brief moment for firebase-config.js to initialize
+            setTimeout(() => {
+                initializeDashboard();
+            }, 100);
+
             if (window.FREEMIUM_CONFIG) {
                 const mediumLink = document.getElementById('mediumBlogLink');
                 if (mediumLink) {
