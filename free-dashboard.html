@@ -191,10 +191,19 @@
 
         .calendar-frame {
             width: 100%;
-            height: 800px;
+            height: 1000px;
+            min-height: 800px;
             border: 2px solid var(--border-glow);
             border-radius: 16px;
             background: rgba(0, 0, 0, 0.3);
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .calendar-frame {
+                height: 600px;
+                min-height: 500px;
+            }
         }
 
         /* Upgrade CTA */
@@ -521,11 +530,23 @@
         <!-- Calendar Section -->
         <div class="calendar-section">
             <h2 class="section-title">📅 Sacred Enochian Calendar</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.7); margin-bottom: 1rem;">
+                Track your spiritual journey with the ancient Enochian calendar system
+            </p>
             <iframe
                 src="sections/calendar.html"
                 class="calendar-frame"
                 frameborder="0"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                id="calendar-iframe"
             ></iframe>
+            <div style="text-align: center; margin-top: 1rem;">
+                <a href="sections/calendar.html" target="_blank" class="upgrade-btn" style="background: linear-gradient(135deg, #3B82F6, #2563EB); padding: 0.75rem 1.5rem; text-decoration: none; color: white; border-radius: 25px; font-weight: 600; display: inline-block;">
+                    🔗 Open Calendar in New Tab
+                </a>
+            </div>
         </div>
 
         <!-- Free Bonus Resources -->
@@ -929,6 +950,42 @@
             const modal = document.getElementById('oracleModal');
             if (e.target === modal) {
                 closeOracleModal();
+            }
+        });
+
+        // Calendar iframe initialization and error handling
+        document.addEventListener('DOMContentLoaded', () => {
+            const calendarIframe = document.getElementById('calendar-iframe');
+
+            if (calendarIframe) {
+                // Add load event listener
+                calendarIframe.addEventListener('load', function() {
+                    console.log('✅ Calendar iframe loaded successfully');
+                });
+
+                // Add error event listener
+                calendarIframe.addEventListener('error', function() {
+                    console.error('❌ Calendar iframe failed to load');
+                    // Show fallback message
+                    const calendarSection = calendarIframe.parentElement;
+                    const errorMsg = document.createElement('div');
+                    errorMsg.style.cssText = 'background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 1rem; border-radius: 12px; margin: 1rem 0; text-align: center;';
+                    errorMsg.innerHTML = '⚠️ Calendar could not load in preview. <a href="sections/calendar.html" target="_blank" style="color: #fca5a5; text-decoration: underline;">Click here to open it in a new tab</a>';
+                    calendarSection.insertBefore(errorMsg, calendarIframe);
+                });
+
+                // Set a timeout to check if iframe is responsive
+                setTimeout(() => {
+                    try {
+                        // Try to access iframe content to see if it loaded
+                        const iframeDoc = calendarIframe.contentDocument || calendarIframe.contentWindow.document;
+                        if (iframeDoc.readyState === 'complete') {
+                            console.log('✅ Calendar iframe content loaded and ready');
+                        }
+                    } catch (e) {
+                        console.log('ℹ️ Calendar iframe is loading (cross-origin or still loading)');
+                    }
+                }, 2000);
             }
         });
     </script>
