@@ -2039,9 +2039,11 @@
 
         function goBack() {
             if (window.parent && window.parent !== window) {
+                // In iframe - communicate with parent
                 window.parent.postMessage('back', '*');
             } else {
-                window.history.back();
+                // Standalone - navigate directly to dashboard
+                window.location.href = '../free-dashboard.html';
             }
         }
 
