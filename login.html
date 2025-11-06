@@ -504,7 +504,12 @@
                         membershipLevel = userData.membershipLevel || 'free';
                     }
 
+                    // Store ALL required auth data (not just membershipLevel!)
                     localStorage.setItem('membershipLevel', membershipLevel);
+                    localStorage.setItem('userEmail', user.email);
+                    localStorage.setItem('userId', user.uid);
+
+                    console.log('🔄 Auto-login detected:', user.email, 'Level:', membershipLevel);
 
                     // Redirect based on actual membership level
                     if (membershipLevel === 'free' || membershipLevel === 'basic') {

@@ -601,7 +601,42 @@
 
         // Check authentication
         let authCheckTimeout = null;
+        let authResolved = false;
+        let firebaseInitialized = false;
 
+        // Check if we have stored auth data from login
+        const storedEmail = localStorage.getItem('userEmail');
+        const storedMembership = localStorage.getItem('membershipLevel');
+        const storedUserId = localStorage.getItem('userId');
+
+        console.log('🔍 Free dashboard loading...', {
+            storedEmail,
+            storedMembership,
+            storedUserId: storedUserId ? 'present' : 'missing'
+        });
+
+        // If we have complete auth data, show page immediately
+        if (storedEmail && storedMembership && storedUserId) {
+            console.log('✅ Found stored auth, showing dashboard for:', storedEmail);
+            document.getElementById('userEmail').textContent = storedEmail;
+            document.getElementById('authLoading').classList.add('hidden');
+            document.body.classList.add('loaded');
+
+            // Set a longer timeout - only redirect if Firebase never confirms (network issue, etc.)
+            authCheckTimeout = setTimeout(() => {
+                if (!authResolved) {
+                    console.error('❌ Firebase session timeout - clearing and redirecting');
+                    localStorage.removeItem('membershipLevel');
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('userId');
+                    window.location.href = 'login.html';
+                }
+            }, 15000); // 15 seconds - generous timeout
+        } else {
+            console.log('⏳ No stored auth, waiting for Firebase...');
+        }
+
+        // Firebase auth state listener
         firebase.auth().onAuthStateChanged((user) => {
             console.log('🔍 FREE-DASHBOARD: Auth state changed');
             console.log('   User:', user ? user.email : 'null');
@@ -617,7 +652,7 @@
                 console.log('🔍 FREE-DASHBOARD: Checking user tier...');
                 checkUserTier(user);
 
-                // Show the page after auth confirmed
+                // Show page
                 document.getElementById('authLoading').classList.add('hidden');
                 document.body.classList.add('loaded');
             } else {
