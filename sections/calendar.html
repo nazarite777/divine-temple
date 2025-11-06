@@ -1034,21 +1034,26 @@
     </div>
 
     <script>
-        // ==================== FIREBASE CONFIG ====================
-        const firebaseConfig = {
-            apiKey: "AIzaSyCOyZPb4gfYE5q_RwmYaKG6cpTvrE-3LxI",
-            authDomain: "sacred-community.firebaseapp.com",
-            projectId: "sacred-community",
-            storageBucket: "sacred-community.firebasestorage.app",
-            messagingSenderId: "582271923489",
-            appId: "1:582271923489:web:aa46a8bb5ac0859fe83a60",
-            measurementId: "G-83D6SSJKMH"
-        };
+        // ==================== FIREBASE SETUP ====================
+        // Firebase is already initialized by firebase-config.js
+        // Get references to auth and db
+        let auth, db;
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        // Wait for firebase-config.js to initialize
+        function initializeFirebaseRefs() {
+            if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+                auth = firebase.auth();
+                db = firebase.firestore();
+                console.log('✅ Firebase references initialized for calendar');
+                return true;
+            }
+            return false;
+        }
+
+        // Try to initialize immediately, or wait a bit
+        if (!initializeFirebaseRefs()) {
+            setTimeout(initializeFirebaseRefs, 100);
+        }
 
         // ==================== ENOCH CALENDAR CONSTANTS ====================
         
@@ -1118,21 +1123,26 @@
             }
 
             async init() {
-                // Wait for auth
-                auth.onAuthStateChanged(async (user) => {
-                    if (user) {
-                        this.currentUser = user;
-                        await this.loadUserData();
-                        this.generateCalendar();
-                        this.updateAllViews();
-                        console.log('✅ Enoch Calendar initialized for:', user.email);
-                    } else {
-                        console.log('⚠️ No user logged in');
-                        // Still show calendar but without personalized data
-                        this.generateCalendar();
-                        this.updateAllViews();
-                    }
-                });
+                // Generate calendar immediately so it's visible
+                this.generateCalendar();
+                this.updateAllViews();
+                console.log('📅 Calendar generated');
+
+                // Then check for auth and load user data if available
+                if (auth) {
+                    auth.onAuthStateChanged(async (user) => {
+                        if (user) {
+                            this.currentUser = user;
+                            await this.loadUserData();
+                            this.updateAllViews();
+                            console.log('✅ User data loaded for:', user.email);
+                        } else {
+                            console.log('ℹ️  Calendar running in guest mode (no user logged in)');
+                        }
+                    });
+                } else {
+                    console.log('ℹ️ Firebase auth not available, calendar running in offline mode');
+                }
             }
 
             // ==================== DATE CALCULATIONS ====================
@@ -1785,8 +1795,25 @@
         let enochCalendar;
 
         document.addEventListener('DOMContentLoaded', () => {
-            enochCalendar = new EnochCalendarSystem();
-            console.log('📅 Enoch Calendar System loaded');
+            console.log('📅 Calendar DOM loaded');
+
+            // Ensure Firebase is initialized before creating calendar
+            function startCalendar() {
+                if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+                    // Make sure auth and db are set
+                    if (!auth || !db) {
+                        initializeFirebaseRefs();
+                    }
+
+                    enochCalendar = new EnochCalendarSystem();
+                    console.log('✅ Enoch Calendar System loaded successfully');
+                } else {
+                    console.log('⏳ Waiting for Firebase to initialize...');
+                    setTimeout(startCalendar, 100);
+                }
+            }
+
+            startCalendar();
 
             // Hide back button if in iframe (already on dashboard)
             if (window.parent && window.parent !== window) {
