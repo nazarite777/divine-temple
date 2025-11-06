@@ -27,6 +27,45 @@
             color: white;
             min-height: 100vh;
             overflow-x: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        /* Loading Screen */
+        .auth-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .auth-loading.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(212, 175, 55, 0.3);
+            border-top-color: var(--primary-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* Header */
@@ -324,10 +363,22 @@
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="auth-loading" id="authLoading">
+        <div class="spinner"></div>
+        <p style="color: var(--primary-gold); font-size: 1.1rem;">🔮 Verifying access...</p>
+    </div>
+
     <!-- Header -->
     <div class="header">
         <div class="logo">⚡ Divine Temple</div>
         <div class="user-info">
+            <a href="https://medium.com/@nazarite777" target="_blank" rel="noopener noreferrer"
+               style="text-decoration: none; color: var(--primary-gold); font-weight: 600; padding: 0.5rem 1rem;
+               background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 8px;
+               margin-right: 1rem; transition: all 0.3s ease;">
+                📝 Blog
+            </a>
             <span class="free-badge">✨ Free Access</span>
             <span id="userEmail" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;"></span>
             <button class="logout-btn" onclick="logout()">Logout</button>
@@ -350,6 +401,88 @@
                 class="calendar-frame"
                 frameborder="0"
             ></iframe>
+        </div>
+
+        <!-- Free Bonus Resources -->
+        <div class="calendar-section">
+            <h2 class="section-title">🎁 Your Free Bonus Resources</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.7); margin-bottom: 2rem;">
+                Powerful spiritual tools to accelerate your journey
+            </p>
+
+            <div class="features-grid">
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.1)); border-color: rgba(16,185,129,0.3);">
+                    <div class="feature-icon">📖</div>
+                    <h3>Free Chapter</h3>
+                    <p>Get the first chapter of "Ya Heard Me" and begin your journey back to divine consciousness</p>
+                    <a href="resources.html#free-chapter" class="upgrade-btn" style="background: linear-gradient(135deg, #10B981, #059669); margin-top: 1rem; display: inline-block; padding: 0.75rem 1.5rem; text-decoration: none; color: white; border-radius: 25px; font-weight: 600;">
+                        Download Now →
+                    </a>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(124,58,237,0.1)); border-color: rgba(139,92,246,0.3);">
+                    <div class="feature-icon">🔮</div>
+                    <h3>Daily Oracle Card</h3>
+                    <p>Receive divine guidance through our sacred oracle card system with daily insights</p>
+                    <a href="resources.html#oracle-cards" class="upgrade-btn" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED); margin-top: 1rem; display: inline-block; padding: 0.75rem 1.5rem; text-decoration: none; color: white; border-radius: 25px; font-weight: 600;">
+                        Draw Card →
+                    </a>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(251,191,36,0.1)); border-color: rgba(245,158,11,0.3);">
+                    <div class="feature-icon">🧘</div>
+                    <h3>Meditation Sample</h3>
+                    <p>Experience Nazir's powerful meditation guidance with this 7-minute Divine Connection sample</p>
+                    <a href="resources.html#meditation-sample" class="upgrade-btn" style="background: linear-gradient(135deg, #F59E0B, #FBBF24); margin-top: 1rem; display: inline-block; padding: 0.75rem 1.5rem; text-decoration: none; color: #0f0f1e; border-radius: 25px; font-weight: 600;">
+                        Listen Now →
+                    </a>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(236,72,153,0.1), rgba(219,39,119,0.1)); border-color: rgba(236,72,153,0.3);">
+                    <div class="feature-icon">📋</div>
+                    <h3>Manifestation Template</h3>
+                    <p>Powerful 7-step manifestation framework used by thousands to create their desired reality</p>
+                    <a href="resources.html#manifestation" class="upgrade-btn" style="background: linear-gradient(135deg, #EC4899, #DB2777); margin-top: 1rem; display: inline-block; padding: 0.75rem 1.5rem; text-decoration: none; color: white; border-radius: 25px; font-weight: 600;">
+                        Get Template →
+                    </a>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(37,99,235,0.1)); border-color: rgba(59,130,246,0.3);">
+                    <div class="feature-icon">🌟</div>
+                    <h3>Consciousness Guide</h3>
+                    <p>Comprehensive guide to expanding awareness and accessing higher states of consciousness</p>
+                    <a href="resources.html#consciousness-guide" class="upgrade-btn" style="background: linear-gradient(135deg, #3B82F6, #2563EB); margin-top: 1rem; display: inline-block; padding: 0.75rem 1.5rem; text-decoration: none; color: white; border-radius: 25px; font-weight: 600;">
+                        Download Guide →
+                    </a>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.1)); border-color: rgba(16,185,129,0.3);">
+                    <div class="feature-icon">📚</div>
+                    <h3>All Free Resources</h3>
+                    <p>Access our complete collection of free spiritual tools, guides, and calculators</p>
+                    <a href="resources.html" class="upgrade-btn" style="background: linear-gradient(135deg, #10B981, #059669); margin-top: 1rem; display: inline-block; padding: 0.75rem 1.5rem; text-decoration: none; color: white; border-radius: 25px; font-weight: 600;">
+                        View All →
+                    </a>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(245,158,11,0.15)); border: 2px solid var(--primary-gold); box-shadow: 0 0 20px rgba(212,175,55,0.3);">
+                    <div class="feature-icon">💰</div>
+                    <h3>Become an Affiliate</h3>
+                    <p>Earn commissions by sharing Divine Temple. Get paid to help others on their spiritual journey!</p>
+                    <a href="https://divinetemple.tapfiliate.com/" target="_blank" rel="noopener noreferrer" class="upgrade-btn" style="background: linear-gradient(135deg, var(--primary-gold), #FBBF24); margin-top: 1rem; display: inline-block; padding: 0.75rem 1.5rem; text-decoration: none; color: #0f0f1e; border-radius: 25px; font-weight: 600; box-shadow: 0 4px 15px rgba(212,175,55,0.4);">
+                        Join Program →
+                    </a>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(147,51,234,0.1)); border-color: rgba(168,85,247,0.3);">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Upgrade to Premium</h3>
+                    <p>Access all 14 sacred pathways, full meditation library, and exclusive spiritual tools</p>
+                    <a href="sales-page.html" class="upgrade-btn" style="background: linear-gradient(135deg, #A855F7, #9333EA); margin-top: 1rem; display: inline-block; padding: 0.75rem 1.5rem; text-decoration: none; color: white; border-radius: 25px; font-weight: 600;">
+                        See Plans →
+                    </a>
+                </div>
+            </div>
         </div>
 
         <!-- Locked Features Preview -->
@@ -467,6 +600,8 @@
             });
 
         // Check authentication
+        let authCheckTimeout = null;
+
         firebase.auth().onAuthStateChanged((user) => {
             console.log('🔍 FREE-DASHBOARD: Auth state changed');
             console.log('   User:', user ? user.email : 'null');
@@ -481,6 +616,10 @@
                 // Check if user has premium access
                 console.log('🔍 FREE-DASHBOARD: Checking user tier...');
                 checkUserTier(user);
+
+                // Show the page after auth confirmed
+                document.getElementById('authLoading').classList.add('hidden');
+                document.body.classList.add('loaded');
             } else {
                 // No user is signed in, redirect to login
                 console.log('❌ FREE-DASHBOARD: No user signed in');
