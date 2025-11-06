@@ -566,7 +566,7 @@
         </div>
     </div>
 
-    <!-- Firebase - UPDATED to match login.html version -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -599,115 +599,136 @@
                 console.error('❌ Error setting persistence:', error);
             });
 
-        // Check authentication
-        let authCheckTimeout = null;
-        let authResolved = false;
-        let firebaseInitialized = false;
+        // Auth state tracking
+        let authCheckComplete = false;
+        let isInitialCheck = true;
 
-        // Check if we have stored auth data from login
-        const storedEmail = localStorage.getItem('userEmail');
-        const storedMembership = localStorage.getItem('membershipLevel');
-        const storedUserId = localStorage.getItem('userId');
+        console.log('🔍 FREE-DASHBOARD: Page loading...');
 
-        console.log('🔍 Free dashboard loading...', {
-            storedEmail,
-            storedMembership,
-            storedUserId: storedUserId ? 'present' : 'missing'
+        // Firebase auth state listener - THE MAIN AUTH CHECK
+        firebase.auth().onAuthStateChanged(async (user) => {
+            console.log('🔍 FREE-DASHBOARD: Auth state changed');
+            console.log('   User:', user ? user.email : 'null');
+            console.log('   Is initial check:', isInitialCheck);
+
+            // Mark that we've completed at least one auth check
+            authCheckComplete = true;
+
+            if (user) {
+                // ✅ User is authenticated
+                console.log('✅ FREE-DASHBOARD: User authenticated:', user.email);
+
+                // Update UI with user email
+                document.getElementById('userEmail').textContent = user.email;
+
+                // Store auth data in localStorage
+                localStorage.setItem('userEmail', user.email);
+                localStorage.setItem('userId', user.uid);
+
+                // Check user's membership tier
+                try {
+                    const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+                    let membershipLevel = 'free';
+
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        membershipLevel = userData.membershipLevel || 'free';
+
+                        // Update last active timestamp
+                        await firebase.firestore().collection('users').doc(user.uid).update({
+                            'progress.lastActive': firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+
+                    // Store membership level
+                    localStorage.setItem('membershipLevel', membershipLevel);
+
+                    console.log('   Membership level:', membershipLevel);
+
+                    // Check if user should be on premium dashboard instead
+                    if (membershipLevel !== 'free' && membershipLevel !== 'basic') {
+                        console.log('💎 Premium member detected, redirecting to members-new.html');
+                        window.location.href = 'members-new.html';
+                        return; // Stop execution, we're redirecting
+                    }
+
+                    console.log('✅ Free member confirmed, showing dashboard');
+
+                } catch (error) {
+                    console.error('❌ Error checking membership:', error);
+                    // On error, assume free membership and continue
+                    localStorage.setItem('membershipLevel', 'free');
+                }
+
+                // Hide loading screen and show content
+                document.getElementById('authLoading').classList.add('hidden');
+                document.body.classList.add('loaded');
+
+                isInitialCheck = false;
+
+            } else {
+                // ❌ No user authenticated
+                console.log('❌ FREE-DASHBOARD: No user signed in');
+
+                if (!isInitialCheck) {
+                    // This is NOT the first check, so user definitely isn't logged in
+                    console.log('   Not initial check - redirecting to login');
+                    window.location.href = 'login.html';
+                } else {
+                    // This IS the first check - give Firebase time to restore session
+                    console.log('   Initial check - waiting for Firebase to restore session...');
+
+                    // Set a timeout - if no user after 3 seconds, redirect to login
+                    setTimeout(() => {
+                        if (!firebase.auth().currentUser) {
+                            console.log('   ⏱️  Auth timeout - no user found, redirecting to login');
+                            window.location.href = 'login.html';
+                        }
+                    }, 3000);
+                }
+
+                isInitialCheck = false;
+            }
         });
 
-        // If we have complete auth data, show page immediately
-        if (storedEmail && storedMembership && storedUserId) {
-            console.log('✅ Found stored auth, showing dashboard for:', storedEmail);
-            document.getElementById('userEmail').textContent = storedEmail;
-            document.getElementById('authLoading').classList.add('hidden');
-            document.body.classList.add('loaded');
+        // Logout function
+        function logout() {
+            console.log('🚪 Logging out...');
 
-            // Set a longer timeout - only redirect if Firebase never confirms (network issue, etc.)
-            authCheckTimeout = setTimeout(() => {
-                if (!authResolved) {
-                    console.error('❌ Firebase session timeout - clearing and redirecting');
+            firebase.auth().signOut()
+                .then(() => {
+                    // Clear all user-related localStorage
                     localStorage.removeItem('membershipLevel');
                     localStorage.removeItem('userEmail');
                     localStorage.removeItem('userId');
+                    
+                    console.log('✅ Logged out successfully');
                     window.location.href = 'login.html';
-                }
-            }, 15000); // 15 seconds - generous timeout
-        } else {
-            console.log('⏳ No stored auth, waiting for Firebase...');
-        }
-
-        // Firebase auth state listener
-        firebase.auth().onAuthStateChanged((user) => {
-            console.log('🔍 FREE-DASHBOARD: Auth state changed');
-            console.log('   User:', user ? user.email : 'null');
-            console.log('   Current URL:', window.location.href);
-            console.log('   localStorage membershipLevel:', localStorage.getItem('membershipLevel'));
-
-            if (user) {
-                // User is signed in
-                console.log('✅ FREE-DASHBOARD: User authenticated, setting email in UI');
-                document.getElementById('userEmail').textContent = user.email;
-
-                // Check if user has premium access
-                console.log('🔍 FREE-DASHBOARD: Checking user tier...');
-                checkUserTier(user);
-
-                // Show page
-                document.getElementById('authLoading').classList.add('hidden');
-                document.body.classList.add('loaded');
-            } else {
-                // No user is signed in, redirect to login
-                console.log('❌ FREE-DASHBOARD: No user signed in');
-                console.log('   Redirecting to login.html');
-                window.location.href = 'login.html';
-            }
-        });
-
-        function checkUserTier(user) {
-            // Check localStorage for user tier (using correct key: membershipLevel)
-            const membershipLevel = localStorage.getItem('membershipLevel') || 'free';
-
-            console.log('🔍 CHECKTIER: membershipLevel =', membershipLevel);
-            console.log('   Is free or basic?', membershipLevel === 'free' || membershipLevel === 'basic');
-
-            // If user has premium, redirect to full dashboard
-            if (membershipLevel !== 'free' && membershipLevel !== 'basic') {
-                // Premium members: founding, student, monthly
-                console.log('💎 CHECKTIER: Premium member detected, redirecting to members-new.html');
-                window.location.href = 'members-new.html';
-            } else {
-                console.log('✅ CHECKTIER: Free member confirmed, staying on free-dashboard');
-            }
-
-            console.log('✅ Free member authenticated:', user.email, 'Level:', membershipLevel);
-        }
-
-        function logout() {
-            firebase.auth().signOut().then(() => {
-                // Clear all user-related localStorage
-                localStorage.removeItem('membershipLevel');
-                localStorage.removeItem('userEmail');
-                localStorage.removeItem('userId');
-                window.location.href = 'login.html';
-            }).catch((error) => {
-                console.error('Logout error:', error);
-                alert('Error logging out. Please try again.');
-            });
+                })
+                .catch((error) => {
+                    console.error('❌ Logout error:', error);
+                    alert('Error logging out. Please try again.');
+                });
         }
 
         // Load configuration settings
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('📄 DOM Content Loaded');
+
             if (window.FREEMIUM_CONFIG) {
                 // Set Medium blog URL from config
-                document.getElementById('mediumBlogLink').href = FREEMIUM_CONFIG.mediumBlogUrl;
+                const mediumLink = document.getElementById('mediumBlogLink');
+                if (mediumLink) {
+                    mediumLink.href = FREEMIUM_CONFIG.mediumBlogUrl;
+                }
 
-                // Update support email link
+                // Update support email links
                 const supportLinks = document.querySelectorAll('[href^="mailto:support@divinetemple.com"]');
                 supportLinks.forEach(link => {
                     link.href = `mailto:${FREEMIUM_CONFIG.supportEmail}?subject=Premium Access`;
                 });
 
-                console.log('✅ Freemium config loaded:', FREEMIUM_CONFIG);
+                console.log('✅ Freemium config loaded');
             }
         });
     </script>
