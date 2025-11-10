@@ -1049,19 +1049,39 @@
             
             const isAuth = sessionStorage.getItem('divineAuth');
             const memberDataStr = sessionStorage.getItem('memberData');
+            const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
+            
+            console.log('🔍 Auth check - isAuth:', isAuth);
+            console.log('🔍 Auth check - memberData exists:', !!memberDataStr);
+            console.log('🔍 Auth check - isAdmin:', isAdmin);
             
             if (isAuth === 'true' && memberDataStr) {
                 try {
                     const memberData = JSON.parse(memberDataStr);
-                    console.log('✅ User authenticated:', memberData.username);
+                    const displayName = memberData.username || memberData.displayName || memberData.name || 'User';
+                    
+                    console.log('✅ User authenticated:', displayName);
+                    console.log('🔍 Member data:', memberData);
+                    
+                    if (isAdmin) {
+                        console.log('🔱 Admin user detected');
+                    }
+                    
                     showDashboard(memberData);
+                    return true;
                 } catch (error) {
                     console.error('❌ Error parsing member data:', error);
+                    // Clear corrupted data
+                    sessionStorage.removeItem('divineAuth');
+                    sessionStorage.removeItem('memberData');
+                    sessionStorage.removeItem('adminAuth');
                     showAuthOverlay();
+                    return false;
                 }
             } else {
-                console.log('📝 No authentication found');
+                console.log('📝 No authentication found - showing auth overlay');
                 showAuthOverlay();
+                return false;
             }
         }
 
@@ -1781,19 +1801,99 @@
             // Force admin login
             forceAdminLogin: function() {
                 console.log('🔱 Force admin login...');
-                sessionStorage.setItem('divineAuth', 'true');
-                sessionStorage.setItem('adminAuth', 'true');
-                sessionStorage.setItem('memberData', JSON.stringify({
+                
+                // Clear any existing auth
+                sessionStorage.clear();
+                
+                const adminData = {
                     uid: 'admin_nazir_creator',
                     email: 'nazir@edenconsciousness.com',
                     displayName: 'Nazir El - Creator',
+                    username: 'nazir23',
+                    name: 'Nazir El',
                     role: 'admin',
-                    isAdmin: true
-                }));
+                    isAdmin: true,
+                    createdAt: new Date().toISOString(),
+                    loginTime: new Date().toISOString()
+                };
                 
-                hideAuthOverlay();
-                showDashboard();
-                console.log('✅ Admin logged in (forced)');
+                // Set all auth flags
+                sessionStorage.setItem('divineAuth', 'true');
+                sessionStorage.setItem('adminAuth', 'true');
+                sessionStorage.setItem('memberData', JSON.stringify(adminData));
+                localStorage.setItem('adminAuth', 'true');
+                localStorage.setItem('currentUser', JSON.stringify(adminData));
+                
+                console.log('✅ Admin session data set');
+                console.log('🔍 Session data:', adminData);
+                
+                // Force hide auth overlay and show dashboard
+                const authOverlay = document.getElementById('auth-overlay');
+                if (authOverlay) {
+                    authOverlay.style.display = 'none';
+                    authOverlay.classList.add('hidden');
+                }
+                
+                const dashboard = document.getElementById('dashboard');
+                if (dashboard) {
+                    dashboard.style.display = 'block';
+                    dashboard.classList.add('active');
+                    dashboard.style.opacity = '1';
+                }
+                
+                // Show member badge with admin styling
+                const memberBadge = document.getElementById('member-badge');
+                const memberDisplay = document.getElementById('member-display');
+                
+                if (memberBadge) {
+                    memberBadge.style.display = 'flex';
+                    memberBadge.style.background = 'linear-gradient(135deg, #F59E0B, #FBBF24)';
+                    memberBadge.style.border = '2px solid #F59E0B';
+                    memberBadge.style.boxShadow = '0 0 20px rgba(245, 158, 11, 0.4)';
+                }
+                
+                if (memberDisplay) {
+                    memberDisplay.innerHTML = `
+                        <div style="font-weight: 600; color: #0A0E27;">Nazir El - Creator</div>
+                        <div style="font-size: 0.8rem; opacity: 0.8; color: #0A0E27;">🔱 DIVINE TEMPLE CREATOR</div>
+                    `;
+                }
+                
+                // Show admin card
+                const adminCard = document.querySelector('.admin-only');
+                if (adminCard) {
+                    adminCard.style.display = 'block';
+                }
+                
+                document.body.style.overflow = 'auto';
+                
+                console.log('✅ Admin dashboard force-loaded');
+                alert('🔱 ADMIN ACCESS GRANTED! You are now logged in as Creator.');
+                
+                return true;
+            },
+            
+            // Quick auth check
+            checkAuthState: function() {
+                const auth = sessionStorage.getItem('divineAuth');
+                const admin = sessionStorage.getItem('adminAuth');
+                const data = sessionStorage.getItem('memberData');
+                
+                console.log('🔍 Auth state check:');
+                console.log('  - divineAuth:', auth);
+                console.log('  - adminAuth:', admin);
+                console.log('  - memberData exists:', !!data);
+                
+                if (data) {
+                    try {
+                        const parsed = JSON.parse(data);
+                        console.log('  - parsed data:', parsed);
+                    } catch (e) {
+                        console.log('  - data parsing error:', e);
+                    }
+                }
+                
+                return { auth, admin, data };
             },
             
             // Debug info

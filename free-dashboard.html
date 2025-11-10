@@ -1639,10 +1639,49 @@
         let authReady = false;
         let redirectTimeout = null;
 
-        // Wait for Firebase to be initialized by firebase-config.js
-        function initializeDashboard() {
-            console.log('🔍 FREE-DASHBOARD: Firebase ready, setting up auth listener...');
+        // ⭐ CHECK FOR ADMIN SESSION FIRST (before Firebase auth)
+        function checkAdminSession() {
+            const adminAuth = sessionStorage.getItem('adminAuth') === 'true' || localStorage.getItem('adminAuth') === 'true';
+            const memberData = JSON.parse(sessionStorage.getItem('memberData') || localStorage.getItem('currentUser') || '{}');
+            
+            console.log('🔱 Checking admin session...');
+            console.log('   Admin auth:', adminAuth);
+            console.log('   Member data:', memberData);
+            
+            if (adminAuth && memberData.isAdmin) {
+                console.log('🔱 ADMIN SESSION DETECTED - bypassing Firebase auth');
+                console.log('🔱 Admin user:', memberData.displayName);
+                
+                // Set up admin session for free dashboard
+                const userEmailElement = document.getElementById('userEmail');
+                if (userEmailElement) {
+                    userEmailElement.textContent = memberData.email || 'nazir@edenconsciousness.com';
+                }
+                
+                localStorage.setItem('userEmail', memberData.email || 'nazir@edenconsciousness.com');
+                localStorage.setItem('userId', memberData.uid || 'admin_nazir_creator');
+                localStorage.setItem('membershipLevel', 'admin');
+                
+                // Hide loading and show dashboard
+                const authLoading = document.getElementById('authLoading');
+                if (authLoading) {
+                    authLoading.classList.add('hidden');
+                }
+                
+                console.log('✅ Admin dashboard loaded successfully');
+                return true;
+            }
+            
+            console.log('❌ No admin session found');
+            return false;
+        }
 
+        // Check admin session immediately on page load
+        if (checkAdminSession()) {
+            console.log('🔱 Admin session active - skipping Firebase auth');
+        } else {
+            console.log('🔥 No admin session - proceeding with Firebase auth');
+            
             // Set up ONE auth listener that waits properly
             const unsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
             // Clear any pending redirect timeout
@@ -1715,27 +1754,42 @@
                 document.getElementById('authLoading').classList.add('hidden');
             }
             });
+        } // Close the if/else block for admin vs Firebase auth
 
-            // Failsafe - if no auth state after 8 seconds, redirect to login
-            setTimeout(() => {
-                if (!authReady) {
-                    console.error('⏱️  TIMEOUT: No auth state received in 8 seconds');
-                    window.location.href = 'login.html';
-                }
-            }, 8000);
+        // Failsafe - if no auth state after 8 seconds, redirect to login
+        setTimeout(() => {
+            if (!authReady && !checkAdminSession()) {
+                console.error('⏱️  TIMEOUT: No auth state received in 8 seconds');
+                window.location.href = 'login.html';
+            }
+        }, 8000);
         }
 
         // Logout function
         function logout() {
-            firebase.auth().signOut()
-                .then(() => {
-                    localStorage.clear();
-                    window.location.href = 'login.html';
-                })
-                .catch((error) => {
-                    console.error('Logout error:', error);
-                    alert('Error logging out. Please try again.');
-                });
+            const isAdmin = sessionStorage.getItem('adminAuth') === 'true' || localStorage.getItem('adminAuth') === 'true';
+            
+            if (isAdmin) {
+                console.log('🔱 Admin logout');
+                // Clear admin session
+                sessionStorage.removeItem('adminAuth');
+                sessionStorage.removeItem('memberData');
+                localStorage.removeItem('adminAuth');
+                localStorage.removeItem('currentUser');
+                localStorage.clear();
+                window.location.href = 'members-new.html';
+            } else {
+                // Regular Firebase logout
+                firebase.auth().signOut()
+                    .then(() => {
+                        localStorage.clear();
+                        window.location.href = 'login.html';
+                    })
+                    .catch((error) => {
+                        console.error('Logout error:', error);
+                        alert('Error logging out. Please try again.');
+                    });
+            }
         }
 
         // Load config and initialize dashboard after Firebase is ready
