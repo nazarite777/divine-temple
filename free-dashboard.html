@@ -1661,45 +1661,87 @@
         function checkAdminSession() {
             const adminAuth = sessionStorage.getItem('adminAuth') === 'true' || localStorage.getItem('adminAuth') === 'true';
             const memberData = JSON.parse(sessionStorage.getItem('memberData') || localStorage.getItem('currentUser') || '{}');
-            
+
             console.log('🔱 Checking admin session...');
             console.log('   Admin auth:', adminAuth);
             console.log('   Member data:', memberData);
-            
+
             if (adminAuth && memberData.isAdmin) {
                 console.log('🔱 ADMIN SESSION DETECTED - bypassing Firebase auth');
                 console.log('🔱 Admin user:', memberData.displayName);
-                
+
                 // Set up admin session for free dashboard
                 const userEmailElement = document.getElementById('userEmail');
                 if (userEmailElement) {
                     userEmailElement.textContent = memberData.email || 'nazir@edenconsciousness.com';
                 }
-                
+
                 localStorage.setItem('userEmail', memberData.email || 'nazir@edenconsciousness.com');
                 localStorage.setItem('userId', memberData.uid || 'admin_nazir_creator');
                 localStorage.setItem('membershipLevel', 'admin');
-                
+
                 // Hide loading and show dashboard
                 const authLoading = document.getElementById('authLoading');
                 if (authLoading) {
                     authLoading.classList.add('hidden');
                 }
-                
+
                 console.log('✅ Admin dashboard loaded successfully');
                 return true;
             }
-            
+
             console.log('❌ No admin session found');
             return false;
         }
 
-        // Check admin session immediately on page load
-        if (checkAdminSession()) {
-            console.log('🔱 Admin session active - skipping Firebase auth');
-        } else {
-            console.log('🔥 No admin session - proceeding with Firebase auth');
-            
+        // Wait for Firebase to be fully loaded
+        function waitForFirebase() {
+            return new Promise((resolve) => {
+                let attempts = 0;
+                const maxAttempts = 100; // 10 seconds max wait
+
+                const checkFirebase = setInterval(() => {
+                    attempts++;
+                    console.log(`🔍 Checking Firebase... Attempt ${attempts}`);
+
+                    if (typeof firebase !== 'undefined' && firebase.auth) {
+                        console.log('✅ Firebase loaded successfully!');
+                        clearInterval(checkFirebase);
+                        resolve(true);
+                    } else if (attempts >= maxAttempts) {
+                        console.error('❌ Firebase failed to load after 10 seconds');
+                        clearInterval(checkFirebase);
+                        resolve(false);
+                    }
+                }, 100); // Check every 100ms
+            });
+        }
+
+        // Initialize authentication
+        async function initializeAuth() {
+            console.log('🔥 Initializing authentication...');
+
+            // Check admin session first
+            if (checkAdminSession()) {
+                console.log('🔱 Admin session active - skipping Firebase auth');
+                return;
+            }
+
+            // Wait for Firebase to load
+            const firebaseLoaded = await waitForFirebase();
+
+            if (!firebaseLoaded) {
+                console.error('❌ Firebase failed to load - showing error');
+                document.getElementById('authLoading').innerHTML = `
+                    <div class="spinner"></div>
+                    <p style="color: #EF4444; font-size: 1.1rem;">⚠️ Connection error. Please refresh the page.</p>
+                    <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.75rem 1.5rem; background: var(--primary-gold); border: none; border-radius: 10px; color: #0f0f1e; font-weight: 600; cursor: pointer;">Refresh Page</button>
+                `;
+                return;
+            }
+
+            console.log('🔥 Firebase ready - proceeding with auth');
+
             // Set up ONE auth listener that waits properly
             const unsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
             // Clear any pending redirect timeout
@@ -1772,15 +1814,23 @@
                 document.getElementById('authLoading').classList.add('hidden');
             }
             });
-        } // Close the if/else block for admin vs Firebase auth
 
-        // Failsafe - if no auth state after 8 seconds, redirect to login
-        setTimeout(() => {
-            if (!authReady && !checkAdminSession()) {
-                console.error('⏱️  TIMEOUT: No auth state received in 8 seconds');
-                window.location.href = 'login.html';
-            }
-        }, 8000);
+            // Failsafe - if no auth state after 8 seconds, redirect to login
+            setTimeout(() => {
+                if (!authReady && !checkAdminSession()) {
+                    console.error('⏱️  TIMEOUT: No auth state received in 8 seconds');
+                    window.location.href = 'login.html';
+                }
+            }, 8000);
+        }
+
+        // Start authentication when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeAuth);
+        } else {
+            // DOM already loaded
+            initializeAuth();
+        }
 
         // Logout function
         function logout() {
@@ -1809,13 +1859,8 @@
             }
         }
 
-        // Load config and initialize dashboard after Firebase is ready
+        // Load config after DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
-            // Wait a brief moment for firebase-config.js to initialize
-            setTimeout(() => {
-                initializeDashboard();
-            }, 100);
-
             if (window.FREEMIUM_CONFIG) {
                 const mediumLink = document.getElementById('mediumBlogLink');
                 if (mediumLink) {
