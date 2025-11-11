@@ -191,17 +191,28 @@ Remember: You are a spiritual companion, not a medical or mental health professi
                     tokensUsed: response.data.tokensUsed
                 };
             } else {
-                return {
-                    success: false,
-                    message: response.data.message
-                };
+                // If AI service fails, use fallback
+                return this.getFallbackResponse(userMessage);
             }
 
-            throw new Error('Invalid API response');
-
         } catch (error) {
-            console.error('OpenAI API error:', error);
-            return this.getFallbackResponse(userMessage);
+            console.error('AI Chat error:', error);
+            
+            // Handle specific error types
+            if (error.code === 'unauthenticated') {
+                return {
+                    success: false,
+                    message: "Please log in to chat with our AI spiritual guide. Your sacred journey awaits! 🔐✨"
+                };
+            } else if (error.code === 'resource-exhausted') {
+                return {
+                    success: false,
+                    message: "You've reached the hourly chat limit. Take this time for quiet reflection - sometimes the most profound insights come in silence. 🤫🙏"
+                };
+            } else {
+                // General fallback for other errors
+                return this.getFallbackResponse(userMessage);
+            }
         }
     }
 
