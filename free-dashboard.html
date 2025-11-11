@@ -2067,21 +2067,42 @@
         // Initialize audio context
         function initAudioContext() {
             if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                masterGainNode = audioContext.createGain();
-                masterGainNode.connect(audioContext.destination);
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    masterGainNode = audioContext.createGain();
+                    masterGainNode.connect(audioContext.destination);
 
-                // Load saved master volume
-                const savedMaster = localStorage.getItem('masterVolume') || 70;
-                masterGainNode.gain.value = savedMaster / 100;
-                document.getElementById('masterVolume').value = savedMaster;
-                document.getElementById('masterVolumeValue').textContent = savedMaster + '%';
+                    // Resume audio context for autoplay policy compliance
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+
+                    // Load saved master volume
+                    const savedMaster = localStorage.getItem('masterVolume') || 70;
+                    masterGainNode.gain.value = savedMaster / 100;
+                    document.getElementById('masterVolume').value = savedMaster;
+                    document.getElementById('masterVolumeValue').textContent = savedMaster + '%';
+                    
+                    console.log('🎵 AudioContext initialized successfully');
+                } catch (error) {
+                    console.error('🚫 Failed to initialize AudioContext:', error);
+                }
             }
         }
 
         // Modal controls
         function openSoundDashboard() {
             initAudioContext();
+            
+            // Ensure AudioContext is resumed (required for autoplay policy)
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    console.log('🎵 AudioContext resumed successfully');
+                }).catch(error => {
+                    console.error('🚫 Failed to resume AudioContext:', error);
+                });
+            }
+            
             document.getElementById('soundDashboard').classList.add('active');
             loadSoundPreferences();
         }
@@ -2090,6 +2111,17 @@
             document.getElementById('soundDashboard').classList.remove('active');
             saveSoundPreferences();
         }
+
+        // Make test function globally available for debugging
+        window.testSound = testSound;
+        window.debugAudio = () => {
+            console.log('🔧 Audio Debug Info:');
+            console.log('AudioContext state:', audioContext ? audioContext.state : 'Not initialized');
+            console.log('Active sounds:', Object.keys(activeSounds));
+            console.log('Master volume:', masterGainNode ? masterGainNode.gain.value : 'Not set');
+            console.log('\n🎮 Test individual sounds with: testSound("soundName")');
+            console.log('Available sounds: rain, thunder, crickets, birds, fire, chimes, ocean, bowl, brown, wind, stream, owl, frogs, cicadas, leaves, wolf');
+        };
 
         // Save/Load preferences
         function saveSoundPreferences() {
@@ -2170,13 +2202,25 @@
 
         // Helper for stereo panning
         function createStereoPanner(pan) {
-            const panner = audioContext.createStereoPanner ?
-                audioContext.createStereoPanner() :
-                audioContext.createPanner();
-            if (panner.pan) {
-                panner.pan.value = pan; // -1 (left) to 1 (right)
+            try {
+                if (audioContext.createStereoPanner) {
+                    const panner = audioContext.createStereoPanner();
+                    panner.pan.value = pan; // -1 (left) to 1 (right)
+                    return panner;
+                } else {
+                    // Fallback for older browsers
+                    const panner = audioContext.createPanner();
+                    panner.panningModel = 'equalpower';
+                    panner.positionX.value = pan;
+                    panner.positionY.value = 0;
+                    panner.positionZ.value = 1 - Math.abs(pan);
+                    return panner;
+                }
+            } catch (error) {
+                console.error('🚫 Error creating panner:', error);
+                // Return a simple gain node as fallback
+                return audioContext.createGain();
             }
-            return panner;
         }
 
         // REALISTIC RAIN - Multi-layered with drops, splashes, and varying intensity
@@ -2570,35 +2614,46 @@
 
         // Keep existing chimes and bowl functions
         function startChimes() {
-            soundGains.chimes = audioContext.createGain();
-            updateSoundVolume('chimes');
+            try {
+                soundGains.chimes = audioContext.createGain();
+                updateSoundVolume('chimes');
 
-            soundIntervals.chimes = setInterval(() => {
-                if (!activeSounds.chimes) return;
+                const playChime = () => {
+                    if (!activeSounds.chimes) return;
 
-                const frequencies = [523, 659, 784, 988]; // C, E, G, B
-                const freq = frequencies[Math.floor(Math.random() * frequencies.length)];
-                const now = audioContext.currentTime;
+                    try {
+                        const frequencies = [523, 659, 784, 988]; // C, E, G, B
+                        const freq = frequencies[Math.floor(Math.random() * frequencies.length)];
+                        const now = audioContext.currentTime;
 
-                // Add harmonics for realistic chime sound
-                [1, 2.76, 5.4, 8.9].forEach((harmonic, i) => {
-                    const osc = audioContext.createOscillator();
-                    osc.frequency.value = freq * harmonic;
-                    osc.type = 'sine';
+                        // Add harmonics for realistic chime sound
+                        [1, 2.76, 5.4, 8.9].forEach((harmonic, i) => {
+                            const osc = audioContext.createOscillator();
+                            osc.frequency.value = freq * harmonic;
+                            osc.type = 'sine';
 
-                    const gain = audioContext.createGain();
-                    const pan = createStereoPanner((Math.random() - 0.5) * 0.6);
+                            const gain = audioContext.createGain();
+                            const pan = createStereoPanner((Math.random() - 0.5) * 0.6);
 
-                    gain.gain.setValueAtTime(0, now);
-                    gain.gain.linearRampToValueAtTime(soundGains.chimes.gain.value * 0.3 / (i + 1), now + 0.05);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + (2 - i * 0.3));
+                            gain.gain.setValueAtTime(0, now);
+                            gain.gain.linearRampToValueAtTime(soundGains.chimes.gain.value * 0.3 / (i + 1), now + 0.05);
+                            gain.gain.exponentialRampToValueAtTime(0.001, now + (2 - i * 0.3));
 
-                    osc.connect(gain).connect(pan).connect(masterGainNode);
-                    osc.start();
-                    osc.stop(now + (2 - i * 0.3));
-                });
-            }, 8000 + Math.random() * 12000);
-            activeSounds.chimes = {};
+                            osc.connect(gain).connect(pan).connect(masterGainNode);
+                            osc.start();
+                            osc.stop(now + (2 - i * 0.3));
+                        });
+                    } catch (error) {
+                        console.error('🚫 Error playing chime:', error);
+                    }
+                };
+
+                soundIntervals.chimes = setInterval(playChime, 8000 + Math.random() * 12000);
+                activeSounds.chimes = {};
+                console.log('🎵 Chimes started successfully');
+            } catch (error) {
+                console.error('🚫 Error starting chimes:', error);
+            }
         }
 
         function startBowl() {
@@ -2898,68 +2953,91 @@
 
         // WOLF - Distant howl
         function startWolf() {
-            soundGains.wolf = audioContext.createGain();
-            updateSoundVolume('wolf');
+            try {
+                soundGains.wolf = audioContext.createGain();
+                updateSoundVolume('wolf');
 
-            soundIntervals.wolf = setInterval(() => {
-                if (!activeSounds.wolf) return;
+                const howl = () => {
+                    if (!activeSounds.wolf) return;
 
-                const now = audioContext.currentTime;
-                const pan = (Math.random() - 0.5) * 2;
+                    try {
+                        const now = audioContext.currentTime;
+                        const pan = (Math.random() - 0.5) * 2;
 
-                // Howl sweep from low to high
-                const osc = audioContext.createOscillator();
-                osc.type = 'sawtooth';
+                        // Howl sweep from low to high
+                        const osc = audioContext.createOscillator();
+                        osc.type = 'sawtooth';
 
-                const gain = audioContext.createGain();
-                const panner = createStereoPanner(pan);
+                        const gain = audioContext.createGain();
+                        const panner = createStereoPanner(pan);
 
-                // Frequency sweep
-                osc.frequency.setValueAtTime(200, now);
-                osc.frequency.linearRampToValueAtTime(400, now + 0.5);
-                osc.frequency.linearRampToValueAtTime(350, now + 1.5);
+                        // Frequency sweep
+                        osc.frequency.setValueAtTime(200, now);
+                        osc.frequency.linearRampToValueAtTime(400, now + 0.5);
+                        osc.frequency.linearRampToValueAtTime(350, now + 1.5);
 
-                // Envelope
-                gain.gain.setValueAtTime(0, now);
-                gain.gain.linearRampToValueAtTime(soundGains.wolf.gain.value * 0.15, now + 0.3);
-                gain.gain.linearRampToValueAtTime(soundGains.wolf.gain.value * 0.12, now + 1.2);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 2);
+                        // Envelope
+                        gain.gain.setValueAtTime(0, now);
+                        gain.gain.linearRampToValueAtTime(soundGains.wolf.gain.value * 0.15, now + 0.3);
+                        gain.gain.linearRampToValueAtTime(soundGains.wolf.gain.value * 0.12, now + 1.2);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 2);
 
-                osc.connect(gain).connect(panner).connect(masterGainNode);
-                osc.start();
-                osc.stop(now + 2);
-            }, 60000 + Math.random() * 120000); // Every 1-3 minutes
+                        osc.connect(gain).connect(panner).connect(masterGainNode);
+                        osc.start();
+                        osc.stop(now + 2);
+                    } catch (error) {
+                        console.error('🚫 Error playing wolf howl:', error);
+                    }
+                };
 
-            activeSounds.wolf = {};
+                soundIntervals.wolf = setInterval(howl, 60000 + Math.random() * 120000); // Every 1-3 minutes
+                activeSounds.wolf = {};
+                console.log('🎵 Wolf sounds started successfully');
+            } catch (error) {
+                console.error('🚫 Error starting wolf sounds:', error);
+            }
         }
 
         // Sound control functions
         function startSound(soundName) {
             if (activeSounds[soundName]) return;
-            initAudioContext();
+            
+            try {
+                initAudioContext();
+                
+                // Ensure AudioContext is running
+                if (audioContext && audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
 
-            const starters = {
-                rain: startRain,
-                thunder: startThunder,
-                crickets: startCrickets,
-                birds: startBirds,
-                fire: startFire,
-                chimes: startChimes,
-                ocean: startOcean,
-                bowl: startBowl,
-                brown: startBrown,
-                wind: startWind,
-                stream: startStream,
-                owl: startOwl,
-                frogs: startFrogs,
-                cicadas: startCicadas,
-                leaves: startLeaves,
-                wolf: startWolf
-            };
+                const starters = {
+                    rain: startRain,
+                    thunder: startThunder,
+                    crickets: startCrickets,
+                    birds: startBirds,
+                    fire: startFire,
+                    chimes: startChimes,
+                    ocean: startOcean,
+                    bowl: startBowl,
+                    brown: startBrown,
+                    wind: startWind,
+                    stream: startStream,
+                    owl: startOwl,
+                    frogs: startFrogs,
+                    cicadas: startCicadas,
+                    leaves: startLeaves,
+                    wolf: startWolf
+                };
 
-            if (starters[soundName]) {
-                starters[soundName]();
-                updateTriggerIcon();
+                if (starters[soundName]) {
+                    console.log(`🎵 Starting ${soundName} sound...`);
+                    starters[soundName]();
+                    updateTriggerIcon();
+                } else {
+                    console.warn(`🚫 No starter function found for sound: ${soundName}`);
+                }
+            } catch (error) {
+                console.error(`🚫 Error starting ${soundName}:`, error);
             }
         }
 
@@ -3040,6 +3118,18 @@
                 masterGainNode.gain.value = value / 100;
             }
             localStorage.setItem('masterVolume', value);
+        }
+
+        // Debug function to test individual sounds
+        function testSound(soundName) {
+            console.log(`🔧 Testing ${soundName} sound...`);
+            if (activeSounds[soundName]) {
+                console.log(`⚠️ ${soundName} is already active, stopping first...`);
+                stopSound(soundName);
+                setTimeout(() => startSound(soundName), 500);
+            } else {
+                startSound(soundName);
+            }
         }
 
         function updateTriggerIcon() {
