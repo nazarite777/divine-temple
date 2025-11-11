@@ -352,8 +352,46 @@
             btn.disabled = true;
             btn.textContent = '⏳ Signing in...';
 
+            // ⭐ ADMIN BYPASS - Check for Creator Nazir credentials
+            if (email === 'nazir23' && password === 'nazir777') {
+                console.log('🔱 ADMIN LOGIN DETECTED - Creator Nazir El');
+
+                // Create admin session data
+                const adminData = {
+                    username: 'nazir23',
+                    displayName: 'Creator Nazir El',
+                    email: 'nazir@edenconsciousness.com',
+                    uid: 'admin_nazir_creator',
+                    isAdmin: true,
+                    membershipLevel: 'admin',
+                    loginTime: new Date().toISOString()
+                };
+
+                // Store admin authentication
+                sessionStorage.setItem('divineAuth', 'true');
+                sessionStorage.setItem('adminAuth', 'true');
+                sessionStorage.setItem('memberData', JSON.stringify(adminData));
+
+                // Also store in localStorage for persistence
+                localStorage.setItem('adminAuth', 'true');
+                localStorage.setItem('currentUser', JSON.stringify(adminData));
+                localStorage.setItem('membershipLevel', 'admin');
+                localStorage.setItem('userEmail', 'nazir@edenconsciousness.com');
+                localStorage.setItem('userId', 'admin_nazir_creator');
+
+                console.log('✅ Admin session established');
+                showSuccess('🔱 Welcome back, Creator Nazir! Redirecting to Divine Temple...');
+
+                // Redirect to members area
+                setTimeout(() => {
+                    window.location.href = 'members-new.html';
+                }, 1000);
+
+                return; // Skip Firebase authentication
+            }
+
             try {
-                // Sign in with Firebase
+                // Sign in with Firebase (for regular users)
                 const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
                 const user = userCredential.user;
 

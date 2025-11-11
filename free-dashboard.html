@@ -1727,6 +1727,37 @@
                 return;
             }
 
+            // FAST PATH: Check if we have recent localStorage data (just logged in)
+            const localEmail = localStorage.getItem('userEmail');
+            const localMembership = localStorage.getItem('membershipLevel');
+            const localUserId = localStorage.getItem('userId');
+
+            if (localEmail && localMembership && localUserId) {
+                console.log('📱 Found recent login data in localStorage');
+                console.log('   Email:', localEmail);
+                console.log('   Membership:', localMembership);
+
+                // If membership is free/basic, show dashboard immediately
+                if (localMembership === 'free' || localMembership === 'basic') {
+                    console.log('⚡ FAST PATH: Showing dashboard immediately from localStorage');
+
+                    // Update UI if element exists
+                    const userEmailEl = document.getElementById('userEmail');
+                    if (userEmailEl) {
+                        userEmailEl.textContent = localEmail;
+                    }
+
+                    // Hide loading screen immediately
+                    const authLoading = document.getElementById('authLoading');
+                    if (authLoading) {
+                        authLoading.classList.add('hidden');
+                        console.log('✅ Dashboard shown via fast path');
+                    }
+
+                    // Firebase will still verify in background, but user sees dashboard immediately
+                }
+            }
+
             // Wait for Firebase to load
             const firebaseLoaded = await waitForFirebase();
 
@@ -1776,52 +1807,90 @@
             // USER EXISTS - proceed
             console.log('✅ User authenticated:', user.email);
 
-            // Update UI
-            document.getElementById('userEmail').textContent = user.email;
+            // Update UI safely
+            try {
+                const userEmailEl = document.getElementById('userEmail');
+                if (userEmailEl) {
+                    userEmailEl.textContent = user.email;
+                }
+            } catch (e) {
+                console.warn('Could not update userEmail element:', e);
+            }
+
             localStorage.setItem('userEmail', user.email);
             localStorage.setItem('userId', user.uid);
 
             // Check membership level
+            let membershipLevel = 'free';
+            let shouldHideLoading = true;
+
             try {
+                console.log('📊 Checking membership level...');
                 const userDoc = await firebase.firestore()
                     .collection('users')
                     .doc(user.uid)
                     .get();
 
-                let membershipLevel = 'free';
-                
                 if (userDoc.exists) {
                     membershipLevel = userDoc.data().membershipLevel || 'free';
+                    console.log('   Found membership level:', membershipLevel);
+                } else {
+                    console.log('   No user doc found, defaulting to free');
+                    membershipLevel = 'free';
                 }
 
                 localStorage.setItem('membershipLevel', membershipLevel);
-                console.log('   Membership level:', membershipLevel);
 
                 // Redirect premium users
                 if (membershipLevel !== 'free' && membershipLevel !== 'basic') {
                     console.log('💎 Premium user - redirecting to members-new.html');
                     window.location.href = 'members-new.html';
+                    shouldHideLoading = false; // Don't hide, we're redirecting
                     return;
                 }
 
                 // Free user - show dashboard
                 console.log('✨ Free user - showing dashboard');
-                document.getElementById('authLoading').classList.add('hidden');
 
             } catch (error) {
-                console.error('Error checking membership:', error);
+                console.error('❌ Error checking membership:', error);
+                // Still proceed as free user on error
+                membershipLevel = 'free';
                 localStorage.setItem('membershipLevel', 'free');
-                document.getElementById('authLoading').classList.add('hidden');
+            }
+
+            // ALWAYS hide loading screen for free users
+            if (shouldHideLoading) {
+                console.log('🎯 Hiding loading screen...');
+                const authLoading = document.getElementById('authLoading');
+                if (authLoading) {
+                    authLoading.classList.add('hidden');
+                    console.log('✅ Loading screen hidden successfully');
+                } else {
+                    console.error('❌ Could not find authLoading element!');
+                }
             }
             });
 
-            // Failsafe - if no auth state after 8 seconds, redirect to login
+            // Failsafe #1 - if no auth state after 8 seconds, redirect to login
             setTimeout(() => {
                 if (!authReady && !checkAdminSession()) {
                     console.error('⏱️  TIMEOUT: No auth state received in 8 seconds');
                     window.location.href = 'login.html';
                 }
             }, 8000);
+
+            // Failsafe #2 - Force hide loading screen after 5 seconds if user is logged in
+            setTimeout(() => {
+                const authLoading = document.getElementById('authLoading');
+                if (authLoading && !authLoading.classList.contains('hidden')) {
+                    const currentUser = firebase.auth().currentUser;
+                    if (currentUser) {
+                        console.warn('⚠️ FORCE HIDING: User authenticated but loading still visible');
+                        authLoading.classList.add('hidden');
+                    }
+                }
+            }, 5000);
         }
 
         // Start authentication when page loads
