@@ -6,6 +6,13 @@
     <title>Divine Temple - Sacred Members Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    
     <!-- Performance Optimized CSS -->
     <link rel="stylesheet" href="css/performance-optimized.css">
     
@@ -537,8 +544,8 @@
 
             <form id="auth-form" onsubmit="authenticateUser(event)">
                 <div class="input-group">
-                    <label>Username</label>
-                    <input type="text" id="username" required placeholder="Enter username" autocomplete="username">
+                    <label>Username or Email</label>
+                    <input type="text" id="username" required placeholder="Enter username or email" autocomplete="username">
                 </div>
 
                 <div class="input-group">
@@ -561,9 +568,19 @@
                 <h1 class="logo">🏛️ Divine Temple</h1>
                 <p class="tagline">Sacred Members Portal</p>
             </div>
-            <div class="member-badge" id="member-badge">
-                <div class="member-name" id="member-display"></div>
-                <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <a href="https://medium.com/@edenconsciousnesssdt" target="_blank" rel="noopener noreferrer"
+                   style="text-decoration: none; color: var(--accent-gold); font-weight: 600; padding: 0.5rem 1rem;
+                   background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 10px;
+                   transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem;"
+                   onmouseover="this.style.background='rgba(245, 158, 11, 0.2)'; this.style.transform='translateY(-2px)'"
+                   onmouseout="this.style.background='rgba(245, 158, 11, 0.1)'; this.style.transform='translateY(0)'">
+                    📝 Blog
+                </a>
+                <div class="member-badge" id="member-badge">
+                    <div class="member-name" id="member-display"></div>
+                    <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+                </div>
             </div>
         </div>
     </header>
@@ -574,7 +591,7 @@
         <section class="welcome-section">
             <h2 class="welcome-title">Welcome to Your Divine Temple</h2>
             <p class="welcome-text">
-                Access 12 sacred pathways designed to guide your spiritual journey.
+                Access 14 sacred pathways designed to guide your spiritual journey.
                 Each section contains divine tools and practices for your transformation.
             </p>
         </section>
@@ -697,17 +714,18 @@
                     </div>
                 </div>
 
-                <!-- 9. Sacred Calendar -->
+                <!-- 9. Enochian Sacred Calendar -->
                 <div class="nav-card" onclick="showSection('calendar')">
                     <span class="nav-icon">📅</span>
-                    <h4 class="nav-title">Sacred Calendar</h4>
+                    <h4 class="nav-title">Enochian Sacred Calendar</h4>
                     <p class="nav-description">
-                        Track moon phases, celestial events, and optimal spiritual timing.
+                        364-day Enochian calendar with Hebrew months, sacred journal, goal tracking, achievements, and divine timing aligned with Spring Equinox.
                     </p>
                     <div class="nav-features">
-                        <span class="feature-tag">Moon Phases</span>
-                        <span class="feature-tag">Celestial</span>
-                        <span class="feature-tag">Timing</span>
+                        <span class="feature-tag">364-Day System</span>
+                        <span class="feature-tag">Sacred Journal</span>
+                        <span class="feature-tag">Goal Tracking</span>
+                        <span class="feature-tag">Achievements</span>
                     </div>
                 </div>
 
@@ -756,22 +774,7 @@
                     </div>
                 </div>
 
-                <!-- Enhanced Oracle Cards -->
-                <div class="nav-card" onclick="showSection('oracle-cards')">
-                    <span class="nav-icon">🃏</span>
-                    <h4 class="nav-title">Oracle Cards & Divine Guidance</h4>
-                    <p class="nav-description">
-                        134 mystical oracle cards with multiple spreads, divine insights, and journaling system.
-                    </p>
-                    <div class="nav-features">
-                        <span class="feature-tag">134 Cards</span>
-                        <span class="feature-tag">Multiple Spreads</span>
-                        <span class="feature-tag">Journaling</span>
-                        <span class="feature-tag">Insights</span>
-                    </div>
-                </div>
-
-                <!-- Sacred Books -->
+                <!-- 13. Sacred Books -->
                 <div class="nav-card" onclick="showSection('sacred-books')">
                     <span class="nav-icon">📖</span>
                     <h4 class="nav-title">Sacred Books & Wisdom Library</h4>
@@ -786,7 +789,7 @@
                     </div>
                 </div>
 
-                <!-- Videos & Media -->
+                <!-- 14. Videos & Media -->
                 <div class="nav-card" onclick="showSection('videos-media')">
                     <span class="nav-icon">🎬</span>
                     <h4 class="nav-title">Videos & Media Library</h4>
@@ -801,33 +804,18 @@
                     </div>
                 </div>
 
-                <!-- Sacred Geometry -->
-                <div class="nav-card" onclick="showSection('sacred-geometry')">
-                    <span class="nav-icon">🔯</span>
-                    <h4 class="nav-title">Sacred Geometry & Patterns</h4>
+                <!-- ADMIN PANEL (Only visible to admin) -->
+                <div class="nav-card admin-only" onclick="showAdminPanel()" style="display: none; background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1)); border: 2px solid #F59E0B; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);">
+                    <span class="nav-icon">🔱</span>
+                    <h4 class="nav-title" style="color: #F59E0B;">Admin Control Panel</h4>
                     <p class="nav-description">
-                        Interactive sacred patterns, golden ratio explorations, and geometric meditations.
+                        Creator dashboard for managing users, content, analytics, and system administration.
                     </p>
                     <div class="nav-features">
-                        <span class="feature-tag">Interactive Patterns</span>
-                        <span class="feature-tag">Golden Ratio</span>
-                        <span class="feature-tag">Geometric Arts</span>
-                        <span class="feature-tag">Meditations</span>
-                    </div>
-                </div>
-
-                <!-- Enhanced Meditation -->
-                <div class="nav-card" onclick="showSection('meditation')">
-                    <span class="nav-icon">🧘‍♂️</span>
-                    <h4 class="nav-title">Enhanced Meditation Space</h4>
-                    <p class="nav-description">
-                        Guided sessions with ambient sounds, progress tracking, and meditation library.
-                    </p>
-                    <div class="nav-features">
-                        <span class="feature-tag">Guided Sessions</span>
-                        <span class="feature-tag">Ambient Sounds</span>
-                        <span class="feature-tag">Progress Tracking</span>
-                        <span class="feature-tag">Meditation Library</span>
+                        <span class="feature-tag" style="background: #F59E0B; color: white;">User Management</span>
+                        <span class="feature-tag" style="background: #F59E0B; color: white;">Analytics</span>
+                        <span class="feature-tag" style="background: #F59E0B; color: white;">Content Mod</span>
+                        <span class="feature-tag" style="background: #F59E0B; color: white;">System Status</span>
                     </div>
                 </div>
             </div>
@@ -862,29 +850,12 @@
         // CONFIGURATION
         // ========================================
         
-        const CREDENTIALS = {
-            username: 'nazir23',
-            password: 'Nazir777'
-        };
-
+        // Section mapping for navigation
         const SECTION_MAP = {
-            'oracle-cards': 'sections/oracle-cards.html',
-            'sacred-geometry': 'sections/sacred-geometry.html',
-            'meditation': 'sections/meditation.html',
-            'astral-travel': 'sections/astral-travel.html',
-            'energy-healing': 'sections/energy-healing.html',
-            'cosmic-laws': 'sections/cosmic-laws.html',
-            'dream-portal': 'sections/dream-portal.html',
-            'light-activation': 'sections/light-activation.html',
-            'manifestation': 'sections/manifestation.html',
-            'cosmic-calendar': 'sections/cosmic-calendar.html',
-            'universal-classroom': 'sections/universal-classroom.html',
-            'sacred-music': 'sections/sacred-music.html',
-            'sacred-books': 'sections/sacred-books.html',
-            'videos-media': 'sections/videos-media.html',
             'oracle-divination': 'sections/oracle-divination.html',
             'spiritual-practices': 'sections/spiritual-practices.html',
             'meditation-mindfulness': 'sections/meditation-mindfulness.html',
+            'energy-healing': 'sections/energy-healing.html',
             'sacred-arts-sound': 'sections/sacred-arts-sound.html',
             'devotion-growth': 'sections/devotion-growth.html',
             'sacred-knowledge': 'sections/sacred-knowledge.html',
@@ -892,24 +863,12 @@
             'calendar': 'sections/calendar.html',
             'chakras-auras': 'sections/chakras-auras.html',
             'crystals-elements': 'sections/crystals-elements.html',
-            'spiritual-music': 'sections/spiritual-music.html'
+            'spiritual-music': 'sections/spiritual-music.html',
+            'sacred-books': 'sections/sacred-books.html',
+            'videos-media': 'sections/videos-media.html'
         };
 
         const SECTION_TITLES = {
-            'oracle-cards': 'Oracle Cards & Divine Guidance',
-            'sacred-geometry': 'Sacred Geometry & Patterns',
-            'meditation': 'Meditation & Inner Peace',
-            'astral-travel': 'Astral Travel & Projection',
-            'energy-healing': 'Energy Healing & Chakras',
-            'cosmic-laws': 'Cosmic Laws & Universal Principles',
-            'dream-portal': 'Dream Portal & Lucid Dreaming',
-            'light-activation': 'Light Activation & DNA Awakening',
-            'manifestation': 'Manifestation & Reality Creation',
-            'cosmic-calendar': 'Cosmic Calendar & Celestial Events',
-            'universal-classroom': 'Universal Classroom & Learning',
-            'sacred-music': 'Sacred Music & Sound Healing',
-            'sacred-books': 'Sacred Books & Wisdom Library',
-            'videos-media': 'Videos & Media Library',
             'oracle-divination': 'Oracle & Divination',
             'spiritual-practices': 'Spiritual Practices',
             'meditation-mindfulness': 'Meditation & Mindfulness',
@@ -921,7 +880,9 @@
             'calendar': 'Sacred Calendar',
             'chakras-auras': 'Chakras & Auras',
             'crystals-elements': 'Crystals & Elements',
-            'spiritual-music': 'Spiritual Music & Sound Therapy'
+            'spiritual-music': 'Spiritual Music & Sound Therapy',
+            'sacred-books': 'Sacred Books & Wisdom Library',
+            'videos-media': 'Videos & Media Library'
         };
 
         // ========================================
@@ -1088,68 +1049,251 @@
             
             const isAuth = sessionStorage.getItem('divineAuth');
             const memberDataStr = sessionStorage.getItem('memberData');
+            const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
+            
+            console.log('🔍 Auth check - isAuth:', isAuth);
+            console.log('🔍 Auth check - memberData exists:', !!memberDataStr);
+            console.log('🔍 Auth check - isAdmin:', isAdmin);
             
             if (isAuth === 'true' && memberDataStr) {
                 try {
                     const memberData = JSON.parse(memberDataStr);
-                    console.log('✅ User authenticated:', memberData.username);
+                    const displayName = memberData.username || memberData.displayName || memberData.name || 'User';
+                    
+                    console.log('✅ User authenticated:', displayName);
+                    console.log('🔍 Member data:', memberData);
+                    
+                    if (isAdmin) {
+                        console.log('🔱 Admin user detected');
+                    }
+                    
                     showDashboard(memberData);
+                    return true;
                 } catch (error) {
                     console.error('❌ Error parsing member data:', error);
+                    // Clear corrupted data
+                    sessionStorage.removeItem('divineAuth');
+                    sessionStorage.removeItem('memberData');
+                    sessionStorage.removeItem('adminAuth');
                     showAuthOverlay();
+                    return false;
                 }
             } else {
-                console.log('📝 No authentication found');
+                console.log('📝 No authentication found - showing auth overlay');
                 showAuthOverlay();
+                return false;
             }
         }
 
-        function authenticateUser(event) {
+        async function authenticateUser(event) {
             event.preventDefault();
             console.log('🔐 Attempting authentication...');
 
-            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const errorDiv = document.getElementById('auth-error');
             const successDiv = document.getElementById('auth-success');
+            const submitBtn = event.target.querySelector('button[type="submit"]');
 
-            console.log('📝 Username entered:', username);
+            console.log('📧 Email/Username entered:', email);
             console.log('🔑 Password length:', password.length);
 
             // Clear previous messages
             errorDiv.classList.remove('show');
             successDiv.classList.remove('show');
+            
+            // Show loading state
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '⏳ Authenticating...';
+            submitBtn.disabled = true;
 
-            if (username === CREDENTIALS.username && password === CREDENTIALS.password) {
-                console.log('✅ Credentials match!');
+            try {
+                console.log('🔥 Firebase Config available:', !!window.FirebaseConfig);
+
+                // Firebase authentication
+                console.log('🔥 Attempting Firebase authentication...');
+                if (!window.FirebaseConfig) {
+                    throw new Error('Firebase not initialized');
+                }
+
+                // Attempt Firebase authentication
+                const result = await FirebaseConfig.auth.signIn(email, password);
                 
-                const memberData = {
-                    username: username,
-                    name: 'Nazir El',
-                    loginTime: new Date().toISOString(),
-                    joinDate: '2024-01-01'
-                };
+                if (result.success) {
+                    console.log('✅ Firebase authentication successful');
+                    
+                    // Get user data from Firestore
+                    const userData = await FirebaseConfig.data.getUserData();
+                    
+                    const memberData = {
+                        uid: result.user.uid,
+                        email: result.user.email,
+                        displayName: result.user.displayName || userData?.displayName || 'Sacred Member',
+                        loginTime: new Date().toISOString(),
+                        membershipLevel: userData?.membershipLevel || 'basic',
+                        joinDate: userData?.createdAt?.toDate?.()?.toISOString() || new Date().toISOString()
+                    };
 
-                // Store authentication
-                sessionStorage.setItem('divineAuth', 'true');
-                sessionStorage.setItem('memberData', JSON.stringify(memberData));
+                    // Check if user is admin (based on email)
+                    const isAdmin = FirebaseConfig.auth.isAdminEmail(result.user.email);
+                    if (isAdmin) {
+                        sessionStorage.setItem('adminAuth', 'true');
+                        console.log('🔱 Admin access granted for:', result.user.email);
+                    }
 
-                // Show success message
-                successDiv.textContent = '✨ Welcome, Nazir El! ✨';
-                successDiv.classList.add('show');
+                    // Store authentication
+                    sessionStorage.setItem('divineAuth', 'true');
+                    sessionStorage.setItem('memberData', JSON.stringify(memberData));
+                    sessionStorage.setItem('firebaseUser', JSON.stringify({
+                        uid: result.user.uid,
+                        email: result.user.email,
+                        displayName: memberData.displayName
+                    }));
 
-                console.log('✅ Authentication successful - transitioning to dashboard');
+                    // Show success message
+                    if (isAdmin) {
+                        successDiv.innerHTML = `
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔱</div>
+                                <div style="font-weight: 600; color: var(--accent-gold);">ADMIN ACCESS GRANTED</div>
+                                <div style="font-size: 0.9rem; opacity: 0.8;">Welcome back, ${memberData.displayName}</div>
+                            </div>
+                        `;
+                    } else {
+                        successDiv.textContent = `✨ Welcome, ${memberData.displayName}! ✨`;
+                    }
+                    successDiv.classList.add('show');
 
-                // Redirect to dashboard
-                setTimeout(() => {
-                    showDashboard(memberData);
-                }, 1000);
-            } else {
-                console.log('❌ Authentication failed');
-                console.log('Expected username:', CREDENTIALS.username);
-                console.log('Expected password length:', CREDENTIALS.password.length);
-                errorDiv.textContent = '❌ Invalid credentials. Please try again.';
+                    // Track successful login
+                    FirebaseConfig.analytics.trackEvent('login', {
+                        method: 'email',
+                        user_id: result.user.uid
+                    });
+
+                    console.log('✅ Authentication successful - transitioning to dashboard');
+
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        showDashboard(memberData);
+                    }, 1500);
+                    
+                } else {
+                    throw new Error(result.error || 'Authentication failed');
+                }
+                
+            } catch (error) {
+                console.error('❌ Authentication failed:', error);
+                
+                let errorMessage = '❌ Authentication failed. ';
+                
+                // Handle specific Firebase auth errors
+                if (error.message.includes('user-not-found')) {
+                    errorMessage += 'No account found with this email.';
+                } else if (error.message.includes('wrong-password')) {
+                    errorMessage += 'Incorrect password.';
+                } else if (error.message.includes('invalid-email')) {
+                    errorMessage += 'Please enter a valid email address.';
+                } else if (error.message.includes('too-many-requests')) {
+                    errorMessage += 'Too many failed attempts. Please try again later.';
+                } else {
+                    errorMessage += 'Please check your credentials and try again.';
+                }
+                
+                errorDiv.textContent = errorMessage;
                 errorDiv.classList.add('show');
+                
+                // Track failed login attempt
+                if (window.FirebaseConfig) {
+                    FirebaseConfig.analytics.trackEvent('login_failed', {
+                        error_type: error.code || 'unknown',
+                        method: 'email'
+                    });
+                }
+            } finally {
+                // Reset button state
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                try {
+                    const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
+                    
+                    if (isAdmin) {
+                        console.log('🔱 Admin logout');
+                        // Track admin logout
+                        if (window.FirebaseConfig && FirebaseConfig.analytics) {
+                            FirebaseConfig.analytics.trackEvent('admin_logout');
+                        }
+                    } else {
+                        // Firebase sign out for regular users
+                        if (window.FirebaseConfig && FirebaseConfig.auth.isAuthenticated()) {
+                            await FirebaseConfig.auth.signOut();
+                            FirebaseConfig.analytics.trackEvent('logout');
+                        }
+                    }
+                    
+                    // Clear ALL storage
+                    sessionStorage.removeItem('divineAuth');
+                    sessionStorage.removeItem('adminAuth');
+                    sessionStorage.removeItem('memberData');
+                    sessionStorage.removeItem('firebaseUser');
+                    localStorage.removeItem('adminAuth');
+                    localStorage.removeItem('currentUser');
+                    localStorage.removeItem('divineAuth');
+                    
+                    console.log('✅ Logout successful');
+                    showAuthOverlay();
+                } catch (error) {
+                    console.error('❌ Logout failed:', error);
+                    // Fallback - clear local storage anyway
+                    sessionStorage.clear();
+                    localStorage.clear();
+                    showAuthOverlay();
+                }
+            }
+        }
+
+        // Check authentication status on page load
+        async function checkAuthStatus() {
+            if (window.FirebaseConfig) {
+                FirebaseConfig.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        console.log('🔐 User authenticated via Firebase:', user.email);
+                        
+                        // Get user data and show dashboard
+                        const userData = await FirebaseConfig.data.getUserData();
+                        const memberData = {
+                            uid: user.uid,
+                            email: user.email,
+                            displayName: user.displayName || userData?.displayName || 'Sacred Member',
+                            loginTime: new Date().toISOString(),
+                            membershipLevel: userData?.membershipLevel || 'basic',
+                            joinDate: userData?.createdAt?.toDate?.()?.toISOString() || new Date().toISOString()
+                        };
+                        
+                        sessionStorage.setItem('divineAuth', 'true');
+                        sessionStorage.setItem('memberData', JSON.stringify(memberData));
+                        showDashboard(memberData);
+                    } else {
+                        console.log('🔓 No authenticated user');
+                        if (sessionStorage.getItem('divineAuth') === 'true') {
+                            // Clear stale session
+                            sessionStorage.clear();
+                        }
+                        showAuthOverlay();
+                    }
+                });
+            } else {
+                // Fallback to session storage check
+                if (sessionStorage.getItem('divineAuth') === 'true') {
+                    const memberData = JSON.parse(sessionStorage.getItem('memberData') || '{}');
+                    showDashboard(memberData);
+                } else {
+                    showAuthOverlay();
+                }
             }
         }
 
@@ -1224,16 +1368,36 @@
                 console.log('✅ Dashboard activated');
             }
             
-            // Show and update member badge
+            // Show and update member badge with admin status
             const memberBadge = document.getElementById('member-badge');
             const memberDisplay = document.getElementById('member-display');
+            const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
             
             if (memberBadge) {
                 memberBadge.style.display = 'flex';
+                
+                // Add admin styling if admin
+                if (isAdmin) {
+                    memberBadge.style.background = 'linear-gradient(135deg, #F59E0B, #FBBF24)';
+                    memberBadge.style.border = '2px solid #F59E0B';
+                    memberBadge.style.boxShadow = '0 0 20px rgba(245, 158, 11, 0.4)';
+                }
             }
             
             if (memberDisplay && memberData) {
-                memberDisplay.textContent = memberData.name || memberData.username;
+                const displayName = isAdmin ? 
+                    `🔱 ${memberData.displayName || 'Nazir El - Creator'}` : 
+                    (memberData.name || memberData.username || memberData.displayName);
+                    
+                memberDisplay.textContent = displayName;
+                
+                // Add admin title if admin
+                if (isAdmin) {
+                    memberDisplay.innerHTML = `
+                        <div style="font-weight: 600; color: #0A0E27;">${memberData.displayName || 'Nazir El - Creator'}</div>
+                        <div style="font-size: 0.8rem; opacity: 0.8; color: #0A0E27;">🔱 DIVINE TEMPLE CREATOR</div>
+                    `;
+                }
             }
             
             // Hide section container if visible
@@ -1241,6 +1405,15 @@
             if (sectionContainer) {
                 sectionContainer.classList.remove('active');
                 sectionContainer.style.display = 'none';
+            }
+            
+            // Show admin elements if admin
+            if (sessionStorage.getItem('adminAuth') === 'true') {
+                const adminCard = document.querySelector('.admin-only');
+                if (adminCard) {
+                    adminCard.style.display = 'block';
+                    console.log('🔱 Admin navigation card shown');
+                }
             }
             
             // Scroll to top
@@ -1306,6 +1479,167 @@
                 console.log('🔄 Loading section URL:', SECTION_MAP[sectionId]);
                 sectionFrame.src = SECTION_MAP[sectionId];
             }
+        }
+
+        // ========================================
+        // ADMIN FUNCTIONS
+        // ========================================
+
+        function showAdminPanel() {
+            console.log('🔱 Opening Admin Control Panel...');
+            
+            // Verify admin status
+            const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
+            if (!isAdmin) {
+                alert('❌ Access denied. Admin privileges required.');
+                return;
+            }
+            
+            // Hide dashboard
+            const dashboard = document.getElementById('dashboard');
+            if (dashboard) {
+                dashboard.classList.remove('active');
+                dashboard.style.display = 'none';
+            }
+            
+            // Create admin panel overlay
+            const adminPanel = document.createElement('div');
+            adminPanel.id = 'admin-panel';
+            adminPanel.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, #0A0E27, #1a1f3a);
+                z-index: 10000;
+                padding: 2rem;
+                overflow-y: auto;
+                color: white;
+            `;
+            
+            adminPanel.innerHTML = `
+                <div style="max-width: 1200px; margin: 0 auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #F59E0B;">
+                        <div>
+                            <h1 style="color: #F59E0B; font-size: 2.5rem; margin: 0; font-family: 'Playfair Display', serif;">🔱 Admin Control Panel</h1>
+                            <p style="color: #A1A1AA; margin: 0.5rem 0 0 0;">Divine Temple Creator Dashboard</p>
+                        </div>
+                        <button onclick="closeAdminPanel()" style="background: #F59E0B; color: #0A0E27; border: none; padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 1rem;">
+                            ← Return to Temple
+                        </button>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                        <!-- User Management -->
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 2rem; border: 1px solid rgba(245, 158, 11, 0.3);">
+                            <h3 style="color: #F59E0B; margin-bottom: 1rem;">👥 User Management</h3>
+                            <p style="color: #A1A1AA; margin-bottom: 1.5rem;">Monitor and manage user accounts</p>
+                            <button onclick="viewUsers()" style="background: #8B5CF6; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; width: 100%;">
+                                View All Users
+                            </button>
+                        </div>
+                        
+                        <!-- Analytics -->
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 2rem; border: 1px solid rgba(245, 158, 11, 0.3);">
+                            <h3 style="color: #F59E0B; margin-bottom: 1rem;">📊 Analytics Dashboard</h3>
+                            <p style="color: #A1A1AA; margin-bottom: 1.5rem;">View site statistics and user behavior</p>
+                            <button onclick="viewAnalytics()" style="background: #10B981; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; width: 100%;">
+                                View Analytics
+                            </button>
+                        </div>
+                        
+                        <!-- Content Moderation -->
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 2rem; border: 1px solid rgba(245, 158, 11, 0.3);">
+                            <h3 style="color: #F59E0B; margin-bottom: 1rem;">🛡️ Content Moderation</h3>
+                            <p style="color: #A1A1AA; margin-bottom: 1.5rem;">Review testimonials and support tickets</p>
+                            <button onclick="moderateContent()" style="background: #F59E0B; color: #0A0E27; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; width: 100%;">
+                                Review Content
+                            </button>
+                        </div>
+                        
+                        <!-- System Status -->
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 2rem; border: 1px solid rgba(245, 158, 11, 0.3);">
+                            <h3 style="color: #F59E0B; margin-bottom: 1rem;">⚙️ System Status</h3>
+                            <p style="color: #A1A1AA; margin-bottom: 1.5rem;">Firebase and system health</p>
+                            <button onclick="checkSystemStatus()" style="background: #3B82F6; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; width: 100%;">
+                                Check Status
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="admin-content" style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 2rem; border: 1px solid rgba(245, 158, 11, 0.3); min-height: 400px;">
+                        <h3 style="color: #F59E0B; margin-bottom: 1rem;">🔱 Welcome, Creator Nazir El</h3>
+                        <p style="color: #A1A1AA;">Select an option above to manage your Divine Temple.</p>
+                        <div style="margin-top: 2rem; padding: 1rem; background: rgba(245, 158, 11, 0.1); border-radius: 10px; border-left: 4px solid #F59E0B;">
+                            <h4 style="color: #F59E0B; margin: 0 0 0.5rem 0;">Admin Credentials Active</h4>
+                            <p style="margin: 0; color: #A1A1AA;">Username: nazir23 | Full Access Granted</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(adminPanel);
+            console.log('🔱 Admin panel opened');
+        }
+
+        function closeAdminPanel() {
+            const adminPanel = document.getElementById('admin-panel');
+            if (adminPanel) {
+                adminPanel.remove();
+            }
+            returnToDashboard();
+        }
+
+        function viewUsers() {
+            const content = document.getElementById('admin-content');
+            content.innerHTML = `
+                <h3 style="color: #F59E0B; margin-bottom: 1rem;">👥 User Management</h3>
+                <p style="color: #A1A1AA;">Firebase Authentication Users</p>
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(139, 92, 246, 0.1); border-radius: 10px;">
+                    <p style="color: #8B5CF6; margin: 0;">Connected to Firebase project: sacred-community</p>
+                </div>
+            `;
+        }
+
+        function viewAnalytics() {
+            const content = document.getElementById('admin-content');
+            content.innerHTML = `
+                <h3 style="color: #F59E0B; margin-bottom: 1rem;">📊 Analytics Dashboard</h3>
+                <p style="color: #A1A1AA;">Google Analytics and Firebase Analytics</p>
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 10px;">
+                    <p style="color: #10B981; margin: 0;">Analytics ID: G-83D6SSJKMH | Tracking Active</p>
+                </div>
+            `;
+        }
+
+        function moderateContent() {
+            const content = document.getElementById('admin-content');
+            content.innerHTML = `
+                <h3 style="color: #F59E0B; margin-bottom: 1rem;">🛡️ Content Moderation</h3>
+                <p style="color: #A1A1AA;">Review testimonials and support tickets</p>
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(245, 158, 11, 0.1); border-radius: 10px;">
+                    <p style="color: #F59E0B; margin: 0;">All testimonials require admin approval before going live</p>
+                </div>
+            `;
+        }
+
+        function checkSystemStatus() {
+            const content = document.getElementById('admin-content');
+            const firebaseStatus = window.FirebaseConfig ? '🟢 Online' : '🔴 Offline';
+            content.innerHTML = `
+                <h3 style="color: #F59E0B; margin-bottom: 1rem;">⚙️ System Status</h3>
+                <div style="display: grid; gap: 1rem; margin-top: 1rem;">
+                    <div style="padding: 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                        <h4 style="color: #3B82F6; margin: 0 0 0.5rem 0;">🔥 Firebase Status</h4>
+                        <p style="margin: 0; color: #A1A1AA;">Connection: ${firebaseStatus}</p>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                        <h4 style="color: #3B82F6; margin: 0 0 0.5rem 0;">🔐 Authentication</h4>
+                        <p style="margin: 0; color: #A1A1AA;">Admin Session: 🟢 Active (nazir23)</p>
+                    </div>
+                </div>
+            `;
         }
 
         function returnToDashboard() {
@@ -1411,16 +1745,16 @@
                 console.log('🚀 Performance optimizations applied');
             }
             
-            // Clear any existing session for fresh start
-            sessionStorage.removeItem('divineAuth');
-            sessionStorage.removeItem('memberData');
-            
             // Initialize Universal Progress System
             window.UniversalProgressSystem.init();
             console.log('🎮 Universal Progress System ready');
             
-            // Force initial state - always show auth overlay
-            const authOverlay = document.getElementById('auth-overlay');
+            // Initialize Firebase authentication check
+            setTimeout(() => {
+                checkAuthStatus();
+            }, 1000); // Wait for Firebase to load
+            
+            console.log('🔐 Firebase authentication check initiated');
             const dashboard = document.getElementById('dashboard');
             const memberBadge = document.getElementById('member-badge');
             
@@ -1463,6 +1797,104 @@
             showDashboard: showDashboard,
             showSection: showSection,
             logout: logout,
+            
+            // Force admin login
+            forceAdminLogin: function() {
+                console.log('🔱 Force admin login...');
+                
+                // Clear any existing auth
+                sessionStorage.clear();
+                
+                const adminData = {
+                    uid: 'admin_nazir_creator',
+                    email: 'nazir@edenconsciousness.com',
+                    displayName: 'Nazir El - Creator',
+                    username: 'nazir23',
+                    name: 'Nazir El',
+                    role: 'admin',
+                    isAdmin: true,
+                    createdAt: new Date().toISOString(),
+                    loginTime: new Date().toISOString()
+                };
+                
+                // Set all auth flags
+                sessionStorage.setItem('divineAuth', 'true');
+                sessionStorage.setItem('adminAuth', 'true');
+                sessionStorage.setItem('memberData', JSON.stringify(adminData));
+                localStorage.setItem('adminAuth', 'true');
+                localStorage.setItem('currentUser', JSON.stringify(adminData));
+                
+                console.log('✅ Admin session data set');
+                console.log('🔍 Session data:', adminData);
+                
+                // Force hide auth overlay and show dashboard
+                const authOverlay = document.getElementById('auth-overlay');
+                if (authOverlay) {
+                    authOverlay.style.display = 'none';
+                    authOverlay.classList.add('hidden');
+                }
+                
+                const dashboard = document.getElementById('dashboard');
+                if (dashboard) {
+                    dashboard.style.display = 'block';
+                    dashboard.classList.add('active');
+                    dashboard.style.opacity = '1';
+                }
+                
+                // Show member badge with admin styling
+                const memberBadge = document.getElementById('member-badge');
+                const memberDisplay = document.getElementById('member-display');
+                
+                if (memberBadge) {
+                    memberBadge.style.display = 'flex';
+                    memberBadge.style.background = 'linear-gradient(135deg, #F59E0B, #FBBF24)';
+                    memberBadge.style.border = '2px solid #F59E0B';
+                    memberBadge.style.boxShadow = '0 0 20px rgba(245, 158, 11, 0.4)';
+                }
+                
+                if (memberDisplay) {
+                    memberDisplay.innerHTML = `
+                        <div style="font-weight: 600; color: #0A0E27;">Nazir El - Creator</div>
+                        <div style="font-size: 0.8rem; opacity: 0.8; color: #0A0E27;">🔱 DIVINE TEMPLE CREATOR</div>
+                    `;
+                }
+                
+                // Show admin card
+                const adminCard = document.querySelector('.admin-only');
+                if (adminCard) {
+                    adminCard.style.display = 'block';
+                }
+                
+                document.body.style.overflow = 'auto';
+                
+                console.log('✅ Admin dashboard force-loaded');
+                alert('🔱 ADMIN ACCESS GRANTED! You are now logged in as Creator.');
+                
+                return true;
+            },
+            
+            // Quick auth check
+            checkAuthState: function() {
+                const auth = sessionStorage.getItem('divineAuth');
+                const admin = sessionStorage.getItem('adminAuth');
+                const data = sessionStorage.getItem('memberData');
+                
+                console.log('🔍 Auth state check:');
+                console.log('  - divineAuth:', auth);
+                console.log('  - adminAuth:', admin);
+                console.log('  - memberData exists:', !!data);
+                
+                if (data) {
+                    try {
+                        const parsed = JSON.parse(data);
+                        console.log('  - parsed data:', parsed);
+                    } catch (e) {
+                        console.log('  - data parsing error:', e);
+                    }
+                }
+                
+                return { auth, admin, data };
+            },
             
             // Debug info
             getState: function() {
@@ -1508,6 +1940,10 @@
     
     <!-- Final Testing Suite -->
     <script src="js/final-testing.js"></script>
+    
+    <!-- Integration System -->
+    <script src="js/integration-config.js"></script>
+    <script src="js/integrations-system.js"></script>
     
     <!-- Initialize Final Polish -->
     <script>

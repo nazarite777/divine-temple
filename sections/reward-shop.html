@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reward Shop - Divine Temple</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Divine Temple Systems -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/universal-progress-system.js"></script>
+    <script src="../js/reward-shop-system.js"></script>
+    <script src="../js/divine-audio-engine.js"></script>
+
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #4fc3f7;
+            --accent-green: #66bb6a;
+            --dark-bg: #0F0F23;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-muted: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a1e 0%, #1a1a2e 50%, #0f3460 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+        }
+
+        .header-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        /* User Balance */
+        .balance-card {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(255, 215, 0, 0.2));
+            border: 2px solid var(--primary-gold);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .balance-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .balance-amount {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-gold);
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .category-tab {
+            padding: 1rem 2rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .category-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .category-tab.active {
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            color: white;
+            border-color: var(--primary-gold);
+        }
+
+        /* Shop Grid */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .shop-item {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shop-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .shop-item.owned {
+            border-color: var(--accent-green);
+            background: linear-gradient(135deg, rgba(102, 187, 106, 0.1), rgba(102, 187, 106, 0.05));
+        }
+
+        .owned-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent-green);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .premium-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .item-icon {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .item-name {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .item-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            min-height: 40px;
+        }
+
+        .item-preview {
+            width: 100%;
+            height: 80px;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .item-cost {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-gold);
+        }
+
+        .buy-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .buy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .buy-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .activate-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-green);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .activate-btn:hover {
+            background: #5cb85c;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .shop-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-tabs {
+                flex-wrap: wrap;
+            }
+
+            .balance-amount {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-btn" onclick="goBack()">
+            ← Back to Temple
+        </button>
+
+        <div class="header">
+            <div class="header-icon">🛍️</div>
+            <h1 class="title">Reward Shop</h1>
+            <p class="subtitle">Spend your XP on exclusive unlockables!</p>
+        </div>
+
+        <!-- User Balance -->
+        <div class="balance-card">
+            <div class="balance-label">Your XP Balance</div>
+            <div class="balance-amount" id="user-xp">0</div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="category-tabs" id="category-tabs">
+            <div class="category-tab active" data-category="all">🌟 All Items</div>
+            <div class="category-tab" data-category="themes">🎨 Themes</div>
+            <div class="category-tab" data-category="sounds">🎵 Sounds</div>
+            <div class="category-tab" data-category="decks">🔮 Oracle Decks</div>
+            <div class="category-tab" data-category="effects">✨ Effects</div>
+            <div class="category-tab" data-category="avatars">👤 Avatars</div>
+            <div class="category-tab" data-category="boosters">⚡ Boosters</div>
+        </div>
+
+        <!-- Shop Grid -->
+        <div class="shop-grid" id="shop-grid">
+            <!-- Items will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        let currentCategory = 'all';
+        let userXP = 0;
+        let ownedItems = [];
+
+        function goBack() {
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage('back', '*');
+            } else {
+                window.history.back();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🛍️ Loading Reward Shop...');
+
+            // Wait for systems to initialize
+            await waitForSystems();
+
+            // Load user data
+            loadUserData();
+
+            // Setup category tabs
+            setupCategoryTabs();
+
+            // Render shop
+            renderShop();
+
+            console.log('✅ Reward Shop loaded');
+        });
+
+        async function waitForSystems() {
+            return new Promise(resolve => {
+                const check = () => {
+                    if (window.rewardShop && window.rewardShop.isInitialized && 
+                        window.progressSystem && window.progressSystem.isInitialized) {
+                        resolve();
+                    } else {
+                        setTimeout(check, 100);
+                    }
+                };
+                check();
+            });
+        }
+
+        function loadUserData() {
+            if (window.progressSystem && window.progressSystem.userData) {
+                userXP = window.progressSystem.userData.totalXP;
+                document.getElementById('user-xp').textContent = userXP.toLocaleString();
+            }
+
+            if (window.rewardShop) {
+                ownedItems = window.rewardShop.getOwnedItems();
+            }
+        }
+
+        function setupCategoryTabs() {
+            const tabs = document.querySelectorAll('.category-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentCategory = tab.dataset.category;
+                    renderShop();
+                });
+            });
+        }
+
+        function renderShop() {
+            const grid = document.getElementById('shop-grid');
+            const catalog = window.rewardShop.getCatalog();
+
+            let items = [];
+
+            if (currentCategory === 'all') {
+                // Show all items from all categories
+                Object.values(catalog).forEach(category => {
+                    items = items.concat(category);
+                });
+            } else {
+                // Show items from selected category
+                items = catalog[currentCategory] || [];
+            }
+
+            if (items.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <div class="empty-icon">📦</div>
+                        <p>No items in this category yet!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = items.map(item => renderShopItem(item)).join('');
+        }
+
+        function renderShopItem(item) {
+            const isOwned = ownedItems.some(o => o.id === item.id);
+            const canAfford = userXP >= item.cost;
+            const activeItems = window.rewardShop.getActiveItems();
+            const isActive = activeItems[item.type] === item.id;
+
+            return `
+                <div class="shop-item ${isOwned ? 'owned' : ''}">
+                    ${item.premium ? '<div class="premium-badge">✨ Premium</div>' : ''}
+                    ${isOwned ? '<div class="owned-badge">✓ Owned</div>' : ''}
+                    
+                    <div class="item-icon">${item.icon}</div>
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-desc">${item.description}</div>
+                    
+                    ${item.preview ? `<div class="item-preview" style="background: ${item.preview}"></div>` : ''}
+                    
+                    <div class="item-footer">
+                        <div class="item-cost">${item.cost} XP</div>
+                        ${renderItemButton(item, isOwned, canAfford, isActive)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderItemButton(item, isOwned, canAfford, isActive) {
+            if (isOwned) {
+                if (item.type === 'booster') {
+                    return '<span style="color: var(--accent-green);">Owned</span>';
+                } else if (isActive) {
+                    return '<span style="color: var(--accent-green);">Active</span>';
+                } else {
+                    return `<button class="activate-btn" onclick="activateItem('${item.id}', '${item.type}')">Activate</button>`;
+                }
+            } else {
+                return `<button class="buy-btn" ${!canAfford ? 'disabled' : ''} onclick="purchaseItem('${item.id}')">
+                    ${canAfford ? 'Buy Now' : 'Need ' + (item.cost - userXP) + ' XP'}
+                </button>`;
+            }
+        }
+
+        async function purchaseItem(itemId) {
+            const result = await window.rewardShop.purchaseItem(itemId);
+            
+            if (result.success) {
+                // Reload data and re-render
+                loadUserData();
+                renderShop();
+            } else {
+                alert(result.message);
+            }
+        }
+
+        function activateItem(itemId, type) {
+            window.rewardShop.activateItem(itemId, type);
+            renderShop();
+        }
+    </script>
+</body>
+</html>

@@ -79,12 +79,26 @@
             transform: translateY(-2px);
         }
 
-        /* Main Layout */
+        /* Main Layout - Mobile First */
         .media-layout {
             display: grid;
-            grid-template-columns: 350px 1fr 300px;
+            grid-template-columns: 1fr;
             gap: 2rem;
             min-height: 80vh;
+        }
+
+        /* Tablet and up */
+        @media (min-width: 768px) {
+            .media-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Desktop */
+        @media (min-width: 1400px) {
+            .media-layout {
+                grid-template-columns: minmax(280px, 1fr) 2fr minmax(250px, 1fr);
+            }
         }
 
         .media-sidebar {
@@ -93,7 +107,6 @@
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 1.5rem;
-            height: fit-content;
         }
 
         .media-main {
@@ -102,7 +115,6 @@
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 2rem;
-            overflow: hidden;
         }
 
         .media-tools {
@@ -111,7 +123,6 @@
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 1.5rem;
-            height: fit-content;
         }
 
         /* Media Categories */
@@ -396,8 +407,10 @@
         }
 
         .playlist-list {
-            max-height: 300px;
-            overflow-y: auto;
+            /* Removed max-height for better mobile scrolling */
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
         .playlist-item {
@@ -478,8 +491,10 @@
         }
 
         .comments-list {
-            max-height: 400px;
-            overflow-y: auto;
+            /* Removed max-height for better mobile scrolling */
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
         }
 
         .comment-item {
@@ -690,7 +705,51 @@
         
         <div class="section-header">
             <h1>🎬 Videos & Media</h1>
+        <!-- Divine Progress Widget -->
+        <div id="divine-progress-widget"></div>
             <p>Curated spiritual content, interactive learning, and sacred media library</p>
+        </div>
+
+        <!-- Gaia Streaming Platform Feature -->
+        <div style="background: linear-gradient(135deg, rgba(139, 95, 191, 0.2), rgba(16, 185, 129, 0.2)); backdrop-filter: blur(20px); border: 2px solid var(--glass-border); border-radius: 25px; padding: 3rem 2rem; margin-bottom: 3rem; text-align: center;">
+            <div style="font-size: 3.5rem; margin-bottom: 1rem;">🌟</div>
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent-gold); margin-bottom: 1rem;">Access 8,000+ Spiritual Videos on Gaia</h2>
+            <p style="font-size: 1.1rem; line-height: 1.7; color: var(--text-primary); max-width: 800px; margin: 0 auto 2rem;">
+                Partner with the world's largest consciousness-expanding video library. Stream meditation guides, yoga practices, spiritual documentaries, and teachings from renowned masters like Deepak Chopra, Ram Dass, Gregg Braden, and more.
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; max-width: 900px; margin: 0 auto 2rem;">
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 1.5rem; border-radius: 15px;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🧘</div>
+                    <h4 style="color: var(--accent-purple); margin-bottom: 0.5rem;">Meditation</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">Guided practices</p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 1.5rem; border-radius: 15px;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🌸</div>
+                    <h4 style="color: var(--accent-purple); margin-bottom: 0.5rem;">Yoga</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">All styles & levels</p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 1.5rem; border-radius: 15px;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🌌</div>
+                    <h4 style="color: var(--accent-purple); margin-bottom: 0.5rem;">Consciousness</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">Mind-expanding docs</p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 1.5rem; border-radius: 15px;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📜</div>
+                    <h4 style="color: var(--accent-purple); margin-bottom: 0.5rem;">Ancient Wisdom</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">Sacred teachings</p>
+                </div>
+            </div>
+
+            <a href="https://www.gaia.com/share/YOUR_GAIA_AFFILIATE_CODE" target="_blank" rel="nofollow noopener" onclick="trackGaiaClick()" style="display: inline-block; background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold)); color: white; padding: 1.25rem 3rem; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 1.1rem; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(139, 95, 191, 0.4);">
+                🎬 Start Free Trial on Gaia
+            </a>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 1rem;">
+                <em>First week free • Cancel anytime • Unlimited streaming</em>
+            </p>
+            <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-top: 1rem;">
+                <em>As a Gaia partner, Divine Temple may earn a commission at no extra cost to you.</em>
+            </p>
         </div>
 
         <div class="media-layout">
@@ -1338,6 +1397,42 @@
                 return null;
             }
 
+            playVideo(videoId) {
+                const video = this.findVideoById(videoId);
+                if (!video) return;
+
+                // Update watch history
+                const historyItem = {
+                    videoId: video.id,
+                    lastWatched: new Date().toISOString(),
+                    progress: 0
+                };
+
+                const existingIndex = this.watchHistory.findIndex(item => item.videoId === videoId);
+                if (existingIndex >= 0) {
+                    this.watchHistory[existingIndex] = historyItem;
+                } else {
+                    this.watchHistory.unshift(historyItem);
+                    if (this.watchHistory.length > 20) this.watchHistory.pop();
+                }
+
+                this.saveData();
+                this.renderWatchHistory();
+
+                // 🎯 AWARD XP FOR WATCHING VIDEO
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(15, `Watched: ${video.title}`, 'videos-media');
+                    window.progressSystem.logActivity('video_watch', 'videos-media', {
+                        videoId: video.id,
+                        title: video.title,
+                        category: video.category || this.currentCategory
+                    });
+                }
+
+                // Display video (placeholder for actual video player)
+                alert(`🎬 Now playing: ${video.title}\n\n${video.description}\n\nDuration: ${video.duration}`);
+            }
+
             loadCategory(category) {
                 this.currentCategory = category;
                 
@@ -1392,7 +1487,15 @@
                 this.savePlaylists();
                 this.renderPlaylists();
                 this.closePlaylistModal();
-                
+
+                // 🎯 AWARD XP FOR CREATING PLAYLIST
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(20, `Playlist created: ${name}`, 'videos-media');
+                    window.progressSystem.logActivity('playlist_creation', 'videos-media', {
+                        playlistName: name
+                    });
+                }
+
                 alert(`Playlist "${name}" created! 📝`);
             }
 
@@ -1439,7 +1542,15 @@
                 this.comments.push(comment);
                 this.saveComments();
                 this.renderComments();
-                
+
+                // 🎯 AWARD XP FOR COMMENTING
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(10, 'Video comment posted', 'videos-media');
+                    window.progressSystem.logActivity('video_comment', 'videos-media', {
+                        videoId: this.currentVideo.id
+                    });
+                }
+
                 commentInput.value = '';
                 alert('Comment posted! 💬');
             }
@@ -1495,6 +1606,16 @@
                     this.watchStats.favorites.push(videoId);
                     this.saveWatchStats();
                     this.updateWatchStats();
+
+                    // 🎯 AWARD XP FOR ADDING FAVORITE
+                    if (window.progressSystem) {
+                        window.progressSystem.awardXP(5, 'Video added to favorites', 'videos-media');
+                        window.progressSystem.logActivity('favorite_add', 'videos-media', {
+                            videoId: this.currentVideo.id,
+                            title: this.currentVideo.title
+                        });
+                    }
+
                     alert('⭐ Added to favorites!');
                 } else {
                     alert('Already in favorites!');
@@ -1731,6 +1852,17 @@
             window.DivineTemplateUtils.validateSectionFunctions('Videos & Media', [
                 'playVideo', 'createPlaylist', 'submitComment', 'addToFavorites'
             ]);
+        }
+
+        // Gaia affiliate click tracking
+        function trackGaiaClick() {
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(5, 'Explored Gaia video platform', 'videos-media');
+                window.progressSystem.logActivity('gaia_affiliate_click', 'videos-media', {
+                    source: 'videos-media-hero'
+                });
+            }
+            console.log('🌟 Gaia affiliate link clicked');
         }
     </script>
 

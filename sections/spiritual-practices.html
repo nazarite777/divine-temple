@@ -10,7 +10,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    
+
+    <!-- Divine Temple Systems -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/divine-audio-engine.js"></script>
+    <script src="../js/universal-progress-system.js"></script>
+    <script src="../js/divine-progress-widget.js"></script>
+
     <style>
         :root {
             --primary-gold: #D4AF37;
@@ -942,6 +948,9 @@
             <p class="subtitle">Journal • Gratitude • Affirmations • Prayer</p>
         </div>
 
+        <!-- Divine Progress Widget -->
+        <div id="divine-progress-widget"></div>
+
         <!-- Progress Stats -->
         <div class="stats-grid" id="stats-grid">
             <div class="stat-card">
@@ -1328,6 +1337,14 @@
                 this.updateStreak();
                 this.saveData();
 
+                // 🎯 AWARD XP FOR JOURNAL ENTRY
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(40, 'Spiritual journal entry', 'spiritual-practices');
+                    window.progressSystem.logActivity('journal', 'spiritual-practices', {
+                        wordCount: text.split(/\s+/).length
+                    });
+                }
+
                 input.value = '';
                 this.showToast('✨ Journal entry saved!', 'success');
             }
@@ -1426,6 +1443,14 @@
                 this.data.gratitude.unshift(item);
                 this.updateStreak();
                 this.saveData();
+
+                // 🎯 AWARD XP FOR GRATITUDE PRACTICE
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(20, 'Gratitude practice', 'spiritual-practices');
+                    window.progressSystem.logActivity('gratitude', 'spiritual-practices', {
+                        text: text.substring(0, 50) // First 50 chars for tracking
+                    });
+                }
 
                 input.value = '';
                 this.renderGratitudeList();
@@ -1629,6 +1654,14 @@
                 this.data.prayers.unshift(prayer);
                 this.updateStreak();
                 this.saveData();
+
+                // 🎯 AWARD XP FOR PRAYER
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(30, 'Sacred prayer', 'spiritual-practices');
+                    window.progressSystem.logActivity('prayer', 'spiritual-practices', {
+                        title: title.substring(0, 50)
+                    });
+                }
 
                 titleInput.value = '';
                 textInput.value = '';

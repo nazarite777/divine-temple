@@ -78,13 +78,26 @@
             transform: translateY(-2px);
         }
 
-        /* Main Layout */
+        /* Main Layout - Mobile First */
         .books-layout {
             display: grid;
-            grid-template-columns: 300px 1fr 350px;
+            grid-template-columns: 1fr;
             gap: 2rem;
             min-height: 80vh;
-            contain: layout style paint;
+        }
+
+        /* Tablet and up */
+        @media (min-width: 768px) {
+            .books-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Desktop */
+        @media (min-width: 1400px) {
+            .books-layout {
+                grid-template-columns: minmax(250px, 1fr) 2fr minmax(280px, 1fr);
+            }
         }
 
         .books-sidebar {
@@ -93,7 +106,6 @@
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 1.5rem;
-            height: fit-content;
         }
 
         .books-main {
@@ -102,7 +114,6 @@
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 2rem;
-            overflow: hidden;
         }
 
         .books-tools {
@@ -111,7 +122,6 @@
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 1.5rem;
-            height: fit-content;
         }
 
         /* Book Library Sidebar */
@@ -144,8 +154,10 @@
         }
 
         .book-list {
-            max-height: 400px;
-            overflow-y: auto;
+            /* Removed max-height and overflow for better mobile experience */
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
         .book-item {
@@ -232,11 +244,18 @@
         }
 
         .reader-content {
-            max-height: 60vh;
-            overflow-y: auto;
+            /* Let content flow naturally on mobile */
             padding-right: 1rem;
             line-height: 1.7;
             font-size: 1rem;
+        }
+
+        /* Add max-height only on larger screens */
+        @media (min-width: 1024px) {
+            .reader-content {
+                max-height: 70vh;
+                overflow-y: auto;
+            }
         }
 
         .reader-content h2 {
@@ -322,8 +341,7 @@
         }
 
         .tool-content {
-            max-height: 200px;
-            overflow-y: auto;
+            /* Removed max-height for better mobile experience */
         }
 
         .note-input {
@@ -563,6 +581,12 @@
             border-radius: 3px;
         }
     </style>
+
+    <!-- Divine Temple Systems -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/divine-audio-engine.js"></script>
+    <script src="../js/universal-progress-system.js"></script>
+    <script src="../js/divine-progress-widget.js"></script>
 </head>
 <body>
     <div class="section-container">
@@ -570,11 +594,14 @@
             <span class="back-icon">←</span>
             <span>Back to Dashboard</span>
         </button>
-        
+
         <div class="section-header">
             <h1>📚 Sacred Books</h1>
             <p>Interactive reading, note-taking, and collaborative study system</p>
         </div>
+
+        <!-- Divine Progress Widget -->
+        <div id="divine-progress-widget"></div>
 
         <div class="books-layout">
             <!-- Library Sidebar -->
@@ -862,16 +889,25 @@
 
                 if (!this.currentBook) return;
 
+                // 🎯 AWARD XP FOR STARTING TO READ BOOK
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(20, `Started reading: ${this.currentBook.title}`, 'sacred-books');
+                    window.progressSystem.logActivity('book_reading', 'sacred-books', {
+                        bookId: this.currentBook.id,
+                        title: this.currentBook.title
+                    });
+                }
+
                 // Update UI
                 document.getElementById('current-book-title').textContent = this.currentBook.title;
-                
+
                 // Load saved chapter or start from beginning
                 const progress = this.userProgress[bookId] || { chapter: 0, progress: 0 };
                 this.currentChapter = progress.chapter;
-                
+
                 this.renderCurrentChapter();
                 this.updateActiveBook(bookId);
-                
+
                 console.log(`📖 Loaded "${this.currentBook.title}"`);
             }
 
@@ -983,7 +1019,16 @@
                 this.notes.push(note);
                 this.saveNotes();
                 this.renderNotes();
-                
+
+                // 🎯 AWARD XP FOR SAVING NOTE
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(10, 'Study note saved', 'sacred-books');
+                    window.progressSystem.logActivity('book_note', 'sacred-books', {
+                        bookId: this.currentBook.id,
+                        chapter: this.currentChapter
+                    });
+                }
+
                 noteInput.value = '';
                 alert('Note saved! 📝');
             }
@@ -1035,8 +1080,17 @@
             joinStudyGroup(groupId) {
                 const group = this.studyGroups.find(g => g.id === groupId);
                 if (group) {
+                    // 🎯 AWARD XP FOR JOINING STUDY GROUP
+                    if (window.progressSystem) {
+                        window.progressSystem.awardXP(30, `Joined study group: ${group.name}`, 'sacred-books');
+                        window.progressSystem.logActivity('study_group_join', 'sacred-books', {
+                            groupId: group.id,
+                            groupName: group.name
+                        });
+                    }
+
                     alert(`You've joined "${group.name}"! 👥\n\nNext meeting: ${group.schedule}\nYou'll receive email notifications about upcoming sessions.`);
-                    
+
                     // Load the group's current book
                     this.loadBook(group.currentBook);
                 }

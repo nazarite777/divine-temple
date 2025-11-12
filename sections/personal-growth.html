@@ -709,13 +709,19 @@
             const goals = JSON.parse(localStorage.getItem('spiritualGoals') || '[]');
             goals.push(goal);
             localStorage.setItem('spiritualGoals', JSON.stringify(goals));
-            
+
+            // Award XP for goal creation
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(25, `Set spiritual goal: ${title}`, 'personal-growth');
+                window.progressSystem.logActivity('goal_created', 'personal-growth', {title, category});
+            }
+
             // Clear form
             document.getElementById('goal-title').value = '';
             document.getElementById('goal-description').value = '';
             document.getElementById('goal-category').value = '';
             document.getElementById('goal-deadline').value = '';
-            
+
             loadGoals();
             updateProgressAnalytics();
         }
@@ -749,8 +755,23 @@
             const goals = JSON.parse(localStorage.getItem('spiritualGoals') || '[]');
             const goalIndex = goals.findIndex(g => g.id === goalId);
             if (goalIndex !== -1) {
+                const oldProgress = goals[goalIndex].progress;
                 goals[goalIndex].progress = newProgress;
                 localStorage.setItem('spiritualGoals', JSON.stringify(goals));
+
+                // Award XP for goal completion
+                if (newProgress === 100 && oldProgress < 100) {
+                    if (window.progressSystem) {
+                        window.progressSystem.awardXP(50, `Completed goal: ${goals[goalIndex].title}`, 'personal-growth');
+                        window.progressSystem.logActivity('goal_completed', 'personal-growth', {title: goals[goalIndex].title});
+                    }
+                } else if (newProgress > oldProgress) {
+                    // Award XP for progress updates
+                    if (window.progressSystem) {
+                        window.progressSystem.awardXP(10, 'Goal progress updated', 'personal-growth');
+                    }
+                }
+
                 loadGoals();
                 updateProgressAnalytics();
             }
@@ -1314,6 +1335,10 @@
         }
         
         function anchorFrequency() {
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(30, 'Anchored dimensional frequency', 'personal-growth');
+                window.progressSystem.logActivity('frequency_anchored', 'personal-growth');
+            }
             alert('🌟 Dimensional frequency anchored! You are now broadcasting this higher consciousness into the collective field.');
         }
         
@@ -1339,6 +1364,10 @@
         }
         
         function downloadCosmic() {
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(40, 'Downloaded cosmic codes', 'personal-growth');
+                window.progressSystem.logActivity('cosmic_download', 'personal-growth');
+            }
             alert('🌌 Cosmic consciousness codes downloaded! New levels of awareness and psychic abilities are now activating in your field.');
         }
         
@@ -1365,6 +1394,10 @@
         }
         
         function sealIntegration() {
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(50, 'Sealed Higher Self integration', 'personal-growth');
+                window.progressSystem.logActivity('higher_self_integrated', 'personal-growth');
+            }
             alert('✨ Higher Self integration sealed! You are now operating from your divine nature. Trust your intuition and inner guidance.');
         }
         

@@ -441,6 +441,8 @@
         
         <div class="section-header">
             <h1>📚 Sacred Knowledge</h1>
+        <!-- Divine Progress Widget -->
+        <div id="divine-progress-widget"></div>
             <p>Access ancient wisdom, spiritual teachings, and divine insights</p>
         </div>
         
@@ -713,6 +715,15 @@
         }
         
         function openKnowledgeItem(title, content, category) {
+            // 🎯 AWARD XP FOR READING ARTICLE
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(20, `Read: ${title}`, 'sacred-knowledge');
+                window.progressSystem.logActivity('knowledge_study', 'sacred-knowledge', {
+                    article: title,
+                    category: category
+                });
+            }
+
             alert(`📖 ${title}\n\nCategory: ${category}\n\n${content}\n\n[Full content would be displayed in an expanded modal]`);
         }
         
@@ -994,12 +1005,22 @@
             const entries = JSON.parse(localStorage.getItem('dreamEntries') || '[]');
             entries.unshift(entry);
             localStorage.setItem('dreamEntries', JSON.stringify(entries));
-            
+
+            // 🎯 AWARD XP FOR DREAM ENTRY
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(30, `Dream entry: ${title}`, 'sacred-knowledge');
+                window.progressSystem.logActivity('dream_entry', 'sacred-knowledge', {
+                    title: title,
+                    type: type,
+                    symbolCount: entry.symbols.length
+                });
+            }
+
             // Clear form
             document.getElementById('dream-title').value = '';
             document.getElementById('dream-description').value = '';
             document.getElementById('dream-symbols').value = '';
-            
+
             loadDreamEntries();
             alert('Dream entry saved! 💭');
         }

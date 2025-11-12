@@ -13,6 +13,13 @@
     <meta property="og:image" content="https://i.imgur.com/LYVHJr5.jpeg">
     <meta property="og:url" content="https://nazarite777.github.io/divine-temple/books.html">
     
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
@@ -870,6 +877,40 @@
                     });
                 }
             });
+        });
+
+        // Firebase Analytics Integration
+        window.addEventListener('load', () => {
+            if (window.FirebaseConfig) {
+                // Track page view
+                FirebaseConfig.analytics.trackPageView('books', 'Books & Resources - Eden Consciousness');
+                
+                // Track CTA clicks
+                document.querySelectorAll('a[href*="square.link"]').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        const productName = e.target.textContent.includes('Digital') ? 'Digital Book' :
+                                          e.target.textContent.includes('Audio') ? 'Audiobook' :
+                                          e.target.textContent.includes('Workbook') ? 'Workbook' :
+                                          e.target.textContent.includes('Bundle') ? 'Complete Bundle' : 'Book Product';
+                        
+                        FirebaseConfig.analytics.trackEvent('product_click', {
+                            product_name: productName,
+                            page_location: window.location.href
+                        });
+                    });
+                });
+                
+                // Track email signups
+                const emailForm = document.querySelector('#mc_embed_signup form');
+                if (emailForm) {
+                    emailForm.addEventListener('submit', () => {
+                        FirebaseConfig.analytics.trackEvent('email_signup', {
+                            source: 'books_page',
+                            content: 'free_chapter'
+                        });
+                    });
+                }
+            }
         });
 
         // Header background on scroll

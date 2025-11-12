@@ -1000,6 +1000,8 @@
         <div class="devotion-header">
             <div class="tool-icon">🙏</div>
             <h1 class="devotion-title">Devotion & Growth</h1>
+        <!-- Divine Progress Widget -->
+        <div id="divine-progress-widget"></div>
             <p class="devotion-subtitle">Sacred practices for spiritual development and divine connection</p>
         </div>
 
@@ -1201,10 +1203,18 @@
             }
 
             showLevelUp() {
+                // 🎯 AWARD XP FOR GROWTH MILESTONE
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(150, `Devotion Level ${this.data.progress.level} milestone reached`, 'devotion-growth');
+                    window.progressSystem.logActivity('growth_milestone', 'devotion-growth', {
+                        level: this.data.progress.level
+                    });
+                }
+
                 // Show level up notification
                 if (typeof window.showAchievement === 'function') {
                     window.showAchievement(
-                        'Level Up!', 
+                        'Level Up!',
                         `You've reached Devotion Level ${this.data.progress.level}!`,
                         'level-up'
                     );
@@ -1450,7 +1460,15 @@
                     timestamp: Date.now()
                 });
                 localStorage.setItem('saved-prayers', JSON.stringify(prayers));
-                
+
+                // 🎯 AWARD XP FOR PRAYER
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(40, 'Prayer completed', 'devotion-growth');
+                    window.progressSystem.logActivity('prayer', 'devotion-growth', {
+                        type: 'prayer_saved'
+                    });
+                }
+
                 if (typeof window.showNotification === 'function') {
                     window.showNotification('Prayer saved to your collection', 'success');
                 }
@@ -1547,11 +1565,19 @@
                 devotionSystem.data.mantras.sessions++;
                 devotionSystem.data.mantras.totalCount += malaCount;
                 devotionSystem.saveData();
-                
+
+                // 🎯 AWARD XP FOR MANTRA SESSION
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(40, 'Mantra session completed', 'devotion-growth');
+                    window.progressSystem.logActivity('mantra_session', 'devotion-growth', {
+                        repetitions: malaCount
+                    });
+                }
+
                 if (typeof window.showNotification === 'function') {
                     window.showNotification(`Mantra session complete! ${malaCount} repetitions recorded.`, 'success');
                 }
-                
+
                 resetMalaCounter();
                 closeDevotionModal();
             }
@@ -1631,7 +1657,15 @@
                 devotionSystem.data.gratitude.entries++;
                 devotionSystem.updateProgress('gratitude', 25);
                 devotionSystem.saveData();
-                
+
+                // 🎯 AWARD XP FOR GRATITUDE ENTRY
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(40, 'Gratitude practice completed', 'devotion-growth');
+                    window.progressSystem.logActivity('gratitude', 'devotion-growth', {
+                        entryDate: today
+                    });
+                }
+
                 if (typeof window.showNotification === 'function') {
                     window.showNotification('Gratitude entry saved! 🙏', 'success');
                 }
@@ -1858,7 +1892,15 @@
                 devotionSystem.data.reflection.dailyEntries++;
                 devotionSystem.updateProgress('reflection', 30);
                 devotionSystem.saveData();
-                
+
+                // 🎯 AWARD XP FOR DAILY REFLECTION
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(40, 'Daily reflection completed', 'devotion-growth');
+                    window.progressSystem.logActivity('daily_reflection', 'devotion-growth', {
+                        reflectionDate: today
+                    });
+                }
+
                 if (typeof window.showNotification === 'function') {
                     window.showNotification('Daily reflection saved! 🌟', 'success');
                 }
@@ -2879,6 +2921,8 @@
         <div class="devotion-header">
             <div class="card-icon">🙏</div>
             <h1 class="devotion-title">Devotion & Growth</h1>
+        <!-- Divine Progress Widget -->
+        <div id="divine-progress-widget"></div>
             <p class="devotion-subtitle">Cultivate your sacred practice and spiritual development</p>
         </div>
 
@@ -3598,7 +3642,16 @@
             
             currentSession.journalEntries.push(entry);
             localStorage.setItem('divineJournal', JSON.stringify(currentSession.journalEntries));
-            
+
+            // 🎯 AWARD XP FOR JOURNAL ENTRY (GOAL COMPLETION)
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(100, `${type} journal entry completed`, 'devotion-growth');
+                window.progressSystem.logActivity('goal_completion', 'devotion-growth', {
+                    goalType: `${type}_journal`,
+                    entryLength: entry.content.length
+                });
+            }
+
             textarea.value = '';
             alert(`✨ Your ${type} has been saved to your sacred journal! ✨`);
         }

@@ -644,6 +644,8 @@
     <div class="container">
         <div class="header">
             <h1>🎵 Spiritual Music & Sound Therapy 🎶</h1>
+        <!-- Divine Progress Widget -->
+        <div id="divine-progress-widget"></div>
             <p>Immerse yourself in healing frequencies, create sacred compositions, and experience transformative sound therapy</p>
         </div>
 
@@ -1120,6 +1122,14 @@
                     this.binauralOscillators.right = null;
                 }
                 this.isPlaying = false;
+
+                // 🎯 AWARD XP FOR MEDITATION SESSION WITH MUSIC
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(25, 'Meditation session with binaural beats', 'spiritual-music');
+                    window.progressSystem.logActivity('music_meditation', 'spiritual-music', {
+                        type: 'binaural_beats'
+                    });
+                }
             }
 
             updateBinauralVolume(volume) {
@@ -1393,10 +1403,18 @@
                 // Set current track as playing
                 event.target.classList.add('playing');
                 this.currentTrack = trackId;
-                
+
                 // Simulate track playback
                 this.updateStats('listening-time', Math.floor(Math.random() * 20) + 10);
                 this.animateVisualization();
+
+                // 🎯 AWARD XP FOR LISTENING TO TRACK
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(15, `Listening to track: ${trackId}`, 'spiritual-music');
+                    window.progressSystem.logActivity('music_listening', 'spiritual-music', {
+                        track: trackId
+                    });
+                }
             }
 
             shufflePlaylist() {
@@ -1412,6 +1430,14 @@
             createCustomPlaylist() {
                 const playlistName = prompt('Enter playlist name:');
                 if (playlistName) {
+                    // 🎯 AWARD XP FOR CREATING PLAYLIST
+                    if (window.progressSystem) {
+                        window.progressSystem.awardXP(20, `Playlist created: ${playlistName}`, 'spiritual-music');
+                        window.progressSystem.logActivity('playlist_creation', 'spiritual-music', {
+                            playlistName: playlistName
+                        });
+                    }
+
                     alert(`✨ Custom playlist "${playlistName}" created!`);
                 }
             }

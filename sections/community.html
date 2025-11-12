@@ -1468,6 +1468,8 @@
         <div class="auth-container">
             <div class="auth-logo">🕊️</div>
             <h1 class="auth-title">Sacred Community</h1>
+        <!-- Divine Progress Widget -->
+        <div id="divine-progress-widget"></div>
             <p class="auth-subtitle">Connect with fellow spiritual seekers on your divine journey</p>
             
             <div class="error-message" id="authError"></div>
@@ -2140,7 +2142,16 @@
                 
                 document.getElementById('postContent').value = '';
                 removeSelectedImage();
-                
+
+                // 🎯 AWARD XP FOR CREATING POST
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(25, 'Community post created', 'community');
+                    window.progressSystem.logActivity('community_post', 'community', {
+                        hasImage: !!imageUrl,
+                        contentLength: content.length
+                    });
+                }
+
                 showToast('Post shared! ✨', 'success');
             } catch (error) {
                 console.error('Error creating post:', error);
@@ -2341,7 +2352,16 @@
                 
                 input.value = '';
                 loadComments(postId);
-                
+
+                // 🎯 AWARD XP FOR COMMENTING
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(10, 'Comment added', 'community');
+                    window.progressSystem.logActivity('community_comment', 'community', {
+                        postId: postId,
+                        commentLength: text.length
+                    });
+                }
+
                 // Update UI count
                 const countElement = document.getElementById(`comments-count-${postId}`);
                 if (countElement) {

@@ -1502,6 +1502,8 @@
         <div class="energy-header">
             <div class="card-icon">⚡</div>
             <h1 class="energy-title">Energy & Healing Center</h1>
+        <!-- Divine Progress Widget -->
+        <div id="divine-progress-widget"></div>
             <p class="energy-subtitle">Balance Your Energy • Activate Natural Healing • Transform Your Vibration</p>
         </div>
 
@@ -1856,8 +1858,19 @@
                     
                     this.setupEnergyMeters();
                     this.updateInsightCard();
-                    
+
                     scanBtn.textContent = 'Scan Complete ✨';
+
+                    // 🎯 AWARD XP FOR ENERGY SCAN
+                    if (window.progressSystem) {
+                        window.progressSystem.awardXP(40, 'Energy scan completed', 'energy-healing');
+                        window.progressSystem.logActivity('energy_scan', 'energy-healing', {
+                            overall: this.energyData.overall,
+                            chakraBalance: this.energyData.chakraBalance,
+                            auraStrength: this.energyData.auraStrength
+                        });
+                    }
+
                     setTimeout(() => {
                         scanBtn.textContent = 'Perform Energy Scan';
                         scanBtn.disabled = false;
@@ -2209,6 +2222,15 @@
                             this.healingStats.totalHealingTime += 300; // 5 minutes
                             this.saveStats();
                             this.updateStats();
+
+                            // 🎯 AWARD XP FOR HEALING SESSION
+                            if (window.progressSystem) {
+                                window.progressSystem.awardXP(40, 'Energy healing session completed', 'energy-healing');
+                                window.progressSystem.logActivity('energy_healing', 'energy-healing', {
+                                    duration: 5,
+                                    type: 'healing_session'
+                                });
+                            }
                         }
                     }, 150);
                 }
@@ -2216,6 +2238,382 @@
 
             loadEnergyInsights() {
                 setTimeout(() => this.updateInsightCard(), 1000);
+            }
+
+            // 🎯 ADDITIONAL HEALING METHODS WITH XP AWARDS
+
+            balanceAllChakras() {
+                const chakraPoints = document.querySelectorAll('.chakra-point');
+                chakraPoints.forEach((point, index) => {
+                    setTimeout(() => {
+                        point.classList.add('chakra-balanced');
+                        point.style.animation = 'energyPulse 1s ease-in-out';
+                    }, index * 300);
+                });
+
+                // Update stats and award XP
+                setTimeout(() => {
+                    this.healingStats.chakrasBalanced++;
+                    this.energyData.chakraBalance = Math.min(100, this.energyData.chakraBalance + 15);
+                    this.setupEnergyMeters();
+                    this.saveStats();
+                    this.updateStats();
+
+                    // 🎯 AWARD XP FOR CHAKRA BALANCING
+                    if (window.progressSystem) {
+                        window.progressSystem.awardXP(50, 'All chakras balanced', 'energy-healing');
+                        window.progressSystem.logActivity('chakra_balancing', 'energy-healing', {
+                            chakraCount: 7
+                        });
+                    }
+
+                    const detailsDiv = document.getElementById('chakra-details');
+                    if (detailsDiv) {
+                        detailsDiv.innerHTML = '<h4>✨ Chakras Balanced</h4><p>All energy centers are now harmonized and flowing with balanced energy.</p>';
+                    }
+                }, 2100);
+            }
+
+            activateChakra(index) {
+                const chakra = chakraData[index];
+                const detailsDiv = document.getElementById('chakra-details');
+                if (detailsDiv) {
+                    detailsDiv.innerHTML = `
+                        <h4>${chakra.name}</h4>
+                        <p><strong>Location:</strong> ${chakra.location}</p>
+                        <p><strong>Color:</strong> ${chakra.color}</p>
+                        <p><strong>Frequency:</strong> ${chakra.frequency} Hz</p>
+                        <p><strong>Affirmation:</strong> "${chakra.affirmation}"</p>
+                    `;
+                }
+
+                // Play chakra frequency if audio available
+                if (window.divineAudio) {
+                    window.divineAudio.playTone(parseInt(chakra.frequency), 3);
+                }
+            }
+
+            resetChakras() {
+                const chakraPoints = document.querySelectorAll('.chakra-point');
+                chakraPoints.forEach(point => {
+                    point.classList.remove('chakra-balanced');
+                    point.style.animation = '';
+                });
+
+                const detailsDiv = document.getElementById('chakra-details');
+                if (detailsDiv) {
+                    detailsDiv.innerHTML = '<h4>Select a chakra to begin</h4><p>Click any chakra point to focus energy and receive guidance.</p>';
+                }
+            }
+
+            startAuraCleansing() {
+                const layers = document.querySelectorAll('.aura-layer');
+                const statusDiv = document.getElementById('aura-status');
+
+                if (statusDiv) {
+                    statusDiv.innerHTML = '<h4>Cleansing in Progress...</h4><p>Your aura is being cleansed of negative energy and blockages.</p>';
+                }
+
+                // Animate aura layers
+                layers.forEach((layer, index) => {
+                    setTimeout(() => {
+                        layer.style.animation = 'auraPulse 2s ease-in-out infinite';
+                        layer.style.opacity = '0.8';
+                    }, index * 500);
+                });
+
+                // Complete cleansing after animation
+                setTimeout(() => {
+                    this.energyData.auraStrength = Math.min(100, this.energyData.auraStrength + 18);
+                    this.setupEnergyMeters();
+
+                    if (statusDiv) {
+                        statusDiv.innerHTML = '<h4>✨ Cleansing Complete</h4><p>Your aura has been cleansed and strengthened. You are surrounded by protective, radiant energy.</p>';
+                    }
+
+                    // 🎯 AWARD XP FOR AURA CLEANSING
+                    if (window.progressSystem) {
+                        window.progressSystem.awardXP(30, 'Aura cleansing completed', 'energy-healing');
+                        window.progressSystem.logActivity('aura_cleansing', 'energy-healing', {
+                            auraStrength: this.energyData.auraStrength
+                        });
+                    }
+                }, 4000);
+            }
+
+            scanAura() {
+                const statusDiv = document.getElementById('aura-status');
+                if (statusDiv) {
+                    statusDiv.innerHTML = '<h4>Scanning Aura...</h4><p>Analyzing your energy field...</p>';
+                }
+
+                setTimeout(() => {
+                    const colors = ['Golden', 'Blue', 'Green', 'Purple', 'Pink', 'Indigo'];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+
+                    if (statusDiv) {
+                        statusDiv.innerHTML = `
+                            <h4>Aura Reading Complete</h4>
+                            <p><strong>Dominant Color:</strong> ${color}</p>
+                            <p><strong>Status:</strong> Your aura shows balanced energy with strong spiritual connection.</p>
+                        `;
+                    }
+                }, 2000);
+            }
+
+            strengthenAura() {
+                this.energyData.auraStrength = Math.min(100, this.energyData.auraStrength + 10);
+                this.setupEnergyMeters();
+
+                const statusDiv = document.getElementById('aura-status');
+                if (statusDiv) {
+                    statusDiv.innerHTML = '<h4>⚡ Aura Strengthened</h4><p>Your protective energy field has been reinforced and energized.</p>';
+                }
+            }
+
+            activateShield() {
+                const shieldLayers = document.querySelectorAll('.shield-layer');
+                const statusDiv = document.getElementById('shield-status');
+
+                shieldLayers.forEach((layer, index) => {
+                    setTimeout(() => {
+                        layer.style.animation = 'shieldPulse 2s ease-in-out infinite';
+                    }, index * 300);
+                });
+
+                setTimeout(() => {
+                    if (statusDiv) {
+                        statusDiv.innerHTML = `
+                            <h4>🛡️ Shield Activated</h4>
+                            <p>Your energy protection shield is now fully active and defending your field.</p>
+                            <div class="shield-strength">
+                                <div class="strength-bar">
+                                    <div class="strength-fill" style="width: 100%;"></div>
+                                </div>
+                                <span>100% Strength</span>
+                            </div>
+                        `;
+                    }
+
+                    // 🎯 AWARD XP FOR PROTECTION SHIELD
+                    if (window.progressSystem) {
+                        window.progressSystem.awardXP(20, 'Protection shield activated', 'energy-healing');
+                        window.progressSystem.logActivity('protection_activation', 'energy-healing', {
+                            shieldStrength: 100
+                        });
+                    }
+                }, 1000);
+            }
+
+            strengthenShield() {
+                const statusDiv = document.getElementById('shield-status');
+                if (statusDiv) {
+                    statusDiv.innerHTML = `
+                        <h4>⚡ Shield Strengthened</h4>
+                        <p>Your protection has been reinforced with additional energy.</p>
+                        <div class="shield-strength">
+                            <div class="strength-bar">
+                                <div class="strength-fill" style="width: 100%;"></div>
+                            </div>
+                            <span>100% Strength</span>
+                        </div>
+                    `;
+                }
+            }
+
+            purifyShield() {
+                const statusDiv = document.getElementById('shield-status');
+                if (statusDiv) {
+                    statusDiv.innerHTML = `
+                        <h4>✨ Shield Purified</h4>
+                        <p>Your protection shield has been cleansed of negative attachments.</p>
+                        <div class="shield-strength">
+                            <div class="strength-bar">
+                                <div class="strength-fill" style="width: 95%;"></div>
+                            </div>
+                            <span>95% Strength</span>
+                        </div>
+                    `;
+                }
+            }
+
+            performDetailedScan() {
+                const resultsDiv = document.getElementById('detailed-results');
+                if (resultsDiv) {
+                    resultsDiv.innerHTML = '<h4>Scanning...</h4><p>Performing deep energy analysis...</p>';
+                }
+
+                setTimeout(() => {
+                    this.healingStats.energyScans++;
+                    this.saveStats();
+                    this.updateStats();
+
+                    if (resultsDiv) {
+                        resultsDiv.innerHTML = `
+                            <h4>Deep Scan Results</h4>
+                            <div class="energy-metrics">
+                                <div class="metric">
+                                    <span class="metric-label">Energy Flow:</span>
+                                    <span class="metric-value">Optimal</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Blockages:</span>
+                                    <span class="metric-value">None detected</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Vitality:</span>
+                                    <span class="metric-value">High (${this.energyData.overall}%)</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Chakra Balance:</span>
+                                    <span class="metric-value">${this.energyData.chakraBalance}%</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Aura Strength:</span>
+                                    <span class="metric-value">${this.energyData.auraStrength}%</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    // 🎯 AWARD XP FOR DETAILED SCAN
+                    if (window.progressSystem) {
+                        window.progressSystem.awardXP(40, 'Deep energy scan completed', 'energy-healing');
+                        window.progressSystem.logActivity('deep_scan', 'energy-healing', {
+                            overall: this.energyData.overall,
+                            chakraBalance: this.energyData.chakraBalance,
+                            auraStrength: this.energyData.auraStrength
+                        });
+                    }
+                }, 3000);
+            }
+
+            quickScan() {
+                const resultsDiv = document.getElementById('detailed-results');
+                if (resultsDiv) {
+                    resultsDiv.innerHTML = `
+                        <h4>Quick Scan Complete ⚡</h4>
+                        <div class="energy-metrics">
+                            <div class="metric">
+                                <span class="metric-label">Overall Energy:</span>
+                                <span class="metric-value">${this.energyData.overall}%</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Status:</span>
+                                <span class="metric-value">Balanced</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            saveResults() {
+                const results = {
+                    timestamp: new Date().toISOString(),
+                    overall: this.energyData.overall,
+                    chakraBalance: this.energyData.chakraBalance,
+                    auraStrength: this.energyData.auraStrength
+                };
+                localStorage.setItem('divineTemple_lastEnergyScan', JSON.stringify(results));
+                alert('✅ Energy scan results saved successfully!');
+            }
+
+            selectCrystal(index) {
+                const crystal = this.crystalDatabase[index];
+                const combinationDiv = document.getElementById('crystal-combination');
+
+                if (combinationDiv) {
+                    const currentContent = combinationDiv.innerHTML;
+                    if (currentContent.includes('Select crystals')) {
+                        combinationDiv.innerHTML = '';
+                    }
+
+                    combinationDiv.innerHTML += `
+                        <div class="selected-crystal">
+                            <span class="crystal-icon">${crystal.icon}</span>
+                            <span>${crystal.name}</span>
+                        </div>
+                    `;
+
+                    this.healingStats.crystalsUsed++;
+                    this.saveStats();
+                    this.updateStats();
+
+                    // 🎯 AWARD XP FOR CRYSTAL SELECTION
+                    if (window.progressSystem) {
+                        window.progressSystem.awardXP(40, `Crystal healing: ${crystal.name}`, 'energy-healing');
+                        window.progressSystem.logActivity('crystal_healing', 'energy-healing', {
+                            crystal: crystal.name,
+                            properties: crystal.properties
+                        });
+                    }
+                }
+            }
+
+            searchCrystals(query) {
+                const crystalItems = document.querySelectorAll('.crystal-item');
+                const searchTerm = query.toLowerCase();
+
+                crystalItems.forEach((item, index) => {
+                    const crystal = this.crystalDatabase[index];
+                    const matchesName = crystal.name.toLowerCase().includes(searchTerm);
+                    const matchesProperties = crystal.properties.some(prop =>
+                        prop.toLowerCase().includes(searchTerm)
+                    );
+
+                    if (matchesName || matchesProperties || searchTerm === '') {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
+
+            changeFrequency(freq) {
+                console.log(`🎵 Changing frequency to ${freq} Hz`);
+                if (window.divineAudio) {
+                    window.divineAudio.playTone(parseInt(freq), 5);
+                }
+            }
+
+            adjustVolume(volume) {
+                console.log(`🔊 Volume adjusted to ${volume}%`);
+            }
+
+            toggleFrequency() {
+                const playBtn = document.getElementById('play-btn');
+                if (playBtn) {
+                    if (playBtn.textContent === 'Play') {
+                        playBtn.textContent = 'Pause';
+                        const freqSelect = document.getElementById('frequency-select');
+                        if (freqSelect && window.divineAudio) {
+                            window.divineAudio.playTone(parseInt(freqSelect.value), 30);
+                        }
+                    } else {
+                        playBtn.textContent = 'Play';
+                        if (window.divineAudio) {
+                            window.divineAudio.stopAll();
+                        }
+                    }
+                }
+            }
+
+            stopFrequency() {
+                const playBtn = document.getElementById('play-btn');
+                if (playBtn) {
+                    playBtn.textContent = 'Play';
+                }
+                if (window.divineAudio) {
+                    window.divineAudio.stopAll();
+                }
+            }
+
+            recordSession() {
+                alert('🎙️ Session recording started! Your healing frequency session is being saved.');
+            }
+
+            setupHealingModalities() {
+                // Setup method - can be expanded with specific modality initialization
             }
         }
 
@@ -2899,6 +3297,14 @@
                 <p><strong>Energy State:</strong> Your aura shows balanced energy flow with strong spiritual connection.</p>
                 <p><strong>Recommendations:</strong> Continue your current spiritual practices and trust your intuitive abilities.</p>
             `;
+
+            // 🎯 AWARD XP FOR AURA SCAN
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(30, 'Aura scan completed', 'energy-healing');
+                window.progressSystem.logActivity('aura_scan', 'energy-healing', {
+                    dominantColor: dominantColor.color
+                });
+            }
         }
 
         // Close modal when clicking outside
