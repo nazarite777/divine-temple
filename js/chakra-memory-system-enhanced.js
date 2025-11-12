@@ -281,6 +281,742 @@ class ChakraMemoryGameEnhanced {
             }
         ];
 
+        // ========== BIBLICAL ETYMOLOGY CARDS ==========
+        // Hebrew terms ↔ English meanings (24 cards = 12 pairs)
+        this.biblicalEtymologyCards = [
+            // Divine Names
+            {
+                id: 'yhwh-hebrew',
+                category: 'Divine Names',
+                type: 'hebrew',
+                icon: '🔥',
+                text: 'YHWH (יהוה)',
+                color: '#D4AF37',
+                pair: 'yhwh-meaning'
+            },
+            {
+                id: 'yhwh-meaning',
+                category: 'Divine Names',
+                type: 'meaning',
+                icon: '✨',
+                text: 'I AM That I AM',
+                color: '#D4AF37',
+                pair: 'yhwh-hebrew'
+            },
+
+            {
+                id: 'elohim-hebrew',
+                category: 'Divine Names',
+                type: 'hebrew',
+                icon: '👥',
+                text: 'Elohim (אֱלֹהִים)',
+                color: '#8B5CF6',
+                pair: 'elohim-meaning'
+            },
+            {
+                id: 'elohim-meaning',
+                category: 'Divine Names',
+                type: 'meaning',
+                icon: '🌟',
+                text: 'Divine Council/Gods',
+                color: '#8B5CF6',
+                pair: 'elohim-hebrew'
+            },
+
+            {
+                id: 'yeshua-hebrew',
+                category: 'Divine Names',
+                type: 'hebrew',
+                icon: '👤',
+                text: 'Yeshua (יֵשׁוּעַ)',
+                color: '#4299E1',
+                pair: 'yeshua-meaning'
+            },
+            {
+                id: 'yeshua-meaning',
+                category: 'Divine Names',
+                type: 'meaning',
+                icon: '🕊️',
+                text: 'Yah Saves',
+                color: '#4299E1',
+                pair: 'yeshua-hebrew'
+            },
+
+            {
+                id: 'ruach-hebrew',
+                category: 'Sacred Concepts',
+                type: 'hebrew',
+                icon: '💨',
+                text: 'Ruach (רוּחַ)',
+                color: '#48BB78',
+                pair: 'ruach-meaning'
+            },
+            {
+                id: 'ruach-meaning',
+                category: 'Sacred Concepts',
+                type: 'meaning',
+                icon: '🌬️',
+                text: 'Spirit/Breath (Feminine)',
+                color: '#48BB78',
+                pair: 'ruach-hebrew'
+            },
+
+            // Mistranslations
+            {
+                id: 'almah-hebrew',
+                category: 'Mistranslations',
+                type: 'hebrew',
+                icon: '👩',
+                text: 'Almah (עַלְמָה)',
+                color: '#ED8936',
+                pair: 'almah-meaning'
+            },
+            {
+                id: 'almah-meaning',
+                category: 'Mistranslations',
+                type: 'meaning',
+                icon: '🌸',
+                text: 'Young Woman (NOT Virgin)',
+                color: '#ED8936',
+                pair: 'almah-hebrew'
+            },
+
+            {
+                id: 'mashiach-hebrew',
+                category: 'Sacred Titles',
+                type: 'hebrew',
+                icon: '👑',
+                text: 'Mashiach (מָשִׁיחַ)',
+                color: '#ECC94B',
+                pair: 'mashiach-meaning'
+            },
+            {
+                id: 'mashiach-meaning',
+                category: 'Sacred Titles',
+                type: 'meaning',
+                icon: '⚡',
+                text: 'Anointed One/Messiah',
+                color: '#ECC94B',
+                pair: 'mashiach-hebrew'
+            },
+
+            {
+                id: 'shekinah-hebrew',
+                category: 'Divine Presence',
+                type: 'hebrew',
+                icon: '✨',
+                text: 'Shekinah (שְׁכִינָה)',
+                color: '#9F7AEA',
+                pair: 'shekinah-meaning'
+            },
+            {
+                id: 'shekinah-meaning',
+                category: 'Divine Presence',
+                type: 'meaning',
+                icon: '🕊️',
+                text: 'Divine Feminine Presence',
+                color: '#9F7AEA',
+                pair: 'shekinah-hebrew'
+            },
+
+            {
+                id: 'tzaddik-hebrew',
+                category: 'Righteousness',
+                type: 'hebrew',
+                icon: '⚖️',
+                text: 'Tzaddik (צַדִּיק)',
+                color: '#E53E3E',
+                pair: 'tzaddik-meaning'
+            },
+            {
+                id: 'tzaddik-meaning',
+                category: 'Righteousness',
+                type: 'meaning',
+                icon: '🙏',
+                text: 'Righteous One',
+                color: '#E53E3E',
+                pair: 'tzaddik-hebrew'
+            },
+
+            // Additional pairs for medium/hard
+            {
+                id: 'nazir-hebrew',
+                category: 'Consecration',
+                type: 'hebrew',
+                icon: '🔥',
+                text: 'Nazir (נָזִיר)',
+                color: '#667EEA',
+                pair: 'nazir-meaning'
+            },
+            {
+                id: 'nazir-meaning',
+                category: 'Consecration',
+                type: 'meaning',
+                icon: '👤',
+                text: 'Consecrated/Set Apart',
+                color: '#667EEA',
+                pair: 'nazir-hebrew'
+            },
+
+            {
+                id: 'yah-hebrew',
+                category: 'Divine Names',
+                type: 'hebrew',
+                icon: '🌟',
+                text: 'Yah (יָהּ)',
+                color: '#F687B3',
+                pair: 'yah-meaning'
+            },
+            {
+                id: 'yah-meaning',
+                category: 'Divine Names',
+                type: 'meaning',
+                icon: '✨',
+                text: 'Sacred Name (Shortened)',
+                color: '#F687B3',
+                pair: 'yah-hebrew'
+            },
+
+            {
+                id: 'brit-hebrew',
+                category: 'Covenant',
+                type: 'hebrew',
+                icon: '📜',
+                text: 'Brit (בְּרִית)',
+                color: '#FC8181',
+                pair: 'brit-meaning'
+            },
+            {
+                id: 'brit-meaning',
+                category: 'Covenant',
+                type: 'meaning',
+                icon: '🤝',
+                text: 'Covenant/Agreement',
+                color: '#FC8181',
+                pair: 'brit-hebrew'
+            },
+
+            {
+                id: 'chesed-hebrew',
+                category: 'Divine Attributes',
+                type: 'hebrew',
+                icon: '💖',
+                text: 'Chesed (חֶסֶד)',
+                color: '#F6AD55',
+                pair: 'chesed-meaning'
+            },
+            {
+                id: 'chesed-meaning',
+                category: 'Divine Attributes',
+                type: 'meaning',
+                icon: '💝',
+                text: 'Loving Kindness/Mercy',
+                color: '#F6AD55',
+                pair: 'chesed-hebrew'
+            }
+        ];
+
+        // ========== HEBREW NAMES CARDS ==========
+        // Divine names ↔ Meanings (24 cards = 12 pairs)
+        this.hebrewNamesCards = [
+            {
+                id: 'michael-name',
+                category: 'Angelic Names',
+                type: 'name',
+                icon: '⚔️',
+                text: 'Michael (מִיכָאֵל)',
+                color: '#E53E3E',
+                pair: 'michael-meaning'
+            },
+            {
+                id: 'michael-meaning',
+                category: 'Angelic Names',
+                type: 'meaning',
+                icon: '❓',
+                text: 'Who is Like God?',
+                color: '#E53E3E',
+                pair: 'michael-name'
+            },
+
+            {
+                id: 'gabriel-name',
+                category: 'Angelic Names',
+                type: 'name',
+                icon: '📯',
+                text: 'Gabriel (גַּבְרִיאֵל)',
+                color: '#ED8936',
+                pair: 'gabriel-meaning'
+            },
+            {
+                id: 'gabriel-meaning',
+                category: 'Angelic Names',
+                type: 'meaning',
+                icon: '💪',
+                text: 'Strength of God',
+                color: '#ED8936',
+                pair: 'gabriel-name'
+            },
+
+            {
+                id: 'nazirel-name',
+                category: 'Sacred Names',
+                type: 'name',
+                icon: '👑',
+                text: 'Nazir El',
+                color: '#D4AF37',
+                pair: 'nazirel-meaning'
+            },
+            {
+                id: 'nazirel-meaning',
+                category: 'Sacred Names',
+                type: 'meaning',
+                icon: '✨',
+                text: 'Consecrated to God',
+                color: '#D4AF37',
+                pair: 'nazirel-name'
+            },
+
+            {
+                id: 'israel-name',
+                category: 'Patriarchs',
+                type: 'name',
+                icon: '🤼',
+                text: 'Israel (יִשְׂרָאֵל)',
+                color: '#48BB78',
+                pair: 'israel-meaning'
+            },
+            {
+                id: 'israel-meaning',
+                category: 'Patriarchs',
+                type: 'meaning',
+                icon: '⚡',
+                text: 'Wrestles with God',
+                color: '#48BB78',
+                pair: 'israel-name'
+            },
+
+            {
+                id: 'emmanuel-name',
+                category: 'Prophetic Names',
+                type: 'name',
+                icon: '🕊️',
+                text: 'Emmanuel (עִמָּנוּאֵל)',
+                color: '#4299E1',
+                pair: 'emmanuel-meaning'
+            },
+            {
+                id: 'emmanuel-meaning',
+                category: 'Prophetic Names',
+                type: 'meaning',
+                icon: '🙏',
+                text: 'God With Us',
+                color: '#4299E1',
+                pair: 'emmanuel-name'
+            },
+
+            {
+                id: 'elijah-name',
+                category: 'Prophets',
+                type: 'name',
+                icon: '🔥',
+                text: 'Elijah (אֵלִיָּהוּ)',
+                color: '#667EEA',
+                pair: 'elijah-meaning'
+            },
+            {
+                id: 'elijah-meaning',
+                category: 'Prophets',
+                type: 'meaning',
+                icon: '⚡',
+                text: 'My God is Yah',
+                color: '#667EEA',
+                pair: 'elijah-name'
+            },
+
+            {
+                id: 'isaiah-name',
+                category: 'Prophets',
+                type: 'name',
+                icon: '📜',
+                text: 'Isaiah (יְשַׁעְיָהוּ)',
+                color: '#9F7AEA',
+                pair: 'isaiah-meaning'
+            },
+            {
+                id: 'isaiah-meaning',
+                category: 'Prophets',
+                type: 'meaning',
+                icon: '🕊️',
+                text: 'Salvation of Yah',
+                color: '#9F7AEA',
+                pair: 'isaiah-name'
+            },
+
+            {
+                id: 'daniel-name',
+                category: 'Prophets',
+                type: 'name',
+                icon: '🦁',
+                text: 'Daniel (דָּנִיֵּאל)',
+                color: '#ECC94B',
+                pair: 'daniel-meaning'
+            },
+            {
+                id: 'daniel-meaning',
+                category: 'Prophets',
+                type: 'meaning',
+                icon: '⚖️',
+                text: 'God is My Judge',
+                color: '#ECC94B',
+                pair: 'daniel-name'
+            },
+
+            // Additional pairs
+            {
+                id: 'raphael-name',
+                category: 'Angelic Names',
+                type: 'name',
+                icon: '💚',
+                text: 'Raphael (רָפָאֵל)',
+                color: '#68D391',
+                pair: 'raphael-meaning'
+            },
+            {
+                id: 'raphael-meaning',
+                category: 'Angelic Names',
+                type: 'meaning',
+                icon: '🩹',
+                text: 'God Heals',
+                color: '#68D391',
+                pair: 'raphael-name'
+            },
+
+            {
+                id: 'uriel-name',
+                category: 'Angelic Names',
+                type: 'name',
+                icon: '🔥',
+                text: 'Uriel (אוּרִיאֵל)',
+                color: '#F6AD55',
+                pair: 'uriel-meaning'
+            },
+            {
+                id: 'uriel-meaning',
+                category: 'Angelic Names',
+                type: 'meaning',
+                icon: '💡',
+                text: 'Light of God',
+                color: '#F6AD55',
+                pair: 'uriel-name'
+            },
+
+            {
+                id: 'jeremiah-name',
+                category: 'Prophets',
+                type: 'name',
+                icon: '😢',
+                text: 'Jeremiah (יִרְמְיָהוּ)',
+                color: '#FC8181',
+                pair: 'jeremiah-meaning'
+            },
+            {
+                id: 'jeremiah-meaning',
+                category: 'Prophets',
+                type: 'meaning',
+                icon: '⬆️',
+                text: 'Yah Will Uplift',
+                color: '#FC8181',
+                pair: 'jeremiah-name'
+            },
+
+            {
+                id: 'joshua-name',
+                category: 'Leaders',
+                type: 'name',
+                icon: '🗡️',
+                text: 'Joshua (יְהוֹשֻׁעַ)',
+                color: '#F687B3',
+                pair: 'joshua-meaning'
+            },
+            {
+                id: 'joshua-meaning',
+                category: 'Leaders',
+                type: 'meaning',
+                icon: '🛡️',
+                text: 'Yah is Salvation',
+                color: '#F687B3',
+                pair: 'joshua-name'
+            }
+        ];
+
+        // ========== SACRED NUMBERS CARDS ==========
+        // Numbers ↔ Spiritual meanings (24 cards = 12 pairs)
+        this.sacredNumbersCards = [
+            {
+                id: 'seven-number',
+                category: 'Completion',
+                type: 'number',
+                icon: '7️⃣',
+                text: 'Seven (7)',
+                color: '#D4AF37',
+                pair: 'seven-meaning'
+            },
+            {
+                id: 'seven-meaning',
+                category: 'Completion',
+                type: 'meaning',
+                icon: '✅',
+                text: 'Divine Completion',
+                color: '#D4AF37',
+                pair: 'seven-number'
+            },
+
+            {
+                id: 'twelve-number',
+                category: 'Government',
+                type: 'number',
+                icon: '1️⃣2️⃣',
+                text: 'Twelve (12)',
+                color: '#8B5CF6',
+                pair: 'twelve-meaning'
+            },
+            {
+                id: 'twelve-meaning',
+                category: 'Government',
+                type: 'meaning',
+                icon: '👑',
+                text: 'Divine Government',
+                color: '#8B5CF6',
+                pair: 'twelve-number'
+            },
+
+            {
+                id: 'forty-number',
+                category: 'Testing',
+                type: 'number',
+                icon: '4️⃣0️⃣',
+                text: 'Forty (40)',
+                color: '#E53E3E',
+                pair: 'forty-meaning'
+            },
+            {
+                id: 'forty-meaning',
+                category: 'Testing',
+                type: 'meaning',
+                icon: '🏜️',
+                text: 'Testing & Trial',
+                color: '#E53E3E',
+                pair: 'forty-number'
+            },
+
+            {
+                id: 'three-number',
+                category: 'Divine',
+                type: 'number',
+                icon: '3️⃣',
+                text: 'Three (3)',
+                color: '#48BB78',
+                pair: 'three-meaning'
+            },
+            {
+                id: 'three-meaning',
+                category: 'Divine',
+                type: 'meaning',
+                icon: '🔺',
+                text: 'Divine Manifestation',
+                color: '#48BB78',
+                pair: 'three-number'
+            },
+
+            {
+                id: 'eight-number',
+                category: 'Beginning',
+                type: 'number',
+                icon: '8️⃣',
+                text: 'Eight (8)',
+                color: '#4299E1',
+                pair: 'eight-meaning'
+            },
+            {
+                id: 'eight-meaning',
+                category: 'Beginning',
+                type: 'meaning',
+                icon: '🌅',
+                text: 'New Beginning',
+                color: '#4299E1',
+                pair: 'eight-number'
+            },
+
+            {
+                id: 'ten-number',
+                category: 'Law',
+                type: 'number',
+                icon: '🔟',
+                text: 'Ten (10)',
+                color: '#ECC94B',
+                pair: 'ten-meaning'
+            },
+            {
+                id: 'ten-meaning',
+                category: 'Law',
+                type: 'meaning',
+                icon: '📜',
+                text: 'Divine Order/Law',
+                color: '#ECC94B',
+                pair: 'ten-number'
+            },
+
+            {
+                id: 'five-number',
+                category: 'Grace',
+                type: 'number',
+                icon: '5️⃣',
+                text: 'Five (5)',
+                color: '#ED8936',
+                pair: 'five-meaning'
+            },
+            {
+                id: 'five-meaning',
+                category: 'Grace',
+                type: 'meaning',
+                icon: '🙏',
+                text: 'Divine Grace',
+                color: '#ED8936',
+                pair: 'five-number'
+            },
+
+            {
+                id: 'six-number',
+                category: 'Humanity',
+                type: 'number',
+                icon: '6️⃣',
+                text: 'Six (6)',
+                color: '#9F7AEA',
+                pair: 'six-meaning'
+            },
+            {
+                id: 'six-meaning',
+                category: 'Humanity',
+                type: 'meaning',
+                icon: '👤',
+                text: 'Human Number',
+                color: '#9F7AEA',
+                pair: 'six-number'
+            },
+
+            // Additional pairs
+            {
+                id: 'one-number',
+                category: 'Unity',
+                type: 'number',
+                icon: '1️⃣',
+                text: 'One (1)',
+                color: '#F687B3',
+                pair: 'one-meaning'
+            },
+            {
+                id: 'one-meaning',
+                category: 'Unity',
+                type: 'meaning',
+                icon: '⚫',
+                text: 'Divine Unity',
+                color: '#F687B3',
+                pair: 'one-number'
+            },
+
+            {
+                id: 'four-number',
+                category: 'Creation',
+                type: 'number',
+                icon: '4️⃣',
+                text: 'Four (4)',
+                color: '#68D391',
+                pair: 'four-meaning'
+            },
+            {
+                id: 'four-meaning',
+                category: 'Creation',
+                type: 'meaning',
+                icon: '🌍',
+                text: 'Creation/Earth',
+                color: '#68D391',
+                pair: 'four-number'
+            },
+
+            {
+                id: 'fifty-number',
+                category: 'Jubilee',
+                type: 'number',
+                icon: '5️⃣0️⃣',
+                text: 'Fifty (50)',
+                color: '#FC8181',
+                pair: 'fifty-meaning'
+            },
+            {
+                id: 'fifty-meaning',
+                category: 'Jubilee',
+                type: 'meaning',
+                icon: '🎉',
+                text: 'Jubilee/Freedom',
+                color: '#FC8181',
+                pair: 'fifty-number'
+            },
+
+            {
+                id: 'twentyone-number',
+                category: 'Consecration',
+                type: 'number',
+                icon: '2️⃣1️⃣',
+                text: 'Twenty-One (21)',
+                color: '#F6AD55',
+                pair: 'twentyone-meaning'
+            },
+            {
+                id: 'twentyone-meaning',
+                category: 'Consecration',
+                type: 'meaning',
+                icon: '🔥',
+                text: 'Nazarite Age/Maturity',
+                color: '#F6AD55',
+                pair: 'twentyone-number'
+            }
+        ];
+
+        // Theme configurations
+        this.themes = {
+            chakras: {
+                name: 'Chakra Energy System',
+                description: 'Match chakra symbols with Sanskrit names',
+                icon: '🧘',
+                cards: this.chakraCards,
+                color: '#8B5CF6'
+            },
+            etymology: {
+                name: 'Biblical Etymology',
+                description: 'Match Hebrew terms with their meanings',
+                icon: '📜',
+                cards: this.biblicalEtymologyCards,
+                color: '#D4AF37'
+            },
+            names: {
+                name: 'Hebrew Divine Names',
+                description: 'Match sacred names with their meanings',
+                icon: '👑',
+                cards: this.hebrewNamesCards,
+                color: '#4299E1'
+            },
+            numbers: {
+                name: 'Sacred Numbers',
+                description: 'Match numbers with spiritual meanings',
+                icon: '🔢',
+                cards: this.sacredNumbersCards,
+                color: '#48BB78'
+            }
+        };
+
+        // Current theme (default to chakras for backward compatibility)
+        this.currentTheme = 'chakras';
+
         // Difficulty configurations
         this.difficulties = {
             easy: {
@@ -908,21 +1644,42 @@ class ChakraMemoryGameEnhanced {
         this.log('Game setup complete');
     }
 
+    // Set the current theme
+    setTheme(themeKey) {
+        if (this.themes[themeKey]) {
+            this.currentTheme = themeKey;
+            this.log(`Theme set to: ${this.themes[themeKey].name}`);
+            this.playSound('click');
+            return true;
+        }
+        return false;
+    }
+
+    // Get current theme cards
+    getCurrentCards() {
+        return this.themes[this.currentTheme].cards;
+    }
+
     selectCards(pairs) {
+        // Use current theme's cards
+        const currentCards = this.getCurrentCards();
+
         // Shuffle available cards and take required pairs
-        const shuffled = [...this.chakraCards].sort(() => Math.random() - 0.5);
+        const shuffled = [...currentCards].sort(() => Math.random() - 0.5);
         const selected = [];
         const usedPairs = new Set();
 
         for (let i = 0; i < shuffled.length && selected.length < pairs * 2; i++) {
             const card = shuffled[i];
-            const pairCard = this.chakraCards.find(c => c.id === card.pair);
+            const pairCard = currentCards.find(c => c.id === card.pair);
 
-            if (pairCard && !usedPairs.has(card.chakra + card.type + card.pair)) {
+            // Use category instead of chakra for unique key
+            const categoryKey = card.category || card.chakra || 'default';
+            if (pairCard && !usedPairs.has(categoryKey + card.type + card.pair)) {
                 selected.push({ ...card, cardId: `card-${selected.length}` });
                 selected.push({ ...pairCard, cardId: `card-${selected.length}` });
-                usedPairs.add(card.chakra + card.type + card.pair);
-                usedPairs.add(pairCard.chakra + pairCard.type + pairCard.pair);
+                usedPairs.add(categoryKey + card.type + card.pair);
+                usedPairs.add((pairCard.category || pairCard.chakra || 'default') + pairCard.type + pairCard.pair);
             }
         }
 
@@ -1365,6 +2122,21 @@ particleStyle.textContent = `
 document.head.appendChild(particleStyle);
 
 // Global functions for inline onclick handlers
+function selectTheme(theme) {
+    if (window.chakraGameEnhanced) {
+        window.chakraGameEnhanced.setTheme(theme);
+
+        // Update theme button UI
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const selectedBtn = document.querySelector(`.theme-btn[data-theme="${theme}"]`);
+        if (selectedBtn) {
+            selectedBtn.classList.add('active');
+        }
+    }
+}
+
 function selectMode(mode) {
     if (window.chakraGameEnhanced) {
         window.chakraGameEnhanced.selectMode(mode);

@@ -68,55 +68,67 @@ class TriviaAudioSystem {
     // ==================== SOUND CREATION ====================
     
     createSoundEffects() {
-        console.log('🔊 Creating trivia sound effects...');
-        
-        // Question reveal - gentle ascending notes
+        console.log('🔊 Creating realistic trivia sound effects...');
+
+        // Question reveal - gentle temple bells ascending
         this.sounds.questionReveal = () => {
             const notes = [523, 659, 784]; // C, E, G
-            this.playSequence(notes, 0.15, 'sine', 0.3, 100);
+            notes.forEach((freq, index) => {
+                setTimeout(() => {
+                    this.playBellTone(freq, 0.4, 0.25);
+                }, index * 120);
+            });
         };
-        
-        // Correct answer - harmonious major chord
+
+        // Correct answer - harmonious singing bowls with shimmer
         this.sounds.correctAnswer = () => {
-            const chord = [523, 659, 784, 1047]; // C major chord with octave
-            this.playChord(chord, 0.6, 'sine', 0.4);
-            
-            // Add sparkle effect
+            // Main singing bowl sound
+            const fundamentals = [523, 659, 784]; // C major triad
+            fundamentals.forEach(freq => {
+                this.playSingingBowl(freq, 0.8, 0.35);
+            });
+
+            // Add crystalline shimmer after a moment
             setTimeout(() => {
-                const sparkle = [1319, 1568, 1865];
-                this.playSequence(sparkle, 0.2, 'sine', 0.2, 80);
+                const sparkle = [1319, 1568, 1865, 2093];
+                sparkle.forEach((freq, index) => {
+                    setTimeout(() => {
+                        this.playBellTone(freq, 0.3, 0.15);
+                    }, index * 60);
+                });
             }, 200);
         };
-        
-        // Wrong answer - gentle, not harsh feedback
+
+        // Wrong answer - soft wooden block tap (not harsh)
         this.sounds.wrongAnswer = () => {
-            const notes = [392, 349]; // G to F (descending)
-            this.playSequence(notes, 0.3, 'triangle', 0.25, 150);
+            this.playWoodenBlock(0.25);
         };
-        
-        // Timer warning - subtle pulse
+
+        // Timer warning - gentle tingsha bell
         this.sounds.timerWarning = () => {
-            this.playTone(800, 0.1, 'square', 0.15);
+            this.playTingshaClick(0.18);
         };
-        
-        // Timer critical - more urgent but still gentle
+
+        // Timer critical - more urgent tingsha
         this.sounds.timerCritical = () => {
-            this.playTone(1000, 0.15, 'square', 0.2);
-            setTimeout(() => this.playTone(1000, 0.15, 'square', 0.2), 200);
+            this.playTingshaClick(0.22);
+            setTimeout(() => this.playTingshaClick(0.22), 180);
         };
-        
-        // Victory - triumphant progression
+
+        // Victory - triumphant temple bells
         this.sounds.victory = () => {
             const progression = [
-                [523, 659, 784],    // C major
-                [587, 740, 880],    // D major  
-                [659, 831, 988],    // E major
-                [523, 659, 784, 1047] // C major with octave
+                [523, 659, 784],       // C major
+                [587, 740, 880],       // D major
+                [659, 831, 988],       // E major
+                [523, 659, 784, 1047]  // C major with octave
             ];
-            
+
             progression.forEach((chord, index) => {
                 setTimeout(() => {
-                    this.playChord(chord, 0.8, 'sine', 0.4);
+                    chord.forEach(freq => {
+                        this.playBellTone(freq, 1.2, 0.3);
+                    });
                 }, index * 400);
             });
         };
@@ -166,8 +178,220 @@ class TriviaAudioSystem {
         console.log('✅ All trivia sound effects created');
     }
 
+    // ==================== REALISTIC SOUND GENERATORS ====================
+
+    /**
+     * Play a realistic bell tone with harmonics and natural decay
+     */
+    playBellTone(frequency, duration = 0.6, volume = 0.3) {
+        if (!this.soundEnabled || !this.audioContext) return;
+
+        const now = this.audioContext.currentTime;
+
+        // Fundamental tone
+        const osc1 = this.audioContext.createOscillator();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(frequency, now);
+
+        // Harmonic overtones for bell character
+        const osc2 = this.audioContext.createOscillator();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(frequency * 2.76, now); // Minor third harmonic
+
+        const osc3 = this.audioContext.createOscillator();
+        osc3.type = 'sine';
+        osc3.frequency.setValueAtTime(frequency * 5.4, now); // Metallic overtone
+
+        // Gains with natural bell envelope
+        const gain1 = this.audioContext.createGain();
+        const gain2 = this.audioContext.createGain();
+        const gain3 = this.audioContext.createGain();
+
+        // Bell has fast attack, long decay
+        gain1.gain.setValueAtTime(0, now);
+        gain1.gain.linearRampToValueAtTime(volume * this.masterVolume, now + 0.01);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        gain2.gain.setValueAtTime(0, now);
+        gain2.gain.linearRampToValueAtTime(volume * 0.6 * this.masterVolume, now + 0.01);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + duration * 0.8);
+
+        gain3.gain.setValueAtTime(0, now);
+        gain3.gain.linearRampToValueAtTime(volume * 0.3 * this.masterVolume, now + 0.005);
+        gain3.gain.exponentialRampToValueAtTime(0.001, now + duration * 0.5);
+
+        // Add subtle reverb with delay
+        const delay = this.audioContext.createDelay();
+        delay.delayTime.setValueAtTime(0.03, now);
+        const delayGain = this.audioContext.createGain();
+        delayGain.gain.setValueAtTime(0.15, now);
+
+        // Connect graph
+        osc1.connect(gain1);
+        osc2.connect(gain2);
+        osc3.connect(gain3);
+
+        gain1.connect(this.audioContext.destination);
+        gain2.connect(this.audioContext.destination);
+        gain3.connect(this.audioContext.destination);
+
+        gain1.connect(delay);
+        delay.connect(delayGain);
+        delayGain.connect(this.audioContext.destination);
+
+        osc1.start(now);
+        osc2.start(now);
+        osc3.start(now);
+
+        osc1.stop(now + duration + 0.1);
+        osc2.stop(now + duration + 0.1);
+        osc3.stop(now + duration + 0.1);
+    }
+
+    /**
+     * Play realistic singing bowl sound
+     */
+    playSingingBowl(frequency, duration = 1.5, volume = 0.3) {
+        if (!this.soundEnabled || !this.audioContext) return;
+
+        const now = this.audioContext.currentTime;
+
+        // Fundamental with slight vibrato
+        const osc = this.audioContext.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(frequency, now);
+
+        // Vibrato LFO
+        const vibrato = this.audioContext.createOscillator();
+        vibrato.frequency.setValueAtTime(4, now); // 4 Hz vibrato
+        const vibratoGain = this.audioContext.createGain();
+        vibratoGain.gain.setValueAtTime(3, now); // +/- 3 Hz
+
+        vibrato.connect(vibratoGain);
+        vibratoGain.connect(osc.frequency);
+
+        // Envelope
+        const gain = this.audioContext.createGain();
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(volume * this.masterVolume, now + 0.1);
+        gain.gain.exponentialRampToValueAtTime(volume * 0.7 * this.masterVolume, now + 0.5);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        // Filter for warmth
+        const filter = this.audioContext.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(frequency * 3, now);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.audioContext.destination);
+
+        osc.start(now);
+        vibrato.start(now);
+
+        osc.stop(now + duration);
+        vibrato.stop(now + duration);
+    }
+
+    /**
+     * Play gentle bamboo tap sound (soft, non-intrusive)
+     */
+    playWoodenBlock(volume = 0.3) {
+        if (!this.soundEnabled || !this.audioContext) return;
+
+        const now = this.audioContext.currentTime;
+
+        // Gentle bamboo tap using soft sine tones
+        const fundamental = this.audioContext.createOscillator();
+        fundamental.type = 'sine';
+        fundamental.frequency.setValueAtTime(440, now); // Gentle A note
+
+        const harmonic = this.audioContext.createOscillator();
+        harmonic.type = 'sine';
+        harmonic.frequency.setValueAtTime(880, now); // Octave harmonic
+
+        // Very gentle envelopes (no harsh attack)
+        const fundamentalGain = this.audioContext.createGain();
+        const harmonicGain = this.audioContext.createGain();
+
+        fundamentalGain.gain.setValueAtTime(0, now);
+        fundamentalGain.gain.linearRampToValueAtTime(volume * 0.2 * this.masterVolume, now + 0.005);
+        fundamentalGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+
+        harmonicGain.gain.setValueAtTime(0, now);
+        harmonicGain.gain.linearRampToValueAtTime(volume * 0.1 * this.masterVolume, now + 0.005);
+        harmonicGain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+        // Soft low-pass filter for warmth
+        const filter = this.audioContext.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1200, now);
+        filter.Q.setValueAtTime(0.5, now);
+
+        fundamental.connect(filter);
+        harmonic.connect(filter);
+
+        filter.connect(fundamentalGain);
+        filter.connect(harmonicGain);
+
+        fundamentalGain.connect(this.audioContext.destination);
+        harmonicGain.connect(this.audioContext.destination);
+
+        fundamental.start(now);
+        harmonic.start(now);
+
+        fundamental.stop(now + 0.25);
+        harmonic.stop(now + 0.2);
+    }
+
+    /**
+     * Play tingsha cymbal click sound
+     */
+    playTingshaClick(volume = 0.2) {
+        if (!this.soundEnabled || !this.audioContext) return;
+
+        const now = this.audioContext.currentTime;
+
+        // High pitched metallic tones
+        const freq1 = 2500;
+        const freq2 = 2637; // Slightly detuned for shimmer
+
+        const osc1 = this.audioContext.createOscillator();
+        const osc2 = this.audioContext.createOscillator();
+
+        osc1.frequency.setValueAtTime(freq1, now);
+        osc2.frequency.setValueAtTime(freq2, now);
+
+        osc1.type = 'sine';
+        osc2.type = 'sine';
+
+        const gain1 = this.audioContext.createGain();
+        const gain2 = this.audioContext.createGain();
+
+        // Sharp attack, quick decay
+        gain1.gain.setValueAtTime(0, now);
+        gain1.gain.linearRampToValueAtTime(volume * this.masterVolume, now + 0.005);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+        gain2.gain.setValueAtTime(0, now);
+        gain2.gain.linearRampToValueAtTime(volume * 0.8 * this.masterVolume, now + 0.005);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+        osc1.connect(gain1);
+        osc2.connect(gain2);
+
+        gain1.connect(this.audioContext.destination);
+        gain2.connect(this.audioContext.destination);
+
+        osc1.start(now);
+        osc2.start(now);
+
+        osc1.stop(now + 0.35);
+        osc2.stop(now + 0.3);
+    }
+
     // ==================== AUDIO PRIMITIVES ====================
-    
+
     playTone(frequency, duration, waveType = 'sine', volume = 0.3) {
         if (!this.soundEnabled || !this.audioContext) return;
         

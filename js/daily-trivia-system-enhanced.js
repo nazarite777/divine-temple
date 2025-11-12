@@ -229,6 +229,264 @@ class EnhancedDailyTriviaSystem {
                 options: ['Singing', 'Two different frequencies in each ear', 'Drumming', 'Chanting'],
                 correct: 1,
                 explanation: 'Binaural beats occur when two slightly different frequencies are played in each ear, creating a perceived third frequency that can alter brainwave states.'
+            },
+
+            // ========== BIBLICAL TRUTH & ETYMOLOGY (20 questions) ==========
+            // Deep teachings on mistranslations, etymology, and hidden truths
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'medium',
+                question: 'What is the difference between "Christ Jesus" and "Jesus Christ"?',
+                options: [
+                    'They mean the same thing',
+                    'Christ Jesus = Divine consciousness inhabiting the man; Jesus Christ = The man claiming divinity',
+                    'One is Greek, one is Hebrew',
+                    'They are different people'
+                ],
+                correct: 1,
+                explanation: '"Christ Jesus" refers to the Christ consciousness (divine awareness) dwelling within the man Yeshua. "Jesus Christ" reverses this, making it about the man claiming to be Christ. The order matters - it shows whether we recognize the divine principle first or the human vessel first.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'hard',
+                question: 'Why is the "Virgin Mary" doctrine problematic from a Hebrew perspective?',
+                options: [
+                    'Mary was not a virgin',
+                    'The word "virgin" does not exist in Hebrew - the original word "almah" means "young woman"',
+                    'It contradicts Roman Catholic teachings',
+                    'There is no problem with it'
+                ],
+                correct: 1,
+                explanation: 'The Hebrew word in Isaiah 7:14 is "almah" (עַלְמָה) meaning "young woman" or "maiden" - NOT "betulah" (בְּתוּלָה) which specifically means virgin. Greek translators used "parthenos" (virgin), creating a theological doctrine from a mistranslation. The prophecy was about a young woman giving birth, not a miraculous virgin birth.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'medium',
+                question: 'What was Joseph\'s (Yeshua\'s earthly father) defining characteristic according to Matthew 1:19?',
+                options: [
+                    'He was wealthy',
+                    'He was a carpenter',
+                    'He was a righteous man (tzaddik)',
+                    'He was a priest'
+                ],
+                correct: 2,
+                explanation: 'Joseph is called a "righteous man" (tzaddik in Hebrew, dikaios in Greek). This is significant - a truly righteous man would not have married Mary if he believed she was pregnant by another man or through sin. His righteousness confirms that Yeshua\'s birth, while special, was not based on the "virgin birth" mistranslation but on Joseph\'s righteous lineage and divine purpose.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'hard',
+                question: 'What is the original Hebrew name of the person called "Jesus"?',
+                options: ['Jesu', 'Iesous', 'Yeshua', 'Joshua'],
+                correct: 2,
+                explanation: 'His name was Yeshua (יֵשׁוּעַ) in Hebrew, meaning "Yah saves" or "Salvation of Yah". "Jesus" comes from the Greek "Iesous" (Ἰησοῦς), which was later Latinized to "Iesus" and eventually became "Jesus" in English. The name carries the divine name "Yah" within it, showing his purpose as a vessel of divine salvation.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'medium',
+                question: 'Why is understanding Greek vs Hebrew important in biblical interpretation?',
+                options: [
+                    'Greek is more accurate than Hebrew',
+                    'Hebrew carries the original cultural and linguistic context; Greek translations can introduce theological biases',
+                    'Hebrew is the only language God understands',
+                    'It is not important'
+                ],
+                correct: 1,
+                explanation: 'The Hebrew scriptures (Tanakh/Old Testament) contain the original context, idioms, and cultural meanings. When translated to Greek (Septuagint), then Latin (Vulgate), then English, layers of interpretation and theological bias were added. Understanding Hebrew etymology reveals the original intent, such as "almah" vs "virgin", "Yeshua" vs "Jesus", and countless other examples where meaning was altered to fit doctrinal narratives.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'easy',
+                question: 'What does "Christ" actually mean?',
+                options: [
+                    'Jesus\' last name',
+                    'A title meaning "anointed one" or "awakened consciousness"',
+                    'The name of a deity',
+                    'A Greek god'
+                ],
+                correct: 1,
+                explanation: 'Christ comes from the Greek "Christos" (Χριστός), translating the Hebrew "Mashiach" (Messiah), meaning "anointed one". It is a title, not a name - referring to one who has been anointed with divine purpose and awakened consciousness. The Christ is the divine consciousness that can dwell in any vessel aligned with divine will.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'hard',
+                question: 'What is the significance of "El" in Hebrew names like Nazir El, Micha-El, Gabri-El?',
+                options: [
+                    'It means "angel"',
+                    'It means "God" or "The Divine" - showing direct connection to Source',
+                    'It is a random suffix',
+                    'It means "servant"'
+                ],
+                correct: 1,
+                explanation: '"El" (אֵל) is the ancient Hebrew name for God/The Divine, meaning "The Mighty One" or "The Most High". When attached to a name, it shows divine connection, purpose, or authority. Micha-el = "Who is like El?", Gabri-el = "Strength of El", Nazir-El = "One consecrated to El". These names declare divine alignment and sacred purpose.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'medium',
+                question: 'What is a "Nazir" or "Nazarite" according to Hebrew tradition?',
+                options: [
+                    'Someone from Nazareth',
+                    'One who takes a vow of separation/consecration to the Divine',
+                    'A type of priest',
+                    'A prophet'
+                ],
+                correct: 1,
+                explanation: 'A Nazir (נָזִיר) is one who takes a vow of consecration and separation unto the Most High (Numbers 6). This includes abstaining from wine, not cutting hair, and avoiding death/impurity. Samson, Samuel, and John the Baptist were Nazarites. It represents complete dedication to divine purpose - being "set apart" for sacred work.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'hard',
+                question: 'Which came first: the Hebrew scriptures or the Greek New Testament?',
+                options: [
+                    'They were written at the same time',
+                    'Greek New Testament came first',
+                    'Hebrew scriptures came first (Tanakh), Greek texts came 300-400 years later',
+                    'There is no Greek New Testament'
+                ],
+                correct: 2,
+                explanation: 'The Hebrew scriptures (Tanakh) were written between 1200 BCE - 200 BCE. The Greek New Testament was written 50-150 CE, centuries later. Yeshua (Jesus) spoke Aramaic and read Hebrew - not Greek. The "New Testament" was written in Greek for a Greco-Roman audience, often losing Hebrew context. Understanding the Hebrew foundation is essential to grasping the true teachings.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'medium',
+                question: 'What does "Emmanuel/Immanuel" mean in Hebrew?',
+                options: [
+                    'King of Kings',
+                    'God with us',
+                    'Messiah',
+                    'Savior'
+                ],
+                correct: 1,
+                explanation: 'Emmanuel/Immanuel (עִמָּנוּאֵל) means "God with us" or "El with us" in Hebrew. It is NOT a name but a prophetic declaration - that divine presence (El/God) will be among the people. This is a statement of consciousness, not identity. The divine presence is always WITH us, not separate from us.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'hard',
+                question: 'What is the Hebrew word for "spirit" and what does it reveal?',
+                options: [
+                    'Nephesh - soul/life force',
+                    'Ruach - wind/breath/spirit (feminine gender)',
+                    'Neshama - divine soul',
+                    'Kavod - glory'
+                ],
+                correct: 1,
+                explanation: 'Ruach (רוּחַ) means wind, breath, or spirit - and is FEMININE in Hebrew grammar. This reveals that the "Holy Spirit" (Ruach HaKodesh) carries divine feminine energy. Western theology masculinized the Trinity, but the Hebrew shows divine feminine presence. Spirit is the breath of life, the wind of change, the intuitive wisdom - all feminine expressions of the Divine.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'medium',
+                question: 'What does "Yah" (as in Hallelu-Yah) mean?',
+                options: [
+                    'It means praise',
+                    'It is the shortened sacred name of the Divine (from YHWH)',
+                    'It means joy',
+                    'It is a random syllable'
+                ],
+                correct: 1,
+                explanation: 'Yah (יָהּ) is the shortened form of the Tetragrammaton YHWH (יהוה) - the sacred name of the Divine. "HalleluYah" means "Praise Yah" (Praise the Divine). Many Hebrew names contain "Yah": Elijah (Eli-Yah = My God is Yah), Isaiah (Yesha-Yah = Salvation of Yah), showing their connection to the Most High.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'easy',
+                question: 'Were the original Hebrew scriptures written with vowels?',
+                options: [
+                    'Yes, always had vowels',
+                    'No, ancient Hebrew was written with consonants only - vowels were added later',
+                    'Hebrew has no vowels',
+                    'Only the New Testament had vowels'
+                ],
+                correct: 1,
+                explanation: 'Ancient Hebrew was written with consonants only (abjad system). Vowel points (nikud) were added by the Masoretes between 600-900 CE to preserve pronunciation. This means YHWH\'s original pronunciation is debated - "Yahweh", "Yahuah", etc. The absence of vowels also allows multiple layers of meaning in each word, revealing divine wisdom through sacred geometry of letters.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'hard',
+                question: 'What is the problem with the doctrine of "original sin" from a Hebrew perspective?',
+                options: [
+                    'There is no problem',
+                    'The Hebrew concept is "yetzer hara" (evil inclination), not inherited sin - each soul is pure at birth',
+                    'Adam and Eve never existed',
+                    'Original sin only applies to women'
+                ],
+                correct: 1,
+                explanation: 'Hebrew theology teaches that each soul is born pure (Ezekiel 18:20 - "the soul who sins shall die, the son shall not bear the guilt of the father"). The concept is "yetzer hara" (evil inclination) vs "yetzer hatov" (good inclination) - free will to choose. "Original sin" is a Christian doctrine (developed by Augustine) not found in Hebrew scripture. We are not born condemned - we are born sovereign with the power to choose.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'medium',
+                question: 'What does "Israel" mean in Hebrew?',
+                options: [
+                    'The Jewish people',
+                    'One who struggles/wrestles with God (Divine)',
+                    'The promised land',
+                    'A country in the Middle East'
+                ],
+                correct: 1,
+                explanation: 'Israel (יִשְׂרָאֵל) comes from "Yisra" (to struggle/wrestle) + "El" (God), meaning "one who struggles with the Divine" or "God prevails". It was the name given to Jacob after wrestling with the divine messenger. Symbolically, Israel represents anyone who wrestles with divine truth, seeks divine understanding, and strives to align with higher consciousness - not limited to ethnicity or geography.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'hard',
+                question: 'What is the Tetragrammaton and why is it significant?',
+                options: [
+                    'A geometric shape',
+                    'The four-letter sacred name of the Divine: YHWH (יהוה)',
+                    'The four gospels',
+                    'A type of angel'
+                ],
+                correct: 1,
+                explanation: 'The Tetragrammaton is YHWH (יהוה) - the four-letter sacred name of the Divine, considered too holy to pronounce. It is often rendered as "Yahweh", "Yahuah", or "Jehovah" (incorrect). The letters Yod-Heh-Vav-Heh represent the eternal, self-existent nature of the Divine: "I AM that I AM" (Ehyeh Asher Ehyeh). This name contains the past, present, and future tenses of "to be" - revealing the timeless, infinite nature of the Creator.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'medium',
+                question: 'What is the significance of the number 7 in Hebrew cosmology?',
+                options: [
+                    'It is lucky',
+                    'It represents completion, wholeness, and divine perfection (Shabbat on 7th day)',
+                    'It is a random number',
+                    'It represents evil'
+                ],
+                correct: 1,
+                explanation: 'Seven (שֶׁבַע - Sheva) represents divine completion and perfection in Hebrew thought. Creation took 7 days (6 + 1 day of rest). The word "sheva" is related to "shava" (to swear/oath) and "sova" (fullness/satisfaction). The 7th day (Shabbat) is holy - a day of rest, reflection, and divine alignment. Seven appears throughout scripture: 7 heavens, 7 seals, 7 spirits, 7 chakras - all representing wholeness and cosmic order.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'hard',
+                question: 'What is the difference between "Elohim" and "YHWH" in Hebrew scripture?',
+                options: [
+                    'They are the same thing',
+                    'Elohim is plural (gods/divine council) used for creative power; YHWH is the personal name of the Most High',
+                    'Elohim is a demon',
+                    'YHWH is a Greek translation'
+                ],
+                correct: 1,
+                explanation: 'Elohim (אֱלֹהִים) is grammatically plural ("gods" or "divine beings"), yet often used with singular verbs - suggesting divine unity within multiplicity (divine council/aspects of one God). YHWH (יהוה) is the personal, sacred name of the Most High - the singular, eternal Divine. Genesis uses both: "Elohim" for creative acts (God said/created) and "YHWH" for personal relationship. This reveals both the cosmic creative force and the intimate personal Divine.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'medium',
+                question: 'What is the Hebrew concept of "Shekinah"?',
+                options: [
+                    'An angel',
+                    'The feminine presence/dwelling of the Divine (God\'s presence on Earth)',
+                    'A temple',
+                    'A type of sacrifice'
+                ],
+                correct: 1,
+                explanation: 'Shekinah (שְׁכִינָה) means "dwelling" or "presence" - specifically the feminine aspect of the Divine that dwells among humanity. In Kabbalah, Shekinah represents the Divine Feminine, the immanent presence of God in the world (vs transcendent). She is the Holy Spirit, divine wisdom (Sophia), the compassionate mother aspect of the Most High. The Shekinah reveals that the Divine has both masculine and feminine expressions.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'easy',
+                question: 'What language did Yeshua (Jesus) speak?',
+                options: [
+                    'English',
+                    'Greek',
+                    'Aramaic and Hebrew',
+                    'Latin'
+                ],
+                correct: 2,
+                explanation: 'Yeshua spoke Aramaic (the common language of first-century Judea) and Hebrew (the sacred language of scripture and temple). He did NOT speak Greek or Latin fluently. This is critical: the "New Testament" was written in Greek for a Gentile audience, meaning Yeshua\'s actual words were translated and filtered through Greek language, culture, and philosophy - potentially losing original Hebraic meaning and context.'
             }
         ];
 
@@ -620,15 +878,21 @@ class EnhancedDailyTriviaSystem {
             const shuffled = this.seededShuffle([...this.questionBank], seed);
             this.log(`Shuffled ${shuffled.length} questions`);
 
-            // Select 3 questions with varying difficulty
-            const easy = shuffled.find(q => q.difficulty === 'easy') || shuffled[0];
-            const medium = shuffled.find(q => q.difficulty === 'medium') || shuffled[1];
-            const hard = shuffled.find(q => q.difficulty === 'hard') || shuffled[2];
+            // Select 5 questions with varying difficulty for deeper daily teaching
+            const easyQuestions = shuffled.filter(q => q.difficulty === 'easy');
+            const mediumQuestions = shuffled.filter(q => q.difficulty === 'medium');
+            const hardQuestions = shuffled.filter(q => q.difficulty === 'hard');
 
-            this.todaysQuestions = [easy, medium, hard].filter(Boolean);
+            this.todaysQuestions = [
+                easyQuestions[0] || shuffled[0],
+                easyQuestions[1] || shuffled[1],
+                mediumQuestions[0] || shuffled[2],
+                mediumQuestions[1] || shuffled[3],
+                hardQuestions[0] || shuffled[4]
+            ].filter(Boolean);
 
-            // Ensure we have 3 questions
-            while (this.todaysQuestions.length < 3 && shuffled.length > this.todaysQuestions.length) {
+            // Ensure we have 5 questions
+            while (this.todaysQuestions.length < 5 && shuffled.length > this.todaysQuestions.length) {
                 const nextQ = shuffled[this.todaysQuestions.length];
                 if (nextQ && !this.todaysQuestions.includes(nextQ)) {
                     this.todaysQuestions.push(nextQ);
@@ -711,7 +975,7 @@ class EnhancedDailyTriviaSystem {
         this.audioSystem?.playSound('questionReveal');
 
         // Update question header
-        document.getElementById('questionNumber').textContent = `Question ${questionNum}/3`;
+        document.getElementById('questionNumber').textContent = `Question ${questionNum}/5`;
         document.getElementById('difficultyBadge').textContent = question.difficulty.toUpperCase();
         document.getElementById('difficultyBadge').className = `difficulty-badge difficulty-${question.difficulty}`;
 
@@ -959,7 +1223,7 @@ class EnhancedDailyTriviaSystem {
             try {
                 await window.progressSystem.awardXP(
                     this.score,
-                    `Daily Trivia (${this.correctAnswers}/3 correct)`,
+                    `Daily Trivia (${this.correctAnswers}/5 correct)`,
                     'daily-trivia'
                 );
                 this.log('XP awarded to progress system');
@@ -1270,7 +1534,7 @@ function shareResults() {
     trivia.audioSystem?.playSound('click');
 
     const score = trivia.correctAnswers;
-    const total = 3;
+    const total = 5;
     const streak = trivia.triviaData?.currentStreak || 0;
 
     const text = `🎯 Daily Spiritual Trivia\n\nScore: ${score}/${total}\n🔥 ${streak} Day Streak\n\nJoin me on the spiritual journey! 🌟`;
