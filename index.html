@@ -453,6 +453,441 @@
             </div>
         </div>
     </section>
+
+    <!-- Game Promo Popup -->
+    <div id="gamePromoPopup" class="game-popup-overlay" style="display: none;">
+        <div class="game-popup-container">
+            <button class="popup-close" onclick="closeGamePopup()">&times;</button>
+
+            <div class="popup-header">
+                <div class="popup-icon">🎮</div>
+                <h3>Experience Interactive Spiritual Growth!</h3>
+                <p>Test your knowledge and memory with our engaging games</p>
+            </div>
+
+            <div class="popup-games">
+                <div class="popup-game-card">
+                    <div class="game-emoji">🎯</div>
+                    <h4>Daily Spiritual Trivia</h4>
+                    <div class="game-comparison">
+                        <div class="free-tier">
+                            <span class="tier-badge">✨ FREE</span>
+                            <p>30 curated questions</p>
+                        </div>
+                        <div class="premium-tier">
+                            <span class="tier-badge premium">⭐ PREMIUM</span>
+                            <p>100+ questions across all topics</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="popup-game-card">
+                    <div class="game-emoji">🎴</div>
+                    <h4>Divine Memory Match</h4>
+                    <div class="game-comparison">
+                        <div class="free-tier">
+                            <span class="tier-badge">✨ FREE</span>
+                            <p>1 theme unlocked</p>
+                        </div>
+                        <div class="premium-tier">
+                            <span class="tier-badge premium">⭐ PREMIUM</span>
+                            <p>4 sacred themes unlocked</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="popup-cta">
+                <a href="login.html" class="popup-btn primary">🎮 Try Free Now</a>
+                <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00" class="popup-btn premium">⭐ Unlock All Games - $9.99/month</a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .game-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .game-popup-container {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(245, 158, 11, 0.1));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            border-radius: 25px;
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.5s ease;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+            font-size: 2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .popup-close:hover {
+            background: rgba(245, 158, 11, 0.3);
+            border-color: var(--accent-gold);
+            transform: rotate(90deg);
+        }
+
+        .popup-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .popup-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .popup-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .popup-header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .popup-games {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .popup-game-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+        }
+
+        .game-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .popup-game-card h4 {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .game-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .free-tier, .premium-tier {
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 10px;
+        }
+
+        .free-tier {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .premium-tier {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .tier-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            margin-bottom: 0.5rem;
+            background: rgba(139, 92, 246, 0.3);
+            color: #A78BFA;
+        }
+
+        .tier-badge.premium {
+            background: rgba(245, 158, 11, 0.3);
+            color: var(--accent-gold);
+        }
+
+        .game-comparison p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .popup-cta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .popup-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .popup-btn.primary {
+            background: rgba(139, 92, 246, 0.2);
+            border: 2px solid var(--accent-purple);
+            color: #A78BFA;
+        }
+
+        .popup-btn.primary:hover {
+            background: var(--accent-purple);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+        }
+
+        .popup-btn.premium {
+            background: linear-gradient(135deg, var(--accent-gold), #FBBF24);
+            color: var(--bg-primary);
+            border: none;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .popup-btn.premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .game-popup-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .popup-header h3 {
+                font-size: 1.5rem;
+            }
+
+            .game-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .popup-cta {
+                flex-direction: column;
+            }
+
+            .popup-btn {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <script>
+        // Time-based messaging for popup
+        function getTimeBasedMessage() {
+            const hour = new Date().getHours();
+
+            if (hour >= 5 && hour < 12) {
+                // Morning (5am - 12pm)
+                return {
+                    icon: '🌅',
+                    heading: 'Start Your Day with Spiritual Growth!',
+                    subheading: 'Begin your morning with divine wisdom and mindful practice',
+                    timeOfDay: 'morning'
+                };
+            } else if (hour >= 12 && hour < 17) {
+                // Afternoon (12pm - 5pm)
+                return {
+                    icon: '☀️',
+                    heading: 'Take a Mindful Afternoon Break!',
+                    subheading: 'Refresh your mind with spiritual games and sacred knowledge',
+                    timeOfDay: 'afternoon'
+                };
+            } else if (hour >= 17 && hour < 21) {
+                // Evening (5pm - 9pm)
+                return {
+                    icon: '🌆',
+                    heading: 'Unwind with Divine Wisdom!',
+                    subheading: 'End your day with peaceful reflection and spiritual practice',
+                    timeOfDay: 'evening'
+                };
+            } else {
+                // Night (9pm - 5am)
+                return {
+                    icon: '🌙',
+                    heading: 'Reflect on Your Spiritual Journey!',
+                    subheading: 'Deepen your consciousness before rest with sacred teachings',
+                    timeOfDay: 'night'
+                };
+            }
+        }
+
+        // Game Popup Logic
+        function showGamePopup() {
+            const popup = document.getElementById('gamePromoPopup');
+            if (popup) {
+                // Get time-based message
+                const message = getTimeBasedMessage();
+
+                // Update popup content
+                const iconElement = popup.querySelector('.popup-icon');
+                const headingElement = popup.querySelector('.popup-header h3');
+                const subheadingElement = popup.querySelector('.popup-header p');
+
+                if (iconElement) iconElement.textContent = message.icon;
+                if (headingElement) headingElement.textContent = message.heading;
+                if (subheadingElement) subheadingElement.textContent = message.subheading;
+
+                popup.style.display = 'flex';
+
+                // Track analytics if available
+                if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
+                    window.FirebaseConfig.analytics.trackEvent('game_popup_shown', {
+                        page: 'home',
+                        time_of_day: message.timeOfDay,
+                        hour: new Date().getHours()
+                    });
+                }
+
+                console.log(`🎮 Game popup shown: ${message.timeOfDay} (${message.icon})`);
+            }
+        }
+
+        function closeGamePopup() {
+            const popup = document.getElementById('gamePromoPopup');
+            if (popup) {
+                popup.style.display = 'none';
+                // Store dismissal time in localStorage
+                localStorage.setItem('gamePopupDismissed', Date.now().toString());
+                // Track dismissal
+                if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
+                    window.FirebaseConfig.analytics.trackEvent('game_popup_dismissed', {
+                        page: 'home'
+                    });
+                }
+            }
+        }
+
+        // Close popup when clicking outside
+        document.addEventListener('click', function(event) {
+            const popup = document.getElementById('gamePromoPopup');
+            if (popup && event.target === popup) {
+                closeGamePopup();
+            }
+        });
+
+        // Popup timing logic
+        window.addEventListener('load', function() {
+            // Check if popup was recently dismissed (within last 24 hours)
+            const lastDismissed = localStorage.getItem('gamePopupDismissed');
+            const now = Date.now();
+            const oneDayInMs = 24 * 60 * 60 * 1000;
+
+            if (lastDismissed && (now - parseInt(lastDismissed)) < oneDayInMs) {
+                // Don't show popup if dismissed within last 24 hours
+                console.log('🎮 Game popup: Dismissed recently, skipping');
+                return;
+            }
+
+            // Show first popup after 30 seconds
+            setTimeout(function() {
+                showGamePopup();
+            }, 30000); // 30 seconds
+
+            // Show popup again every 3 minutes if still on page
+            setInterval(function() {
+                const lastDismissed = localStorage.getItem('gamePopupDismissed');
+                const now = Date.now();
+                const fiveMinutesInMs = 5 * 60 * 1000;
+
+                // Only show if not dismissed in last 5 minutes
+                if (!lastDismissed || (now - parseInt(lastDismissed)) > fiveMinutesInMs) {
+                    showGamePopup();
+                }
+            }, 180000); // 3 minutes
+
+            console.log('🎮 Game popup: Initialized - Will show after 30 seconds');
+        });
+
+        // Scroll-triggered popup (show after scrolling 50% down the page once)
+        let scrollTriggered = false;
+        window.addEventListener('scroll', function() {
+            if (scrollTriggered) return;
+
+            const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+
+            if (scrollPercent > 50) {
+                scrollTriggered = true;
+
+                // Check if popup was recently dismissed
+                const lastDismissed = localStorage.getItem('gamePopupDismissed');
+                const now = Date.now();
+                const fiveMinutesInMs = 5 * 60 * 1000;
+
+                if (!lastDismissed || (now - parseInt(lastDismissed)) > fiveMinutesInMs) {
+                    // Wait 2 seconds after scroll trigger
+                    setTimeout(showGamePopup, 2000);
+                }
+            }
+        });
+    </script>
     </main>
 
     <!-- Footer -->
@@ -461,10 +896,12 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>Products</h3>
-                    <a href="https://square.link/u/A953t7Hr">Digital Book</a>
-                    <a href="https://square.link/u/iBLVYLEQ">Audiobook</a>
-                    <a href="https://square.link/u/7K4TPYQt">Complete Bundle</a>
-                    <a href="https://square.link/u/7wKyFAHg">Workbook</a>
+                    <a href="https://buy.stripe.com/9B65kEf27f3r2VoaOBfjG01">Digital Book ($4.99)</a>
+                    <a href="https://buy.stripe.com/9B6fZif278F37bEaOBfjG03">Paperback ($25)</a>
+                    <a href="https://buy.stripe.com/dRmfZig6b1cB67A2i5fjG02">Hardback ($54)</a>
+                    <a href="https://buy.stripe.com/aFa4gA3jp5sRgMe9KxfjG04">Audiobook ($17)</a>
+                    <a href="https://buy.stripe.com/6oUbJ27zF4oN2Vo1e1fjG05">A.S.K Guide 1 ($24)</a>
+                    <a href="https://buy.stripe.com/7sY7sMdY3dZneE6g8VfjG06">A.S.K Guide 2 ($37)</a>
                 </div>
                 <div class="footer-section">
                     <h3>Temple Access</h3>
