@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Spiritual Trivia - Free Edition - Divine Temple</title>
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="../manifest-trivia-free.json">
+    <meta name="theme-color" content="#d4af37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Consciousness Trivia Free">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <!-- Firebase SDKs -->
@@ -44,6 +51,105 @@
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
+        }
+
+        /* PWA Install Banner Styles */
+        .install-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            padding: 1rem;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .install-banner.show {
+            transform: translateY(0);
+        }
+
+        .install-banner-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .install-icon {
+            font-size: 1.5rem;
+        }
+
+        .install-text h4 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .install-text p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .install-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .install-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .dismiss-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .dismiss-btn:hover {
+            opacity: 1;
+        }
+
+        .manual-install-btn {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 999;
+            background: var(--primary-gold);
+            border: none;
+            color: var(--dark-bg);
+            padding: 0.75rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .manual-install-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .manual-install-btn:active {
+            transform: translateY(0);
         }
 
         body::before {
@@ -425,11 +531,29 @@
     </style>
 </head>
 <body>
+    <!-- PWA Install Banner -->
+    <div id="installBanner" class="install-banner" style="display: none;">
+        <div class="install-banner-content">
+            <div class="install-icon">📱</div>
+            <div class="install-text">
+                <h4>Install Consciousness Trivia</h4>
+                <p>Get offline access and native app experience</p>
+            </div>
+            <button id="installBtn" class="install-btn">Install App</button>
+            <button id="dismissInstall" class="dismiss-btn">✕</button>
+        </div>
+    </div>
+
     <div class="trivia-container">
         <a href="../free-dashboard.html" class="back-btn">
             <span>←</span>
             <span>Back to Dashboard</span>
         </a>
+        
+        <!-- PWA Manual Install Button -->
+        <button id="manualInstallBtn" class="manual-install-btn" onclick="window.pwaHandler && window.pwaHandler.installApp()" title="Install as PWA">
+            📱 Install App
+        </button>
 
         <div class="trivia-header">
             <div class="free-edition-badge">
@@ -578,6 +702,9 @@
     <!-- Enhanced trivia system with FREE TIER limitations -->
     <script src="../js/trivia-audio-system.js"></script>
     <script src="../js/daily-trivia-FREE-VERSION.js"></script>
+    
+    <!-- PWA Service Worker -->
+    <script src="../js/pwa-handler.js"></script>
 
     <script>
         // Show upgrade modal after completing free trivia
@@ -593,6 +720,22 @@
         document.getElementById('upgradeModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeUpgradeModal();
+            }
+        });
+
+        // Initialize PWA functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show manual install button if PWA not installed
+            const manualBtn = document.getElementById('manualInstallBtn');
+            if (manualBtn) {
+                // Hide if already installed
+                if (window.matchMedia('(display-mode: standalone)').matches) {
+                    manualBtn.style.display = 'none';
+                }
+                // Hide if not supported
+                if (!('serviceWorker' in navigator)) {
+                    manualBtn.style.display = 'none';
+                }
             }
         });
     </script>

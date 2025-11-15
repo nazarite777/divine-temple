@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Divine Temple - Sacred Members Portal</title>
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#d4af37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Divine Temple">
+    <link rel="apple-touch-icon" href="images/icons/icon-192.png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <!-- Firebase SDKs -->
@@ -530,9 +538,51 @@
                 height: calc(100vh - 120px);
             }
         }
+        /* PWA Install Button */
+        .pwa-install-btn {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 10000;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .pwa-install-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .pwa-install-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .pwa-install-btn {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 1rem auto;
+                display: block;
+                width: fit-content;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- PWA Install Button -->
+    <button id="pwaInstallBtn" class="pwa-install-btn" onclick="installPWA()" title="Install Divine Temple App">
+        🏛️ Install App
+    </button>
+
     <!-- Auth Overlay -->
     <div id="auth-overlay" class="auth-overlay">
         <div class="auth-container">
@@ -2201,6 +2251,103 @@
                 }, 1000);
             }
         });
+    </script>
+    
+    <!-- PWA Installation Script -->
+    <script>
+        let deferredPrompt;
+        
+        // PWA Setup for Members Portal
+        document.addEventListener('DOMContentLoaded', function() {
+            // Register service worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('🏛️ Members Portal SW registered:', registration);
+                    })
+                    .catch(error => {
+                        console.error('❌ SW registration failed:', error);
+                    });
+            }
+            
+            setupMembersPWA();
+        });
+        
+        function setupMembersPWA() {
+            const installBtn = document.getElementById('pwaInstallBtn');
+            
+            // Hide install button if already installed
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                if (installBtn) installBtn.style.display = 'none';
+            }
+            
+            // Listen for beforeinstallprompt
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                console.log('📱 Install prompt available in members portal');
+            });
+            
+            // Listen for app installed
+            window.addEventListener('appinstalled', () => {
+                console.log('🎉 Divine Temple PWA installed from members portal');
+                if (installBtn) installBtn.style.display = 'none';
+                
+                // Show success notification using existing system
+                if (window.uxEnhancementManager) {
+                    window.uxEnhancementManager.showNotification(
+                        '✅ Divine Temple installed successfully! Access from your home screen.',
+                        'success',
+                        5000
+                    );
+                }
+            });
+        }
+        
+        async function installPWA() {
+            if (!deferredPrompt) {
+                // Show instruction notification
+                if (window.uxEnhancementManager) {
+                    window.uxEnhancementManager.showNotification(
+                        '📱 To install: Use your browser menu → "Install app" or "Add to Home Screen"',
+                        'info',
+                        6000
+                    );
+                }
+                return;
+            }
+            
+            try {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                if (outcome === 'accepted') {
+                    console.log('✅ User accepted PWA install from members portal');
+                } else {
+                    console.log('❌ User dismissed PWA install from members portal');
+                }
+                
+                deferredPrompt = null;
+            } catch (error) {
+                console.error('❌ PWA install failed:', error);
+                if (window.uxEnhancementManager) {
+                    window.uxEnhancementManager.showNotification(
+                        '❌ Installation failed. Please try again.',
+                        'error',
+                        4000
+                    );
+                }
+            }
+        }
+        
+        // Check if running as PWA
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('🏛️ Members Portal running as installed PWA');
+            document.body.classList.add('pwa-mode');
+        }
+        
+        // Make functions globally available
+        window.installPWA = installPWA;
     </script>
 </body>
 </html>

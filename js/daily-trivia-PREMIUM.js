@@ -576,6 +576,144 @@ class PremiumTriviaSystem {
         this.loadUserProfile();
         this.displayDashboard();
         this.updateStats();
+        this.initPWAFeatures();
+    }
+
+    // PWA-specific initialization
+    initPWAFeatures() {
+        // Listen for PWA messages from service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                this.handleServiceWorkerMessage(event.data);
+            });
+        }
+
+        // Handle URL parameters for PWA shortcuts
+        this.handlePWAShortcuts();
+        
+        // Setup offline data persistence
+        this.setupOfflineCapabilities();
+        
+        // Enable background sync registration
+        this.setupBackgroundSync();
+    }
+
+    // Handle messages from service worker
+    handleServiceWorkerMessage(data) {
+        switch (data.type) {
+            case 'SYNC_SUCCESS':
+                this.showSyncNotification('Progress synced successfully!');
+                break;
+            case 'NOTIFICATION_ACTION':
+                this.handleNotificationAction(data.action);
+                break;
+            default:
+                console.log('Unhandled service worker message:', data);
+        }
+    }
+
+    // Handle PWA shortcut actions
+    handlePWAShortcuts() {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams.get('mode') === 'quick') {
+            // Start quick quiz from shortcut
+            this.selectedDifficulty = 'mixed';
+            this.selectedCategory = 'mixed';
+            setTimeout(() => this.startQuiz(), 500);
+        } else if (urlParams.get('mode') === 'study') {
+            // Enter study mode from shortcut
+            setTimeout(() => this.enterStudyMode(), 500);
+        } else if (urlParams.get('view') === 'leaderboard') {
+            // Show leaderboard from shortcut
+            setTimeout(() => this.showLeaderboard(), 500);
+        }
+    }
+
+    // Handle notification actions
+    handleNotificationAction(action) {
+        switch (action) {
+            case 'start-quiz':
+                this.startQuiz();
+                break;
+            case 'view-leaderboard':
+                this.showLeaderboard();
+                break;
+        }
+    }
+
+    // Setup offline data capabilities
+    setupOfflineCapabilities() {
+        // Override save functions to work offline
+        this.originalSaveUserStats = this.saveUserStats;
+        this.saveUserStats = () => {
+            // Always save locally
+            this.originalSaveUserStats();
+            
+            // Queue for sync when online
+            if (!navigator.onLine) {
+                this.queueOfflineData('userStats', this.userStats);
+            }
+        };
+
+        // Cache question data for offline use
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+                type: 'CACHE_TRIVIA_DATA',
+                url: '/api/trivia-questions',
+                payload: this.premiumQuestions
+            });
+        }
+    }
+
+    // Setup background sync for offline actions
+    setupBackgroundSync() {
+        if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
+            // Register for background sync when going offline
+            window.addEventListener('offline', () => {
+                navigator.serviceWorker.ready.then(registration => {
+                    return registration.sync.register('sync-trivia-progress');
+                }).catch(error => {
+                    console.error('Background sync registration failed:', error);
+                });
+            });
+        }
+    }
+
+    // Queue data for offline sync
+    queueOfflineData(type, data) {
+        const offlineQueue = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
+        offlineQueue.push({
+            type: type,
+            data: data,
+            timestamp: Date.now()
+        });
+        localStorage.setItem('offlineQueue', JSON.stringify(offlineQueue));
+    }
+
+    // Show sync notification
+    showSyncNotification(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            font-weight: 600;
+            z-index: 5000;
+            animation: slideInRight 0.3s ease-out;
+        `;
+        notification.textContent = `✅ ${message}`;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOutRight 0.3s ease-in';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
     }
 
     // Load user statistics and progress

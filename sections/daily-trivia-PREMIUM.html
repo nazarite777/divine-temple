@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Premium Consciousness Trivia - Divine Temple</title>
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="../manifest-trivia.json">
+    <meta name="theme-color" content="#d4af37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Consciousness Trivia">
+    <link rel="apple-touch-icon" href="../images/icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../images/icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../images/icons/icon-512.png">
+    
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -37,6 +48,105 @@
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+        }
+
+        /* PWA Install Banner Styles */
+        .install-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            padding: 1rem;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .install-banner.show {
+            transform: translateY(0);
+        }
+
+        .install-banner-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .install-icon {
+            font-size: 1.5rem;
+        }
+
+        .install-text h4 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .install-text p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .install-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .install-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .dismiss-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .dismiss-btn:hover {
+            opacity: 1;
+        }
+
+        .manual-install-btn {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 999;
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .manual-install-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .manual-install-btn:active {
+            transform: translateY(0);
         }
 
         /* Animated Background */
@@ -1183,6 +1293,176 @@
             line-height: 1.6;
         }
 
+        /* PWA Install Banner */
+        .install-banner {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.9), rgba(245, 158, 11, 0.9));
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--primary-gold);
+            border-radius: 20px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            position: sticky;
+            top: 1rem;
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .install-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: white;
+        }
+
+        .install-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .install-text {
+            flex: 1;
+        }
+
+        .install-text strong {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .install-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .install-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .install-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .install-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .dismiss-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .dismiss-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* Offline Indicator */
+        .offline-indicator {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        /* PWA Status Indicator */
+        .pwa-status {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            z-index: 1001;
+        }
+
+        .pwa-status.online {
+            border-color: var(--success-green);
+            color: var(--success-green);
+        }
+
+        .pwa-status.offline {
+            border-color: var(--error-red);
+            color: var(--error-red);
+        }
+
+        /* App-like Header for PWA */
+        .pwa-header {
+            display: none;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        @media (display-mode: standalone) {
+            .pwa-header {
+                display: flex;
+            }
+            
+            .back-btn {
+                display: none;
+            }
+        }
+
+        .pwa-title {
+            font-weight: 600;
+            color: var(--primary-gold);
+        }
+
+        .pwa-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .pwa-btn {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pwa-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
         /* Additional Action Buttons */
         .additional-actions {
             display: flex;
@@ -1207,6 +1487,81 @@
             transform: translateY(-2px);
         }
 
+        /* PWA Animations */
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* PWA Loading Screen */
+        .pwa-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .pwa-loading-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        .pwa-loading-text {
+            color: var(--primary-gold);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* App Store Badge Styles */
+        .app-badges {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .app-badge {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .app-badge:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* PWA Splash Screen Support */
+        @media (display-mode: standalone) {
+            body {
+                padding-top: env(safe-area-inset-top);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+            
+            .premium-container {
+                padding-top: calc(2rem + env(safe-area-inset-top));
+            }
+        }
+
         /* Responsive Design */
         @media (max-width: 1200px) {
             .dashboard-grid {
@@ -1217,6 +1572,21 @@
         @media (max-width: 768px) {
             .premium-container {
                 padding: 1rem;
+            }
+
+            .install-banner-content {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                text-align: center;
+            }
+
+            .manual-install-btn {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 1rem auto;
+                display: block;
+                width: fit-content;
             }
 
             .premium-title {
@@ -1255,6 +1625,19 @@
     </style>
 </head>
 <body>
+    <!-- PWA Install Banner -->
+    <div id="installBanner" class="install-banner" style="display: none;">
+        <div class="install-banner-content">
+            <div class="install-icon">📱</div>
+            <div class="install-text">
+                <h4>Install Consciousness Trivia</h4>
+                <p>Get offline access and native app experience</p>
+            </div>
+            <button id="installBtn" class="install-btn">Install App</button>
+            <button id="dismissInstall" class="dismiss-btn">✕</button>
+        </div>
+    </div>
+
     <div class="premium-container">
         <!-- Header -->
         <div class="premium-header">
@@ -1262,6 +1645,11 @@
                 <span>←</span>
                 <span>Back to Members Portal</span>
             </a>
+            
+            <!-- PWA Manual Install Button -->
+            <button id="manualInstallBtn" class="manual-install-btn" onclick="window.pwaHandler && window.pwaHandler.installApp()" title="Install as PWA">
+                📱 Install App
+            </button>
             
             <div class="premium-badge">
                 <span>💎</span>
@@ -1428,6 +1816,9 @@
 
     <!-- JavaScript -->
     <script type="module" src="../js/daily-trivia-PREMIUM.js"></script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script src="../js/pwa-handler.js"></script>
     
     <script>
         // Additional UI functionality
