@@ -229,6 +229,7 @@
                     <div class="hero-cta">
                         <a href="login.html" class="btn btn-primary">✨ Start Free Access</a>
                         <a href="books.html" class="btn btn-secondary">Explore Books</a>
+                        <button id="heroInstallBtn" class="btn btn-install" style="display: none;">📱 Install App</button>
                     </div>
                     <p style="margin-top: 1rem; font-size: 0.95rem; color: var(--text-secondary);">
                         Try the Enochian Calendar free, then unlock premium features
@@ -475,6 +476,30 @@
     </div>
 
     <style>
+        .btn-install {
+            background: linear-gradient(135deg, #8B5CF6, #D946EF) !important;
+            color: white !important;
+            border: 2px solid rgba(139, 92, 246, 0.5) !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .btn-install:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+            border-color: rgba(217, 70, 239, 0.8) !important;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(217, 70, 239, 0.5);
+            }
+        }
+
         .game-flash-notification {
             position: fixed;
             right: -400px;
@@ -849,6 +874,7 @@
         const installBanner = document.getElementById('pwaInstallBanner');
         const installBtn = document.getElementById('pwaInstallBtn');
         const closeBanner = document.getElementById('pwaCloseBanner');
+        const heroInstallBtn = document.getElementById('heroInstallBtn');
 
         // Check if user has previously dismissed the banner
         const installDismissed = localStorage.getItem('pwaInstallDismissed');
@@ -860,6 +886,11 @@
             e.preventDefault();
             // Stash the event so it can be triggered later
             deferredPrompt = e;
+
+            // Show the hero install button
+            if (heroInstallBtn) {
+                heroInstallBtn.style.display = 'inline-block';
+            }
 
             // Only show banner if not dismissed recently
             if (!installDismissed || (Date.now() - dismissTime) > sevenDaysInMs) {
@@ -916,12 +947,50 @@
             });
         }
 
+        // Hero Install Button
+        if (heroInstallBtn) {
+            heroInstallBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) {
+                    console.log('No install prompt available');
+                    return;
+                }
+
+                // Show the install prompt
+                deferredPrompt.prompt();
+
+                // Wait for the user to respond to the prompt
+                const { outcome } = await deferredPrompt.userChoice;
+
+                console.log(`User response to install prompt: ${outcome}`);
+
+                // Track analytics
+                if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
+                    window.FirebaseConfig.analytics.trackEvent('pwa_install_prompt', {
+                        outcome: outcome,
+                        source: 'hero_button'
+                    });
+                }
+
+                // Clear the deferred prompt
+                deferredPrompt = null;
+
+                // Hide the buttons
+                heroInstallBtn.style.display = 'none';
+                if (installBanner) {
+                    installBanner.style.display = 'none';
+                }
+            });
+        }
+
         // Detect when PWA is successfully installed
         window.addEventListener('appinstalled', () => {
             console.log('🎉 Eden Temple PWA installed successfully!');
-            // Hide the banner
+            // Hide the buttons
             if (installBanner) {
                 installBanner.style.display = 'none';
+            }
+            if (heroInstallBtn) {
+                heroInstallBtn.style.display = 'none';
             }
             // Track installation
             if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
