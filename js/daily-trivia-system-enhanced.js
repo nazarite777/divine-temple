@@ -27,9 +27,9 @@ class EnhancedDailyTriviaSystem {
         // Audio system
         this.audioSystem = null;
 
-        // Question Database - Expanded for better variety
+        // Question Database - Freemium Edition (30 High-Quality Questions)
         this.questionBank = [
-            // ========== CHAKRAS & ENERGY (15 questions) ==========
+            // ========== CHAKRAS & ENERGY (6 questions) ==========
             {
                 category: 'Chakras & Energy',
                 difficulty: 'easy',
@@ -37,14 +37,6 @@ class EnhancedDailyTriviaSystem {
                 options: ['Red', 'Orange', 'Yellow', 'Green'],
                 correct: 0,
                 explanation: 'The Root Chakra (Muladhara) is associated with red, representing grounding, survival, and connection to the earth.'
-            },
-            {
-                category: 'Chakras & Energy',
-                difficulty: 'easy',
-                question: 'Which chakra is located at the crown of the head?',
-                options: ['Third Eye', 'Throat', 'Crown', 'Heart'],
-                correct: 2,
-                explanation: 'The Crown Chakra (Sahasrara) is located at the top of the head and represents spiritual connection and enlightenment.'
             },
             {
                 category: 'Chakras & Energy',
@@ -72,14 +64,6 @@ class EnhancedDailyTriviaSystem {
             },
             {
                 category: 'Chakras & Energy',
-                difficulty: 'easy',
-                question: 'What element is associated with the Throat Chakra?',
-                options: ['Fire', 'Water', 'Air', 'Ether/Space'],
-                correct: 3,
-                explanation: 'The Throat Chakra (Vishuddha) is associated with the element of Ether or Space, representing communication and expression.'
-            },
-            {
-                category: 'Chakras & Energy',
                 difficulty: 'medium',
                 question: 'Which chakra is blocked when you experience fear and insecurity?',
                 options: ['Root Chakra', 'Heart Chakra', 'Crown Chakra', 'Third Eye'],
@@ -95,7 +79,7 @@ class EnhancedDailyTriviaSystem {
                 explanation: 'OM (or AUM) is the bija mantra for the Third Eye Chakra (Ajna), representing cosmic consciousness and intuition.'
             },
 
-            // ========== TAROT & ORACLE (12 questions) ==========
+            // ========== TAROT & ORACLE (3 questions) ==========
             {
                 category: 'Tarot & Oracle',
                 difficulty: 'easy',
@@ -120,16 +104,8 @@ class EnhancedDailyTriviaSystem {
                 correct: 1,
                 explanation: 'The Death card rarely means literal death; it symbolizes transformation, endings, and new beginnings.'
             },
-            {
-                category: 'Tarot & Oracle',
-                difficulty: 'medium',
-                question: 'Which suit represents the element of Water?',
-                options: ['Wands', 'Cups', 'Swords', 'Pentacles'],
-                correct: 1,
-                explanation: 'Cups represent the element of Water and govern emotions, relationships, intuition, and creativity.'
-            },
 
-            // ========== CRYSTALS & GEMSTONES (10 questions) ==========
+            // ========== CRYSTALS & GEMSTONES (3 questions) ==========
             {
                 category: 'Crystals & Gemstones',
                 difficulty: 'easy',
@@ -148,14 +124,6 @@ class EnhancedDailyTriviaSystem {
             },
             {
                 category: 'Crystals & Gemstones',
-                difficulty: 'medium',
-                question: 'What is the primary chakra associated with Amethyst?',
-                options: ['Root', 'Heart', 'Third Eye', 'Solar Plexus'],
-                correct: 2,
-                explanation: 'Amethyst resonates with the Third Eye and Crown chakras, enhancing intuition and spiritual awareness.'
-            },
-            {
-                category: 'Crystals & Gemstones',
                 difficulty: 'easy',
                 question: 'Which crystal is associated with abundance and prosperity?',
                 options: ['Citrine', 'Turquoise', 'Jade', 'Carnelian'],
@@ -163,7 +131,7 @@ class EnhancedDailyTriviaSystem {
                 explanation: 'Citrine is known as the "merchant\'s stone" and is associated with abundance, prosperity, and success.'
             },
 
-            // ========== MEDITATION & MINDFULNESS (10 questions) ==========
+            // ========== MEDITATION & MINDFULNESS (3 questions) ==========
             {
                 category: 'Meditation & Mindfulness',
                 difficulty: 'easy',
@@ -182,14 +150,6 @@ class EnhancedDailyTriviaSystem {
             },
             {
                 category: 'Meditation & Mindfulness',
-                difficulty: 'easy',
-                question: 'What is the recommended minimum time for daily meditation practice?',
-                options: ['1 minute', '5 minutes', '30 minutes', '1 hour'],
-                correct: 1,
-                explanation: 'While any meditation is beneficial, 5-10 minutes daily is a good starting point for beginners to build consistency.'
-            },
-            {
-                category: 'Meditation & Mindfulness',
                 difficulty: 'medium',
                 question: 'Which meditation technique involves repeating a word or phrase?',
                 options: ['Body scan', 'Mantra meditation', 'Walking meditation', 'Zen meditation'],
@@ -197,7 +157,7 @@ class EnhancedDailyTriviaSystem {
                 explanation: 'Mantra meditation involves repeating a sacred word, phrase, or sound to focus the mind and elevate consciousness.'
             },
 
-            // ========== MANTRAS & SOUND (8 questions) ==========
+            // ========== MANTRAS & SOUND (3 questions) ==========
             {
                 category: 'Mantras & Sound',
                 difficulty: 'easy',
@@ -222,29 +182,29 @@ class EnhancedDailyTriviaSystem {
                 correct: 2,
                 explanation: 'Mantra comes from "man" (mind) and "tra" (tool/instrument), meaning a tool to focus and elevate the mind.'
             },
-            {
-                category: 'Mantras & Sound',
-                difficulty: 'easy',
-                question: 'What is binaural beats meditation?',
-                options: ['Singing', 'Two different frequencies in each ear', 'Drumming', 'Chanting'],
-                correct: 1,
-                explanation: 'Binaural beats occur when two slightly different frequencies are played in each ear, creating a perceived third frequency that can alter brainwave states.'
-            },
 
-            // ========== BIBLICAL TRUTH & ETYMOLOGY (20 questions) ==========
+            // ========== BIBLICAL TRUTH & ETYMOLOGY (12 questions) ==========
             // Deep teachings on mistranslations, etymology, and hidden truths
             {
                 category: 'Biblical Truth & Etymology',
-                difficulty: 'medium',
-                question: 'What is the difference between "Christ Jesus" and "Jesus Christ"?',
+                difficulty: 'easy',
+                question: 'What does "Christ" actually mean?',
                 options: [
-                    'They mean the same thing',
-                    'Christ Jesus = Divine consciousness inhabiting the man; Jesus Christ = The man claiming divinity',
-                    'One is Greek, one is Hebrew',
-                    'They are different people'
+                    'Jesus\' last name',
+                    'A title meaning "anointed one" or "awakened consciousness"',
+                    'The name of a deity',
+                    'A Greek god'
                 ],
                 correct: 1,
-                explanation: '"Christ Jesus" refers to the Christ consciousness (divine awareness) dwelling within the man Yeshua. "Jesus Christ" reverses this, making it about the man claiming to be Christ. The order matters - it shows whether we recognize the divine principle first or the human vessel first.'
+                explanation: 'Christ comes from the Greek "Christos" (Χριστός), translating the Hebrew "Mashiach" (Messiah), meaning "anointed one". It is a title, not a name - referring to one who has been anointed with divine purpose and awakened consciousness. The Christ is the divine consciousness that can dwell in any vessel aligned with divine will.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'hard',
+                question: 'What is the original Hebrew name of the person called "Jesus"?',
+                options: ['Jesu', 'Iesous', 'Yeshua', 'Joshua'],
+                correct: 2,
+                explanation: 'His name was Yeshua (יֵשׁוּעַ) in Hebrew, meaning "Yah saves" or "Salvation of Yah". "Jesus" comes from the Greek "Iesous" (Ἰησοῦς), which was later Latinized to "Iesus" and eventually became "Jesus" in English. The name carries the divine name "Yah" within it, showing his purpose as a vessel of divine salvation.'
             },
             {
                 category: 'Biblical Truth & Etymology',
@@ -262,27 +222,6 @@ class EnhancedDailyTriviaSystem {
             {
                 category: 'Biblical Truth & Etymology',
                 difficulty: 'medium',
-                question: 'What was Joseph\'s (Yeshua\'s earthly father) defining characteristic according to Matthew 1:19?',
-                options: [
-                    'He was wealthy',
-                    'He was a carpenter',
-                    'He was a righteous man (tzaddik)',
-                    'He was a priest'
-                ],
-                correct: 2,
-                explanation: 'Joseph is called a "righteous man" (tzaddik in Hebrew, dikaios in Greek). This is significant - a truly righteous man would not have married Mary if he believed she was pregnant by another man or through sin. His righteousness confirms that Yeshua\'s birth, while special, was not based on the "virgin birth" mistranslation but on Joseph\'s righteous lineage and divine purpose.'
-            },
-            {
-                category: 'Biblical Truth & Etymology',
-                difficulty: 'hard',
-                question: 'What is the original Hebrew name of the person called "Jesus"?',
-                options: ['Jesu', 'Iesous', 'Yeshua', 'Joshua'],
-                correct: 2,
-                explanation: 'His name was Yeshua (יֵשׁוּעַ) in Hebrew, meaning "Yah saves" or "Salvation of Yah". "Jesus" comes from the Greek "Iesous" (Ἰησοῦς), which was later Latinized to "Iesus" and eventually became "Jesus" in English. The name carries the divine name "Yah" within it, showing his purpose as a vessel of divine salvation.'
-            },
-            {
-                category: 'Biblical Truth & Etymology',
-                difficulty: 'medium',
                 question: 'Why is understanding Greek vs Hebrew important in biblical interpretation?',
                 options: [
                     'Greek is more accurate than Hebrew',
@@ -292,19 +231,6 @@ class EnhancedDailyTriviaSystem {
                 ],
                 correct: 1,
                 explanation: 'The Hebrew scriptures (Tanakh/Old Testament) contain the original context, idioms, and cultural meanings. When translated to Greek (Septuagint), then Latin (Vulgate), then English, layers of interpretation and theological bias were added. Understanding Hebrew etymology reveals the original intent, such as "almah" vs "virgin", "Yeshua" vs "Jesus", and countless other examples where meaning was altered to fit doctrinal narratives.'
-            },
-            {
-                category: 'Biblical Truth & Etymology',
-                difficulty: 'easy',
-                question: 'What does "Christ" actually mean?',
-                options: [
-                    'Jesus\' last name',
-                    'A title meaning "anointed one" or "awakened consciousness"',
-                    'The name of a deity',
-                    'A Greek god'
-                ],
-                correct: 1,
-                explanation: 'Christ comes from the Greek "Christos" (Χριστός), translating the Hebrew "Mashiach" (Messiah), meaning "anointed one". It is a title, not a name - referring to one who has been anointed with divine purpose and awakened consciousness. The Christ is the divine consciousness that can dwell in any vessel aligned with divine will.'
             },
             {
                 category: 'Biblical Truth & Etymology',
@@ -334,45 +260,6 @@ class EnhancedDailyTriviaSystem {
             },
             {
                 category: 'Biblical Truth & Etymology',
-                difficulty: 'hard',
-                question: 'Which came first: the Hebrew scriptures or the Greek New Testament?',
-                options: [
-                    'They were written at the same time',
-                    'Greek New Testament came first',
-                    'Hebrew scriptures came first (Tanakh), Greek texts came 300-400 years later',
-                    'There is no Greek New Testament'
-                ],
-                correct: 2,
-                explanation: 'The Hebrew scriptures (Tanakh) were written between 1200 BCE - 200 BCE. The Greek New Testament was written 50-150 CE, centuries later. Yeshua (Jesus) spoke Aramaic and read Hebrew - not Greek. The "New Testament" was written in Greek for a Greco-Roman audience, often losing Hebrew context. Understanding the Hebrew foundation is essential to grasping the true teachings.'
-            },
-            {
-                category: 'Biblical Truth & Etymology',
-                difficulty: 'medium',
-                question: 'What does "Emmanuel/Immanuel" mean in Hebrew?',
-                options: [
-                    'King of Kings',
-                    'God with us',
-                    'Messiah',
-                    'Savior'
-                ],
-                correct: 1,
-                explanation: 'Emmanuel/Immanuel (עִמָּנוּאֵל) means "God with us" or "El with us" in Hebrew. It is NOT a name but a prophetic declaration - that divine presence (El/God) will be among the people. This is a statement of consciousness, not identity. The divine presence is always WITH us, not separate from us.'
-            },
-            {
-                category: 'Biblical Truth & Etymology',
-                difficulty: 'hard',
-                question: 'What is the Hebrew word for "spirit" and what does it reveal?',
-                options: [
-                    'Nephesh - soul/life force',
-                    'Ruach - wind/breath/spirit (feminine gender)',
-                    'Neshama - divine soul',
-                    'Kavod - glory'
-                ],
-                correct: 1,
-                explanation: 'Ruach (רוּחַ) means wind, breath, or spirit - and is FEMININE in Hebrew grammar. This reveals that the "Holy Spirit" (Ruach HaKodesh) carries divine feminine energy. Western theology masculinized the Trinity, but the Hebrew shows divine feminine presence. Spirit is the breath of life, the wind of change, the intuitive wisdom - all feminine expressions of the Divine.'
-            },
-            {
-                category: 'Biblical Truth & Etymology',
                 difficulty: 'medium',
                 question: 'What does "Yah" (as in Hallelu-Yah) mean?',
                 options: [
@@ -387,28 +274,15 @@ class EnhancedDailyTriviaSystem {
             {
                 category: 'Biblical Truth & Etymology',
                 difficulty: 'easy',
-                question: 'Were the original Hebrew scriptures written with vowels?',
+                question: 'What language did Yeshua (Jesus) speak?',
                 options: [
-                    'Yes, always had vowels',
-                    'No, ancient Hebrew was written with consonants only - vowels were added later',
-                    'Hebrew has no vowels',
-                    'Only the New Testament had vowels'
+                    'English',
+                    'Greek',
+                    'Aramaic and Hebrew',
+                    'Latin'
                 ],
-                correct: 1,
-                explanation: 'Ancient Hebrew was written with consonants only (abjad system). Vowel points (nikud) were added by the Masoretes between 600-900 CE to preserve pronunciation. This means YHWH\'s original pronunciation is debated - "Yahweh", "Yahuah", etc. The absence of vowels also allows multiple layers of meaning in each word, revealing divine wisdom through sacred geometry of letters.'
-            },
-            {
-                category: 'Biblical Truth & Etymology',
-                difficulty: 'hard',
-                question: 'What is the problem with the doctrine of "original sin" from a Hebrew perspective?',
-                options: [
-                    'There is no problem',
-                    'The Hebrew concept is "yetzer hara" (evil inclination), not inherited sin - each soul is pure at birth',
-                    'Adam and Eve never existed',
-                    'Original sin only applies to women'
-                ],
-                correct: 1,
-                explanation: 'Hebrew theology teaches that each soul is born pure (Ezekiel 18:20 - "the soul who sins shall die, the son shall not bear the guilt of the father"). The concept is "yetzer hara" (evil inclination) vs "yetzer hatov" (good inclination) - free will to choose. "Original sin" is a Christian doctrine (developed by Augustine) not found in Hebrew scripture. We are not born condemned - we are born sovereign with the power to choose.'
+                correct: 2,
+                explanation: 'Yeshua spoke Aramaic (the common language of first-century Judea) and Hebrew (the sacred language of scripture and temple). He did NOT speak Greek or Latin fluently. This is critical: the "New Testament" was written in Greek for a Gentile audience, meaning Yeshua\'s actual words were translated and filtered through Greek language, culture, and philosophy - potentially losing original Hebraic meaning and context.'
             },
             {
                 category: 'Biblical Truth & Etymology',
@@ -438,29 +312,16 @@ class EnhancedDailyTriviaSystem {
             },
             {
                 category: 'Biblical Truth & Etymology',
-                difficulty: 'medium',
-                question: 'What is the significance of the number 7 in Hebrew cosmology?',
-                options: [
-                    'It is lucky',
-                    'It represents completion, wholeness, and divine perfection (Shabbat on 7th day)',
-                    'It is a random number',
-                    'It represents evil'
-                ],
-                correct: 1,
-                explanation: 'Seven (שֶׁבַע - Sheva) represents divine completion and perfection in Hebrew thought. Creation took 7 days (6 + 1 day of rest). The word "sheva" is related to "shava" (to swear/oath) and "sova" (fullness/satisfaction). The 7th day (Shabbat) is holy - a day of rest, reflection, and divine alignment. Seven appears throughout scripture: 7 heavens, 7 seals, 7 spirits, 7 chakras - all representing wholeness and cosmic order.'
-            },
-            {
-                category: 'Biblical Truth & Etymology',
                 difficulty: 'hard',
-                question: 'What is the difference between "Elohim" and "YHWH" in Hebrew scripture?',
+                question: 'What is the Hebrew word for "spirit" and what does it reveal?',
                 options: [
-                    'They are the same thing',
-                    'Elohim is plural (gods/divine council) used for creative power; YHWH is the personal name of the Most High',
-                    'Elohim is a demon',
-                    'YHWH is a Greek translation'
+                    'Nephesh - soul/life force',
+                    'Ruach - wind/breath/spirit (feminine gender)',
+                    'Neshama - divine soul',
+                    'Kavod - glory'
                 ],
                 correct: 1,
-                explanation: 'Elohim (אֱלֹהִים) is grammatically plural ("gods" or "divine beings"), yet often used with singular verbs - suggesting divine unity within multiplicity (divine council/aspects of one God). YHWH (יהוה) is the personal, sacred name of the Most High - the singular, eternal Divine. Genesis uses both: "Elohim" for creative acts (God said/created) and "YHWH" for personal relationship. This reveals both the cosmic creative force and the intimate personal Divine.'
+                explanation: 'Ruach (רוּחַ) means wind, breath, or spirit - and is FEMININE in Hebrew grammar. This reveals that the "Holy Spirit" (Ruach HaKodesh) carries divine feminine energy. Western theology masculinized the Trinity, but the Hebrew shows divine feminine presence. Spirit is the breath of life, the wind of change, the intuitive wisdom - all feminine expressions of the Divine.'
             },
             {
                 category: 'Biblical Truth & Etymology',
@@ -474,19 +335,6 @@ class EnhancedDailyTriviaSystem {
                 ],
                 correct: 1,
                 explanation: 'Shekinah (שְׁכִינָה) means "dwelling" or "presence" - specifically the feminine aspect of the Divine that dwells among humanity. In Kabbalah, Shekinah represents the Divine Feminine, the immanent presence of God in the world (vs transcendent). She is the Holy Spirit, divine wisdom (Sophia), the compassionate mother aspect of the Most High. The Shekinah reveals that the Divine has both masculine and feminine expressions.'
-            },
-            {
-                category: 'Biblical Truth & Etymology',
-                difficulty: 'easy',
-                question: 'What language did Yeshua (Jesus) speak?',
-                options: [
-                    'English',
-                    'Greek',
-                    'Aramaic and Hebrew',
-                    'Latin'
-                ],
-                correct: 2,
-                explanation: 'Yeshua spoke Aramaic (the common language of first-century Judea) and Hebrew (the sacred language of scripture and temple). He did NOT speak Greek or Latin fluently. This is critical: the "New Testament" was written in Greek for a Gentile audience, meaning Yeshua\'s actual words were translated and filtered through Greek language, culture, and philosophy - potentially losing original Hebraic meaning and context.'
             }
         ];
 
