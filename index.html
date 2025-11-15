@@ -740,17 +740,73 @@
     </style>
 
     <script>
+        // Time-based messaging for popup
+        function getTimeBasedMessage() {
+            const hour = new Date().getHours();
+
+            if (hour >= 5 && hour < 12) {
+                // Morning (5am - 12pm)
+                return {
+                    icon: '🌅',
+                    heading: 'Start Your Day with Spiritual Growth!',
+                    subheading: 'Begin your morning with divine wisdom and mindful practice',
+                    timeOfDay: 'morning'
+                };
+            } else if (hour >= 12 && hour < 17) {
+                // Afternoon (12pm - 5pm)
+                return {
+                    icon: '☀️',
+                    heading: 'Take a Mindful Afternoon Break!',
+                    subheading: 'Refresh your mind with spiritual games and sacred knowledge',
+                    timeOfDay: 'afternoon'
+                };
+            } else if (hour >= 17 && hour < 21) {
+                // Evening (5pm - 9pm)
+                return {
+                    icon: '🌆',
+                    heading: 'Unwind with Divine Wisdom!',
+                    subheading: 'End your day with peaceful reflection and spiritual practice',
+                    timeOfDay: 'evening'
+                };
+            } else {
+                // Night (9pm - 5am)
+                return {
+                    icon: '🌙',
+                    heading: 'Reflect on Your Spiritual Journey!',
+                    subheading: 'Deepen your consciousness before rest with sacred teachings',
+                    timeOfDay: 'night'
+                };
+            }
+        }
+
         // Game Popup Logic
         function showGamePopup() {
             const popup = document.getElementById('gamePromoPopup');
             if (popup) {
+                // Get time-based message
+                const message = getTimeBasedMessage();
+
+                // Update popup content
+                const iconElement = popup.querySelector('.popup-icon');
+                const headingElement = popup.querySelector('.popup-header h3');
+                const subheadingElement = popup.querySelector('.popup-header p');
+
+                if (iconElement) iconElement.textContent = message.icon;
+                if (headingElement) headingElement.textContent = message.heading;
+                if (subheadingElement) subheadingElement.textContent = message.subheading;
+
                 popup.style.display = 'flex';
+
                 // Track analytics if available
                 if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
                     window.FirebaseConfig.analytics.trackEvent('game_popup_shown', {
-                        page: 'home'
+                        page: 'home',
+                        time_of_day: message.timeOfDay,
+                        hour: new Date().getHours()
                     });
                 }
+
+                console.log(`🎮 Game popup shown: ${message.timeOfDay} (${message.icon})`);
             }
         }
 
