@@ -1110,6 +1110,368 @@ class PremiumTriviaSystem {
         });
     }
 
+    // Leaderboard system
+    getLeaderboard() {
+        // In production, this would fetch from server
+        const localLeaderboard = localStorage.getItem('premiumTriviaLeaderboard');
+        if (localLeaderboard) {
+            return JSON.parse(localLeaderboard);
+        }
+        
+        // Demo leaderboard data
+        return [
+            { name: 'Mystic Master', score: 95847, streak: 47, level: 'Adept' },
+            { name: 'Sacred Seeker', score: 87234, streak: 23, level: 'Initiate' },
+            { name: 'Wisdom Walker', score: 76543, streak: 19, level: 'Adept' },
+            { name: 'Truth Finder', score: 65432, streak: 15, level: 'Initiate' },
+            { name: 'Light Bearer', score: 54321, streak: 12, level: 'Seeker' }
+        ];
+    }
+
+    showLeaderboard() {
+        const leaderboard = this.getLeaderboard();
+        const currentUserRank = this.getCurrentUserRank(leaderboard);
+        
+        const leaderboardHTML = `
+            <div class="leaderboard-container">
+                <div class="leaderboard-header">
+                    <h2 class="leaderboard-title">🏆 Global Consciousness Leaderboard</h2>
+                    <p class="leaderboard-subtitle">Top awakened souls on the path of knowledge</p>
+                </div>
+
+                <div class="current-user-rank">
+                    <h3>Your Current Position</h3>
+                    <div class="user-rank-card">
+                        <span class="rank-position">#${currentUserRank}</span>
+                        <span class="rank-name">${this.currentUser.name}</span>
+                        <span class="rank-score">${this.userStats.leaderboardScore.toLocaleString()}</span>
+                    </div>
+                </div>
+
+                <div class="leaderboard-list">
+                    ${leaderboard.map((player, index) => `
+                        <div class="leaderboard-entry ${index < 3 ? 'top-three' : ''}">
+                            <div class="rank-badge ${this.getRankClass(index)}">
+                                ${index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
+                            </div>
+                            <div class="player-info">
+                                <div class="player-name">${player.name}</div>
+                                <div class="player-level">${player.level} • ${player.streak} streak</div>
+                            </div>
+                            <div class="player-score">${player.score.toLocaleString()}</div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="leaderboard-actions">
+                    <button class="action-btn primary" onclick="premiumTrivia.showDashboard()">
+                        📊 Back to Dashboard
+                    </button>
+                    <button class="action-btn secondary" onclick="premiumTrivia.startCompetitiveQuiz()">
+                        ⚔️ Competitive Mode
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // Show leaderboard (replace current content)
+        document.getElementById('dashboardContainer').style.display = 'none';
+        document.getElementById('quizContainer').style.display = 'none';
+        document.getElementById('resultsContainer').innerHTML = leaderboardHTML;
+        document.getElementById('resultsContainer').style.display = 'block';
+    }
+
+    getCurrentUserRank(leaderboard) {
+        const userScore = this.userStats.leaderboardScore;
+        const rank = leaderboard.findIndex(player => player.score < userScore);
+        return rank === -1 ? leaderboard.length + 1 : rank + 1;
+    }
+
+    getRankClass(index) {
+        if (index === 0) return 'rank-first';
+        if (index === 1) return 'rank-second'; 
+        if (index === 2) return 'rank-third';
+        return 'rank-other';
+    }
+
+    // Competitive quiz mode
+    startCompetitiveQuiz() {
+        this.timerActive = true;
+        this.competitiveMode = true;
+        this.startQuiz();
+        
+        // Show competitive mode UI
+        this.showCompetitiveInterface();
+    }
+
+    showCompetitiveInterface() {
+        const competitiveUI = document.createElement('div');
+        competitiveUI.className = 'competitive-ui';
+        competitiveUI.innerHTML = `
+            <div class="competitive-banner">
+                <span>⚔️ COMPETITIVE MODE</span>
+                <span class="multiplier">Score Multiplier: 2x</span>
+            </div>
+        `;
+        
+        document.getElementById('quizContainer').prepend(competitiveUI);
+    }
+
+    // Advanced analytics
+    getCategoryAnalytics() {
+        const analytics = {};
+        
+        Object.keys(this.premiumQuestions).forEach(category => {
+            analytics[category] = {
+                total: this.premiumQuestions[category].questions.length,
+                completed: 0,
+                correct: 0,
+                accuracy: 0,
+                mastery: 'Novice'
+            };
+        });
+
+        return analytics;
+    }
+
+    showAnalytics() {
+        const analytics = this.getCategoryAnalytics();
+        
+        const analyticsHTML = `
+            <div class="analytics-container">
+                <div class="analytics-header">
+                    <h2 class="analytics-title">📊 Detailed Analytics</h2>
+                    <p class="analytics-subtitle">Track your mastery across all esoteric categories</p>
+                </div>
+
+                <div class="analytics-overview">
+                    <div class="overview-stat">
+                        <span class="overview-label">Total Accuracy</span>
+                        <span class="overview-value">${this.userStats.totalQuestions > 0 ? Math.round((this.userStats.correctAnswers / this.userStats.totalQuestions) * 100) : 0}%</span>
+                    </div>
+                    <div class="overview-stat">
+                        <span class="overview-label">Longest Streak</span>
+                        <span class="overview-value">${this.userStats.longestStreak}</span>
+                    </div>
+                    <div class="overview-stat">
+                        <span class="overview-label">Categories Explored</span>
+                        <span class="overview-value">${Object.keys(analytics).length}</span>
+                    </div>
+                </div>
+
+                <div class="category-analytics">
+                    ${Object.entries(analytics).map(([key, data]) => `
+                        <div class="category-analysis">
+                            <div class="category-header">
+                                <span class="category-title">${this.premiumQuestions[key].name}</span>
+                                <span class="mastery-level ${data.mastery.toLowerCase()}">${data.mastery}</span>
+                            </div>
+                            <div class="category-progress">
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill-small" style="width: ${(data.completed / data.total) * 100}%"></div>
+                                </div>
+                                <span class="progress-text">${data.completed}/${data.total}</span>
+                            </div>
+                            <div class="category-stats">
+                                <span>Accuracy: ${data.accuracy}%</span>
+                                <span>Difficulty: Mixed</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="analytics-actions">
+                    <button class="action-btn primary" onclick="premiumTrivia.showDashboard()">
+                        📊 Back to Dashboard
+                    </button>
+                    <button class="action-btn secondary" onclick="premiumTrivia.exportProgress()">
+                        📤 Export Progress
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // Show analytics
+        document.getElementById('dashboardContainer').style.display = 'none';
+        document.getElementById('quizContainer').style.display = 'none';
+        document.getElementById('resultsContainer').innerHTML = analyticsHTML;
+        document.getElementById('resultsContainer').style.display = 'block';
+    }
+
+    // Export user progress
+    exportProgress() {
+        const progressData = {
+            user: this.currentUser,
+            stats: this.userStats,
+            analytics: this.getCategoryAnalytics(),
+            exportDate: new Date().toISOString()
+        };
+
+        const dataStr = JSON.stringify(progressData, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(dataBlob);
+        link.download = `divine-temple-trivia-progress-${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
+    }
+
+    // Daily challenges
+    getTodayChallenge() {
+        const today = new Date().toDateString();
+        const challenges = [
+            {
+                id: 'kabbalah_mastery',
+                title: 'Kabbalah Master Challenge',
+                description: 'Answer 5 Kabbalah questions with 100% accuracy',
+                category: 'kabbalah',
+                target: 5,
+                reward: 500
+            },
+            {
+                id: 'speed_demon',
+                title: 'Lightning Consciousness',
+                description: 'Complete 10 questions in under 5 minutes',
+                category: 'mixed',
+                timeLimit: 300,
+                reward: 750
+            },
+            {
+                id: 'perfect_streak',
+                title: 'Divine Perfection',
+                description: 'Achieve a 15-question perfect streak',
+                category: 'mixed',
+                streak: 15,
+                reward: 1000
+            }
+        ];
+
+        // Rotate daily challenge based on date
+        const dayIndex = new Date().getDate() % challenges.length;
+        return challenges[dayIndex];
+    }
+
+    showDailyChallenge() {
+        const challenge = this.getTodayChallenge();
+        
+        const challengeHTML = `
+            <div class="daily-challenge">
+                <div class="challenge-header">
+                    <h3>🎯 Today's Challenge</h3>
+                    <div class="challenge-reward">+${challenge.reward} XP</div>
+                </div>
+                <div class="challenge-content">
+                    <h4>${challenge.title}</h4>
+                    <p>${challenge.description}</p>
+                    <button class="challenge-btn" onclick="premiumTrivia.startChallenge('${challenge.id}')">
+                        🚀 Accept Challenge
+                    </button>
+                </div>
+            </div>
+        `;
+
+        return challengeHTML;
+    }
+
+    startChallenge(challengeId) {
+        const challenge = this.getTodayChallenge();
+        if (challenge.id === challengeId) {
+            // Set up challenge parameters
+            this.currentChallenge = challenge;
+            this.selectedCategory = challenge.category;
+            if (challenge.timeLimit) {
+                this.timerActive = true;
+            }
+            this.startQuiz();
+        }
+    }
+
+    // Study mode - browse questions without quiz format
+    enterStudyMode() {
+        const studyHTML = `
+            <div class="study-mode-container">
+                <div class="study-header">
+                    <h2 class="study-title">📖 Study Mode</h2>
+                    <p class="study-subtitle">Browse and learn from all questions at your own pace</p>
+                </div>
+
+                <div class="study-filters">
+                    <select id="studyCategoryFilter" class="form-select">
+                        <option value="all">All Categories</option>
+                        ${Object.entries(this.premiumQuestions).map(([key, category]) => 
+                            `<option value="${key}">${category.name}</option>`
+                        ).join('')}
+                    </select>
+                    
+                    <select id="studyDifficultyFilter" class="form-select">
+                        <option value="all">All Difficulties</option>
+                        <option value="seeker">Seeker</option>
+                        <option value="initiate">Initiate</option>
+                        <option value="adept">Adept</option>
+                    </select>
+                </div>
+
+                <div class="study-questions" id="studyQuestions">
+                    <!-- Questions will be populated here -->
+                </div>
+
+                <div class="study-actions">
+                    <button class="action-btn primary" onclick="premiumTrivia.showDashboard()">
+                        📊 Back to Dashboard
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('dashboardContainer').style.display = 'none';
+        document.getElementById('quizContainer').style.display = 'none';
+        document.getElementById('resultsContainer').innerHTML = studyHTML;
+        document.getElementById('resultsContainer').style.display = 'block';
+
+        this.populateStudyQuestions();
+    }
+
+    populateStudyQuestions() {
+        const container = document.getElementById('studyQuestions');
+        let allQuestions = [];
+        
+        Object.values(this.premiumQuestions).forEach(category => {
+            allQuestions.push(...category.questions);
+        });
+
+        container.innerHTML = allQuestions.map((question, index) => `
+            <div class="study-question-card">
+                <div class="study-question-header">
+                    <span class="question-number">${index + 1}</span>
+                    <span class="difficulty-badge" style="background: ${this.getDifficultyColor(question.difficulty)}">
+                        ${question.difficulty}
+                    </span>
+                </div>
+                <div class="study-question-text">${question.question}</div>
+                <div class="study-answers">
+                    ${question.answers.map((answer, i) => `
+                        <div class="study-answer ${i === question.correct ? 'correct-study-answer' : ''}">
+                            ${String.fromCharCode(65 + i)}. ${answer}
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="study-explanation">
+                    <strong>💡 Explanation:</strong> ${question.explanation}
+                    ${question.sources ? `<br><strong>📚 Sources:</strong> ${question.sources.join(', ')}` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    getDifficultyColor(difficulty) {
+        const colors = {
+            seeker: '#10b981',
+            initiate: '#f59e0b',
+            adept: '#ef4444'
+        };
+        return colors[difficulty] || '#6b7280';
+    }
+
     // Load user profile (placeholder for authentication integration)
     loadUserProfile() {
         // This will integrate with the Divine Temple member system
