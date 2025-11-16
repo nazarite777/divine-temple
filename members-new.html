@@ -542,7 +542,7 @@
         .pwa-install-btn {
             position: fixed;
             top: 50%;
-            right: -80px;
+            right: -60px;
             z-index: 10000;
             background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
             border: none;
@@ -566,7 +566,7 @@
         }
 
         .pwa-install-btn:hover {
-            right: -40px;
+            right: -20px;
             box-shadow: -8px 0 25px rgba(212, 175, 55, 0.5);
             background: linear-gradient(135deg, #f4c430, #9d6bfc);
         }
@@ -575,9 +575,15 @@
             transform: translateY(-50%) rotate(-90deg) scale(0.95);
         }
 
+        .pwa-install-btn.show {
+            right: -20px;
+            opacity: 1;
+        }
+
         .pwa-install-btn.hidden {
             right: -120px;
             opacity: 0;
+            pointer-events: none;
         }
 
         @media (max-width: 768px) {
@@ -602,10 +608,13 @@
     
     <!-- Enhanced PWA Installer -->
     <script src="js/enhanced-pwa-installer.js"></script>
+    
+    <!-- PWA Button Debug CSS -->
+    <link rel="stylesheet" href="css/pwa-button-force-show.css">
 </head>
 <body>
     <!-- PWA Install Button -->
-    <button id="pwaInstallBtn" class="pwa-install-btn" onclick="installPWA()" title="Install Divine Temple App">
+    <button id="pwaInstallBtn" class="pwa-install-btn" onclick="window.enhancedPWAInstaller ? window.enhancedPWAInstaller.install() : installPWA()" title="Install Divine Temple App">
         🏛️ Install App
     </button>
 
@@ -2309,16 +2318,17 @@
                     installBtn.classList.add('hidden');
                     console.log('🏛️ Members Portal - PWA already installed, hiding button');
                 }
-            } else {
-                // Not installed - show button after checking for prompt
+            } else if ('serviceWorker' in navigator && installBtn) {
+                // PWA supported - show button immediately
+                installBtn.classList.remove('hidden');
+                installBtn.classList.add('show');
+                installBtn.style.display = 'flex';
+                console.log('📱 Members Portal - PWA supported, showing install button immediately');
+                
+                // Auto-slide in after page load
                 setTimeout(() => {
-                    if (!deferredPrompt && ('serviceWorker' in navigator) && installBtn) {
-                        // PWA supported but no prompt available - show button anyway
-                        installBtn.classList.remove('hidden');
-                        installBtn.style.display = 'flex';
-                        console.log('📱 Members Portal - PWA supported, showing install button');
-                    }
-                }, 1000);
+                    installBtn.classList.add('show');
+                }, 2000);
             }
             
             // Listen for beforeinstallprompt with enhanced handling

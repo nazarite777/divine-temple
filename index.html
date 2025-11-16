@@ -163,6 +163,9 @@
     
     <!-- Enhanced PWA Installer -->
     <script src="js/enhanced-pwa-installer.js"></script>
+    
+    <!-- PWA Button Debug CSS -->
+    <link rel="stylesheet" href="css/pwa-button-force-show.css">
 </head>
 <body>
     <!-- PWA Install Banner -->
@@ -179,7 +182,7 @@
     </div>
 
     <!-- PWA Manual Install Button -->
-    <button id="pwaManualBtn" class="pwa-manual-btn" onclick="installPWA()" title="Install Divine Temple App">
+    <button id="pwaManualBtn" class="pwa-manual-btn" onclick="window.enhancedPWAInstaller ? window.enhancedPWAInstaller.install() : installPWA()" title="Install Divine Temple App">
         🏛️ Install App
     </button>
 
@@ -739,7 +742,7 @@
         .pwa-manual-btn {
             position: fixed;
             top: 50%;
-            right: -80px;
+            right: -60px;
             z-index: 9999;
             background: linear-gradient(135deg, #d4af37, #8b5cf6);
             border: none;
@@ -763,7 +766,7 @@
         }
 
         .pwa-manual-btn:hover {
-            right: -40px;
+            right: -20px;
             box-shadow: -8px 0 25px rgba(212, 175, 55, 0.5);
             background: linear-gradient(135deg, #f4c430, #9d6bfc);
         }
@@ -772,9 +775,15 @@
             transform: translateY(-50%) rotate(-90deg) scale(0.95);
         }
 
+        .pwa-manual-btn.show {
+            right: -20px;
+            opacity: 1;
+        }
+
         .pwa-manual-btn.hidden {
             right: -120px;
             opacity: 0;
+            pointer-events: none;
         }
 
         @media (max-width: 768px) {
@@ -786,15 +795,16 @@
 
             .pwa-manual-btn {
                 top: 60%;
-                right: -90px;
+                right: -70px;
                 width: 100px;
                 height: 35px;
                 font-size: 0.75rem;
                 padding: 0.75rem 0.5rem;
             }
             
-            .pwa-manual-btn:hover {
-                right: -50px;
+            .pwa-manual-btn:hover,
+            .pwa-manual-btn.show {
+                right: -30px;
             }
             
             .pwa-manual-btn.hidden {
@@ -1335,7 +1345,7 @@
     
     <!-- PWA Installation Script -->
     <script>
-        let deferredPrompt;
+        // Use global deferredPrompt (declared above)
         
         // PWA Installation Setup
         document.addEventListener('DOMContentLoaded', function() {
@@ -1367,16 +1377,19 @@
                 // Already installed - hide button
                 manualBtn.classList.add('hidden');
                 console.log('🏛️ PWA already installed, hiding install button');
-            } else {
-                // Not installed - show button after short delay to check for prompt
+            } else if ('serviceWorker' in navigator) {
+                // PWA supported - show button immediately
+                manualBtn.classList.remove('hidden');
+                manualBtn.classList.add('show');
+                manualBtn.style.display = 'flex';
+                console.log('📱 PWA supported, showing install button immediately');
+                
+                // Auto-slide in after page load
                 setTimeout(() => {
-                    if (!deferredPrompt && ('serviceWorker' in navigator)) {
-                        // PWA supported but no prompt available - show button anyway
-                        manualBtn.classList.remove('hidden');
-                        manualBtn.style.display = 'flex';
-                        console.log('📱 PWA supported, showing install button');
-                    }
-                }, 1000);
+                    manualBtn.classList.add('show');
+                }, 2000);
+            } else {
+                console.log('❌ PWA not supported on this browser');
             }
             
             // Listen for beforeinstallprompt with enhanced handling
@@ -1388,6 +1401,7 @@
                 // Update button visibility
                 if (manualBtn) {
                     manualBtn.classList.remove('hidden');
+                    manualBtn.classList.add('show');
                     manualBtn.style.display = 'flex';
                 }
                 

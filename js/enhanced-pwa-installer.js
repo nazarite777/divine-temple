@@ -18,7 +18,8 @@ class EnhancedPWAInstaller {
         console.log('📊 PWA Status:', {
             isInstalled: this.isInstalled,
             isStandalone: this.isStandalone,
-            supportsPWA: this.supportsPWA
+            supportsPWA: this.supportsPWA,
+            userAgent: navigator.userAgent
         });
         
         // Set up event listeners
@@ -27,8 +28,20 @@ class EnhancedPWAInstaller {
         // Register service worker
         this.registerServiceWorker();
         
-        // Update UI based on install status
-        this.updateInstallButtons();
+        // Update UI based on install status with delay to ensure DOM is ready
+        setTimeout(() => {
+            this.updateInstallButtons();
+        }, 100);
+        
+        // Force another check after DOM content loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    console.log('🔄 DOM loaded, re-checking buttons');
+                    this.updateInstallButtons();
+                }, 500);
+            });
+        }
     }
     
     checkStandaloneMode() {
@@ -101,17 +114,29 @@ class EnhancedPWAInstaller {
     updateInstallButtons() {
         const buttons = document.querySelectorAll('[id*="nstallBtn"], [id*="manual"], .pwa-install-btn, .pwa-manual-btn');
         
-        buttons.forEach(btn => {
+        console.log('🔍 Found install buttons:', buttons.length);
+        
+        buttons.forEach((btn, index) => {
             if (!btn) return;
+            
+            console.log(`📱 Button ${index + 1}:`, {
+                id: btn.id,
+                class: btn.className,
+                isStandalone: this.isStandalone,
+                supportsPWA: this.supportsPWA
+            });
             
             if (this.isStandalone) {
                 // Already installed - hide button
                 btn.classList.add('hidden');
                 btn.style.display = 'none';
+                console.log('✅ Already installed, hiding button');
             } else if (this.supportsPWA) {
                 // PWA supported - show button
                 btn.classList.remove('hidden');
                 btn.style.display = 'flex';
+                btn.style.visibility = 'visible';
+                btn.style.opacity = '1';
                 
                 // Update button text based on availability
                 if (this.deferredPrompt) {
@@ -119,10 +144,13 @@ class EnhancedPWAInstaller {
                 } else {
                     btn.title = 'Use browser menu to install';
                 }
+                
+                console.log('🚀 PWA supported, showing button');
             } else {
                 // PWA not supported - hide button
                 btn.classList.add('hidden');
                 btn.style.display = 'none';
+                console.log('❌ PWA not supported, hiding button');
             }
         });
     }
