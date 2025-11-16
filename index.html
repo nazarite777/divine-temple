@@ -254,7 +254,6 @@
                     <div class="hero-cta">
                         <a href="login.html" class="btn btn-primary">✨ Start Free Access</a>
                         <a href="books.html" class="btn btn-secondary">Explore Books</a>
-                        <button id="heroInstallBtn" class="btn btn-install" style="display: none;">📱 Install App</button>
                     </div>
                     <p style="margin-top: 1rem; font-size: 0.95rem; color: var(--text-secondary);">
                         Try the Enochian Calendar free, then unlock premium features
@@ -500,28 +499,83 @@
         </div>
     </div>
 
+    <!-- Floating PWA Install Button -->
+    <button id="floatingInstallBtn" class="floating-pwa-install" style="display: none;">
+        <div class="install-icon">📱</div>
+        <div class="install-text">Install App</div>
+    </button>
+
     <style>
-        .btn-install {
-            background: linear-gradient(135deg, #8B5CF6, #D946EF) !important;
-            color: white !important;
-            border: 2px solid rgba(139, 92, 246, 0.5) !important;
+        .floating-pwa-install {
+            position: fixed;
+            right: -250px;
+            top: 35%;
+            transform: translateY(-50%);
+            z-index: 9998;
+            background: linear-gradient(135deg, #8B5CF6, #D946EF);
+            color: white;
+            border: none;
+            border-radius: 12px 0 0 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.5);
+            cursor: pointer;
+            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
             font-weight: 600;
-            transition: all 0.3s ease;
             animation: pulseGlow 2s infinite;
         }
 
-        .btn-install:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
-            border-color: rgba(217, 70, 239, 0.8) !important;
+        .floating-pwa-install.show {
+            right: 0;
+        }
+
+        .floating-pwa-install:hover {
+            transform: translateY(-50%) translateX(-5px);
+            box-shadow: 0 15px 50px rgba(139, 92, 246, 0.7);
+        }
+
+        .install-icon {
+            font-size: 1.8rem;
+            animation: bounce 2s infinite;
+        }
+
+        .install-text {
+            font-size: 1rem;
+            white-space: nowrap;
         }
 
         @keyframes pulseGlow {
             0%, 100% {
-                box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+                box-shadow: 0 10px 40px rgba(139, 92, 246, 0.5);
             }
             50% {
-                box-shadow: 0 0 30px rgba(217, 70, 239, 0.5);
+                box-shadow: 0 15px 50px rgba(217, 70, 239, 0.7);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .floating-pwa-install {
+                padding: 0.8rem 1.2rem;
+                top: 40%;
+            }
+
+            .install-icon {
+                font-size: 1.5rem;
+            }
+
+            .install-text {
+                font-size: 0.9rem;
             }
         }
 
@@ -1017,7 +1071,7 @@
         const installBanner = document.getElementById('pwaInstallBanner');
         const installBtn = document.getElementById('pwaInstallBtn');
         const closeBanner = document.getElementById('pwaCloseBanner');
-        const heroInstallBtn = document.getElementById('heroInstallBtn');
+        const floatingInstallBtn = document.getElementById('floatingInstallBtn');
 
         // Check if user has previously dismissed the banner
         const installDismissed = localStorage.getItem('pwaInstallDismissed');
@@ -1030,9 +1084,13 @@
             // Stash the event so it can be triggered later
             deferredPrompt = e;
 
-            // Show the hero install button
-            if (heroInstallBtn) {
-                heroInstallBtn.style.display = 'inline-block';
+            // Show the floating install button
+            if (floatingInstallBtn) {
+                floatingInstallBtn.style.display = 'flex';
+                // Slide in after 2 seconds
+                setTimeout(() => {
+                    floatingInstallBtn.classList.add('show');
+                }, 2000);
             }
 
             // Only show banner if not dismissed recently
@@ -1090,9 +1148,9 @@
             });
         }
 
-        // Hero Install Button
-        if (heroInstallBtn) {
-            heroInstallBtn.addEventListener('click', async () => {
+        // Floating Install Button
+        if (floatingInstallBtn) {
+            floatingInstallBtn.addEventListener('click', async () => {
                 if (!deferredPrompt) {
                     console.log('No install prompt available');
                     return;
@@ -1110,7 +1168,7 @@
                 if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
                     window.FirebaseConfig.analytics.trackEvent('pwa_install_prompt', {
                         outcome: outcome,
-                        source: 'hero_button'
+                        source: 'floating_button'
                     });
                 }
 
@@ -1118,7 +1176,11 @@
                 deferredPrompt = null;
 
                 // Hide the buttons
-                heroInstallBtn.style.display = 'none';
+                floatingInstallBtn.classList.remove('show');
+                setTimeout(() => {
+                    floatingInstallBtn.style.display = 'none';
+                }, 500);
+
                 if (installBanner) {
                     installBanner.style.display = 'none';
                 }
@@ -1132,8 +1194,11 @@
             if (installBanner) {
                 installBanner.style.display = 'none';
             }
-            if (heroInstallBtn) {
-                heroInstallBtn.style.display = 'none';
+            if (floatingInstallBtn) {
+                floatingInstallBtn.classList.remove('show');
+                setTimeout(() => {
+                    floatingInstallBtn.style.display = 'none';
+                }, 500);
             }
             // Track installation
             if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
