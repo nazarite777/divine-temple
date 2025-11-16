@@ -943,140 +943,11 @@
         });
     </script>
 
-    <!-- PWA Install Prompt -->
-    <div id="pwaInstallBanner" class="pwa-install-banner" style="display: none;">
-        <div class="pwa-banner-content">
-            <div class="pwa-banner-icon">📱</div>
-            <div class="pwa-banner-text">
-                <h4>Install Eden Temple App</h4>
-                <p>Access offline, faster loading, and home screen convenience</p>
-            </div>
-            <button id="pwaInstallBtn" class="pwa-install-btn">Install</button>
-            <button id="pwaCloseBanner" class="pwa-close-btn">&times;</button>
-        </div>
-    </div>
-
-    <style>
-        .pwa-install-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
-            padding: 1rem;
-            z-index: 9999;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-            animation: slideUpBanner 0.5s ease;
-        }
-
-        @keyframes slideUpBanner {
-            from {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .pwa-banner-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .pwa-banner-icon {
-            font-size: 2.5rem;
-            flex-shrink: 0;
-        }
-
-        .pwa-banner-text {
-            flex: 1;
-        }
-
-        .pwa-banner-text h4 {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: white;
-        }
-
-        .pwa-banner-text p {
-            margin: 0.25rem 0 0 0;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .pwa-install-btn {
-            background: white;
-            color: var(--bg-primary);
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .pwa-install-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .pwa-close-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            line-height: 1;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .pwa-close-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        @media (max-width: 768px) {
-            .pwa-banner-icon {
-                font-size: 2rem;
-            }
-
-            .pwa-banner-text h4 {
-                font-size: 1rem;
-            }
-
-            .pwa-banner-text p {
-                font-size: 0.8rem;
-            }
-
-            .pwa-install-btn {
-                padding: 0.6rem 1.2rem;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
 
     <script>
-        // PWA Install Prompt
+        // PWA Install Prompt - Floating Button Only
         let deferredPrompt;
-        const installBanner = document.getElementById('pwaInstallBanner');
-        const installBtn = document.getElementById('pwaInstallBtn');
-        const closeBanner = document.getElementById('pwaCloseBanner');
         const floatingInstallBtn = document.getElementById('floatingInstallBtn');
-
-        // Check if user has previously dismissed the banner
-        const installDismissed = localStorage.getItem('pwaInstallDismissed');
-        const dismissTime = installDismissed ? parseInt(installDismissed) : 0;
-        const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
 
         window.addEventListener('beforeinstallprompt', (e) => {
             // Prevent the mini-infobar from appearing on mobile
@@ -1093,62 +964,10 @@
                 }, 2000);
             }
 
-            // Only show banner if not dismissed recently
-            if (!installDismissed || (Date.now() - dismissTime) > sevenDaysInMs) {
-                // Show the install banner after 5 seconds
-                setTimeout(() => {
-                    if (installBanner) {
-                        installBanner.style.display = 'block';
-                    }
-                }, 5000);
-            }
-
             console.log('📱 PWA install prompt available');
         });
 
-        if (installBtn) {
-            installBtn.addEventListener('click', async () => {
-                if (!deferredPrompt) {
-                    return;
-                }
-
-                // Show the install prompt
-                deferredPrompt.prompt();
-
-                // Wait for the user to respond to the prompt
-                const { outcome } = await deferredPrompt.userChoice;
-
-                console.log(`User response to install prompt: ${outcome}`);
-
-                // Track analytics
-                if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
-                    window.FirebaseConfig.analytics.trackEvent('pwa_install_prompt', {
-                        outcome: outcome
-                    });
-                }
-
-                // Clear the deferred prompt
-                deferredPrompt = null;
-
-                // Hide the banner
-                if (installBanner) {
-                    installBanner.style.display = 'none';
-                }
-            });
-        }
-
-        if (closeBanner) {
-            closeBanner.addEventListener('click', () => {
-                if (installBanner) {
-                    installBanner.style.display = 'none';
-                }
-                // Remember dismissal for 7 days
-                localStorage.setItem('pwaInstallDismissed', Date.now().toString());
-                console.log('📱 PWA install banner dismissed');
-            });
-        }
-
-        // Floating Install Button
+        // Floating Install Button Click Handler
         if (floatingInstallBtn) {
             floatingInstallBtn.addEventListener('click', async () => {
                 if (!deferredPrompt) {
@@ -1175,25 +994,18 @@
                 // Clear the deferred prompt
                 deferredPrompt = null;
 
-                // Hide the buttons
+                // Hide the button
                 floatingInstallBtn.classList.remove('show');
                 setTimeout(() => {
                     floatingInstallBtn.style.display = 'none';
                 }, 500);
-
-                if (installBanner) {
-                    installBanner.style.display = 'none';
-                }
             });
         }
 
         // Detect when PWA is successfully installed
         window.addEventListener('appinstalled', () => {
             console.log('🎉 Eden Temple PWA installed successfully!');
-            // Hide the buttons
-            if (installBanner) {
-                installBanner.style.display = 'none';
-            }
+            // Hide the button
             if (floatingInstallBtn) {
                 floatingInstallBtn.classList.remove('show');
                 setTimeout(() => {
