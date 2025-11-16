@@ -538,44 +538,70 @@
                 height: calc(100vh - 120px);
             }
         }
-        /* PWA Install Button */
+        /* PWA Install Button - Sidebar Style */
         .pwa-install-btn {
             position: fixed;
-            top: 1rem;
-            right: 1rem;
+            top: 50%;
+            right: -80px;
             z-index: 10000;
             background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
             border: none;
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 15px;
+            padding: 1rem 0.75rem;
+            border-radius: 15px 0 0 15px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.9rem;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            box-shadow: -5px 0 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.4s ease;
+            transform: translateY(-50%) rotate(-90deg);
+            transform-origin: center;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            width: 120px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .pwa-install-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+            right: -40px;
+            box-shadow: -8px 0 25px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(135deg, #f4c430, #9d6bfc);
         }
 
         .pwa-install-btn:active {
-            transform: translateY(0);
+            transform: translateY(-50%) rotate(-90deg) scale(0.95);
+        }
+
+        .pwa-install-btn.hidden {
+            right: -120px;
+            opacity: 0;
         }
 
         @media (max-width: 768px) {
             .pwa-install-btn {
-                position: relative;
-                top: auto;
-                right: auto;
-                margin: 1rem auto;
-                display: block;
-                width: fit-content;
+                top: 60%;
+                right: -90px;
+                width: 100px;
+                height: 35px;
+                font-size: 0.75rem;
+                padding: 0.75rem 0.5rem;
+            }
+            
+            .pwa-install-btn:hover {
+                right: -50px;
+            }
+            
+            .pwa-install-btn.hidden {
+                right: -130px;
             }
         }
     </style>
+    
+    <!-- Enhanced PWA Installer -->
+    <script src="js/enhanced-pwa-installer.js"></script>
 </head>
 <body>
     <!-- PWA Install Button -->
@@ -2276,40 +2302,99 @@
         function setupMembersPWA() {
             const installBtn = document.getElementById('pwaInstallBtn');
             
-            // Hide install button if already installed
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                if (installBtn) installBtn.style.display = 'none';
+            // Handle button visibility based on install status
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+                // Already installed - hide button
+                if (installBtn) {
+                    installBtn.classList.add('hidden');
+                    console.log('🏛️ Members Portal - PWA already installed, hiding button');
+                }
+            } else {
+                // Not installed - show button after checking for prompt
+                setTimeout(() => {
+                    if (!deferredPrompt && ('serviceWorker' in navigator) && installBtn) {
+                        // PWA supported but no prompt available - show button anyway
+                        installBtn.classList.remove('hidden');
+                        installBtn.style.display = 'flex';
+                        console.log('📱 Members Portal - PWA supported, showing install button');
+                    }
+                }, 1000);
             }
             
-            // Listen for beforeinstallprompt
+            // Listen for beforeinstallprompt with enhanced handling
             window.addEventListener('beforeinstallprompt', (e) => {
+                console.log('📱 Members Portal - beforeinstallprompt event fired');
                 e.preventDefault();
                 deferredPrompt = e;
-                console.log('📱 Install prompt available in members portal');
+                
+                // Update button visibility
+                if (installBtn) {
+                    installBtn.classList.remove('hidden');
+                    installBtn.style.display = 'flex';
+                }
             });
             
             // Listen for app installed
             window.addEventListener('appinstalled', () => {
                 console.log('🎉 Divine Temple PWA installed from members portal');
-                if (installBtn) installBtn.style.display = 'none';
+                
+                // Hide install button with animation
+                if (installBtn) {
+                    installBtn.classList.add('hidden');
+                    setTimeout(() => {
+                        installBtn.style.display = 'none';
+                    }, 400);
+                }
                 
                 // Show success notification using existing system
                 if (window.uxEnhancementManager) {
                     window.uxEnhancementManager.showNotification(
-                        '✅ Divine Temple installed successfully! Access from your home screen.',
+                        '🎉 Divine Temple installed successfully! Check your home screen or app launcher.',
                         'success',
                         5000
                     );
                 }
+                
+                // Store installation status
+                localStorage.setItem('pwa-installed', 'true');
             });
         }
         
         async function installPWA() {
-            if (!deferredPrompt) {
-                // Show instruction notification
+            console.log('🏛️ Members Portal - Install PWA triggered');
+            
+            // Check if already installed
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
                 if (window.uxEnhancementManager) {
                     window.uxEnhancementManager.showNotification(
-                        '📱 To install: Use your browser menu → "Install app" or "Add to Home Screen"',
+                        '✅ Divine Temple is already installed!',
+                        'success',
+                        4000
+                    );
+                }
+                return;
+            }
+            
+            if (!deferredPrompt) {
+                // Enhanced fallback with platform-specific instructions
+                const userAgent = navigator.userAgent.toLowerCase();
+                let instructions = '';
+                
+                if (userAgent.includes('chrome') && !userAgent.includes('edg')) {
+                    instructions = '🌐 Chrome: Click the install icon (⊕) in the address bar';
+                } else if (userAgent.includes('edg')) {
+                    instructions = '🔷 Edge: Click the install icon (⊕) in the address bar';
+                } else if (userAgent.includes('firefox')) {
+                    instructions = '🦊 Firefox: Look for install option in address bar or menu';
+                } else if (userAgent.includes('safari')) {
+                    instructions = '🧭 Safari: Tap Share button → "Add to Home Screen"';
+                } else {
+                    instructions = '📱 Use your browser menu → "Install app"';
+                }
+                
+                if (window.uxEnhancementManager) {
+                    window.uxEnhancementManager.showNotification(
+                        `🏛️ ${instructions}`,
                         'info',
                         6000
                     );
@@ -2318,13 +2403,32 @@
             }
             
             try {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
+                // Show the install prompt
+                const result = await deferredPrompt.prompt();
+                console.log('📱 Members Portal - Install prompt shown');
                 
-                if (outcome === 'accepted') {
+                // Wait for the user to respond to the prompt
+                const choiceResult = await deferredPrompt.userChoice;
+                console.log('👤 Members Portal - User choice:', choiceResult.outcome);
+                
+                if (choiceResult.outcome === 'accepted') {
                     console.log('✅ User accepted PWA install from members portal');
+                    if (window.uxEnhancementManager) {
+                        window.uxEnhancementManager.showNotification(
+                            '🎉 Installing Divine Temple...',
+                            'success',
+                            4000
+                        );
+                    }
                 } else {
                     console.log('❌ User dismissed PWA install from members portal');
+                    if (window.uxEnhancementManager) {
+                        window.uxEnhancementManager.showNotification(
+                            '📱 Install anytime using your browser menu',
+                            'info',
+                            4000
+                        );
+                    }
                 }
                 
                 deferredPrompt = null;
@@ -2332,7 +2436,7 @@
                 console.error('❌ PWA install failed:', error);
                 if (window.uxEnhancementManager) {
                     window.uxEnhancementManager.showNotification(
-                        '❌ Installation failed. Please try again.',
+                        '❌ Installation failed. Try using your browser menu → "Install app"',
                         'error',
                         4000
                     );

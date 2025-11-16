@@ -128,28 +128,43 @@
 
         .manual-install-btn {
             position: fixed;
-            top: 1rem;
-            right: 1rem;
+            top: 50%;
+            right: -80px;
             z-index: 999;
-            background: var(--primary-gold);
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
             border: none;
-            color: var(--dark-bg);
-            padding: 0.75rem 1.5rem;
-            border-radius: 15px;
+            color: white;
+            padding: 1rem 0.75rem;
+            border-radius: 15px 0 0 15px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.9rem;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            box-shadow: -5px 0 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.4s ease;
+            transform: translateY(-50%) rotate(-90deg);
+            transform-origin: center;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            width: 120px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .manual-install-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+            right: -40px;
+            box-shadow: -8px 0 25px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(135deg, #f4c430, #9d6bfc);
         }
 
         .manual-install-btn:active {
-            transform: translateY(0);
+            transform: translateY(-50%) rotate(-90deg) scale(0.95);
+        }
+
+        .manual-install-btn.hidden {
+            right: -120px;
+            opacity: 0;
         }
 
         body::before {
@@ -529,6 +544,9 @@
             }
         }
     </style>
+    
+    <!-- Enhanced PWA Installer -->
+    <script src="../js/enhanced-pwa-installer.js"></script>
 </head>
 <body>
     <!-- PWA Install Banner -->
@@ -725,17 +743,49 @@
 
         // Initialize PWA functionality
         document.addEventListener('DOMContentLoaded', function() {
-            // Show manual install button if PWA not installed
+            // Enhanced PWA install button management with new installer
             const manualBtn = document.getElementById('manualInstallBtn');
-            if (manualBtn) {
-                // Hide if already installed
-                if (window.matchMedia('(display-mode: standalone)').matches) {
-                    manualBtn.style.display = 'none';
-                }
-                // Hide if not supported
-                if (!('serviceWorker' in navigator)) {
-                    manualBtn.style.display = 'none';
-                }
+            if (manualBtn && window.enhancedPWAInstaller) {
+                console.log('🏛️ Free Trivia - Setting up enhanced PWA installer');
+                
+                // Initial setup - wait for installer to initialize
+                setTimeout(() => {
+                    const status = window.enhancedPWAInstaller.getStatus();
+                    
+                    if (status.isStandalone) {
+                        manualBtn.classList.add('hidden');
+                        console.log('📱 PWA already installed, hiding button');
+                    } else if (status.supportsPWA) {
+                        manualBtn.classList.remove('hidden');
+                        manualBtn.style.display = 'flex';
+                        
+                        // Auto-show on page load
+                        setTimeout(() => {
+                            manualBtn.classList.add('show');
+                        }, 2000);
+                        
+                        console.log('✅ PWA supported, showing install button');
+                    } else {
+                        manualBtn.classList.add('hidden');
+                        console.log('❌ PWA not supported');
+                    }
+                }, 500);
+                
+                // Enhanced click handler using new installer
+                manualBtn.addEventListener('click', async () => {
+                    console.log('🎯 Free Trivia - Enhanced install clicked');
+                    
+                    try {
+                        const result = await window.enhancedPWAInstaller.install();
+                        
+                        if (result.outcome === 'accepted') {
+                            manualBtn.classList.add('hidden');
+                            console.log('🎉 PWA install accepted');
+                        }
+                    } catch (error) {
+                        console.error('❌ Enhanced install error:', error);
+                    }
+                });
             }
         });
     </script>
