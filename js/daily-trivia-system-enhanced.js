@@ -645,16 +645,27 @@ class EnhancedDailyTriviaSystem {
         try {
             // Add update timestamp
             this.triviaData.lastUpdated = firebase.firestore.FieldValue.serverTimestamp();
-            
+
+            // Save to Firestore
             await firebase.firestore()
                 .collection('triviaProgress')
                 .doc(this.currentUser.uid)
                 .set(this.triviaData, { merge: true });
-                
+
+            // Also save to localStorage as backup
+            try {
+                const backupData = { ...this.triviaData };
+                backupData.lastUpdated = new Date().toISOString();
+                localStorage.setItem(`triviaProgress_${this.currentUser.uid}`, JSON.stringify(backupData));
+                this.log('Trivia data saved to Firestore and localStorage');
+            } catch (localError) {
+                this.log('localStorage save failed (quota exceeded or disabled)', localError);
+            }
+
             this.log('Trivia data saved successfully');
         } catch (error) {
             this.error('Error saving trivia data', error);
-            
+
             // Retry once after a delay
             setTimeout(async () => {
                 try {
@@ -726,21 +737,19 @@ class EnhancedDailyTriviaSystem {
             const shuffled = this.seededShuffle([...this.questionBank], seed);
             this.log(`Shuffled ${shuffled.length} questions`);
 
-            // Select 5 questions with varying difficulty for deeper daily teaching
+            // Select 3 questions with varying difficulty for daily practice
             const easyQuestions = shuffled.filter(q => q.difficulty === 'easy');
             const mediumQuestions = shuffled.filter(q => q.difficulty === 'medium');
             const hardQuestions = shuffled.filter(q => q.difficulty === 'hard');
 
             this.todaysQuestions = [
                 easyQuestions[0] || shuffled[0],
-                easyQuestions[1] || shuffled[1],
-                mediumQuestions[0] || shuffled[2],
-                mediumQuestions[1] || shuffled[3],
-                hardQuestions[0] || shuffled[4]
+                mediumQuestions[0] || shuffled[1],
+                hardQuestions[0] || shuffled[2]
             ].filter(Boolean);
 
-            // Ensure we have 5 questions
-            while (this.todaysQuestions.length < 5 && shuffled.length > this.todaysQuestions.length) {
+            // Ensure we have 3 questions
+            while (this.todaysQuestions.length < 3 && shuffled.length > this.todaysQuestions.length) {
                 const nextQ = shuffled[this.todaysQuestions.length];
                 if (nextQ && !this.todaysQuestions.includes(nextQ)) {
                     this.todaysQuestions.push(nextQ);
@@ -823,7 +832,7 @@ class EnhancedDailyTriviaSystem {
         this.audioSystem?.playSound('questionReveal');
 
         // Update question header
-        document.getElementById('questionNumber').textContent = `Question ${questionNum}/5`;
+        document.getElementById('questionNumber').textContent = `Question ${questionNum}/3`;
         document.getElementById('difficultyBadge').textContent = question.difficulty.toUpperCase();
         document.getElementById('difficultyBadge').className = `difficulty-badge difficulty-${question.difficulty}`;
 
