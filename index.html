@@ -261,6 +261,22 @@
                         <a href="login.html" class="btn btn-primary">✨ Start Free Access</a>
                         <a href="books.html" class="btn btn-secondary">Explore Books</a>
                     </div>
+
+                    <!-- Subscriber Count Display -->
+                    <div id="subscriberCount" style="margin-top: 1.5rem; padding: 1rem; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 15px; display: inline-block;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <span style="font-size: 1.5rem;">🌟</span>
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-gold);" id="memberCountDisplay">
+                                    40+
+                                </div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                                    Sacred Members Awakening
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <p style="margin-top: 1rem; font-size: 0.95rem; color: var(--text-secondary);">
                         Try the Enochian Calendar free, then unlock premium features
                     </p>
@@ -1574,6 +1590,54 @@
         
         // Make installPWA globally available
         window.installPWA = installPWA;
+    </script>
+    <!-- Subscriber Count Update Script -->
+    <script>
+        // Load and update subscriber count from Firestore
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (typeof firebase !== 'undefined' && firebase.firestore) {
+                try {
+                    const db = firebase.firestore();
+
+                    // Listen for real-time updates to subscriber count
+                    db.collection('stats').doc('globalStats')
+                        .onSnapshot((doc) => {
+                            if (doc.exists) {
+                                const data = doc.data();
+                                const count = data.totalMembers || data.totalSubscribers || 40;
+                                const displayElement = document.getElementById('memberCountDisplay');
+
+                                if (displayElement) {
+                                    // Animate the count update
+                                    const currentCount = parseInt(displayElement.textContent) || 40;
+                                    const targetCount = count;
+
+                                    if (targetCount > currentCount) {
+                                        let current = currentCount;
+                                        const increment = Math.ceil((targetCount - currentCount) / 20);
+                                        const interval = setInterval(() => {
+                                            current += increment;
+                                            if (current >= targetCount) {
+                                                current = targetCount;
+                                                clearInterval(interval);
+                                            }
+                                            displayElement.textContent = current >= 100 ? current.toLocaleString() : `${current}+`;
+                                        }, 50);
+                                    } else {
+                                        displayElement.textContent = targetCount >= 100 ? targetCount.toLocaleString() : `${targetCount}+`;
+                                    }
+                                }
+                            }
+                        }, (error) => {
+                            console.error('Error fetching subscriber count:', error);
+                            // Keep the default 40+ if error occurs
+                        });
+
+                } catch (error) {
+                    console.error('Error initializing subscriber count:', error);
+                }
+            }
+        });
     </script>
 </body>
 </html>
