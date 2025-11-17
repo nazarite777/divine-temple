@@ -1,20 +1,690 @@
-﻿<!--  CRYSTAL MATCHING MEMORY GAME SECTION -->
-<section id="crystal-memory-section" class="game-section" data-title="Crystal Memory Quest">
-    <div class="section-content">
-        <div class="section-header">
-            <h2 class="section-title">
-                <span class="title-icon"></span>
-                Crystal Memory Quest
-            </h2>
-            <p class="section-description">
-                Learn crystal healing properties through memory gameplay.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crystal Memory Quest - Divine Temple</title>
+
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#d4af37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Divine Temple">
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Divine Temple Systems -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/universal-progress-system.js"></script>
+    <script src="../js/divine-progress-widget.js"></script>
+
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #4fc3f7;
+            --accent-green: #66bb6a;
+            --accent-pink: #ec4899;
+            --dark-bg: #0F0F23;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+
+            /* Crystal Colors */
+            --crystal-clear: #E0F2FE;
+            --crystal-rose: #FECDD3;
+            --crystal-amethyst: #DDD6FE;
+            --crystal-citrine: #FEF3C7;
+            --crystal-emerald: #D1FAE5;
+            --crystal-obsidian: #374151;
+            --crystal-aquamarine: #CFFAFE;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a1e 0%, #1a1a2e 50%, #0f3460 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        /* Header */
+        .game-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .game-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .game-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Menu Screen */
+        #menuScreen {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+        }
+
+        .difficulty-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .difficulty-btn {
+            padding: 2rem;
+            background: var(--glass-bg);
+            border: 2px solid var(--glass-border);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .difficulty-btn:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .difficulty-btn.selected {
+            border-color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.15);
+        }
+
+        .difficulty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .difficulty-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .difficulty-details {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .difficulty-xp {
+            font-size: 0.85rem;
+            color: var(--accent-purple);
+            font-weight: 600;
+        }
+
+        .start-game-btn {
+            width: 100%;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, var(--primary-gold), #F59E0B);
+            border: none;
+            border-radius: 15px;
+            color: #0a0a1e;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+        }
+
+        .start-game-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .start-game-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Best Times */
+        .best-times {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .best-times h3 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .times-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .time-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .time-card-title {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .time-card-value {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Game Board */
+        #gameBoard {
+            display: none;
+        }
+
+        #gameBoard.active {
+            display: block;
+        }
+
+        .board-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .game-info {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-gold);
+            margin-bottom: 0.25rem;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .control-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .cards-grid.easy {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .cards-grid.medium {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .cards-grid.hard {
+            grid-template-columns: repeat(6, 1fr);
+        }
+
+        .card {
+            aspect-ratio: 1;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .card:hover:not(.flipped):not(.matched) {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card.matched {
+            border-color: var(--accent-green);
+            background: rgba(102, 187, 106, 0.1);
+            cursor: default;
+            animation: matchPulse 0.5s ease;
+        }
+
+        @keyframes matchPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border-radius: 15px;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(139, 92, 246, 0.2));
+            font-size: 3rem;
+        }
+
+        .card-front {
+            transform: rotateY(180deg);
+            background: var(--glass-bg);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary-gold);
+            text-align: center;
+        }
+
+        /* Victory Screen */
+        #victoryScreen {
+            display: none;
+        }
+
+        #victoryScreen.active {
+            display: block;
+        }
+
+        .victory-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--primary-gold);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .victory-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .victory-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--primary-gold);
+            margin-bottom: 2rem;
+        }
+
+        .victory-stats {
+            display: grid;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .stat-value {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .xp-reward {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-purple);
+            margin: 1.5rem 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-gold), #F59E0B);
+            color: #0a0a1e;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .new-record {
+            color: var(--accent-green);
+            font-weight: 600;
+            margin: 1rem 0;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2rem;
+            }
+
+            .cards-grid.easy {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cards-grid.medium {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .cards-grid.hard {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .card-icon {
+                font-size: 2rem;
+            }
+
+            .card-name {
+                font-size: 0.7rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <button class="back-btn" onclick="window.parent.postMessage('back', '*')">
+            ← Back to Temple
+        </button>
+
+        <!-- Header -->
+        <div class="game-header">
+            <h1 class="game-title">💎 Crystal Memory Quest</h1>
+            <p class="game-subtitle">
+                Match crystals and learn their healing properties. Master the energy of sacred stones!
             </p>
         </div>
-        
-        <div class="game-container">
-            <div id="crystalMemoryContainer" class="crystal-memory-container">
-                <!-- Game interface will be generated here by JavaScript -->
+
+        <!-- Menu Screen -->
+        <div id="menuScreen">
+            <div class="difficulty-buttons">
+                <div class="difficulty-btn" data-difficulty="easy" onclick="selectDifficulty('easy')">
+                    <div class="difficulty-icon">🌱</div>
+                    <div class="difficulty-name">Easy</div>
+                    <div class="difficulty-details">4 Pairs • 8 Cards</div>
+                    <div class="difficulty-xp">50-100 XP</div>
+                </div>
+
+                <div class="difficulty-btn" data-difficulty="medium" onclick="selectDifficulty('medium')">
+                    <div class="difficulty-icon">⚡</div>
+                    <div class="difficulty-name">Medium</div>
+                    <div class="difficulty-details">8 Pairs • 16 Cards</div>
+                    <div class="difficulty-xp">100-200 XP</div>
+                </div>
+
+                <div class="difficulty-btn" data-difficulty="hard" onclick="selectDifficulty('hard')">
+                    <div class="difficulty-icon">🔥</div>
+                    <div class="difficulty-name">Hard</div>
+                    <div class="difficulty-details">12 Pairs • 24 Cards</div>
+                    <div class="difficulty-xp">200-400 XP</div>
+                </div>
+            </div>
+
+            <button class="start-game-btn" onclick="startGame()" disabled>Select a Difficulty to Start</button>
+        </div>
+
+        <!-- Best Times -->
+        <div class="best-times">
+            <h3>🏆 Your Best Times</h3>
+            <div class="times-grid">
+                <div class="time-card">
+                    <div class="time-card-title">Easy</div>
+                    <div class="time-card-value" id="bestTimeEasy">--:--</div>
+                </div>
+                <div class="time-card">
+                    <div class="time-card-title">Medium</div>
+                    <div class="time-card-value" id="bestTimeMedium">--:--</div>
+                </div>
+                <div class="time-card">
+                    <div class="time-card-title">Hard</div>
+                    <div class="time-card-value" id="bestTimeHard">--:--</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Board -->
+        <div id="gameBoard">
+            <div class="board-header">
+                <div class="game-info">
+                    <div class="info-item">
+                        <div class="info-value" id="timeValue">00:00</div>
+                        <div class="info-label">Time</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-value" id="movesValue">0</div>
+                        <div class="info-label">Moves</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-value" id="pairsValue">0/0</div>
+                        <div class="info-label">Pairs Found</div>
+                    </div>
+                </div>
+                <div class="game-controls">
+                    <button class="control-btn" onclick="resetGame()">🔄 Reset</button>
+                    <button class="control-btn" onclick="backToMenu()">📋 Menu</button>
+                </div>
+            </div>
+
+            <div id="cardsGrid" class="cards-grid">
+                <!-- Cards will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Victory Screen -->
+        <div id="victoryScreen">
+            <div class="victory-content">
+                <div class="victory-icon">💎</div>
+                <h2 class="victory-title">Crystal Mastery!</h2>
+
+                <div class="victory-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Time</span>
+                        <span class="stat-value" id="finalTime">00:00</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Moves</span>
+                        <span class="stat-value" id="finalMoves">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Efficiency</span>
+                        <span class="stat-value" id="finalEfficiency">100%</span>
+                    </div>
+                </div>
+
+                <div id="newRecordMsg" class="new-record" style="display: none;">
+                    🎉 New Best Time!
+                </div>
+
+                <div class="xp-reward">
+                    +<span id="xpEarned">0</span> XP
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="playAgain()">Play Again</button>
+                    <button class="btn btn-secondary" onclick="backToMenu()">Back to Menu</button>
+                </div>
             </div>
         </div>
     </div>
-</section>
+
+    <!-- Crystal Memory Game System -->
+    <script src="../js/crystal-memory-game.js"></script>
+</body>
+</html>
