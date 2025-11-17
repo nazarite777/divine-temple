@@ -2288,6 +2288,65 @@
         });
     </script>
     
+    <!-- Member Chat System -->
+    <script src="js/member-chat-system.js"></script>
+
+    <!-- Member Chat UI Integration -->
+    <script>
+        // Add floating chat button to page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create floating chat button
+            const chatButton = document.createElement('button');
+            chatButton.id = 'floatingChatBtn';
+            chatButton.innerHTML = '💬';
+            chatButton.title = 'Member Chat';
+            chatButton.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                font-size: 28px;
+                cursor: pointer;
+                box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+                z-index: 9999;
+                transition: all 0.3s ease;
+                display: none;
+            `;
+
+            chatButton.onmouseover = function() {
+                this.style.transform = 'scale(1.1)';
+                this.style.boxShadow = '0 6px 30px rgba(102, 126, 234, 0.6)';
+            };
+
+            chatButton.onmouseout = function() {
+                this.style.transform = 'scale(1)';
+                this.style.boxShadow = '0 4px 20px rgba(102, 126, 234, 0.4)';
+            };
+
+            chatButton.onclick = function() {
+                if (window.memberChatSystem) {
+                    window.memberChatSystem.openChatModal();
+                }
+            };
+
+            document.body.appendChild(chatButton);
+
+            // Show chat button when user is authenticated
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    chatButton.style.display = 'flex';
+                    chatButton.style.alignItems = 'center';
+                    chatButton.style.justifyContent = 'center';
+                }
+            });
+        });
+    </script>
+
     <!-- PWA Installation Script -->
     <script>
         let deferredPrompt;

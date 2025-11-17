@@ -158,3 +158,56 @@ exports.healthCheck = functions.https.onRequest((req, res) => {
         }
     });
 });
+
+// Update subscriber count (runs every hour)
+exports.updateSubscriberCount = functions.pubsub.schedule('every 1 hours').onRun(async (context) => {
+    try {
+        const db = admin.firestore();
+
+        // Count users from userProgress collection (more accurate for active members)
+        const userProgressSnapshot = await db.collection('userProgress').count().get();
+        const totalMembers = userProgressSnapshot.data().count;
+
+        // Update stats collection
+        await db.collection('stats').doc('globalStats').set({
+            totalMembers: totalMembers,
+            totalSubscribers: totalMembers, // Same as members for now
+            lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+
+        console.log(`✅ Subscriber count updated: ${totalMembers} members`);
+        return null;
+    } catch (error) {
+        console.error('❌ Error updating subscriber count:', error);
+        return null;
+    }
+});
+
+// Manually trigger subscriber count update (callable function)
+exports.refreshSubscriberCount = functions.https.onCall(async (data, context) => {
+    try {
+        const db = admin.firestore();
+
+        // Count users from userProgress collection
+        const userProgressSnapshot = await db.collection('userProgress').count().get();
+        const totalMembers = userProgressSnapshot.data().count;
+
+        // Update stats collection
+        await db.collection('stats').doc('globalStats').set({
+            totalMembers: totalMembers,
+            totalSubscribers: totalMembers,
+            lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+
+        console.log(`✅ Subscriber count manually refreshed: ${totalMembers} members`);
+
+        return {
+            success: true,
+            totalMembers: totalMembers,
+            message: `Subscriber count updated: ${totalMembers} members`
+        };
+    } catch (error) {
+        console.error('❌ Error refreshing subscriber count:', error);
+        throw new functions.https.HttpsError('internal', 'Failed to refresh subscriber count');
+    }
+});
