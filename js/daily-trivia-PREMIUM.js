@@ -75,6 +75,90 @@ class PremiumTriviaSystem {
                     correct: 1,
                     explanation: "Atziluth is the highest of the Four Worlds, the realm of pure divine emanation where the Sephiroth exist in their most refined form. It's the world of divine names and archetypes, closest to the Ein Sof (infinite).",
                     sources: ["Chaim Vital", "Etz Chaim"]
+                },
+                {
+                    id: "kab_004",
+                    difficulty: "seeker",
+                    question: "What is Ein Sof in Kabbalistic teaching?",
+                    answers: [
+                        "The first Sephirah on the Tree of Life",
+                        "The infinite, unknowable aspect of God before manifestation",
+                        "The name of a famous Kabbalist",
+                        "The lowest world of physical matter"
+                    ],
+                    correct: 1,
+                    explanation: "Ein Sof means 'without end' or 'infinite.' It represents the absolute, unknowable essence of the Divine before any manifestation or emanation. It's beyond all attributes, names, and comprehension - the infinite source from which the Sephiroth emanate.",
+                    sources: ["Zohar", "Isaac Luria teachings"]
+                },
+                {
+                    id: "kab_005",
+                    difficulty: "initiate",
+                    question: "What is the significance of the Middle Pillar on the Tree of Life?",
+                    answers: [
+                        "It represents physical strength",
+                        "It represents the balanced path of consciousness between mercy and severity",
+                        "It's the most dangerous path to traverse",
+                        "It only connects two Sephiroth"
+                    ],
+                    correct: 1,
+                    explanation: "The Middle Pillar (Keter-Tiferet-Yesod-Malkuth) represents perfect balance between the Pillar of Mercy (right) and Pillar of Severity (left). It's the central channel of equilibrium where divine consciousness descends and human consciousness ascends in harmony.",
+                    sources: ["Golden Dawn", "Kabbalistic meditation practices"]
+                },
+                {
+                    id: "kab_006",
+                    difficulty: "initiate",
+                    question: "What does Tiferet (Beauty) represent on the Tree of Life?",
+                    answers: [
+                        "Physical attractiveness",
+                        "The harmonious center where all opposites unite in perfect balance",
+                        "Artistic talent",
+                        "The beauty of nature"
+                    ],
+                    correct: 1,
+                    explanation: "Tiferet is the central Sephirah, representing the heart of the Tree. It harmonizes all opposing forces - mercy and severity, expansion and contraction - into divine beauty and balance. It's associated with the awakened heart and Christ consciousness.",
+                    sources: ["Zohar", "Kabbalistic cosmology"]
+                },
+                {
+                    id: "kab_007",
+                    difficulty: "adept",
+                    question: "What is the Kabbalistic understanding of the three veils of negative existence before manifestation?",
+                    answers: [
+                        "Three types of darkness in the universe",
+                        "Ain (Nothing), Ain Soph (Limitless), Ain Soph Aur (Limitless Light)",
+                        "Three stages of meditation",
+                        "The three lower worlds"
+                    ],
+                    correct: 1,
+                    explanation: "The Three Veils represent stages before creation: Ain (absolute nothingness), Ain Soph (infinite nothingness), and Ain Soph Aur (limitless light emerging from infinity). These are the gradual manifestation from absolute void to the first glimmer of existence before Keter.",
+                    sources: ["Isaac Luria", "Advanced Kabbalistic cosmology"]
+                },
+                {
+                    id: "kab_008",
+                    difficulty: "adept",
+                    question: "What is the purpose of the Lightning Flash path descending the Tree of Life?",
+                    answers: [
+                        "To show the path of enlightenment upward",
+                        "To map how divine consciousness descends from Ein Sof into material manifestation",
+                        "To represent destruction",
+                        "To show the fastest meditation technique"
+                    ],
+                    correct: 1,
+                    explanation: "The Lightning Flash traces how consciousness descends from Keter through each Sephirah to Malkuth, showing the path of divine emanation from pure spirit into physical matter. It's the descent of the Word creating reality, while the serpent path shows the return journey of awakening.",
+                    sources: ["Sefer Yetzirah", "Kabbalistic tree symbolism"]
+                },
+                {
+                    id: "kab_009",
+                    difficulty: "adept",
+                    question: "What is Tzimtzum in Lurianic Kabbalah?",
+                    answers: [
+                        "A meditation technique for beginners",
+                        "The divine contraction where God withdrew to create space for the universe",
+                        "The expansion of consciousness",
+                        "A type of angelic being"
+                    ],
+                    correct: 1,
+                    explanation: "Tzimtzum is the paradoxical concept that the infinite Ein Sof contracted or withdrew itself to create a 'space' where finite reality could exist. This divine self-limitation allowed for creation and free will, as otherwise the infinite would fill all space leaving no room for anything else.",
+                    sources: ["Isaac Luria", "Lurianic Kabbalah"]
                 }
             ]
         },
@@ -124,6 +208,90 @@ class PremiumTriviaSystem {
                     correct: 1,
                     explanation: "The 364-day calendar creates perfect symmetry with four seasons of exactly 91 days (13 weeks) each. This reflects the divine order of creation and ensures that festivals always fall on the same days of the week, maintaining cosmic harmony.",
                     sources: ["1 Enoch 72-82", "Book of Jubilees"]
+                },
+                {
+                    id: "eno_004",
+                    difficulty: "seeker",
+                    question: "Who is Metatron in the Book of Enoch tradition?",
+                    answers: [
+                        "A fallen angel",
+                        "Enoch transformed into the highest archangel, scribe of God",
+                        "Noah's teacher",
+                        "The angel of death"
+                    ],
+                    correct: 1,
+                    explanation: "Metatron is identified as Enoch after his transformation into an angel. He became the supreme angel, sitting closest to God's throne as the divine scribe and 'Lesser YHVH.' His title 'Prince of the Presence' reflects his role as intermediary between God and creation.",
+                    sources: ["3 Enoch", "Hebrew Enoch"]
+                },
+                {
+                    id: "eno_005",
+                    difficulty: "initiate",
+                    question: "What are the seven heavens described in Enochian literature?",
+                    answers: [
+                        "Seven stages of hell for the wicked",
+                        "Seven ascending realms of consciousness and angelic orders culminating in God's throne",
+                        "Seven planets in the ancient solar system",
+                        "Seven different afterlife destinations"
+                    ],
+                    correct: 1,
+                    explanation: "The seven heavens represent ascending levels of spiritual reality, each governed by different angelic orders and containing specific mysteries. Enoch journeyed through all seven, culminating in the seventh heaven where God's throne resides, representing the highest state of divine consciousness.",
+                    sources: ["2 Enoch", "Ancient apocalyptic literature"]
+                },
+                {
+                    id: "eno_006",
+                    difficulty: "initiate",
+                    question: "What is the significance of the Nephilim in the Enochian narrative?",
+                    answers: [
+                        "They were ordinary giants with no spiritual meaning",
+                        "The offspring of Watchers and human women, representing corrupted consciousness",
+                        "A tribe of peaceful giants",
+                        "Guardians of sacred knowledge"
+                    ],
+                    correct: 1,
+                    explanation: "The Nephilim were hybrid beings born from the union of fallen Watchers and human women. They represent the corruption that occurs when spiritual forces mix improperly with material existence, creating imbalance. Their great size symbolizes the distortion of natural order.",
+                    sources: ["1 Enoch 7", "Genesis 6:4", "Book of Giants"]
+                },
+                {
+                    id: "eno_007",
+                    difficulty: "adept",
+                    question: "What is the deeper spiritual meaning of Enoch's ascension without experiencing death?",
+                    answers: [
+                        "He was lucky to avoid dying",
+                        "He achieved complete transformation of consciousness while embodied, transcending death",
+                        "God made a random exception for him",
+                        "It's just a metaphor with no real meaning"
+                    ],
+                    correct: 1,
+                    explanation: "Enoch's ascension represents the possibility of complete spiritual transformation while still in the body - the alchemical transmutation of the physical into the spiritual. 'Enoch walked with God and was not, for God took him' signifies achieving such unity with divine consciousness that death becomes irrelevant.",
+                    sources: ["Genesis 5:24", "Hebrews 11:5", "Mystical Judaism"]
+                },
+                {
+                    id: "eno_008",
+                    difficulty: "adept",
+                    question: "What do the 'secrets of the cosmos' revealed to Enoch represent spiritually?",
+                    answers: [
+                        "Ancient astronomy knowledge",
+                        "The hidden structures of reality and consciousness that govern creation",
+                        "Weather prediction methods",
+                        "Mathematical formulas"
+                    ],
+                    correct: 1,
+                    explanation: "The cosmic secrets revealed to Enoch include the movements of celestial bodies, the nature of thunder and lightning, and the paths of angels - representing the hidden laws governing both outer cosmos and inner consciousness. These mysteries show how macrocosm and microcosm mirror each other.",
+                    sources: ["1 Enoch 17-36", "Astronomical Book"]
+                },
+                {
+                    id: "eno_009",
+                    difficulty: "adept",
+                    question: "What is the significance of Enoch receiving a pen and ink in the heavenly court?",
+                    answers: [
+                        "He became a simple scribe",
+                        "He became the divine recorder who writes reality into existence through sacred script",
+                        "He learned basic literacy",
+                        "He documented ancient history"
+                    ],
+                    correct: 1,
+                    explanation: "Enoch's role as heavenly scribe goes beyond mere recording - he participates in the creative act itself. In mystical Judaism, the act of writing divine truths is a form of co-creation with God. Enoch writing equals the logos manifesting, showing how consciousness creates reality through sacred knowledge.",
+                    sources: ["3 Enoch", "Merkabah mysticism"]
                 }
             ]
         },
@@ -565,6 +733,139 @@ class PremiumTriviaSystem {
                     correct: 1,
                     explanation: "Mary Magdalene represents the sacred feminine gnosis (direct knowing) that complements the masculine logos (word/teaching). In Gnostic texts, she receives the highest teachings because the feminine principle embodies the receptive wisdom needed for direct spiritual realization.",
                     sources: ["Gospel of Mary", "Gospel of Philip"]
+                }
+            ]
+        },
+
+        sacred_numerology: {
+            name: "🔢 Sacred Numerology & Symbolism",
+            description: "The mystical science of numbers and divine patterns",
+            questions: [
+                {
+                    id: "num_001",
+                    difficulty: "seeker",
+                    question: "What does the number 7 represent in sacred numerology?",
+                    answers: [
+                        "Material wealth and abundance",
+                        "Spiritual completion and divine perfection",
+                        "Physical strength",
+                        "Bad luck and misfortune"
+                    ],
+                    correct: 1,
+                    explanation: "The number 7 represents spiritual completion and divine perfection. It appears throughout sacred texts: 7 days of creation, 7 chakras, 7 seals, 7 heavens. It symbolizes the union of the divine (3) with the earthly (4), creating spiritual wholeness.",
+                    sources: ["Biblical numerology", "Pythagorean teachings"]
+                },
+                {
+                    id: "num_002",
+                    difficulty: "seeker",
+                    question: "What is the significance of the number 3 in spiritual traditions?",
+                    answers: [
+                        "The number of human senses",
+                        "The trinity principle - mind, body, spirit or creation, preservation, destruction",
+                        "The number of physical dimensions",
+                        "The number of elements (earth, water, fire)"
+                    ],
+                    correct: 1,
+                    explanation: "The number 3 represents the divine trinity principle found across traditions: Christian Trinity (Father-Son-Spirit), Hindu Trimurti (Brahma-Vishnu-Shiva), and the threefold nature of human consciousness (mind-body-spirit). It represents creative manifestation.",
+                    sources: ["Universal symbolism", "Trinitarian theology"]
+                },
+                {
+                    id: "num_003",
+                    difficulty: "initiate",
+                    question: "In Kabbalah, what does the number 22 represent?",
+                    answers: [
+                        "The 22 letters of the Hebrew alphabet and paths on the Tree of Life",
+                        "The 22 archangels guarding heaven",
+                        "The 22 sacred books in the Torah",
+                        "The 22 stages of enlightenment"
+                    ],
+                    correct: 0,
+                    explanation: "The number 22 corresponds to the 22 letters of the Hebrew alphabet, which are also the 22 paths connecting the 10 Sephiroth on the Tree of Life. Each letter is a cosmic force and creative energy, making 22 the number of manifesting divine word into reality.",
+                    sources: ["Sefer Yetzirah", "Kabbalistic teachings"]
+                },
+                {
+                    id: "num_004",
+                    difficulty: "initiate",
+                    question: "What is the spiritual significance of 11:11?",
+                    answers: [
+                        "It's just a coincidence with no meaning",
+                        "A portal number signaling spiritual awakening and alignment",
+                        "A warning of danger",
+                        "The time to pray daily"
+                    ],
+                    correct: 1,
+                    explanation: "11:11 is considered a 'wake-up call' from the universe. The master number 11 represents spiritual illumination and intuition. When doubled (11:11), it's seen as a portal or gateway, signaling that you're in alignment with higher consciousness and should pay attention to synchronicities.",
+                    sources: ["Numerology", "Spiritual synchronicity studies"]
+                },
+                {
+                    id: "num_005",
+                    difficulty: "initiate",
+                    question: "What does the number 12 represent in sacred geometry and spirituality?",
+                    answers: [
+                        "The number of months in a year only",
+                        "Divine government, cosmic order, and completion of cycles",
+                        "The number of disciples only",
+                        "Physical manifestation"
+                    ],
+                    correct: 1,
+                    explanation: "The number 12 represents divine government and cosmic order: 12 zodiac signs, 12 tribes of Israel, 12 apostles, 12 hours, 12 months. It's 3 (divine) × 4 (earthly), symbolizing heaven's rule over earth and the completion of cosmic cycles.",
+                    sources: ["Sacred geometry", "Biblical numerology"]
+                },
+                {
+                    id: "num_006",
+                    difficulty: "adept",
+                    question: "What is the esoteric meaning of 666 beyond the 'number of the beast'?",
+                    answers: [
+                        "Pure evil with no other meaning",
+                        "The number of carbon (6 protons, 6 neutrons, 6 electrons) representing material consciousness",
+                        "A random number chosen for dramatic effect",
+                        "The number of demons in hell"
+                    ],
+                    correct: 1,
+                    explanation: "666 is the number of carbon, the basis of physical life (6 protons, 6 neutrons, 6 electrons). Esoterically, it represents material consciousness trapped in the physical realm. It's not inherently evil but symbolizes consciousness identified solely with matter, missing the spiritual '7' of divine completion.",
+                    sources: ["Esoteric Christianity", "Scientific symbolism"]
+                },
+                {
+                    id: "num_007",
+                    difficulty: "adept",
+                    question: "In sacred numerology, what does reducing numbers to their root digit (e.g., 23 = 2+3 = 5) reveal?",
+                    answers: [
+                        "Mathematical shortcuts with no spiritual meaning",
+                        "The vibrational essence and core spiritual frequency of that number",
+                        "A way to simplify calculations",
+                        "The age of the universe"
+                    ],
+                    correct: 1,
+                    explanation: "Digit reduction reveals the vibrational essence of a number. Each root digit (1-9) carries specific spiritual frequencies and meanings. This process shows that complex manifestations ultimately reduce to fundamental spiritual principles, reflecting the hermetic axiom 'as above, so below.'",
+                    sources: ["Pythagorean numerology", "Chaldean numerology"]
+                },
+                {
+                    id: "num_008",
+                    difficulty: "adept",
+                    question: "What is the significance of the number 108 in Eastern spirituality?",
+                    answers: [
+                        "The exact number of Hindu gods",
+                        "A sacred number representing the universe (108 beads on mala, 108 Upanishads, etc.)",
+                        "The number of years in a spiritual cycle",
+                        "The temperature of enlightenment"
+                    ],
+                    correct: 1,
+                    explanation: "108 is supremely sacred: 108 Upanishads, 108 mala beads, 108 marma points in Ayurveda, 108 sacred sites. Mathematically, 1+0+8=9 (completion). The distance from Earth to Sun is approximately 108 times the Sun's diameter, reflecting cosmic harmony in sacred architecture.",
+                    sources: ["Vedic mathematics", "Buddhist traditions"]
+                },
+                {
+                    id: "num_009",
+                    difficulty: "adept",
+                    question: "What is the Fibonacci sequence's relationship to spiritual growth?",
+                    answers: [
+                        "No relationship - it's just mathematics",
+                        "It maps the spiral of consciousness evolution and divine growth patterns in nature",
+                        "It predicts the future",
+                        "It determines meditation lengths"
+                    ],
+                    correct: 1,
+                    explanation: "The Fibonacci sequence (1,1,2,3,5,8,13...) creates the golden spiral found in galaxies, DNA, flowers, and hurricanes. Spiritually, it represents how consciousness builds upon itself - each level incorporates and transcends the previous, creating the sacred spiral of evolution toward divine perfection.",
+                    sources: ["Sacred geometry", "Natural mathematics"]
                 }
             ]
         }
