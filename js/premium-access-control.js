@@ -119,6 +119,55 @@
         },
 
         /**
+         * Check if user is authorized for premium access
+         */
+        async checkAuthorization(user) {
+            try {
+                // First, check if user is in the authorized list (this takes priority)
+                const isAuthorized = this.isUserAuthorized(user.email, user.displayName);
+                
+                if (isAuthorized) {
+                    console.log('✅ User is in authorized list - granting premium access');
+                    this.membershipLevel = 'authorized';
+                    this.hasPremiumAccess = true;
+                    localStorage.setItem('membershipLevel', 'authorized');
+                    localStorage.setItem('isAuthorizedUser', 'true');
+                    return;
+                }
+                
+                // If not in authorized list, check Firestore for membership level
+                // This allows purchased memberships to work for future expansion
+                await this.getMembershipLevel(user.uid);
+                
+                // For now, block all non-authorized users regardless of membership
+                // This can be changed later to allow purchased memberships
+                this.hasPremiumAccess = false;
+                console.log('⛔ User not in authorized list - blocking premium access');
+                localStorage.setItem('isAuthorizedUser', 'false');
+                
+            } catch (error) {
+                console.error('❌ Error checking authorization:', error);
+                this.membershipLevel = 'basic';
+                this.hasPremiumAccess = false;
+            }
+        },
+
+        /**
+         * Check if user is in the authorized premium users list
+         */
+        isUserAuthorized(email, username) {
+            if (!email && !username) return false;
+            
+            const lowerEmail = email ? email.toLowerCase() : '';
+            const lowerUsername = username ? username.toLowerCase() : '';
+            
+            return AUTHORIZED_PREMIUM_USERS.some(authorizedUser => {
+                const lowerAuthorized = authorizedUser.toLowerCase();
+                return lowerEmail === lowerAuthorized || lowerUsername === lowerAuthorized;
+            });
+        },
+
+        /**
          * Get user's membership level from Firestore
          */
         async getMembershipLevel(userId) {
@@ -243,7 +292,18 @@
             const currentUser = this.currentUser;
             const email = currentUser?.email || 'unknown';
             
-            this.showAccessDeniedMessage(`🚫 ACCESS RESTRICTED: Only authorized users can access premium content. Your account (${email}) is not authorized for premium access. Contact support if you believe this is an error.`);
+            // Check if they have a purchased membership but are blocked due to restrictions
+            const membershipLevel = this.membershipLevel;
+            const isPurchasedMember = membershipLevel && PREMIUM_TIERS.includes(membershipLevel);
+            
+            let message;
+            if (isPurchasedMember) {
+                message = `🚫 ACCESS TEMPORARILY RESTRICTED: Premium access is currently limited to authorized accounts only. Your purchased membership (${membershipLevel}) will be honored when restrictions are lifted. Account: ${email}`;
+            } else {
+                message = `🚫 ACCESS RESTRICTED: Only authorized users can access premium content. Your account (${email}) is not authorized for premium access. Contact support if you believe this is an error.`;
+            }
+            
+            this.showAccessDeniedMessage(message);
             
             setTimeout(() => {
                 // Redirect to free dashboard

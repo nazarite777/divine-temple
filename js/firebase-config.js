@@ -125,6 +125,37 @@ const FirebaseAuth = {
         });
     },
 
+    // Enable premium access for purchased memberships (admin only)
+    async enablePremiumAccess(userEmail, membershipLevel = 'premium') {
+        const currentUser = auth.currentUser;
+        if (!currentUser || !this.isAuthorizedAdmin(currentUser.email, currentUser.displayName)) {
+            throw new Error('Unauthorized: Only admins can enable premium access');
+        }
+
+        try {
+            // Find user by email
+            const usersQuery = await db.collection('users').where('email', '==', userEmail).get();
+            
+            if (usersQuery.empty) {
+                throw new Error(`User not found: ${userEmail}`);
+            }
+
+            // Update membership level
+            const userDoc = usersQuery.docs[0];
+            await userDoc.ref.update({
+                membershipLevel: membershipLevel,
+                premiumEnabledAt: firebase.firestore.FieldValue.serverTimestamp(),
+                enabledBy: currentUser.email
+            });
+
+            console.log(`✅ Premium access enabled for ${userEmail} with level: ${membershipLevel}`);
+            return { success: true, message: `Premium access enabled for ${userEmail}` };
+        } catch (error) {
+            console.error('❌ Failed to enable premium access:', error);
+            throw error;
+        }
+    },
+
     // Check if current user is admin (based on email)
     isAdmin() {
         const user = auth.currentUser;
