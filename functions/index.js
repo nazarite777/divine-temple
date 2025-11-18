@@ -107,6 +107,77 @@ exports.onUserCreate = functions.auth.user().onCreate(async (user) => {
 /**
  * Stripe Webhook Handler - Updated to handle payments
  */
+/**
+ * Create Stripe Checkout Session - $9.99 Premium Membership
+ */
+exports.createCheckoutSession = functions.https.onCall(async (data, context) => {
+  // Check if user is authenticated
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+  }
+
+  const userId = context.auth.uid;
+  const userEmail = context.auth.token.email;
+
+  // Check if user already has premium
+  const hasPremium = await checkPremiumAccess(userId);
+  if (hasPremium) {
+    throw new functions.https.HttpsError('already-exists', 'User already has premium access');
+  }
+
+  try {
+    const stripeConfig = functions.config().stripe;
+
+    if (!stripeConfig || !stripeConfig.secret) {
+      throw new functions.https.HttpsError('failed-precondition', 'Stripe configuration is missing');
+    }
+
+    const stripe = require('stripe')(stripeConfig.secret);
+
+    // Create Stripe Checkout Session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'payment', // One-time payment
+      customer_email: userEmail,
+      client_reference_id: userId,
+      metadata: {
+        userId: userId,
+        productType: 'premium_membership'
+      },
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Divine Temple Premium Membership',
+              description: 'Lifetime access to all premium features',
+              images: ['https://i.imgur.com/divine-temple-logo.png'] // Add your logo URL
+            },
+            unit_amount: 999, // $9.99 in cents
+          },
+          quantity: 1,
+        },
+      ],
+      success_url: `${data.successUrl || 'https://your-domain.com/success'}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: data.cancelUrl || 'https://your-domain.com/free-dashboard',
+    });
+
+    console.log(`Checkout session created for user ${userId}: ${session.id}`);
+
+    return {
+      sessionId: session.id,
+      url: session.url
+    };
+
+  } catch (error) {
+    console.error('Error creating checkout session:', error);
+    throw new functions.https.HttpsError('internal', error.message);
+  }
+});
+
+/**
+ * Stripe Webhook Handler - Updated to handle payments
+ */
 exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
   const stripeConfig = functions.config().stripe;
 
@@ -142,12 +213,14 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
           await admin.firestore().collection('users').doc(userId).update({
             isPremium: true,
             membershipLevel: 'premium',
-            subscriptionId: session.subscription,
+            subscriptionId: session.subscription || session.id,
+            stripeCustomerId: session.customer,
             lastPaymentDate: admin.firestore.FieldValue.serverTimestamp(),
+            paymentAmount: session.amount_total / 100, // Convert cents to dollars
             updatedAt: admin.firestore.FieldValue.serverTimestamp()
           });
 
-          console.log(`User ${userId} upgraded to premium`);
+          console.log(`User ${userId} upgraded to premium - Payment: $${session.amount_total / 100}`);
         } catch (error) {
           console.error('Error updating user to premium:', error);
         }
