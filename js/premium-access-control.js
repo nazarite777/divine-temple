@@ -123,35 +123,40 @@
 
         /**
          * Check if user is authorized for premium access
+         * NOW USES SERVER-SIDE VALIDATION - Cannot be bypassed by client
          */
         async checkAuthorization(user) {
             try {
-                // First, check if user is in the authorized list (this takes priority)
-                const isAuthorized = this.isUserAuthorized(user.email, user.displayName);
-                
-                if (isAuthorized) {
-                    console.log('✅ User is in authorized list - granting premium access');
-                    this.membershipLevel = 'authorized';
-                    this.hasPremiumAccess = true;
-                    localStorage.setItem('membershipLevel', 'authorized');
+                // CRITICAL: Verify with server-side Cloud Function
+                // This cannot be bypassed by modifying client-side code
+                const verifyFunction = firebase.functions().httpsCallable('verifyPremiumAccess');
+                const result = await verifyFunction({});
+
+                this.hasPremiumAccess = result.data.hasPremiumAccess;
+
+                if (this.hasPremiumAccess) {
+                    console.log('✅ Server verified premium access');
+
+                    // Also get membership level from Firestore
+                    await this.getMembershipLevel(user.uid);
+
                     localStorage.setItem('isAuthorizedUser', 'true');
-                    return;
+                } else {
+                    console.log('⛔ Server denied premium access');
+                    this.membershipLevel = 'free';
+                    this.hasPremiumAccess = false;
+                    localStorage.setItem('isAuthorizedUser', 'false');
+                    localStorage.setItem('membershipLevel', 'free');
                 }
-                
-                // If not in authorized list, check Firestore for membership level
-                // This allows purchased memberships to work for future expansion
-                await this.getMembershipLevel(user.uid);
-                
-                // For now, block all non-authorized users regardless of membership
-                // This can be changed later to allow purchased memberships
-                this.hasPremiumAccess = false;
-                console.log('⛔ User not in authorized list - blocking premium access');
-                localStorage.setItem('isAuthorizedUser', 'false');
-                
+
             } catch (error) {
                 console.error('❌ Error checking authorization:', error);
-                this.membershipLevel = 'basic';
+                console.error('❌ Server validation failed - denying access');
+
+                // If server check fails, deny access for security
+                this.membershipLevel = 'free';
                 this.hasPremiumAccess = false;
+                localStorage.setItem('isAuthorizedUser', 'false');
             }
         },
 
