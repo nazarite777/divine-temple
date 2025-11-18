@@ -1,12 +1,20 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const stripe = require('stripe')(functions.config().stripe.secret);
 
 admin.initializeApp();
 
 exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
+  // Get Stripe configuration
+  const stripeConfig = functions.config().stripe;
+  
+  if (!stripeConfig || !stripeConfig.secret || !stripeConfig.webhook_secret) {
+    console.error('Stripe configuration is missing');
+    return res.status(500).send('Stripe configuration error');
+  }
+  
+  const stripe = require('stripe')(stripeConfig.secret);
   const sig = req.headers['stripe-signature'];
-  const endpointSecret = functions.config().stripe.webhook_secret;
+  const endpointSecret = stripeConfig.webhook_secret;
   
   let event;
   
@@ -21,7 +29,6 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
   switch (event.type) {
     case 'checkout.session.completed':
       const session = event.data.object;
-      // Handle successful payment
       console.log('Payment successful:', session);
       break;
     default:
