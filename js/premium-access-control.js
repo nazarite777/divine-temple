@@ -24,6 +24,8 @@
     // Sections that require premium access
     const PREMIUM_SECTIONS = [
         'daily-trivia-PREMIUM.html',
+        'members-new.html',
+        'members.html', 
         'chakras-auras.html',
         'meditation-mindfulness.html',
         'oracle-divination.html',
@@ -42,7 +44,8 @@
         'sacred-books.html',
         'reward-shop.html',
         'progress-dashboard.html',
-        'calendar.html'
+        'calendar.html',
+        'oracle-divination-hub.html'
     ];
 
     // Free sections accessible to all authenticated users
@@ -260,10 +263,17 @@
             }
 
             // Check if page requires premium access
-            if (this.isCurrentPagePremium() && !this.hasPremiumAccess) {
-                console.warn('⛔ PREMIUM ACCESS BLOCKED - User not in authorized list');
-                this.showAccessBlockedMessage();
-                return false;
+            if (this.isCurrentPagePremium()) {
+                if (!this.hasPremiumAccess) {
+                    console.error('⛔ PREMIUM ACCESS DENIED - User not authorized');
+                    console.error('   User:', this.currentUser?.email);
+                    console.error('   Page:', window.location.pathname);
+                    console.error('   Authorized Users:', AUTHORIZED_PREMIUM_USERS);
+                    this.showAccessBlockedMessage();
+                    return false;
+                } else {
+                    console.log('✅ Premium access granted to authorized user');
+                }
             }
 
             console.log('✅ Access granted');
