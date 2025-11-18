@@ -75,6 +75,90 @@ class PremiumTriviaSystem {
                     correct: 1,
                     explanation: "Atziluth is the highest of the Four Worlds, the realm of pure divine emanation where the Sephiroth exist in their most refined form. It's the world of divine names and archetypes, closest to the Ein Sof (infinite).",
                     sources: ["Chaim Vital", "Etz Chaim"]
+                },
+                {
+                    id: "kab_004",
+                    difficulty: "seeker",
+                    question: "What is Ein Sof in Kabbalistic teaching?",
+                    answers: [
+                        "The first Sephirah on the Tree of Life",
+                        "The infinite, unknowable aspect of God before manifestation",
+                        "The name of a famous Kabbalist",
+                        "The lowest world of physical matter"
+                    ],
+                    correct: 1,
+                    explanation: "Ein Sof means 'without end' or 'infinite.' It represents the absolute, unknowable essence of the Divine before any manifestation or emanation. It's beyond all attributes, names, and comprehension - the infinite source from which the Sephiroth emanate.",
+                    sources: ["Zohar", "Isaac Luria teachings"]
+                },
+                {
+                    id: "kab_005",
+                    difficulty: "initiate",
+                    question: "What is the significance of the Middle Pillar on the Tree of Life?",
+                    answers: [
+                        "It represents physical strength",
+                        "It represents the balanced path of consciousness between mercy and severity",
+                        "It's the most dangerous path to traverse",
+                        "It only connects two Sephiroth"
+                    ],
+                    correct: 1,
+                    explanation: "The Middle Pillar (Keter-Tiferet-Yesod-Malkuth) represents perfect balance between the Pillar of Mercy (right) and Pillar of Severity (left). It's the central channel of equilibrium where divine consciousness descends and human consciousness ascends in harmony.",
+                    sources: ["Golden Dawn", "Kabbalistic meditation practices"]
+                },
+                {
+                    id: "kab_006",
+                    difficulty: "initiate",
+                    question: "What does Tiferet (Beauty) represent on the Tree of Life?",
+                    answers: [
+                        "Physical attractiveness",
+                        "The harmonious center where all opposites unite in perfect balance",
+                        "Artistic talent",
+                        "The beauty of nature"
+                    ],
+                    correct: 1,
+                    explanation: "Tiferet is the central Sephirah, representing the heart of the Tree. It harmonizes all opposing forces - mercy and severity, expansion and contraction - into divine beauty and balance. It's associated with the awakened heart and Christ consciousness.",
+                    sources: ["Zohar", "Kabbalistic cosmology"]
+                },
+                {
+                    id: "kab_007",
+                    difficulty: "adept",
+                    question: "What is the Kabbalistic understanding of the three veils of negative existence before manifestation?",
+                    answers: [
+                        "Three types of darkness in the universe",
+                        "Ain (Nothing), Ain Soph (Limitless), Ain Soph Aur (Limitless Light)",
+                        "Three stages of meditation",
+                        "The three lower worlds"
+                    ],
+                    correct: 1,
+                    explanation: "The Three Veils represent stages before creation: Ain (absolute nothingness), Ain Soph (infinite nothingness), and Ain Soph Aur (limitless light emerging from infinity). These are the gradual manifestation from absolute void to the first glimmer of existence before Keter.",
+                    sources: ["Isaac Luria", "Advanced Kabbalistic cosmology"]
+                },
+                {
+                    id: "kab_008",
+                    difficulty: "adept",
+                    question: "What is the purpose of the Lightning Flash path descending the Tree of Life?",
+                    answers: [
+                        "To show the path of enlightenment upward",
+                        "To map how divine consciousness descends from Ein Sof into material manifestation",
+                        "To represent destruction",
+                        "To show the fastest meditation technique"
+                    ],
+                    correct: 1,
+                    explanation: "The Lightning Flash traces how consciousness descends from Keter through each Sephirah to Malkuth, showing the path of divine emanation from pure spirit into physical matter. It's the descent of the Word creating reality, while the serpent path shows the return journey of awakening.",
+                    sources: ["Sefer Yetzirah", "Kabbalistic tree symbolism"]
+                },
+                {
+                    id: "kab_009",
+                    difficulty: "adept",
+                    question: "What is Tzimtzum in Lurianic Kabbalah?",
+                    answers: [
+                        "A meditation technique for beginners",
+                        "The divine contraction where God withdrew to create space for the universe",
+                        "The expansion of consciousness",
+                        "A type of angelic being"
+                    ],
+                    correct: 1,
+                    explanation: "Tzimtzum is the paradoxical concept that the infinite Ein Sof contracted or withdrew itself to create a 'space' where finite reality could exist. This divine self-limitation allowed for creation and free will, as otherwise the infinite would fill all space leaving no room for anything else.",
+                    sources: ["Isaac Luria", "Lurianic Kabbalah"]
                 }
             ]
         },
@@ -124,6 +208,90 @@ class PremiumTriviaSystem {
                     correct: 1,
                     explanation: "The 364-day calendar creates perfect symmetry with four seasons of exactly 91 days (13 weeks) each. This reflects the divine order of creation and ensures that festivals always fall on the same days of the week, maintaining cosmic harmony.",
                     sources: ["1 Enoch 72-82", "Book of Jubilees"]
+                },
+                {
+                    id: "eno_004",
+                    difficulty: "seeker",
+                    question: "Who is Metatron in the Book of Enoch tradition?",
+                    answers: [
+                        "A fallen angel",
+                        "Enoch transformed into the highest archangel, scribe of God",
+                        "Noah's teacher",
+                        "The angel of death"
+                    ],
+                    correct: 1,
+                    explanation: "Metatron is identified as Enoch after his transformation into an angel. He became the supreme angel, sitting closest to God's throne as the divine scribe and 'Lesser YHVH.' His title 'Prince of the Presence' reflects his role as intermediary between God and creation.",
+                    sources: ["3 Enoch", "Hebrew Enoch"]
+                },
+                {
+                    id: "eno_005",
+                    difficulty: "initiate",
+                    question: "What are the seven heavens described in Enochian literature?",
+                    answers: [
+                        "Seven stages of hell for the wicked",
+                        "Seven ascending realms of consciousness and angelic orders culminating in God's throne",
+                        "Seven planets in the ancient solar system",
+                        "Seven different afterlife destinations"
+                    ],
+                    correct: 1,
+                    explanation: "The seven heavens represent ascending levels of spiritual reality, each governed by different angelic orders and containing specific mysteries. Enoch journeyed through all seven, culminating in the seventh heaven where God's throne resides, representing the highest state of divine consciousness.",
+                    sources: ["2 Enoch", "Ancient apocalyptic literature"]
+                },
+                {
+                    id: "eno_006",
+                    difficulty: "initiate",
+                    question: "What is the significance of the Nephilim in the Enochian narrative?",
+                    answers: [
+                        "They were ordinary giants with no spiritual meaning",
+                        "The offspring of Watchers and human women, representing corrupted consciousness",
+                        "A tribe of peaceful giants",
+                        "Guardians of sacred knowledge"
+                    ],
+                    correct: 1,
+                    explanation: "The Nephilim were hybrid beings born from the union of fallen Watchers and human women. They represent the corruption that occurs when spiritual forces mix improperly with material existence, creating imbalance. Their great size symbolizes the distortion of natural order.",
+                    sources: ["1 Enoch 7", "Genesis 6:4", "Book of Giants"]
+                },
+                {
+                    id: "eno_007",
+                    difficulty: "adept",
+                    question: "What is the deeper spiritual meaning of Enoch's ascension without experiencing death?",
+                    answers: [
+                        "He was lucky to avoid dying",
+                        "He achieved complete transformation of consciousness while embodied, transcending death",
+                        "God made a random exception for him",
+                        "It's just a metaphor with no real meaning"
+                    ],
+                    correct: 1,
+                    explanation: "Enoch's ascension represents the possibility of complete spiritual transformation while still in the body - the alchemical transmutation of the physical into the spiritual. 'Enoch walked with God and was not, for God took him' signifies achieving such unity with divine consciousness that death becomes irrelevant.",
+                    sources: ["Genesis 5:24", "Hebrews 11:5", "Mystical Judaism"]
+                },
+                {
+                    id: "eno_008",
+                    difficulty: "adept",
+                    question: "What do the 'secrets of the cosmos' revealed to Enoch represent spiritually?",
+                    answers: [
+                        "Ancient astronomy knowledge",
+                        "The hidden structures of reality and consciousness that govern creation",
+                        "Weather prediction methods",
+                        "Mathematical formulas"
+                    ],
+                    correct: 1,
+                    explanation: "The cosmic secrets revealed to Enoch include the movements of celestial bodies, the nature of thunder and lightning, and the paths of angels - representing the hidden laws governing both outer cosmos and inner consciousness. These mysteries show how macrocosm and microcosm mirror each other.",
+                    sources: ["1 Enoch 17-36", "Astronomical Book"]
+                },
+                {
+                    id: "eno_009",
+                    difficulty: "adept",
+                    question: "What is the significance of Enoch receiving a pen and ink in the heavenly court?",
+                    answers: [
+                        "He became a simple scribe",
+                        "He became the divine recorder who writes reality into existence through sacred script",
+                        "He learned basic literacy",
+                        "He documented ancient history"
+                    ],
+                    correct: 1,
+                    explanation: "Enoch's role as heavenly scribe goes beyond mere recording - he participates in the creative act itself. In mystical Judaism, the act of writing divine truths is a form of co-creation with God. Enoch writing equals the logos manifesting, showing how consciousness creates reality through sacred knowledge.",
+                    sources: ["3 Enoch", "Merkabah mysticism"]
                 }
             ]
         },
@@ -167,12 +335,96 @@ class PremiumTriviaSystem {
                     answers: [
                         "Confess your sins publicly for salvation",
                         "Express your divine nature to achieve liberation",
-                        "Share your material wealth with others", 
+                        "Share your material wealth with others",
                         "Follow external religious commandments"
                     ],
                     correct: 1,
                     explanation: "This refers to awakening and expressing the divine spark (pneuma) within. The complete saying: 'If you bring forth what is within you, what you bring forth will save you. If you do not bring forth what is within you, what you do not bring forth will destroy you.' This is pure Gnostic teaching about self-realization.",
                     sources: ["Gospel of Thomas, Logion 70"]
+                },
+                {
+                    id: "gno_004",
+                    difficulty: "seeker",
+                    question: "What is 'Gnosis' in Gnostic tradition?",
+                    answers: [
+                        "Knowledge from books",
+                        "Direct experiential knowledge of the divine within",
+                        "Belief in doctrine",
+                        "Following religious rules"
+                    ],
+                    correct: 1,
+                    explanation: "Gnosis means direct, experiential knowledge of spiritual truth - not intellectual belief but lived realization of the divine spark within. It's knowing through personal experience rather than faith or doctrine, the awakening to one's true nature.",
+                    sources: ["Gnostic texts", "Elaine Pagels"]
+                },
+                {
+                    id: "gno_005",
+                    difficulty: "initiate",
+                    question: "What is the role of Archons in Gnostic cosmology?",
+                    answers: [
+                        "Helpful spirits guiding souls",
+                        "Rulers of the material world who keep souls trapped in ignorance",
+                        "Angels of God",
+                        "Enlightened teachers"
+                    ],
+                    correct: 1,
+                    explanation: "Archons are the rulers and authorities of the material realm, working under the Demiurge to keep souls imprisoned in matter and ignorance. They represent the forces - both internal and external - that prevent awakening to gnosis.",
+                    sources: ["Nag Hammadi Library", "On the Origin of the World"]
+                },
+                {
+                    id: "gno_006",
+                    difficulty: "initiate",
+                    question: "What does the Gnostic text 'The Thunder, Perfect Mind' reveal about the divine feminine?",
+                    answers: [
+                        "The feminine is inferior to masculine",
+                        "The divine feminine contains all paradoxes and opposites unified",
+                        "Women should lead churches",
+                        "The goddess is separate from God"
+                    ],
+                    correct: 1,
+                    explanation: "This text speaks in the voice of the divine feminine Sophia, declaring 'I am the first and the last, the honored and scorned, the whore and the holy.' It reveals the divine feminine as the unity of all opposites, transcending duality.",
+                    sources: ["Nag Hammadi", "The Thunder, Perfect Mind"]
+                },
+                {
+                    id: "gno_007",
+                    difficulty: "adept",
+                    question: "What is the Gnostic interpretation of the serpent in the Garden of Eden?",
+                    answers: [
+                        "The serpent is purely evil",
+                        "The serpent is a liberator bringing gnosis against an ignorant creator",
+                        "The serpent represents temptation",
+                        "The serpent is just an animal"
+                    ],
+                    correct: 1,
+                    explanation: "In Gnostic texts, the serpent represents divine wisdom (Sophia) offering humanity gnosis - knowledge of good and evil that would awaken them to the Demiurge's deception. The serpent's 'temptation' is actually liberation from ignorant obedience to a false god.",
+                    sources: ["Hypostasis of the Archons", "Gnostic exegesis"]
+                },
+                {
+                    id: "gno_008",
+                    difficulty: "adept",
+                    question: "What does 'the Bridal Chamber' symbolize in Valentinian Gnosticism?",
+                    answers: [
+                        "Physical marriage ceremony",
+                        "The mystical union where the soul reunites with its divine counterpart",
+                        "A room in heaven",
+                        "Sexual rituals"
+                    ],
+                    correct: 1,
+                    explanation: "The Bridal Chamber represents the highest sacrament - the soul's reunion with its divine other half (angel or pneumatic twin) in the Pleroma. It symbolizes the restoration of primordial wholeness, transcending the division of consciousness.",
+                    sources: ["Gospel of Philip", "Valentinian teachings"]
+                },
+                {
+                    id: "gno_009",
+                    difficulty: "adept",
+                    question: "What is the significance of 'Barbelo' in Gnostic creation?",
+                    answers: [
+                        "A demon opposing God",
+                        "The first emanation, divine Mother-Father aspect of the supreme God",
+                        "A Gnostic prophet",
+                        "An earthly kingdom"
+                    ],
+                    correct: 1,
+                    explanation: "Barbelo is the first emanation from the invisible Spirit, representing the divine androgynous principle - both Mother and Father. She/He is the divine forethought, the first thought of God, from whom all other aeons emanate. Barbelo embodies perfect divine consciousness before creation.",
+                    sources: ["Apocryphon of John", "Sethian Gnosticism"]
                 }
             ]
         },
@@ -222,6 +474,90 @@ class PremiumTriviaSystem {
                     correct: 2,
                     explanation: "The central hexagon in the Flower of Life represents the perfect balance and unity of opposing forces - masculine/feminine, positive/negative, expansion/contraction. It's the point of perfect equilibrium from which all creation emanates in balanced duality.",
                     sources: ["Drunvalo Melchizedek", "Ancient geometric traditions"]
+                },
+                {
+                    id: "geo_004",
+                    difficulty: "seeker",
+                    question: "What is the Vesica Piscis and its spiritual significance?",
+                    answers: [
+                        "An ancient fish symbol",
+                        "The almond-shaped intersection of two circles representing unity and duality",
+                        "A type of meditation pose",
+                        "An astrological sign"
+                    ],
+                    correct: 1,
+                    explanation: "The Vesica Piscis is formed when two circles of equal size overlap, creating an almond shape. It represents the union of spirit and matter, heaven and earth, masculine and feminine. This sacred shape is the womb of creation, symbolizing how all manifestation emerges from the intersection of opposites.",
+                    sources: ["Sacred geometry", "Christian mysticism"]
+                },
+                {
+                    id: "geo_005",
+                    difficulty: "initiate",
+                    question: "What do the five Platonic solids represent in esoteric cosmology?",
+                    answers: [
+                        "Five ancient philosophers",
+                        "The five classical elements and fundamental building blocks of reality",
+                        "Five meditation techniques",
+                        "Five stages of enlightenment"
+                    ],
+                    correct: 1,
+                    explanation: "The five Platonic solids represent the classical elements: tetrahedron (fire), cube (earth), octahedron (air), icosahedron (water), and dodecahedron (ether/universe). These are the only five perfect three-dimensional forms, representing the fundamental geometric patterns underlying all physical creation.",
+                    sources: ["Plato's Timaeus", "Hermetic geometry"]
+                },
+                {
+                    id: "geo_006",
+                    difficulty: "initiate",
+                    question: "What is the spiritual significance of the Sri Yantra?",
+                    answers: [
+                        "A decoration for temples",
+                        "The geometric representation of the cosmos and consciousness from unity to multiplicity",
+                        "An ancient calendar",
+                        "A navigation tool"
+                    ],
+                    correct: 1,
+                    explanation: "The Sri Yantra consists of nine interlocking triangles radiating from a central point (bindu), representing the cosmic journey from unity into manifestation. The upward triangles represent Shiva (masculine), downward represent Shakti (feminine). Their union depicts how consciousness creates reality through the dance of opposites.",
+                    sources: ["Tantric tradition", "Hindu sacred geometry"]
+                },
+                {
+                    id: "geo_007",
+                    difficulty: "adept",
+                    question: "What is the relationship between the Great Pyramid dimensions and Earth's measurements?",
+                    answers: [
+                        "Pure coincidence with no meaning",
+                        "The pyramid encodes Earth's dimensions, creating a scale model of the Northern Hemisphere",
+                        "They are completely unrelated",
+                        "Modern measurements retrofitted to ancient structures"
+                    ],
+                    correct: 1,
+                    explanation: "The Great Pyramid's dimensions encode Earth's measurements with remarkable precision. The perimeter-to-height ratio equals 2π (same as a sphere's circumference to radius). The pyramid's height × 43,200 equals Earth's polar radius. This suggests advanced knowledge of planetary dimensions encoded in sacred architecture.",
+                    sources: ["Graham Hancock", "Geodetic research"]
+                },
+                {
+                    id: "geo_008",
+                    difficulty: "adept",
+                    question: "What does the pentagram represent when point-up versus point-down?",
+                    answers: [
+                        "Good versus evil",
+                        "Spirit ruling matter (up) versus matter ruling spirit (down)",
+                        "Day versus night",
+                        "Male versus female"
+                    ],
+                    correct: 1,
+                    explanation: "The upright pentagram symbolizes spirit (top point) ruling over the four elements (lower four points) - consciousness mastering matter. Inverted, it represents matter ruling spirit - consciousness trapped in material existence. Both are necessary stages in the cycle of manifestation and return.",
+                    sources: ["Western esotericism", "Pythagorean symbolism"]
+                },
+                {
+                    id: "geo_009",
+                    difficulty: "adept",
+                    question: "What is the significance of the torus pattern in sacred geometry?",
+                    answers: [
+                        "It's just a donut shape",
+                        "The fundamental energy pattern of the universe, from atoms to galaxies to consciousness",
+                        "An ancient architectural element",
+                        "A random mathematical curve"
+                    ],
+                    correct: 1,
+                    explanation: "The torus is the fundamental flow pattern of energy in the universe - seen in atoms, electromagnetic fields, hearts, Earth's magnetosphere, and galaxies. It represents how energy flows in a self-sustaining, balanced cycle. Consciousness itself follows this pattern, eternally flowing from source, through manifestation, back to source.",
+                    sources: ["Nassim Haramein", "Unified field theory"]
                 }
             ]
         },
@@ -271,6 +607,90 @@ class PremiumTriviaSystem {
                     correct: 1,
                     explanation: "By using 'I AM' (the same divine name revealed to Moses), Jesus is claiming the eternal, timeless consciousness that exists beyond linear time. This is the Christ consciousness - the eternal divine awareness that is our true nature.",
                     sources: ["John 8:58", "Mystical Christianity interpretations"]
+                },
+                {
+                    id: "bib_004",
+                    difficulty: "seeker",
+                    question: "What does the number 144,000 represent in Revelation?",
+                    answers: [
+                        "The exact number of people going to heaven",
+                        "Symbolic completion: 12 (divine government) × 12 × 1000 (completeness)",
+                        "A random large number",
+                        "The population of ancient Jerusalem"
+                    ],
+                    correct: 1,
+                    explanation: "144,000 is symbolic, not literal. It's 12×12×1000 - representing complete divine government (12 tribes × 12 apostles) multiplied by totality (1000). It symbolizes the perfected consciousness of all humanity awakened to their divine nature.",
+                    sources: ["Revelation 7:4", "Biblical numerology"]
+                },
+                {
+                    id: "bib_005",
+                    difficulty: "initiate",
+                    question: "What is the hidden meaning of Jacob wrestling the angel?",
+                    answers: [
+                        "A literal physical fight with an angel",
+                        "The soul's struggle with its divine nature until achieving integration",
+                        "Jacob's military training",
+                        "A dream with no symbolic meaning"
+                    ],
+                    correct: 1,
+                    explanation: "Jacob wrestling the angel represents the soul's dark night - struggling with the divine aspect of Self until dawn (enlightenment). Jacob's hip injury symbolizes the ego's necessary wounding. His new name 'Israel' (he who wrestles with God) shows that spiritual growth requires confronting and integrating the divine within.",
+                    sources: ["Genesis 32:22-32", "Mystical Judaism"]
+                },
+                {
+                    id: "bib_006",
+                    difficulty: "initiate",
+                    question: "What do the seven days of creation represent beyond literal days?",
+                    answers: [
+                        "Exactly seven 24-hour periods",
+                        "Seven stages of consciousness evolution from matter to spirit",
+                        "An ancient calendar system",
+                        "Arbitrary divisions of time"
+                    ],
+                    correct: 1,
+                    explanation: "The seven days symbolize stages of consciousness development: 1-Light/awareness, 2-Separation/duality, 3-Life emerges, 4-Cycles/time, 5-Consciousness awakens, 6-Self-awareness/humanity, 7-Rest/return to unity. Each 'day' is an evolutionary stage, not a literal 24 hours.",
+                    sources: ["Esoteric Christianity", "Kabbalistic creation"]
+                },
+                {
+                    id: "bib_007",
+                    difficulty: "adept",
+                    question: "What is the esoteric meaning of the Transfiguration of Jesus?",
+                    answers: [
+                        "Jesus put on shiny clothes",
+                        "Jesus demonstrated the light body/merkabah that all humans can activate",
+                        "A hallucination by the disciples",
+                        "Jesus borrowed clothes from Moses and Elijah"
+                    ],
+                    correct: 1,
+                    explanation: "The Transfiguration shows Jesus activating the light body - the merkabah or glorified body of light that exists within all humans. Moses and Elijah appearing represents mastery of Law and Prophecy. This event demonstrates the potential for complete spiritual transformation while embodied.",
+                    sources: ["Matthew 17:1-9", "Merkabah mysticism"]
+                },
+                {
+                    id: "bib_008",
+                    difficulty: "adept",
+                    question: "What does Ezekiel's vision of the wheel within a wheel represent?",
+                    answers: [
+                        "An ancient UFO sighting",
+                        "The merkabah - divine chariot of consciousness with interlocking geometric fields",
+                        "A description of cart wheels",
+                        "Ezekiel's imagination"
+                    ],
+                    correct: 1,
+                    explanation: "Ezekiel's wheels are the merkabah - the divine vehicle of light and consciousness. The 'wheel within a wheel' describes counter-rotating energy fields that create the light body. This is the same merkabah meditation taught in Jewish mysticism for achieving higher states of consciousness.",
+                    sources: ["Ezekiel 1", "Merkabah literature"]
+                },
+                {
+                    id: "bib_009",
+                    difficulty: "adept",
+                    question: "What is the hidden meaning of Jonah spending three days in the whale?",
+                    answers: [
+                        "A fish story with no deeper meaning",
+                        "The descent into the underworld/unconscious and resurrection of consciousness",
+                        "An ancient fishing tale",
+                        "Punishment for disobedience"
+                    ],
+                    correct: 1,
+                    explanation: "Jonah's three days in the whale represent the initiatory descent into the underworld/unconscious - the death and rebirth process. The whale's belly is the womb of transformation. Emerging after three days (same as Jesus's resurrection) symbolizes the death of the old self and rebirth into higher consciousness.",
+                    sources: ["Book of Jonah", "Comparative mythology"]
                 }
             ]
         },
@@ -320,6 +740,90 @@ class PremiumTriviaSystem {
                     correct: 1,
                     explanation: "Pyramids like the Great Pyramid resonate around 110Hz, which research shows can shift brainwaves and induce transcendent states. This frequency appears in many ancient sacred sites, suggesting intentional consciousness-altering design.",
                     sources: ["Acoustic archaeology", "Paolo Debertolis research"]
+                },
+                {
+                    id: "con_004",
+                    difficulty: "seeker",
+                    question: "What is the significance of the pineal gland being called the 'third eye'?",
+                    answers: [
+                        "It's located near the eyes",
+                        "It's light-sensitive and produces consciousness-altering compounds linked to spiritual vision",
+                        "It has three chambers",
+                        "Ancient people were confused"
+                    ],
+                    correct: 1,
+                    explanation: "The pineal gland contains light-sensitive cells similar to retinal cells, responds to light/dark cycles, and produces melatonin and possibly DMT. Its central brain location and role in regulating consciousness states makes it the physical correlate of the mystical third eye - the seat of inner vision.",
+                    sources: ["Neuroscience", "Rick Strassman DMT research"]
+                },
+                {
+                    id: "con_005",
+                    difficulty: "initiate",
+                    question: "What is 'neuroplasticity' in spiritual terms?",
+                    answers: [
+                        "The brain can't change after childhood",
+                        "The brain's ability to rewire itself through practice, proving consciousness shapes matter",
+                        "A type of brain surgery",
+                        "Plastic implants in the brain"
+                    ],
+                    correct: 1,
+                    explanation: "Neuroplasticity shows that consciousness (thoughts, meditation, intention) physically rewires the brain. Monks who meditate develop measurably different brain structures. This proves the hermetic principle: consciousness creates reality by literally reshaping the organ of perception.",
+                    sources: ["Neuroscience research", "Mind and Life Institute"]
+                },
+                {
+                    id: "con_006",
+                    difficulty: "initiate",
+                    question: "What is the 'global consciousness project' and what has it revealed?",
+                    answers: [
+                        "A failed experiment with no results",
+                        "Random number generators show non-random patterns during major global events, suggesting collective consciousness",
+                        "A social media platform",
+                        "A meditation app"
+                    ],
+                    correct: 1,
+                    explanation: "The Global Consciousness Project has 70+ random number generators worldwide. During major events (9/11, tsunamis, royal deaths), they show statistically significant non-random patterns - suggesting human consciousness collectively affects physical reality during moments of global emotional coherence.",
+                    sources: ["Princeton PEAR Lab", "Roger Nelson"]
+                },
+                {
+                    id: "con_007",
+                    difficulty: "adept",
+                    question: "What is the relationship between quantum mechanics and consciousness in the 'observer effect'?",
+                    answers: [
+                        "Observation has no effect on reality",
+                        "The act of conscious observation collapses quantum possibilities into definite reality",
+                        "Only special equipment can observe quantum particles",
+                        "Quantum mechanics and consciousness are unrelated"
+                    ],
+                    correct: 1,
+                    explanation: "In quantum experiments, particles exist in superposition (all possibilities) until observed, then 'collapse' into one state. This suggests consciousness plays a fundamental role in manifestation - observation literally creates reality from infinite potential. This is physics confirming ancient mystical teachings.",
+                    sources: ["Quantum mechanics", "Copenhagen interpretation"]
+                },
+                {
+                    id: "con_008",
+                    difficulty: "adept",
+                    question: "What is 'HeartMath' research revealing about heart-brain coherence?",
+                    answers: [
+                        "The heart is just a pump with no intelligence",
+                        "The heart has its own neural network and when coherent, synchronizes brain and body into optimal states",
+                        "HeartMath is pseudoscience",
+                        "The heart and brain never communicate"
+                    ],
+                    correct: 1,
+                    explanation: "Research shows the heart has 40,000 neurons (heart-brain), generates electromagnetic fields 60x stronger than the brain, and when in coherence (through gratitude, love, meditation), it synchronizes brain waves, hormones, and immune function. The heart is a primary organ of consciousness.",
+                    sources: ["HeartMath Institute", "Rollin McCraty research"]
+                },
+                {
+                    id: "con_009",
+                    difficulty: "adept",
+                    question: "What is the significance of Cymatics in understanding how consciousness creates form?",
+                    answers: [
+                        "Cymatics is about sea creatures",
+                        "Sound/vibration creates geometric patterns in matter, showing how consciousness shapes reality",
+                        "Cymatics has no spiritual meaning",
+                        "It's only useful for music production"
+                    ],
+                    correct: 1,
+                    explanation: "Cymatics shows that sound frequencies create specific geometric patterns in sand, water, and cells. Different frequencies create different sacred geometries. This visually demonstrates how consciousness (vibration/intention) literally organizes matter into form - the scientific basis for 'In the beginning was the Word.'",
+                    sources: ["Hans Jenny", "John Stuart Reid"]
                 }
             ]
         },
@@ -369,6 +873,90 @@ class PremiumTriviaSystem {
                     correct: 1,
                     explanation: "The highest Egyptian mysteries aimed to unite the initiate's consciousness with Ra (divine light), achieving conscious immortality. This was symbolized by the journey through the Duat (underworld) and represented the soul's return to its divine source while maintaining individual awareness.",
                     sources: ["Egyptian Book of the Dead", "Pyramid Texts"]
+                },
+                {
+                    id: "mys_004",
+                    difficulty: "seeker",
+                    question: "What was taught in the Pythagorean mystery school?",
+                    answers: [
+                        "Only mathematics for merchants",
+                        "That numbers are living spiritual forces and the universe is mathematical harmony",
+                        "Political philosophy only",
+                        "Basic arithmetic"
+                    ],
+                    correct: 1,
+                    explanation: "Pythagoras taught that numbers are not abstract concepts but living spiritual realities. 'All is number' - the cosmos is organized by mathematical harmony. He combined mathematics, music, astronomy, and mysticism, showing how divine proportions structure reality from atoms to galaxies.",
+                    sources: ["Pythagorean teachings", "Iamblichus"]
+                },
+                {
+                    id: "mys_005",
+                    difficulty: "initiate",
+                    question: "What did the Orphic Mysteries teach about the nature of the soul?",
+                    answers: [
+                        "The soul dies with the body",
+                        "The soul is divine but trapped in cycles of reincarnation until purification",
+                        "There is no soul",
+                        "The soul is created at birth"
+                    ],
+                    correct: 1,
+                    explanation: "The Orphic tradition taught that the human soul is divine (from Dionysus) but trapped in the body (from the Titans). Through purification, sacred rites, and ethical living over many lifetimes, the soul could escape the wheel of rebirth and return to the divine realm.",
+                    sources: ["Orphic fragments", "Plato's references"]
+                },
+                {
+                    id: "mys_006",
+                    difficulty: "initiate",
+                    question: "What was the purpose of the 'kykeon' drink in the Eleusinian Mysteries?",
+                    answers: [
+                        "Simple refreshment",
+                        "An entheogenic sacrament inducing mystical vision and ego death",
+                        "An alcoholic beverage",
+                        "Medicine for illness"
+                    ],
+                    correct: 1,
+                    explanation: "The kykeon was a sacred psychoactive brew (possibly containing ergot) that initiated visionary experiences. Combined with ritual, darkness, and sacred performance, it induced profound mystical states where initiates experienced death and rebirth, ensuring them of the soul's immortality.",
+                    sources: ["Gordon Wasson research", "Carl Ruck"]
+                },
+                {
+                    id: "mys_007",
+                    difficulty: "adept",
+                    question: "What is the significance of the three degrees in most mystery schools?",
+                    answers: [
+                        "Random organizational structure",
+                        "The stages of consciousness: purification, illumination, union with the divine",
+                        "Rank based on age",
+                        "Payment levels"
+                    ],
+                    correct: 1,
+                    explanation: "The three initiatory degrees represent the soul's journey: (1) Purification - cleansing ego and preparing the vessel, (2) Illumination - receiving divine knowledge and light, (3) Union/Perfection - merging individual consciousness with the divine. This pattern appears across Egyptian, Greek, and later Western mystery traditions.",
+                    sources: ["Comparative mystery traditions", "Manly P. Hall"]
+                },
+                {
+                    id: "mys_008",
+                    difficulty: "adept",
+                    question: "What was the secret of Mithraism that made it so popular among Roman soldiers?",
+                    answers: [
+                        "It promised military victory",
+                        "It taught cosmic salvation through the slaying of the bull (ego/material nature)",
+                        "It was an easy religion",
+                        "It avoided all rituals"
+                    ],
+                    correct: 1,
+                    explanation: "Mithras slaying the cosmic bull represented the initiate conquering their lower animal nature. The seven grades of initiation corresponded to ascending through the seven planetary spheres, achieving liberation from fate. It promised cosmic redemption and brotherhood - appealing to soldiers facing death.",
+                    sources: ["Mithraic studies", "Franz Cumont"]
+                },
+                {
+                    id: "mys_009",
+                    difficulty: "adept",
+                    question: "What did Plato mean by his allegory of the cave in relation to mystery school teachings?",
+                    answers: [
+                        "A story about prisoners",
+                        "Most humans live in illusion; initiation is turning toward the light of reality",
+                        "A political commentary only",
+                        "A description of ancient caves"
+                    ],
+                    correct: 1,
+                    explanation: "The cave allegory describes the human condition: chained in darkness, mistaking shadows for reality. The freed prisoner who sees the sun represents the initiated mystic who perceives true reality. Returning to free others symbolizes the adept's duty to guide humanity toward enlightenment - the core mission of mystery schools.",
+                    sources: ["Plato's Republic Book VII", "Neoplatonic interpretations"]
                 }
             ]
         },
@@ -418,6 +1006,90 @@ class PremiumTriviaSystem {
                     correct: 1,
                     explanation: "Each chakra correlates with endocrine glands: Root (adrenals), Sacral (gonads), Solar (pancreas), Heart (thymus), Throat (thyroid), Third Eye (pituitary), Crown (pineal). These glands secrete hormones that directly affect consciousness, mood, and spiritual perception.",
                     sources: ["Modern energy medicine", "Endocrine system research"]
+                },
+                {
+                    id: "cha_004",
+                    difficulty: "seeker",
+                    question: "What color is associated with the Root Chakra and why?",
+                    answers: [
+                        "Blue for peace",
+                        "Red for primal life force and grounding energy",
+                        "Green for growth",
+                        "White for purity"
+                    ],
+                    correct: 1,
+                    explanation: "The Root Chakra (Muladhara) resonates with red - the slowest visible light frequency, representing dense physical energy, survival instincts, and connection to Earth. Red symbolizes the primal life force, blood, and the foundation of the energy system.",
+                    sources: ["Tantric texts", "Color therapy"]
+                },
+                {
+                    id: "cha_005",
+                    difficulty: "initiate",
+                    question: "What is the significance of nadis in the subtle energy body?",
+                    answers: [
+                        "Nadis are physical nerves only",
+                        "72,000 energy channels that carry prana throughout the subtle body",
+                        "Nadis are meditation positions",
+                        "A type of yoga practice"
+                    ],
+                    correct: 1,
+                    explanation: "Nadis are subtle energy channels (72,000 according to yoga texts) that carry prana (life force) throughout the energy body. The three main nadis - Ida (lunar/feminine), Pingala (solar/masculine), and Sushumna (central) - intersect at the chakras, creating these energy vortexes.",
+                    sources: ["Hatha Yoga Pradipika", "Tantra teachings"]
+                },
+                {
+                    id: "cha_006",
+                    difficulty: "initiate",
+                    question: "What blocks the Throat Chakra and what does it govern?",
+                    answers: [
+                        "Physical throat problems only",
+                        "Suppressed self-expression and communication; it governs authentic truth-speaking",
+                        "Too much talking",
+                        "Eating spicy food"
+                    ],
+                    correct: 1,
+                    explanation: "Vishuddha (Throat Chakra) governs authentic self-expression, truth, and communication. Blockages arise from suppressing your voice, lying, or fear of speaking truth. When balanced, you express your authentic self clearly and listen deeply - bridging inner knowing with outer expression.",
+                    sources: ["Chakra psychology", "Anodea Judith"]
+                },
+                {
+                    id: "cha_007",
+                    difficulty: "adept",
+                    question: "What is the relationship between chakras and the Kabbalastic Tree of Life?",
+                    answers: [
+                        "No relationship exists",
+                        "The chakras correspond to specific Sephiroth, showing universal energy anatomy across traditions",
+                        "They contradict each other",
+                        "Only one system is correct"
+                    ],
+                    correct: 1,
+                    explanation: "The seven chakras map onto the Tree of Life: Root (Malkuth), Sacral (Yesod), Solar (Hod-Netzach), Heart (Tiferet), Throat (Chesed-Geburah), Third Eye (Binah-Chokmah), Crown (Keter). This shows that different traditions describe the same universal energy anatomy with different languages.",
+                    sources: ["Western esotericism", "Comparative mysticism"]
+                },
+                {
+                    id: "cha_008",
+                    difficulty: "adept",
+                    question: "What is a Kundalini awakening and its potential dangers?",
+                    answers: [
+                        "A completely safe practice anyone can do",
+                        "The rapid rise of dormant spiritual energy that can cause physical/psychological crisis if unprepared",
+                        "A myth with no real effects",
+                        "Simply feeling energized"
+                    ],
+                    correct: 1,
+                    explanation: "Kundalini awakening is the rising of coiled primal energy from the base of the spine through all chakras. Without proper preparation, grounding, and guidance, rapid awakening can cause: energy overload, psychological upheaval, physical symptoms, and spiritual emergency. Traditional teachings emphasize gradual, guided awakening.",
+                    sources: ["Kashmir Shaivism", "Stanislav Grof research"]
+                },
+                {
+                    id: "cha_009",
+                    difficulty: "adept",
+                    question: "What is the Hara or Dantian in relation to the chakra system?",
+                    answers: [
+                        "Another name for the Sacral Chakra",
+                        "The power center below the navel, foundation for energy cultivation in Eastern practices",
+                        "A martial arts technique only",
+                        "An acupuncture point"
+                    ],
+                    correct: 1,
+                    explanation: "The Hara (Japanese) or Dantian (Chinese) is the energy center about 2 inches below the navel - the body's center of gravity and qi/chi reservoir. While related to the Sacral Chakra, it's considered the foundational power center in martial arts, qigong, and Taoist practices for cultivating and storing life force.",
+                    sources: ["Taoist internal alchemy", "Hara awareness"]
                 }
             ]
         },
@@ -467,6 +1139,90 @@ class PremiumTriviaSystem {
                     correct: 1,
                     explanation: "Sol (Sun) represents the conscious, rational, masculine principle, while Luna (Moon) represents the unconscious, intuitive, feminine principle. The Great Work involves unifying these opposites into the sacred marriage (hieros gamos) within consciousness.",
                     sources: ["Jungian psychology", "Rosarium Philosophorum"]
+                },
+                {
+                    id: "alc_004",
+                    difficulty: "seeker",
+                    question: "What does 'solve et coagula' mean in alchemy?",
+                    answers: [
+                        "Add salt and heat",
+                        "Dissolve and coagulate - break down the old to rebuild the new",
+                        "Solve problems carefully",
+                        "Mix and separate repeatedly"
+                    ],
+                    correct: 1,
+                    explanation: "Solve et Coagula means 'dissolve and coagulate' - the fundamental alchemical process. Spiritually, it means breaking down ego structures, beliefs, and identity (solve), then reconstituting consciousness at a higher level (coagula). It's the death-rebirth cycle essential for transformation.",
+                    sources: ["Alchemical maxim", "Hermetic philosophy"]
+                },
+                {
+                    id: "alc_005",
+                    difficulty: "initiate",
+                    question: "What is the Albedo stage in the alchemical process?",
+                    answers: [
+                        "The final golden stage",
+                        "The whitening/purification after the dark night, representing spiritual awakening",
+                        "The beginning of the work",
+                        "A failed experiment"
+                    ],
+                    correct: 1,
+                    explanation: "Albedo (whitening) follows Nigredo (blackening). After the ego-death of Nigredo, Albedo is the dawn of awakening - purification, clarity, and the first glimpse of the divine light within. It's the washing clean of psychological residue, preparing for the final stages of the Great Work.",
+                    sources: ["Alchemical stages", "Jung's interpretation"]
+                },
+                {
+                    id: "alc_006",
+                    difficulty: "initiate",
+                    question: "What does the alchemical symbol of the Ouroboros represent?",
+                    answers: [
+                        "A dangerous snake",
+                        "The eternal cycle: the end is the beginning, death feeds life, unity of opposites",
+                        "Ancient jewelry design",
+                        "A warning sign"
+                    ],
+                    correct: 1,
+                    explanation: "The Ouroboros (serpent eating its tail) represents the eternal return - completion leading to new beginnings. It symbolizes that in spiritual work, each ending contains the seed of rebirth. It also represents the unity of all opposites and the self-sustaining nature of the cosmos.",
+                    sources: ["Alchemical symbolism", "Egyptian/Greek traditions"]
+                },
+                {
+                    id: "alc_007",
+                    difficulty: "adept",
+                    question: "What is the Rubedo stage and what does it achieve?",
+                    answers: [
+                        "The initial reddening of metals",
+                        "The final reddening/completion where spirit and matter unite in the perfected Self",
+                        "A mistake in the process",
+                        "The easiest stage"
+                    ],
+                    correct: 1,
+                    explanation: "Rubedo (reddening) is the final stage after Nigredo (black) and Albedo (white). It represents the sacred marriage consummated - spirit fully embodied in matter. The red is the philosopher's stone achieved: the transformed consciousness that can transmute any experience into gold (wisdom).",
+                    sources: ["Alchemical texts", "Marie-Louise von Franz"]
+                },
+                {
+                    id: "alc_008",
+                    difficulty: "adept",
+                    question: "What is the significance of Mercury/Quicksilver in spiritual alchemy?",
+                    answers: [
+                        "It's poisonous so avoid it",
+                        "Mercury represents the volatile spirit, the animating consciousness that transforms",
+                        "A simple chemical element",
+                        "It has no symbolic meaning"
+                    ],
+                    correct: 1,
+                    explanation: "Mercury is the living spirit - volatile, transformative, neither solid nor fully liquid. It represents consciousness itself: the quickening principle that animates matter (Sulfur/Soul). Mercury is the agent of transformation, the mercurial mind that can dissolve fixed patterns and create new forms.",
+                    sources: ["Alchemical philosophy", "Paracelsus"]
+                },
+                {
+                    id: "alc_009",
+                    difficulty: "adept",
+                    question: "What is the true meaning of the alchemical maxim 'as within, so without'?",
+                    answers: [
+                        "Interior design matches exterior",
+                        "Inner transformation manifests as outer reality - consciousness creates experience",
+                        "What you eat affects your skin",
+                        "It's just superstition"
+                    ],
+                    correct: 1,
+                    explanation: "This hermetic principle teaches that external reality reflects internal consciousness. Transform your inner lead (base consciousness) into gold (awakened awareness), and your outer life transmutes accordingly. True alchemy is the science of conscious creation through internal transformation.",
+                    sources: ["Emerald Tablet", "Hermetic principles"]
                 }
             ]
         },
@@ -516,6 +1272,90 @@ class PremiumTriviaSystem {
                     correct: 1,
                     explanation: "The Schumann Resonance (~7.83Hz) is Earth's electromagnetic heartbeat, closely matching human theta brainwaves associated with deep meditation and healing. When this frequency shifts, many people report consciousness changes, suggesting our awareness is intimately connected to planetary rhythms.",
                     sources: ["Schumann Resonance research", "Biorhythm studies"]
+                },
+                {
+                    id: "ast_004",
+                    difficulty: "seeker",
+                    question: "What is the spiritual meaning of a Solar Eclipse?",
+                    answers: [
+                        "Just the moon blocking the sun",
+                        "The union of masculine and feminine, a portal for transformation and shadow integration",
+                        "A bad omen only",
+                        "Meaningless astronomical event"
+                    ],
+                    correct: 1,
+                    explanation: "Solar eclipses represent the sacred marriage of Sun (masculine/conscious) and Moon (feminine/unconscious). The darkness at midday creates a liminal space - a portal where the veil between worlds thins. It's a powerful time for shadow work, releasing old patterns, and rebirth.",
+                    sources: ["Astrology", "Ancient eclipse rituals"]
+                },
+                {
+                    id: "ast_005",
+                    difficulty: "initiate",
+                    question: "How does the lunar cycle affect human consciousness?",
+                    answers: [
+                        "It doesn't affect humans",
+                        "The moon's phases influence emotions, intuition, and the collective unconscious",
+                        "Only affects ocean tides",
+                        "Only affects werewolves"
+                    ],
+                    correct: 1,
+                    explanation: "The moon governs fluids (71% of Earth's surface, 60% of human body). Full moons amplify emotional energy and collective consciousness. New moons support introspection and new beginnings. Studies show increased emergency room visits, births, and sleep disturbances during full moons - the lunar pull affects consciousness as it affects tides.",
+                    sources: ["Lunar biology research", "Traditional astrology"]
+                },
+                {
+                    id: "ast_006",
+                    difficulty: "initiate",
+                    question: "What is the significance of retrograde planets in astrotheology?",
+                    answers: [
+                        "Planets actually move backwards",
+                        "Apparent backward motion creates a reflective period to review and integrate that planet's energy",
+                        "It's an optical illusion with no meaning",
+                        "Bad luck only"
+                    ],
+                    correct: 1,
+                    explanation: "Retrograde motion (planets appearing to move backward) creates periods of review and integration. Mercury retrograde affects communication/technology, prompting us to revisit and refine. Each planet retrograde offers time to internalize and integrate its archetypal energy before moving forward again.",
+                    sources: ["Astrological principles", "Archetypal astrology"]
+                },
+                {
+                    id: "ast_007",
+                    difficulty: "adept",
+                    question: "What is the Galactic Center and its spiritual significance?",
+                    answers: [
+                        "Just empty space",
+                        "The heart of our galaxy at 27° Sagittarius, portal to cosmic consciousness and galactic wisdom",
+                        "A black hole destroying everything",
+                        "Meaningless astronomical point"
+                    ],
+                    correct: 1,
+                    explanation: "The Galactic Center (Sagittarius A*) is our galaxy's heart - a supermassive consciousness at the core. In astrotheology, it represents the ultimate source wisdom, the cosmic library. Winter solstice aligns with it every 26,000 years (the Great Year), marking major evolutionary shifts in human consciousness.",
+                    sources: ["Galactic astrology", "John Major Jenkins"]
+                },
+                {
+                    id: "ast_008",
+                    difficulty: "adept",
+                    question: "How do solar flares and geomagnetic storms affect consciousness?",
+                    answers: [
+                        "No effect on consciousness",
+                        "They disrupt Earth's magnetic field, affecting pineal gland and potentially catalyzing consciousness shifts",
+                        "Only affect electronics",
+                        "Cause permanent damage"
+                    ],
+                    correct: 1,
+                    explanation: "Solar flares release massive electromagnetic energy that disrupts Earth's magnetosphere. Research shows correlations with increased anxiety, vivid dreams, intuitive downloads, and consciousness shifts. The pineal gland (third eye) responds to these magnetic changes, potentially catalyzing awakening experiences during solar maximum periods.",
+                    sources: ["Biometeorology", "HeartMath solar research"]
+                },
+                {
+                    id: "ast_009",
+                    difficulty: "adept",
+                    question: "What is the Age of Aquarius and what consciousness shift does it represent?",
+                    answers: [
+                        "Just a song title",
+                        "The 2,160-year age of humanitarian awakening, technology merged with spirituality, unity consciousness",
+                        "Nothing changes",
+                        "The end of the world"
+                    ],
+                    correct: 1,
+                    explanation: "The Age of Aquarius (beginning approximately 2000-2100 CE) represents humanity's shift from Piscean duality and religious authority to Aquarian unity consciousness, individual sovereignty, and technology integrated with spirituality. It's the age of networking, global awareness, and awakening to our interconnected galactic citizenship.",
+                    sources: ["Precessional astrology", "Alice Bailey"]
                 }
             ]
         },
@@ -565,6 +1405,223 @@ class PremiumTriviaSystem {
                     correct: 1,
                     explanation: "Mary Magdalene represents the sacred feminine gnosis (direct knowing) that complements the masculine logos (word/teaching). In Gnostic texts, she receives the highest teachings because the feminine principle embodies the receptive wisdom needed for direct spiritual realization.",
                     sources: ["Gospel of Mary", "Gospel of Philip"]
+                },
+                {
+                    id: "fem_004",
+                    difficulty: "seeker",
+                    question: "What does the Triple Goddess (Maiden-Mother-Crone) represent?",
+                    answers: [
+                        "Three different goddesses",
+                        "The three phases of life and consciousness: innocence, creativity, wisdom",
+                        "Three women in a family",
+                        "A modern invention"
+                    ],
+                    correct: 1,
+                    explanation: "The Triple Goddess represents the three phases of feminine consciousness and life: Maiden (new beginnings, potential, innocence), Mother (creation, nurturing, manifestation), and Crone (wisdom, death-rebirth, transformation). She mirrors the lunar cycle and the eternal wheel of life-death-rebirth.",
+                    sources: ["Pagan traditions", "Robert Graves"]
+                },
+                {
+                    id: "fem_005",
+                    difficulty: "initiate",
+                    question: "What is the significance of Isis in ancient Egyptian spirituality?",
+                    answers: [
+                        "Just a fertility goddess",
+                        "The great mother goddess of magic, resurrection, and divine wisdom who restores wholeness",
+                        "A minor deity",
+                        "Symbol of darkness"
+                    ],
+                    correct: 1,
+                    explanation: "Isis is the great mother of magic who resurrects Osiris, representing the feminine power to restore life from death and wholeness from fragmentation. She embodies divine wisdom, healing, protection, and the magical capacity to transform reality through love and sacred knowledge.",
+                    sources: ["Egyptian mythology", "Plutarch's Isis and Osiris"]
+                },
+                {
+                    id: "fem_006",
+                    difficulty: "initiate",
+                    question: "What does the Shekinah represent in Jewish mysticism?",
+                    answers: [
+                        "A prophet's wife",
+                        "The feminine presence of God dwelling within creation and among people",
+                        "An angel's name",
+                        "A temple decoration"
+                    ],
+                    correct: 1,
+                    explanation: "The Shekinah is the feminine aspect of God - the divine presence dwelling within creation and among humanity. She is the indwelling spirit, the bride of God, representing divine immanence as opposed to transcendence. Her exile and return mirror the soul's journey.",
+                    sources: ["Kabbalah", "Zohar"]
+                },
+                {
+                    id: "fem_007",
+                    difficulty: "adept",
+                    question: "What is the deeper meaning of the Holy Grail as a feminine symbol?",
+                    answers: [
+                        "Just a cup Jesus used",
+                        "The divine feminine womb/vessel that contains and births spiritual consciousness",
+                        "A literal treasure to find",
+                        "A medieval myth"
+                    ],
+                    correct: 1,
+                    explanation: "The Grail represents the sacred feminine vessel - the womb of the divine mother that contains and births the Christ consciousness. It symbolizes the receptive principle that holds space for divine truth, the chalice that receives the sacred blood (life force), and the mystery of feminine spiritual power.",
+                    sources: ["Joseph Campbell", "Marion Zimmer Bradley"]
+                },
+                {
+                    id: "fem_008",
+                    difficulty: "adept",
+                    question: "What is the relationship between Kali and the dissolution of ego?",
+                    answers: [
+                        "Kali is just a destroyer goddess",
+                        "Kali destroys the false self/ego so the true Self can emerge - she is fierce grace",
+                        "Kali is evil",
+                        "Kali has no spiritual meaning"
+                    ],
+                    correct: 1,
+                    explanation: "Kali, the 'dark mother,' destroys illusion, ego, and false identity - not to harm but to liberate. Her fierce form represents the necessary destruction of what is false so truth can emerge. She is time itself devouring all forms, revealing the eternal consciousness beneath. Her darkness is the void of infinite potential.",
+                    sources: ["Tantric philosophy", "Ramakrishna teachings"]
+                },
+                {
+                    id: "fem_009",
+                    difficulty: "adept",
+                    question: "What do the Gnostic Aeons Sophia and Achamoth reveal about the divine feminine?",
+                    answers: [
+                        "They are separate unimportant entities",
+                        "They show the divine feminine as both transcendent wisdom and immanent creative power",
+                        "They are demons",
+                        "They represent confusion"
+                    ],
+                    correct: 1,
+                    explanation: "Sophia (higher wisdom) and Achamoth (lower Sophia in matter) represent the divine feminine's dual nature: transcendent celestial wisdom and immanent creative power within the material world. Sophia's descent into matter and return to the Pleroma maps the soul's journey - showing that the feminine principle bridges spirit and matter, holding both realities.",
+                    sources: ["Valentinian Gnosticism", "Pistis Sophia"]
+                }
+            ]
+        },
+
+        sacred_numerology: {
+            name: "🔢 Sacred Numerology & Symbolism",
+            description: "The mystical science of numbers and divine patterns",
+            questions: [
+                {
+                    id: "num_001",
+                    difficulty: "seeker",
+                    question: "What does the number 7 represent in sacred numerology?",
+                    answers: [
+                        "Material wealth and abundance",
+                        "Spiritual completion and divine perfection",
+                        "Physical strength",
+                        "Bad luck and misfortune"
+                    ],
+                    correct: 1,
+                    explanation: "The number 7 represents spiritual completion and divine perfection. It appears throughout sacred texts: 7 days of creation, 7 chakras, 7 seals, 7 heavens. It symbolizes the union of the divine (3) with the earthly (4), creating spiritual wholeness.",
+                    sources: ["Biblical numerology", "Pythagorean teachings"]
+                },
+                {
+                    id: "num_002",
+                    difficulty: "seeker",
+                    question: "What is the significance of the number 3 in spiritual traditions?",
+                    answers: [
+                        "The number of human senses",
+                        "The trinity principle - mind, body, spirit or creation, preservation, destruction",
+                        "The number of physical dimensions",
+                        "The number of elements (earth, water, fire)"
+                    ],
+                    correct: 1,
+                    explanation: "The number 3 represents the divine trinity principle found across traditions: Christian Trinity (Father-Son-Spirit), Hindu Trimurti (Brahma-Vishnu-Shiva), and the threefold nature of human consciousness (mind-body-spirit). It represents creative manifestation.",
+                    sources: ["Universal symbolism", "Trinitarian theology"]
+                },
+                {
+                    id: "num_003",
+                    difficulty: "initiate",
+                    question: "In Kabbalah, what does the number 22 represent?",
+                    answers: [
+                        "The 22 letters of the Hebrew alphabet and paths on the Tree of Life",
+                        "The 22 archangels guarding heaven",
+                        "The 22 sacred books in the Torah",
+                        "The 22 stages of enlightenment"
+                    ],
+                    correct: 0,
+                    explanation: "The number 22 corresponds to the 22 letters of the Hebrew alphabet, which are also the 22 paths connecting the 10 Sephiroth on the Tree of Life. Each letter is a cosmic force and creative energy, making 22 the number of manifesting divine word into reality.",
+                    sources: ["Sefer Yetzirah", "Kabbalistic teachings"]
+                },
+                {
+                    id: "num_004",
+                    difficulty: "initiate",
+                    question: "What is the spiritual significance of 11:11?",
+                    answers: [
+                        "It's just a coincidence with no meaning",
+                        "A portal number signaling spiritual awakening and alignment",
+                        "A warning of danger",
+                        "The time to pray daily"
+                    ],
+                    correct: 1,
+                    explanation: "11:11 is considered a 'wake-up call' from the universe. The master number 11 represents spiritual illumination and intuition. When doubled (11:11), it's seen as a portal or gateway, signaling that you're in alignment with higher consciousness and should pay attention to synchronicities.",
+                    sources: ["Numerology", "Spiritual synchronicity studies"]
+                },
+                {
+                    id: "num_005",
+                    difficulty: "initiate",
+                    question: "What does the number 12 represent in sacred geometry and spirituality?",
+                    answers: [
+                        "The number of months in a year only",
+                        "Divine government, cosmic order, and completion of cycles",
+                        "The number of disciples only",
+                        "Physical manifestation"
+                    ],
+                    correct: 1,
+                    explanation: "The number 12 represents divine government and cosmic order: 12 zodiac signs, 12 tribes of Israel, 12 apostles, 12 hours, 12 months. It's 3 (divine) × 4 (earthly), symbolizing heaven's rule over earth and the completion of cosmic cycles.",
+                    sources: ["Sacred geometry", "Biblical numerology"]
+                },
+                {
+                    id: "num_006",
+                    difficulty: "adept",
+                    question: "What is the esoteric meaning of 666 beyond the 'number of the beast'?",
+                    answers: [
+                        "Pure evil with no other meaning",
+                        "The number of carbon (6 protons, 6 neutrons, 6 electrons) representing material consciousness",
+                        "A random number chosen for dramatic effect",
+                        "The number of demons in hell"
+                    ],
+                    correct: 1,
+                    explanation: "666 is the number of carbon, the basis of physical life (6 protons, 6 neutrons, 6 electrons). Esoterically, it represents material consciousness trapped in the physical realm. It's not inherently evil but symbolizes consciousness identified solely with matter, missing the spiritual '7' of divine completion.",
+                    sources: ["Esoteric Christianity", "Scientific symbolism"]
+                },
+                {
+                    id: "num_007",
+                    difficulty: "adept",
+                    question: "In sacred numerology, what does reducing numbers to their root digit (e.g., 23 = 2+3 = 5) reveal?",
+                    answers: [
+                        "Mathematical shortcuts with no spiritual meaning",
+                        "The vibrational essence and core spiritual frequency of that number",
+                        "A way to simplify calculations",
+                        "The age of the universe"
+                    ],
+                    correct: 1,
+                    explanation: "Digit reduction reveals the vibrational essence of a number. Each root digit (1-9) carries specific spiritual frequencies and meanings. This process shows that complex manifestations ultimately reduce to fundamental spiritual principles, reflecting the hermetic axiom 'as above, so below.'",
+                    sources: ["Pythagorean numerology", "Chaldean numerology"]
+                },
+                {
+                    id: "num_008",
+                    difficulty: "adept",
+                    question: "What is the significance of the number 108 in Eastern spirituality?",
+                    answers: [
+                        "The exact number of Hindu gods",
+                        "A sacred number representing the universe (108 beads on mala, 108 Upanishads, etc.)",
+                        "The number of years in a spiritual cycle",
+                        "The temperature of enlightenment"
+                    ],
+                    correct: 1,
+                    explanation: "108 is supremely sacred: 108 Upanishads, 108 mala beads, 108 marma points in Ayurveda, 108 sacred sites. Mathematically, 1+0+8=9 (completion). The distance from Earth to Sun is approximately 108 times the Sun's diameter, reflecting cosmic harmony in sacred architecture.",
+                    sources: ["Vedic mathematics", "Buddhist traditions"]
+                },
+                {
+                    id: "num_009",
+                    difficulty: "adept",
+                    question: "What is the Fibonacci sequence's relationship to spiritual growth?",
+                    answers: [
+                        "No relationship - it's just mathematics",
+                        "It maps the spiral of consciousness evolution and divine growth patterns in nature",
+                        "It predicts the future",
+                        "It determines meditation lengths"
+                    ],
+                    correct: 1,
+                    explanation: "The Fibonacci sequence (1,1,2,3,5,8,13...) creates the golden spiral found in galaxies, DNA, flowers, and hurricanes. Spiritually, it represents how consciousness builds upon itself - each level incorporates and transcends the previous, creating the sacred spiral of evolution toward divine perfection.",
+                    sources: ["Sacred geometry", "Natural mathematics"]
                 }
             ]
         }
@@ -927,7 +1984,7 @@ class PremiumTriviaSystem {
     selectAnswer(answerIndex) {
         const question = this.currentQuestions[this.currentQuestionIndex];
         const isCorrect = answerIndex === question.correct;
-        
+
         // Store answer
         this.questionsAnswered.push({
             questionId: question.id,
@@ -945,12 +2002,120 @@ class PremiumTriviaSystem {
             if (this.userStats.currentStreak > this.userStats.longestStreak) {
                 this.userStats.longestStreak = this.userStats.currentStreak;
             }
+
+            // === ACHIEVEMENT & PROGRESS SYSTEM INTEGRATION ===
+
+            // Award XP based on difficulty (only for correct answers)
+            const xpRewards = {
+                'seeker': 20,
+                'initiate': 35,
+                'adept': 50
+            };
+            const xpAmount = xpRewards[question.difficulty] || 20;
+
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(
+                    xpAmount,
+                    `Premium Trivia - ${question.difficulty} question`,
+                    'sacred-knowledge'
+                );
+            }
+
+            // Track achievement system progress
+            if (window.achievementSystem && window.achievementSystem.achievementData) {
+                const data = window.achievementSystem.achievementData;
+
+                // Ensure data structures exist
+                if (!data.premiumCategories) {
+                    data.premiumCategories = {
+                        kabbalah: 0, enochian: 0, gnostic: 0,
+                        sacred_geometry: 0, biblical_codes: 0, consciousness: 0,
+                        mystery_schools: 0, chakras: 0, alchemy: 0,
+                        astrotheology: 0, divine_feminine: 0, sacred_numerology: 0
+                    };
+                }
+                if (!data.premiumDifficulty) {
+                    data.premiumDifficulty = { seeker: 0, initiate: 0, adept: 0 };
+                }
+                if (!data.premiumAnsweredQuestions) {
+                    data.premiumAnsweredQuestions = [];
+                }
+
+                // Track answered questions (avoid duplicates)
+                if (!data.premiumAnsweredQuestions.includes(question.id)) {
+                    data.premiumAnsweredQuestions.push(question.id);
+                    data.premiumTriviaAnswered = (data.premiumTriviaAnswered || 0) + 1;
+                    data.premiumTriviaCorrect = (data.premiumTriviaCorrect || 0) + 1;
+
+                    // Track difficulty progress
+                    if (data.premiumDifficulty[question.difficulty] !== undefined) {
+                        data.premiumDifficulty[question.difficulty]++;
+                    }
+
+                    // Track category progress
+                    const categoryKey = this.getCategoryKey(question);
+                    if (categoryKey && data.premiumCategories[categoryKey] !== undefined) {
+                        data.premiumCategories[categoryKey]++;
+
+                        // Check if category is now perfect (9/9)
+                        if (data.premiumCategories[categoryKey] === 9) {
+                            data.premiumPerfectCategories = (data.premiumPerfectCategories || 0) + 1;
+                        }
+                    }
+
+                    // Save progress
+                    window.achievementSystem.saveData();
+                }
+            }
         } else {
             this.userStats.currentStreak = 0;
+
+            // Track incorrect answers in achievement system (for completeness)
+            if (window.achievementSystem && window.achievementSystem.achievementData) {
+                const data = window.achievementSystem.achievementData;
+
+                if (!data.premiumAnsweredQuestions) {
+                    data.premiumAnsweredQuestions = [];
+                }
+
+                // Track that question was attempted (even if wrong)
+                if (!data.premiumAnsweredQuestions.includes(question.id)) {
+                    data.premiumAnsweredQuestions.push(question.id);
+                    data.premiumTriviaAnswered = (data.premiumTriviaAnswered || 0) + 1;
+                    window.achievementSystem.saveData();
+                }
+            }
         }
 
         // Show answer explanation
         this.showAnswerExplanation(question, answerIndex, isCorrect);
+    }
+
+    // Helper: Get category key from question
+    getCategoryKey(question) {
+        // Map question ID prefix to category key
+        const prefixMap = {
+            'kab_': 'kabbalah',
+            'eno_': 'enochian',
+            'gno_': 'gnostic',
+            'geo_': 'sacred_geometry',
+            'bib_': 'biblical_codes',
+            'con_': 'consciousness',
+            'mys_': 'mystery_schools',
+            'cha_': 'chakras',
+            'alc_': 'alchemy',
+            'ast_': 'astrotheology',
+            'fem_': 'divine_feminine',
+            'num_': 'sacred_numerology'
+        };
+
+        for (const [prefix, category] of Object.entries(prefixMap)) {
+            if (question.id.startsWith(prefix)) {
+                return category;
+            }
+        }
+
+        return null;
     }
 
     // Show answer explanation
@@ -1013,8 +2178,23 @@ class PremiumTriviaSystem {
             this.userStats.perfectGames++;
         }
 
-        // Check for achievements
+        // Check for achievements (legacy system)
         const newAchievements = this.checkAchievements();
+
+        // === ACHIEVEMENT SYSTEM INTEGRATION ===
+        // Check achievements in the universal achievement system
+        if (window.achievementSystem && window.achievementSystem.achievementData) {
+            const data = window.achievementSystem.achievementData;
+
+            // Sync level and XP from progress system
+            if (window.progressSystem && window.progressSystem.userData) {
+                data.level = window.progressSystem.userData.level;
+                data.totalXP = window.progressSystem.userData.totalXP;
+            }
+
+            // Check all achievements
+            window.achievementSystem.checkAchievements(data);
+        }
 
         // Update leaderboard score
         this.updateLeaderboardScore(accuracy, sessionTime);
