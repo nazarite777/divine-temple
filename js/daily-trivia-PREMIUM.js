@@ -1984,7 +1984,7 @@ class PremiumTriviaSystem {
     selectAnswer(answerIndex) {
         const question = this.currentQuestions[this.currentQuestionIndex];
         const isCorrect = answerIndex === question.correct;
-        
+
         // Store answer
         this.questionsAnswered.push({
             questionId: question.id,
@@ -2002,12 +2002,120 @@ class PremiumTriviaSystem {
             if (this.userStats.currentStreak > this.userStats.longestStreak) {
                 this.userStats.longestStreak = this.userStats.currentStreak;
             }
+
+            // === ACHIEVEMENT & PROGRESS SYSTEM INTEGRATION ===
+
+            // Award XP based on difficulty (only for correct answers)
+            const xpRewards = {
+                'seeker': 20,
+                'initiate': 35,
+                'adept': 50
+            };
+            const xpAmount = xpRewards[question.difficulty] || 20;
+
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(
+                    xpAmount,
+                    `Premium Trivia - ${question.difficulty} question`,
+                    'sacred-knowledge'
+                );
+            }
+
+            // Track achievement system progress
+            if (window.achievementSystem && window.achievementSystem.achievementData) {
+                const data = window.achievementSystem.achievementData;
+
+                // Ensure data structures exist
+                if (!data.premiumCategories) {
+                    data.premiumCategories = {
+                        kabbalah: 0, enochian: 0, gnostic: 0,
+                        sacred_geometry: 0, biblical_codes: 0, consciousness: 0,
+                        mystery_schools: 0, chakras: 0, alchemy: 0,
+                        astrotheology: 0, divine_feminine: 0, sacred_numerology: 0
+                    };
+                }
+                if (!data.premiumDifficulty) {
+                    data.premiumDifficulty = { seeker: 0, initiate: 0, adept: 0 };
+                }
+                if (!data.premiumAnsweredQuestions) {
+                    data.premiumAnsweredQuestions = [];
+                }
+
+                // Track answered questions (avoid duplicates)
+                if (!data.premiumAnsweredQuestions.includes(question.id)) {
+                    data.premiumAnsweredQuestions.push(question.id);
+                    data.premiumTriviaAnswered = (data.premiumTriviaAnswered || 0) + 1;
+                    data.premiumTriviaCorrect = (data.premiumTriviaCorrect || 0) + 1;
+
+                    // Track difficulty progress
+                    if (data.premiumDifficulty[question.difficulty] !== undefined) {
+                        data.premiumDifficulty[question.difficulty]++;
+                    }
+
+                    // Track category progress
+                    const categoryKey = this.getCategoryKey(question);
+                    if (categoryKey && data.premiumCategories[categoryKey] !== undefined) {
+                        data.premiumCategories[categoryKey]++;
+
+                        // Check if category is now perfect (9/9)
+                        if (data.premiumCategories[categoryKey] === 9) {
+                            data.premiumPerfectCategories = (data.premiumPerfectCategories || 0) + 1;
+                        }
+                    }
+
+                    // Save progress
+                    window.achievementSystem.saveData();
+                }
+            }
         } else {
             this.userStats.currentStreak = 0;
+
+            // Track incorrect answers in achievement system (for completeness)
+            if (window.achievementSystem && window.achievementSystem.achievementData) {
+                const data = window.achievementSystem.achievementData;
+
+                if (!data.premiumAnsweredQuestions) {
+                    data.premiumAnsweredQuestions = [];
+                }
+
+                // Track that question was attempted (even if wrong)
+                if (!data.premiumAnsweredQuestions.includes(question.id)) {
+                    data.premiumAnsweredQuestions.push(question.id);
+                    data.premiumTriviaAnswered = (data.premiumTriviaAnswered || 0) + 1;
+                    window.achievementSystem.saveData();
+                }
+            }
         }
 
         // Show answer explanation
         this.showAnswerExplanation(question, answerIndex, isCorrect);
+    }
+
+    // Helper: Get category key from question
+    getCategoryKey(question) {
+        // Map question ID prefix to category key
+        const prefixMap = {
+            'kab_': 'kabbalah',
+            'eno_': 'enochian',
+            'gno_': 'gnostic',
+            'geo_': 'sacred_geometry',
+            'bib_': 'biblical_codes',
+            'con_': 'consciousness',
+            'mys_': 'mystery_schools',
+            'cha_': 'chakras',
+            'alc_': 'alchemy',
+            'ast_': 'astrotheology',
+            'fem_': 'divine_feminine',
+            'num_': 'sacred_numerology'
+        };
+
+        for (const [prefix, category] of Object.entries(prefixMap)) {
+            if (question.id.startsWith(prefix)) {
+                return category;
+            }
+        }
+
+        return null;
     }
 
     // Show answer explanation
@@ -2070,8 +2178,23 @@ class PremiumTriviaSystem {
             this.userStats.perfectGames++;
         }
 
-        // Check for achievements
+        // Check for achievements (legacy system)
         const newAchievements = this.checkAchievements();
+
+        // === ACHIEVEMENT SYSTEM INTEGRATION ===
+        // Check achievements in the universal achievement system
+        if (window.achievementSystem && window.achievementSystem.achievementData) {
+            const data = window.achievementSystem.achievementData;
+
+            // Sync level and XP from progress system
+            if (window.progressSystem && window.progressSystem.userData) {
+                data.level = window.progressSystem.userData.level;
+                data.totalXP = window.progressSystem.userData.totalXP;
+            }
+
+            // Check all achievements
+            window.achievementSystem.checkAchievements(data);
+        }
 
         // Update leaderboard score
         this.updateLeaderboardScore(accuracy, sessionTime);

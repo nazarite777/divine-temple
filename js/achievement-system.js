@@ -61,6 +61,190 @@ class AchievementSystem {
                 condition: (data) => data.triviaPerfectScores >= 10
             },
 
+            // Premium Trivia Achievements (108 questions across 12 categories)
+            premium_trivia_first: {
+                id: 'premium_trivia_first',
+                name: '🌟 Premium Seeker',
+                description: 'Complete your first premium trivia question',
+                category: 'Premium Trivia',
+                xpReward: 50,
+                condition: (data) => data.premiumTriviaAnswered >= 1
+            },
+            premium_trivia_25: {
+                id: 'premium_trivia_25',
+                name: '📚 Esoteric Student',
+                description: 'Answer 25% of premium questions (27/108)',
+                category: 'Premium Trivia',
+                xpReward: 200,
+                condition: (data) => data.premiumTriviaAnswered >= 27
+            },
+            premium_trivia_50: {
+                id: 'premium_trivia_50',
+                name: '🔮 Mystic Scholar',
+                description: 'Answer 50% of premium questions (54/108)',
+                category: 'Premium Trivia',
+                xpReward: 500,
+                condition: (data) => data.premiumTriviaAnswered >= 54
+            },
+            premium_trivia_75: {
+                id: 'premium_trivia_75',
+                name: '✨ Adept Initiate',
+                description: 'Answer 75% of premium questions (81/108)',
+                category: 'Premium Trivia',
+                xpReward: 1000,
+                condition: (data) => data.premiumTriviaAnswered >= 81
+            },
+            premium_trivia_100: {
+                id: 'premium_trivia_100',
+                name: '👑 Enlightened Master',
+                description: 'Complete all 108 premium questions',
+                category: 'Premium Trivia',
+                xpReward: 2000,
+                condition: (data) => data.premiumTriviaAnswered >= 108
+            },
+
+            // Premium Trivia - Category Mastery (12 categories x 9 questions each)
+            premium_kabbalah: {
+                id: 'premium_kabbalah',
+                name: '🔯 Kabbalist',
+                description: 'Master all Kabbalah questions (9/9)',
+                category: 'Premium Trivia',
+                xpReward: 300,
+                condition: (data) => data.premiumCategories?.kabbalah >= 9
+            },
+            premium_enochian: {
+                id: 'premium_enochian',
+                name: '👁️ Enochian Adept',
+                description: 'Master all Enochian Mysteries (9/9)',
+                category: 'Premium Trivia',
+                xpReward: 300,
+                condition: (data) => data.premiumCategories?.enochian >= 9
+            },
+            premium_gnostic: {
+                id: 'premium_gnostic',
+                name: '🐍 Gnostic Sage',
+                description: 'Master all Gnostic Wisdom (9/9)',
+                category: 'Premium Trivia',
+                xpReward: 300,
+                condition: (data) => data.premiumCategories?.gnostic >= 9
+            },
+            premium_geometry: {
+                id: 'premium_geometry',
+                name: '🔺 Sacred Geometer',
+                description: 'Master all Sacred Geometry (9/9)',
+                category: 'Premium Trivia',
+                xpReward: 300,
+                condition: (data) => data.premiumCategories?.sacred_geometry >= 9
+            },
+            premium_biblical: {
+                id: 'premium_biblical',
+                name: '📜 Code Breaker',
+                description: 'Master all Hidden Biblical Codes (9/9)',
+                category: 'Premium Trivia',
+                xpReward: 300,
+                condition: (data) => data.premiumCategories?.biblical_codes >= 9
+            },
+            premium_consciousness: {
+                id: 'premium_consciousness',
+                name: '🧠 Consciousness Engineer',
+                description: 'Master all Consciousness Technology (9/9)',
+                category: 'Premium Trivia',
+                xpReward: 300,
+                condition: (data) => data.premiumCategories?.consciousness >= 9
+            },
+            premium_mystery_schools: {
+                id: 'premium_mystery_schools',
+                name: '🏛️ Mystery Initiate',
+                description: 'Master all Mystery Schools (9/9)',
+                category: 'Premium Trivia',
+                xpReward: 300,
+                condition: (data) => data.premiumCategories?.mystery_schools >= 9
+            },
+            premium_chakras: {
+                id: 'premium_chakras',
+                name: '🌈 Energy Master',
+                description: 'Master all Chakras & Energy (9/9)',
+                category: 'Premium Trivia',
+                xpReward: 300,
+                condition: (data) => data.premiumCategories?.chakras >= 9
+            },
+            premium_alchemy: {
+                id: 'premium_alchemy',
+                name: '🧪 Alchemist',
+                description: 'Master all Alchemy & Transformation (9/9)',
+                category: 'Premium Trivia',
+                xpReward: 300,
+                condition: (data) => data.premiumCategories?.alchemy >= 9
+            },
+            premium_astrotheology: {
+                id: 'premium_astrotheology',
+                name: '⭐ Astrotheologian',
+                description: 'Master all Astrotheology (9/9)',
+                category: 'Premium Trivia',
+                xpReward: 300,
+                condition: (data) => data.premiumCategories?.astrotheology >= 9
+            },
+            premium_divine_feminine: {
+                id: 'premium_divine_feminine',
+                name: '🌙 Divine Feminine Sage',
+                description: 'Master all Divine Feminine Mysteries (9/9)',
+                category: 'Premium Trivia',
+                xpReward: 300,
+                condition: (data) => data.premiumCategories?.divine_feminine >= 9
+            },
+            premium_numerology: {
+                id: 'premium_numerology',
+                name: '🔢 Sacred Numerologist',
+                description: 'Master all Sacred Numerology (9/9)',
+                category: 'Premium Trivia',
+                xpReward: 300,
+                condition: (data) => data.premiumCategories?.sacred_numerology >= 9
+            },
+
+            // Premium Trivia - Difficulty Mastery
+            premium_seeker_master: {
+                id: 'premium_seeker_master',
+                name: '🌱 Seeker Complete',
+                description: 'Answer all 36 Seeker-level questions',
+                category: 'Premium Trivia',
+                xpReward: 400,
+                condition: (data) => data.premiumDifficulty?.seeker >= 36
+            },
+            premium_initiate_master: {
+                id: 'premium_initiate_master',
+                name: '🔥 Initiate Complete',
+                description: 'Answer all 36 Initiate-level questions',
+                category: 'Premium Trivia',
+                xpReward: 600,
+                condition: (data) => data.premiumDifficulty?.initiate >= 36
+            },
+            premium_adept_master: {
+                id: 'premium_adept_master',
+                name: '💎 Adept Complete',
+                description: 'Answer all 36 Adept-level questions',
+                category: 'Premium Trivia',
+                xpReward: 1000,
+                condition: (data) => data.premiumDifficulty?.adept >= 36
+            },
+
+            // Premium Trivia - Perfect Scores
+            premium_perfect_first: {
+                id: 'premium_perfect_first',
+                name: '⭐ Premium Perfect',
+                description: 'Get your first perfect category (9/9)',
+                category: 'Premium Trivia',
+                xpReward: 250,
+                condition: (data) => data.premiumPerfectCategories >= 1
+            },
+            premium_perfect_all: {
+                id: 'premium_perfect_all',
+                name: '🏆 Absolute Mastery',
+                description: 'Perfect score on all 12 categories',
+                category: 'Premium Trivia',
+                xpReward: 5000,
+                condition: (data) => data.premiumPerfectCategories >= 12
+            },
+
             // Matching Game Achievements
             match_first_game: {
                 id: 'match_first_game',
@@ -348,6 +532,31 @@ class AchievementSystem {
             namesGames: 0,
             numbersGames: 0,
             matchingPerfectHard: 0,
+
+            // Premium Trivia Progress (108 questions, 12 categories)
+            premiumTriviaAnswered: 0,
+            premiumTriviaCorrect: 0,
+            premiumPerfectCategories: 0,
+            premiumCategories: {
+                kabbalah: 0,
+                enochian: 0,
+                gnostic: 0,
+                sacred_geometry: 0,
+                biblical_codes: 0,
+                consciousness: 0,
+                mystery_schools: 0,
+                chakras: 0,
+                alchemy: 0,
+                astrotheology: 0,
+                divine_feminine: 0,
+                sacred_numerology: 0
+            },
+            premiumDifficulty: {
+                seeker: 0,
+                initiate: 0,
+                adept: 0
+            },
+            premiumAnsweredQuestions: [], // Track which question IDs have been answered
 
             // Level and XP
             level: 1,
