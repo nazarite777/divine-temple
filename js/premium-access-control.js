@@ -9,7 +9,13 @@
 (function() {
     'use strict';
 
-    // Premium membership tiers that have full access
+    // AUTHORIZED PREMIUM USERS - ONLY these users can access premium content
+    const AUTHORIZED_PREMIUM_USERS = [
+        'cbevvv@gmail.com',
+        'nazir23'
+    ];
+
+    // Premium membership tiers that have full access (DEPRECATED - using authorized users list)
     const PREMIUM_TIERS = ['premium', 'elite', 'admin', 'founding'];
 
     // Basic/free tiers with limited access
@@ -92,23 +98,25 @@
         }
 
         /**
-         * Check if user is authenticated and get their membership level
+         * Check if user is authenticated and authorized
          */
         async checkAuthentication() {
             return new Promise((resolve) => {
                 firebase.auth().onAuthStateChanged(async (user) => {
                     if (user) {
                         this.currentUser = user;
-                        await this.getMembershipLevel(user.uid);
+                        await this.checkAuthorization(user);
                     } else {
                         this.currentUser = null;
                         this.membershipLevel = null;
                         this.hasPremiumAccess = false;
+                        localStorage.removeItem('membershipLevel');
+                        localStorage.removeItem('isAuthorizedUser');
                     }
                     resolve();
                 });
             });
-        }
+        },
 
         /**
          * Get user's membership level from Firestore
@@ -204,8 +212,8 @@
 
             // Check if page requires premium access
             if (this.isCurrentPagePremium() && !this.hasPremiumAccess) {
-                console.warn('⛔ Premium access required - redirecting to upgrade');
-                this.redirectToUpgrade();
+                console.warn('⛔ PREMIUM ACCESS BLOCKED - User not in authorized list');
+                this.showAccessBlockedMessage();
                 return false;
             }
 
@@ -227,6 +235,21 @@
                 window.location.href = '/login.html';
             }, 1500);
         }
+
+        /**
+         * Show access blocked message for unauthorized users
+         */
+        showAccessBlockedMessage() {
+            const currentUser = this.currentUser;
+            const email = currentUser?.email || 'unknown';
+            
+            this.showAccessDeniedMessage(`🚫 ACCESS RESTRICTED: Only authorized users can access premium content. Your account (${email}) is not authorized for premium access. Contact support if you believe this is an error.`);
+            
+            setTimeout(() => {
+                // Redirect to free dashboard
+                window.location.href = '/free-dashboard.html';
+            }, 5000);
+        },
 
         /**
          * Redirect to upgrade page

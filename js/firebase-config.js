@@ -78,6 +78,18 @@ const ADMIN_EMAILS = [
     'nazir@edenconsiousness.com' // Alternative spelling
 ];
 
+// AUTHORIZED PREMIUM USERS - ONLY these users can access premium content
+const AUTHORIZED_PREMIUM_USERS = [
+    'cbevvv@gmail.com',
+    'nazir23' // Can be email or username
+];
+
+// AUTHORIZED ADMIN USERS - Full system access
+const AUTHORIZED_ADMIN_USERS = [
+    'cbevvv@gmail.com',
+    'nazir23'
+];
+
 // User management functions
 const FirebaseAuth = {
     // Check if email belongs to admin
@@ -85,6 +97,32 @@ const FirebaseAuth = {
         if (!email) return false;
         const lowerEmail = email.toLowerCase();
         return ADMIN_EMAILS.some(adminEmail => lowerEmail === adminEmail.toLowerCase());
+    },
+
+    // Check if user is authorized for premium access
+    isAuthorizedPremiumUser(email, username) {
+        if (!email && !username) return false;
+        
+        const lowerEmail = email ? email.toLowerCase() : '';
+        const lowerUsername = username ? username.toLowerCase() : '';
+        
+        return AUTHORIZED_PREMIUM_USERS.some(authorizedUser => {
+            const lowerAuthorized = authorizedUser.toLowerCase();
+            return lowerEmail === lowerAuthorized || lowerUsername === lowerAuthorized;
+        });
+    },
+
+    // Check if user is authorized admin
+    isAuthorizedAdmin(email, username) {
+        if (!email && !username) return false;
+        
+        const lowerEmail = email ? email.toLowerCase() : '';
+        const lowerUsername = username ? username.toLowerCase() : '';
+        
+        return AUTHORIZED_ADMIN_USERS.some(authorizedUser => {
+            const lowerAuthorized = authorizedUser.toLowerCase();
+            return lowerEmail === lowerAuthorized || lowerUsername === lowerAuthorized;
+        });
     },
 
     // Check if current user is admin (based on email)
