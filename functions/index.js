@@ -4,7 +4,6 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
-  // Get Stripe configuration
   const stripeConfig = functions.config().stripe;
   
   if (!stripeConfig || !stripeConfig.secret || !stripeConfig.webhook_secret) {
@@ -25,7 +24,6 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
   
-  // Handle the event
   switch (event.type) {
     case 'checkout.session.completed':
       const session = event.data.object;
@@ -37,3 +35,4 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
   
   res.json({received: true});
 });
+
