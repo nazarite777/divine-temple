@@ -108,7 +108,7 @@ exports.onUserCreate = functions.auth.user().onCreate(async (user) => {
  * Stripe Webhook Handler - Updated to handle payments
  */
 /**
- * Create Stripe Checkout Session - $9.99 Premium Membership
+ * Create Stripe Checkout Session - $9.99/month Premium Membership
  */
 exports.createCheckoutSession = functions.https.onCall(async (data, context) => {
   // Check if user is authenticated
@@ -134,10 +134,10 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
 
     const stripe = require('stripe')(stripeConfig.secret);
 
-    // Create Stripe Checkout Session
+    // Create Stripe Checkout Session for SUBSCRIPTION
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      mode: 'payment', // One-time payment
+      mode: 'subscription', // MONTHLY RECURRING SUBSCRIPTION
       customer_email: userEmail,
       client_reference_id: userId,
       metadata: {
@@ -150,10 +150,12 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
             currency: 'usd',
             product_data: {
               name: 'Divine Temple Premium Membership',
-              description: 'Lifetime access to all premium features',
-              images: ['https://i.imgur.com/divine-temple-logo.png'] // Add your logo URL
+              description: 'Monthly subscription with full access to all premium features',
             },
             unit_amount: 999, // $9.99 in cents
+            recurring: {
+              interval: 'month', // Monthly billing
+            },
           },
           quantity: 1,
         },

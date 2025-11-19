@@ -320,7 +320,7 @@
                         Unlock Premium Access
                     </h2>
                     <p style="color: #ffffff; font-size: 1.2rem; margin-bottom: 2rem; line-height: 1.6;">
-                        Get lifetime access to all premium features for a <strong>one-time payment</strong> of just $9.99!
+                        Get full access to all premium features with a <strong>monthly subscription</strong> for just $9.99/month!
                     </p>
 
                     <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 15px; margin: 2rem 0; text-align: left;">
@@ -338,10 +338,10 @@
                     </div>
 
                     <div style="font-size: 3rem; font-weight: 900; color: #d4af37; margin: 1.5rem 0;">
-                        $9.99
+                        $9.99<span style="font-size: 1.5rem;">/mo</span>
                     </div>
                     <div style="color: #8b5cf6; font-size: 1.1rem; margin-bottom: 2rem;">
-                        One-time payment • Lifetime access
+                        Monthly subscription • Cancel anytime
                     </div>
 
                     <div style="display: flex; gap: 1rem; justify-content: center;">

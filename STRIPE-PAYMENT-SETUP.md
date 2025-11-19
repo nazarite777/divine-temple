@@ -1,21 +1,23 @@
-# Stripe Payment Integration - $9.99 Premium Membership
+# Stripe Payment Integration - $9.99/month Premium Membership
 
 ## Overview
 
-This system allows free members to upgrade to premium for a **one-time payment of $9.99**, granting them **lifetime access** to all premium features.
+This system allows free members to upgrade to premium with a **monthly subscription of $9.99/month**, granting them **full access** to all premium features as long as their subscription is active.
 
 ## How It Works
 
 ### Payment Flow
 
 1. **User clicks "Upgrade to Premium" button** on free dashboard
-2. **Modal appears** showing premium features and $9.99 price
+2. **Modal appears** showing premium features and $9.99/month price
 3. **User clicks "Upgrade Now"**
-4. **Cloud Function creates Stripe Checkout Session**
-5. **User redirects to Stripe** for secure payment
+4. **Cloud Function creates Stripe Checkout Session** (subscription mode)
+5. **User redirects to Stripe** for secure payment setup
 6. **After payment, user redirects to success page**
 7. **Stripe webhook updates user to premium** in Firestore
-8. **User now has lifetime premium access**
+8. **User now has premium access** (billed monthly)
+9. **Stripe automatically charges $9.99** each month
+10. **If cancelled, user loses premium access**
 
 ### Security Integration
 
@@ -184,14 +186,14 @@ Use any future expiry date, any 3-digit CVC, and any ZIP code.
 
 ### Change Price
 
-To change the price from $9.99 to something else:
+To change the price from $9.99/month to something else:
 
 1. Open `functions/index.js`
-2. Find line ~156:
+2. Find line ~155:
    ```javascript
    unit_amount: 999, // $9.99 in cents
    ```
-3. Change to your desired price in cents (e.g., `1999` for $19.99)
+3. Change to your desired price in cents (e.g., `1999` for $19.99/month)
 4. Redeploy functions:
    ```bash
    firebase deploy --only functions:createCheckoutSession
@@ -204,8 +206,10 @@ In `functions/index.js` around line 149-154:
 ```javascript
 product_data: {
   name: 'Divine Temple Premium Membership',
-  description: 'Lifetime access to all premium features',
-  images: ['https://i.imgur.com/divine-temple-logo.png']
+  description: 'Monthly subscription with full access to all premium features',
+},
+recurring: {
+  interval: 'month', // Monthly billing
 },
 ```
 
@@ -392,16 +396,16 @@ firebase functions:log --follow
 
 ## 🔮 Future Enhancements
 
-### Subscription Model
+### Multiple Billing Intervals
 
-Current: One-time $9.99 payment
-Future: Monthly/Yearly subscriptions
+Current: Monthly $9.99 subscription
+Future: Add yearly subscription option ($99/year - save 17%)
 
 To implement:
-1. Change `mode: 'payment'` to `mode: 'subscription'`
-2. Create Stripe Products and Prices
-3. Update webhook to handle recurring payments
-4. Add cancellation flow
+1. Create separate checkout function for yearly
+2. Use different `recurring.interval: 'year'`
+3. Update UI to show both options
+4. Let user choose monthly vs yearly
 
 ### Multiple Tiers
 
