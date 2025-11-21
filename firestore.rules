@@ -3,6 +3,26 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // ==================== HELPER FUNCTIONS ====================
+    // Check if user has premium access
+    function isPremiumUser(userId) {
+      let userDoc = get(/databases/$(database)/documents/users/$(userId));
+      return userDoc.data.isPremium == true ||
+             userDoc.data.membershipLevel in ['premium', 'elite', 'admin', 'founding'];
+    }
+
+    // Check if user is authorized (in the authorized users list)
+    function isAuthorizedUser(userId) {
+      let userDoc = get(/databases/$(database)/documents/users/$(userId));
+      return userDoc.data.isAuthorized == true;
+    }
+
+    // Check if requesting user has premium or is authorized
+    function hasPremiumAccess() {
+      return request.auth != null &&
+             (isPremiumUser(request.auth.uid) || isAuthorizedUser(request.auth.uid));
+    }
+
     // ==================== USER DATA ====================
     // Users collection - each user can read/write their own document
     match /users/{userId} {
@@ -43,20 +63,24 @@ service cloud.firestore {
     
     // AI Chat logs - users can only read their own
     match /aiChatLogs/{logId} {
-      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow read: if request.auth != null &&
+        resource.data.userId == request.auth.uid &&
+        hasPremiumAccess();
       allow write: if false; // Only server can write chat logs
     }
-    
-    // Oracle readings - user can read/write their own
+
+    // Oracle readings - PREMIUM ONLY - user can read/write their own
     match /oracleReadings/{readingId} {
-      allow read, write: if request.auth != null && 
-        resource.data.userId == request.auth.uid;
+      allow read, write: if request.auth != null &&
+        resource.data.userId == request.auth.uid &&
+        hasPremiumAccess();
     }
-    
-    // Spiritual journal entries - private to user
+
+    // Spiritual journal entries - PREMIUM ONLY - private to user
     match /journalEntries/{entryId} {
-      allow read, write: if request.auth != null && 
-        resource.data.userId == request.auth.uid;
+      allow read, write: if request.auth != null &&
+        resource.data.userId == request.auth.uid &&
+        hasPremiumAccess();
     }
 
     // ==================== SOCIAL FEATURES ====================

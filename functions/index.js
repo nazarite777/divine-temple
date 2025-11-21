@@ -1,213 +1,271 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
-// Initialize Firebase Admin (if not already initialized)
-if (!admin.apps.length) {
-    admin.initializeApp();
+admin.initializeApp();
+
+// ==================== AUTHORIZED USERS LIST ====================
+// This list defines which users have premium access
+const AUTHORIZED_PREMIUM_USERS = [
+  'cbevvv@gmail.com',
+  'nazir23'
+];
+
+// ==================== HELPER FUNCTIONS ====================
+/**
+ * Check if user has premium access
+ */
+async function checkPremiumAccess(userId) {
+  try {
+    const userDoc = await admin.firestore().collection('users').doc(userId).get();
+
+    if (!userDoc.exists) {
+      return false;
+    }
+
+    const userData = userDoc.data();
+
+    // Check if user is authorized
+    if (userData.isAuthorized === true) {
+      return true;
+    }
+
+    // Check if user has premium membership
+    if (userData.isPremium === true) {
+      return true;
+    }
+
+    // Check membership level
+    const premiumLevels = ['premium', 'elite', 'admin', 'founding'];
+    if (userData.membershipLevel && premiumLevels.includes(userData.membershipLevel)) {
+      return true;
+    }
+
+    return false;
+  } catch (error) {
+    console.error('Error checking premium access:', error);
+    return false;
+  }
 }
 
-// OpenAI Chat Completion Proxy
-exports.chatWithAI = functions.https.onCall(async (data, context) => {
-    // Verify user is authenticated
-    if (!context.auth) {
-        throw new functions.https.HttpsError(
-            'unauthenticated', 
-            'User must be authenticated to use AI chat'
-        );
+/**
+ * Check if email is in authorized users list
+ */
+function isEmailAuthorized(email) {
+  if (!email) return false;
+  const lowerEmail = email.toLowerCase();
+  return AUTHORIZED_PREMIUM_USERS.some(auth => auth.toLowerCase() === lowerEmail);
+}
+
+// ==================== CLOUD FUNCTIONS ====================
+
+/**
+ * Verify Premium Access - HTTP callable function
+ * Returns whether the user has premium access
+ */
+exports.verifyPremiumAccess = functions.https.onCall(async (data, context) => {
+  // Check if user is authenticated
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+  }
+
+  const userId = context.auth.uid;
+  const hasPremium = await checkPremiumAccess(userId);
+
+  return {
+    hasPremiumAccess: hasPremium,
+    userId: userId
+  };
+});
+
+/**
+ * Initialize User on Sign Up - Firestore trigger
+ * Sets up initial user data including authorization status
+ */
+exports.onUserCreate = functions.auth.user().onCreate(async (user) => {
+  try {
+    const email = user.email;
+    const isAuthorized = isEmailAuthorized(email);
+
+    const userData = {
+      email: email,
+      displayName: user.displayName || '',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      isAuthorized: isAuthorized,
+      isPremium: isAuthorized, // Authorized users automatically get premium
+      membershipLevel: isAuthorized ? 'authorized' : 'free',
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    };
+
+    await admin.firestore().collection('users').doc(user.uid).set(userData, { merge: true });
+
+    console.log(`User ${email} created with authorization: ${isAuthorized}`);
+  } catch (error) {
+    console.error('Error creating user document:', error);
+  }
+});
+
+/**
+ * Stripe Webhook Handler - Updated to handle payments
+ */
+/**
+ * Create Stripe Checkout Session - $9.99/month Premium Membership
+ */
+exports.createCheckoutSession = functions.https.onCall(async (data, context) => {
+  // Check if user is authenticated
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+  }
+
+  const userId = context.auth.uid;
+  const userEmail = context.auth.token.email;
+
+  // Check if user already has premium
+  const hasPremium = await checkPremiumAccess(userId);
+  if (hasPremium) {
+    throw new functions.https.HttpsError('already-exists', 'User already has premium access');
+  }
+
+  try {
+    const stripeConfig = functions.config().stripe;
+
+    if (!stripeConfig || !stripeConfig.secret) {
+      throw new functions.https.HttpsError('failed-precondition', 'Stripe configuration is missing');
     }
 
-    const { message, conversationHistory = [] } = data;
+    const stripe = require('stripe')(stripeConfig.secret);
 
-    // Validate input
-    if (!message || typeof message !== 'string') {
-        throw new functions.https.HttpsError(
-            'invalid-argument', 
-            'Message is required and must be a string'
-        );
-    }
-
-    // Rate limiting (prevent abuse)
-    const userId = context.auth.uid;
-    const now = Date.now();
-    const hourAgo = now - (60 * 60 * 1000);
-
-    try {
-        // Check rate limit (max 20 messages per hour per user)
-        const recentMessages = await admin.firestore()
-            .collection('aiChatLogs')
-            .where('userId', '==', userId)
-            .where('timestamp', '>', new Date(hourAgo))
-            .get();
-
-        if (recentMessages.size >= 20) {
-            throw new functions.https.HttpsError(
-                'resource-exhausted',
-                'Rate limit exceeded. Please wait before sending more messages.'
-            );
-        }
-
-        // Make request to OpenAI
-        const fetch = require('node-fetch');
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${functions.config().openai.key}`,
-                'Content-Type': 'application/json'
+    // Create Stripe Checkout Session for SUBSCRIPTION
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'subscription', // MONTHLY RECURRING SUBSCRIPTION
+      customer_email: userEmail,
+      client_reference_id: userId,
+      metadata: {
+        userId: userId,
+        productType: 'premium_membership'
+      },
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Divine Temple Premium Membership',
+              description: 'Monthly subscription with full access to all premium features',
             },
-            body: JSON.stringify({
-                model: 'gpt-4o-mini', // Cheaper and faster than GPT-4
-                messages: [
-                    {
-                        role: 'system',
-                        content: `You are Sophia, a wise and compassionate spiritual guide for Divine Temple, a sacred space for consciousness expansion and spiritual growth. You help seekers on their journey of remembering their divine nature.
-
-Key guidelines:
-- Be warm, wise, and encouraging
-- Reference spiritual concepts like chakras, meditation, energy healing
-- Encourage spiritual practices and self-reflection
-- Keep responses focused on spiritual growth and consciousness
-- Be inclusive of all spiritual paths
-- If asked about non-spiritual topics, gently redirect to spiritual wisdom
-- Keep responses concise but meaningful (under 300 words)
-- End with an encouraging question or spiritual insight
-
-Your purpose is to guide souls back to their divine essence and support their spiritual awakening journey.`
-                    },
-                    ...conversationHistory.slice(-8), // Keep last 8 messages for context
-                    { role: 'user', content: message }
-                ],
-                max_tokens: 300,
-                temperature: 0.7,
-                presence_penalty: 0.1,
-                frequency_penalty: 0.1
-            })
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error('OpenAI API Error:', errorData);
-            throw new functions.https.HttpsError(
-                'internal',
-                'AI service temporarily unavailable'
-            );
-        }
-
-        const aiResponse = await response.json();
-        const aiMessage = aiResponse.choices[0].message.content;
-
-        // Log the interaction (for rate limiting and analytics)
-        await admin.firestore().collection('aiChatLogs').add({
-            userId: userId,
-            userMessage: message,
-            aiResponse: aiMessage,
-            timestamp: admin.firestore.FieldValue.serverTimestamp(),
-            tokensUsed: aiResponse.usage?.total_tokens || 0
-        });
-
-        // Award XP for using AI chat (10 XP per message, max 100 XP per day)
-        const todayStart = new Date();
-        todayStart.setHours(0, 0, 0, 0);
-        
-        const todayChats = await admin.firestore()
-            .collection('aiChatLogs')
-            .where('userId', '==', userId)
-            .where('timestamp', '>=', todayStart)
-            .get();
-
-        if (todayChats.size <= 10) { // Max 10 XP rewards per day
-            const userProgressRef = admin.firestore()
-                .collection('userProgress')
-                .doc(userId);
-            
-            await userProgressRef.set({
-                xp: admin.firestore.FieldValue.increment(10),
-                lastAIChatXP: admin.firestore.FieldValue.serverTimestamp()
-            }, { merge: true });
-        }
-
-        return {
-            success: true,
-            message: aiMessage,
-            tokensUsed: aiResponse.usage?.total_tokens || 0
-        };
-
-    } catch (error) {
-        console.error('AI Chat Error:', error);
-        
-        if (error instanceof functions.https.HttpsError) {
-            throw error;
-        }
-        
-        // Return fallback response for any other errors
-        return {
-            success: false,
-            message: "I'm experiencing some technical difficulties right now. In the meantime, I encourage you to spend a few moments in quiet reflection or meditation. Sometimes the answers we seek come from within when we create space for silence. 🙏✨",
-            fallback: true
-        };
-    }
-});
-
-// Health check endpoint
-exports.healthCheck = functions.https.onRequest((req, res) => {
-    res.status(200).json({
-        status: 'healthy',
-        timestamp: new Date().toISOString(),
-        services: {
-            firebase: 'operational',
-            functions: 'operational'
-        }
+            unit_amount: 999, // $9.99 in cents
+            recurring: {
+              interval: 'month', // Monthly billing
+            },
+          },
+          quantity: 1,
+        },
+      ],
+      success_url: `${data.successUrl || 'https://your-domain.com/success'}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: data.cancelUrl || 'https://your-domain.com/free-dashboard',
     });
+
+    console.log(`Checkout session created for user ${userId}: ${session.id}`);
+
+    return {
+      sessionId: session.id,
+      url: session.url
+    };
+
+  } catch (error) {
+    console.error('Error creating checkout session:', error);
+    throw new functions.https.HttpsError('internal', error.message);
+  }
 });
 
-// Update subscriber count (runs every hour)
-exports.updateSubscriberCount = functions.pubsub.schedule('every 1 hours').onRun(async (context) => {
-    try {
-        const db = admin.firestore();
+/**
+ * Stripe Webhook Handler - Updated to handle payments
+ */
+exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
+  const stripeConfig = functions.config().stripe;
 
-        // Count users from userProgress collection (more accurate for active members)
-        const userProgressSnapshot = await db.collection('userProgress').count().get();
-        const totalMembers = userProgressSnapshot.data().count;
+  if (!stripeConfig || !stripeConfig.secret || !stripeConfig.webhook_secret) {
+    console.error('Stripe configuration is missing');
+    return res.status(500).send('Stripe configuration error');
+  }
 
-        // Update stats collection
-        await db.collection('stats').doc('globalStats').set({
-            totalMembers: totalMembers,
-            totalSubscribers: totalMembers, // Same as members for now
-            lastUpdated: admin.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
+  const stripe = require('stripe')(stripeConfig.secret);
+  const sig = req.headers['stripe-signature'];
+  const endpointSecret = stripeConfig.webhook_secret;
 
-        console.log(`✅ Subscriber count updated: ${totalMembers} members`);
-        return null;
-    } catch (error) {
-        console.error('❌ Error updating subscriber count:', error);
-        return null;
-    }
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.rawBody, sig, endpointSecret);
+  } catch (err) {
+    console.log(`Webhook signature verification failed: ${err.message}`);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  switch (event.type) {
+    case 'checkout.session.completed':
+      const session = event.data.object;
+      console.log('Payment successful:', session);
+
+      // Get user ID from session metadata
+      const userId = session.client_reference_id || session.metadata?.userId;
+
+      if (userId) {
+        try {
+          // Update user to premium
+          await admin.firestore().collection('users').doc(userId).update({
+            isPremium: true,
+            membershipLevel: 'premium',
+            subscriptionId: session.subscription || session.id,
+            stripeCustomerId: session.customer,
+            lastPaymentDate: admin.firestore.FieldValue.serverTimestamp(),
+            paymentAmount: session.amount_total / 100, // Convert cents to dollars
+            updatedAt: admin.firestore.FieldValue.serverTimestamp()
+          });
+
+          console.log(`User ${userId} upgraded to premium - Payment: $${session.amount_total / 100}`);
+        } catch (error) {
+          console.error('Error updating user to premium:', error);
+        }
+      }
+      break;
+
+    case 'customer.subscription.deleted':
+      // Handle subscription cancellation
+      const subscription = event.data.object;
+      const customerId = subscription.customer;
+
+      try {
+        // Find user by Stripe customer ID
+        const usersSnapshot = await admin.firestore()
+          .collection('users')
+          .where('stripeCustomerId', '==', customerId)
+          .limit(1)
+          .get();
+
+        if (!usersSnapshot.empty) {
+          const userDoc = usersSnapshot.docs[0];
+
+          // Don't downgrade authorized users
+          const userData = userDoc.data();
+          if (!userData.isAuthorized) {
+            await userDoc.ref.update({
+              isPremium: false,
+              membershipLevel: 'free',
+              updatedAt: admin.firestore.FieldValue.serverTimestamp()
+            });
+
+            console.log(`User ${userDoc.id} downgraded to free`);
+          }
+        }
+      } catch (error) {
+        console.error('Error handling subscription cancellation:', error);
+      }
+      break;
+
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+  res.json({received: true});
 });
 
-// Manually trigger subscriber count update (callable function)
-exports.refreshSubscriberCount = functions.https.onCall(async (data, context) => {
-    try {
-        const db = admin.firestore();
-
-        // Count users from userProgress collection
-        const userProgressSnapshot = await db.collection('userProgress').count().get();
-        const totalMembers = userProgressSnapshot.data().count;
-
-        // Update stats collection
-        await db.collection('stats').doc('globalStats').set({
-            totalMembers: totalMembers,
-            totalSubscribers: totalMembers,
-            lastUpdated: admin.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
-
-        console.log(`✅ Subscriber count manually refreshed: ${totalMembers} members`);
-
-        return {
-            success: true,
-            totalMembers: totalMembers,
-            message: `Subscriber count updated: ${totalMembers} members`
-        };
-    } catch (error) {
-        console.error('❌ Error refreshing subscriber count:', error);
-        throw new functions.https.HttpsError('internal', 'Failed to refresh subscriber count');
-    }
-});
