@@ -395,42 +395,56 @@
                 const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
                 const user = userCredential.user;
 
-                // Get user's actual membership level from Firestore
+                // Get user's actual membership level from Firestore with timeout
                 let actualMembershipLevel = 'free'; // Default
-                try {
-                    const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
-                    if (userDoc.exists) {
-                        const userData = userDoc.data();
-                        actualMembershipLevel = userData.membershipLevel || 'free';
+                let firestoreSuccess = false;
 
-                        // Update last login
-                        await firebase.firestore().collection('users').doc(user.uid).update({
-                            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                    } else {
-                        // User document doesn't exist - create it now
-                        console.log('⚠️ User document missing, creating now...');
-                        await firebase.firestore().collection('users').doc(user.uid).set({
-                            email: user.email,
-                            displayName: user.displayName || email.split('@')[0],
-                            membershipLevel: 'free',
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-                            preferences: {
-                                theme: 'sacred',
-                                notifications: true
-                            },
-                            progress: {
-                                sectionsVisited: [],
-                                completedActions: [],
-                                lastActive: firebase.firestore.FieldValue.serverTimestamp()
-                            }
-                        });
-                        console.log('✅ User document created successfully');
-                        actualMembershipLevel = 'free';
-                    }
+                try {
+                    // Add timeout wrapper for Firestore operations
+                    const firestoreTimeout = new Promise((_, reject) =>
+                        setTimeout(() => reject(new Error('Firestore timeout')), 3000)
+                    );
+
+                    const firestoreOperation = async () => {
+                        const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            actualMembershipLevel = userData.membershipLevel || 'free';
+
+                            // Update last login (don't await - fire and forget)
+                            firebase.firestore().collection('users').doc(user.uid).update({
+                                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                            }).catch(err => console.warn('Failed to update lastLogin:', err));
+                        } else {
+                            // User document doesn't exist - create it now
+                            console.log('⚠️ User document missing, creating now...');
+                            await firebase.firestore().collection('users').doc(user.uid).set({
+                                email: user.email,
+                                displayName: user.displayName || email.split('@')[0],
+                                membershipLevel: 'free',
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                                preferences: {
+                                    theme: 'sacred',
+                                    notifications: true
+                                },
+                                progress: {
+                                    sectionsVisited: [],
+                                    completedActions: [],
+                                    lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                                }
+                            });
+                            console.log('✅ User document created successfully');
+                            actualMembershipLevel = 'free';
+                        }
+                        return true;
+                    };
+
+                    // Race between Firestore operation and timeout
+                    firestoreSuccess = await Promise.race([firestoreOperation(), firestoreTimeout]);
                 } catch (firestoreError) {
-                    console.warn('Could not fetch membership level:', firestoreError);
+                    console.warn('⚠️ Firestore query failed or timed out, using default membership level:', firestoreError.message);
+                    // Continue with default 'free' membership level
                 }
 
                 // Store actual membership level (not the selected tier)
@@ -438,28 +452,35 @@
                 localStorage.setItem('userEmail', email);
                 localStorage.setItem('userId', user.uid);
 
-                // Track login event
+                // Track login event (fire and forget - don't block on analytics)
                 if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
-                    window.FirebaseConfig.analytics.trackEvent('login', {
-                        method: 'email',
-                        user_id: user.uid,
-                        membership_level: actualMembershipLevel
-                    });
+                    try {
+                        window.FirebaseConfig.analytics.trackEvent('login', {
+                            method: 'email',
+                            user_id: user.uid,
+                            membership_level: actualMembershipLevel
+                        });
+                    } catch (analyticsError) {
+                        console.warn('Analytics tracking failed:', analyticsError);
+                    }
                 }
 
                 console.log('✅ User logged in:', email, 'Membership:', actualMembershipLevel);
 
                 showSuccess('Welcome back! Redirecting...');
 
-                // Redirect based on ACTUAL membership level from database
+                // Redirect immediately - don't wait
+                // The destination page will verify auth state
+                const redirectUrl = (actualMembershipLevel === 'free' || actualMembershipLevel === 'basic')
+                    ? 'free-dashboard.html'
+                    : 'members-new.html';
+
+                console.log('🔄 Redirecting to:', redirectUrl);
+
+                // Use replace() to prevent back button issues
                 setTimeout(() => {
-                    if (actualMembershipLevel === 'free' || actualMembershipLevel === 'basic') {
-                        window.location.href = 'free-dashboard.html';
-                    } else {
-                        // Premium members: founding, student, monthly
-                        window.location.href = 'members-new.html';
-                    }
-                }, 1000);
+                    window.location.replace(redirectUrl);
+                }, 500); // Reduced delay from 1000ms to 500ms
 
             } catch (error) {
                 console.error('Login error:', error);
