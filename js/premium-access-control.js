@@ -9,7 +9,13 @@
 (function() {
     'use strict';
 
-    // Premium membership tiers that have full access
+    // AUTHORIZED PREMIUM USERS - ONLY these users can access premium content
+    const AUTHORIZED_PREMIUM_USERS = [
+        'cbevvv@gmail.com',
+        'nazir23'
+    ];
+
+    // Premium membership tiers that have full access (DEPRECATED - using authorized users list)
     const PREMIUM_TIERS = ['premium', 'elite', 'admin', 'founding'];
 
     // Basic/free tiers with limited access
@@ -18,6 +24,8 @@
     // Sections that require premium access
     const PREMIUM_SECTIONS = [
         'daily-trivia-PREMIUM.html',
+        'members-new.html',
+        'members.html', 
         'chakras-auras.html',
         'meditation-mindfulness.html',
         'oracle-divination.html',
@@ -36,7 +44,8 @@
         'sacred-books.html',
         'reward-shop.html',
         'progress-dashboard.html',
-        'calendar.html'
+        'calendar.html',
+        'oracle-divination-hub.html'
     ];
 
     // Free sections accessible to all authenticated users
@@ -92,23 +101,79 @@
         }
 
         /**
-         * Check if user is authenticated and get their membership level
+         * Check if user is authenticated and authorized
          */
         async checkAuthentication() {
             return new Promise((resolve) => {
                 firebase.auth().onAuthStateChanged(async (user) => {
                     if (user) {
                         this.currentUser = user;
-                        await this.getMembershipLevel(user.uid);
+                        await this.checkAuthorization(user);
                     } else {
                         this.currentUser = null;
                         this.membershipLevel = null;
                         this.hasPremiumAccess = false;
+                        localStorage.removeItem('membershipLevel');
+                        localStorage.removeItem('isAuthorizedUser');
                     }
                     resolve();
                 });
             });
-        }
+        },
+
+        /**
+         * Check if user is authorized for premium access
+         * NOW USES SERVER-SIDE VALIDATION - Cannot be bypassed by client
+         */
+        async checkAuthorization(user) {
+            try {
+                // CRITICAL: Verify with server-side Cloud Function
+                // This cannot be bypassed by modifying client-side code
+                const verifyFunction = firebase.functions().httpsCallable('verifyPremiumAccess');
+                const result = await verifyFunction({});
+
+                this.hasPremiumAccess = result.data.hasPremiumAccess;
+
+                if (this.hasPremiumAccess) {
+                    console.log('✅ Server verified premium access');
+
+                    // Also get membership level from Firestore
+                    await this.getMembershipLevel(user.uid);
+
+                    localStorage.setItem('isAuthorizedUser', 'true');
+                } else {
+                    console.log('⛔ Server denied premium access');
+                    this.membershipLevel = 'free';
+                    this.hasPremiumAccess = false;
+                    localStorage.setItem('isAuthorizedUser', 'false');
+                    localStorage.setItem('membershipLevel', 'free');
+                }
+
+            } catch (error) {
+                console.error('❌ Error checking authorization:', error);
+                console.error('❌ Server validation failed - denying access');
+
+                // If server check fails, deny access for security
+                this.membershipLevel = 'free';
+                this.hasPremiumAccess = false;
+                localStorage.setItem('isAuthorizedUser', 'false');
+            }
+        },
+
+        /**
+         * Check if user is in the authorized premium users list
+         */
+        isUserAuthorized(email, username) {
+            if (!email && !username) return false;
+            
+            const lowerEmail = email ? email.toLowerCase() : '';
+            const lowerUsername = username ? username.toLowerCase() : '';
+            
+            return AUTHORIZED_PREMIUM_USERS.some(authorizedUser => {
+                const lowerAuthorized = authorizedUser.toLowerCase();
+                return lowerEmail === lowerAuthorized || lowerUsername === lowerAuthorized;
+            });
+        },
 
         /**
          * Get user's membership level from Firestore
@@ -203,10 +268,17 @@
             }
 
             // Check if page requires premium access
-            if (this.isCurrentPagePremium() && !this.hasPremiumAccess) {
-                console.warn('⛔ Premium access required - redirecting to upgrade');
-                this.redirectToUpgrade();
-                return false;
+            if (this.isCurrentPagePremium()) {
+                if (!this.hasPremiumAccess) {
+                    console.error('⛔ PREMIUM ACCESS DENIED - User not authorized');
+                    console.error('   User:', this.currentUser?.email);
+                    console.error('   Page:', window.location.pathname);
+                    console.error('   Authorized Users:', AUTHORIZED_PREMIUM_USERS);
+                    this.showAccessBlockedMessage();
+                    return false;
+                } else {
+                    console.log('✅ Premium access granted to authorized user');
+                }
             }
 
             console.log('✅ Access granted');
@@ -227,6 +299,32 @@
                 window.location.href = '/login.html';
             }, 1500);
         }
+
+        /**
+         * Show access blocked message for unauthorized users
+         */
+        showAccessBlockedMessage() {
+            const currentUser = this.currentUser;
+            const email = currentUser?.email || 'unknown';
+            
+            // Check if they have a purchased membership but are blocked due to restrictions
+            const membershipLevel = this.membershipLevel;
+            const isPurchasedMember = membershipLevel && PREMIUM_TIERS.includes(membershipLevel);
+            
+            let message;
+            if (isPurchasedMember) {
+                message = `🚫 ACCESS TEMPORARILY RESTRICTED: Premium access is currently limited to authorized accounts only. Your purchased membership (${membershipLevel}) will be honored when restrictions are lifted. Account: ${email}`;
+            } else {
+                message = `🚫 ACCESS RESTRICTED: Only authorized users can access premium content. Your account (${email}) is not authorized for premium access. Contact support if you believe this is an error.`;
+            }
+            
+            this.showAccessDeniedMessage(message);
+            
+            setTimeout(() => {
+                // Redirect to free dashboard
+                window.location.href = '/free-dashboard.html';
+            }, 5000);
+        },
 
         /**
          * Redirect to upgrade page
