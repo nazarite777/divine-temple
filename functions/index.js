@@ -3,16 +3,10 @@ const admin = require('firebase-admin');
 
 admin.initializeApp();
 
-// ==================== AUTHORIZED USERS LIST ====================
-// This list defines which users have premium access
-const AUTHORIZED_PREMIUM_USERS = [
-  'cbevvv@gmail.com',
-  'nazir23'
-];
-
 // ==================== HELPER FUNCTIONS ====================
 /**
  * Check if user has premium access
+ * Now uses ONLY database flags - no hardcoded lists
  */
 async function checkPremiumAccess(userId) {
   try {
@@ -24,12 +18,7 @@ async function checkPremiumAccess(userId) {
 
     const userData = userDoc.data();
 
-    // Check if user is authorized
-    if (userData.isAuthorized === true) {
-      return true;
-    }
-
-    // Check if user has premium membership
+    // Check if user has premium membership (set by Stripe webhook)
     if (userData.isPremium === true) {
       return true;
     }
@@ -45,15 +34,6 @@ async function checkPremiumAccess(userId) {
     console.error('Error checking premium access:', error);
     return false;
   }
-}
-
-/**
- * Check if email is in authorized users list
- */
-function isEmailAuthorized(email) {
-  if (!email) return false;
-  const lowerEmail = email.toLowerCase();
-  return AUTHORIZED_PREMIUM_USERS.some(auth => auth.toLowerCase() === lowerEmail);
 }
 
 // ==================== CLOUD FUNCTIONS ====================
@@ -79,28 +59,73 @@ exports.verifyPremiumAccess = functions.https.onCall(async (data, context) => {
 
 /**
  * Initialize User on Sign Up - Firestore trigger
- * Sets up initial user data including authorization status
+ * Sets up initial user data with free tier by default
  */
 exports.onUserCreate = functions.auth.user().onCreate(async (user) => {
   try {
     const email = user.email;
-    const isAuthorized = isEmailAuthorized(email);
 
     const userData = {
       email: email,
       displayName: user.displayName || '',
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      isAuthorized: isAuthorized,
-      isPremium: isAuthorized, // Authorized users automatically get premium
-      membershipLevel: isAuthorized ? 'authorized' : 'free',
+      isPremium: false, // Default to free - will be set to true after payment
+      membershipLevel: 'free',
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     };
 
     await admin.firestore().collection('users').doc(user.uid).set(userData, { merge: true });
 
-    console.log(`User ${email} created with authorization: ${isAuthorized}`);
+    console.log(`User ${email} created with free tier - can upgrade via payment`);
   } catch (error) {
     console.error('Error creating user document:', error);
+  }
+});
+
+/**
+ * Admin Function - Manually Grant Premium Access
+ * Use this for: promotions, gifts, special cases, admin accounts
+ *
+ * Usage from Firebase Console:
+ * firebase functions:call grantPremiumAccess --data '{"userId":"USER_ID","reason":"promotion"}'
+ */
+exports.grantPremiumAccess = functions.https.onCall(async (data, context) => {
+  // Only allow authenticated requests
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated');
+  }
+
+  // Get calling user's data to verify admin status
+  const callingUserDoc = await admin.firestore().collection('users').doc(context.auth.uid).get();
+  const callingUserData = callingUserDoc.data();
+
+  // Only allow admins to grant access
+  if (callingUserData?.membershipLevel !== 'admin') {
+    throw new functions.https.HttpsError('permission-denied', 'Only admins can grant premium access');
+  }
+
+  const { userId, reason } = data;
+
+  if (!userId) {
+    throw new functions.https.HttpsError('invalid-argument', 'userId is required');
+  }
+
+  try {
+    await admin.firestore().collection('users').doc(userId).update({
+      isPremium: true,
+      membershipLevel: 'premium',
+      grantedBy: context.auth.uid,
+      grantReason: reason || 'manual_grant',
+      grantedAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    console.log(`Premium access granted to ${userId} by ${context.auth.uid}. Reason: ${reason}`);
+
+    return { success: true, message: 'Premium access granted' };
+  } catch (error) {
+    console.error('Error granting premium access:', error);
+    throw new functions.https.HttpsError('internal', error.message);
   }
 });
 
@@ -245,17 +270,15 @@ exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
         if (!usersSnapshot.empty) {
           const userDoc = usersSnapshot.docs[0];
 
-          // Don't downgrade authorized users
-          const userData = userDoc.data();
-          if (!userData.isAuthorized) {
-            await userDoc.ref.update({
-              isPremium: false,
-              membershipLevel: 'free',
-              updatedAt: admin.firestore.FieldValue.serverTimestamp()
-            });
+          // Downgrade user to free tier on subscription cancellation
+          await userDoc.ref.update({
+            isPremium: false,
+            membershipLevel: 'free',
+            subscriptionStatus: 'canceled',
+            updatedAt: admin.firestore.FieldValue.serverTimestamp()
+          });
 
-            console.log(`User ${userDoc.id} downgraded to free`);
-          }
+          console.log(`User ${userDoc.id} downgraded to free - subscription canceled`);
         }
       } catch (error) {
         console.error('Error handling subscription cancellation:', error);

@@ -11,16 +11,9 @@ service cloud.firestore {
              userDoc.data.membershipLevel in ['premium', 'elite', 'admin', 'founding'];
     }
 
-    // Check if user is authorized (in the authorized users list)
-    function isAuthorizedUser(userId) {
-      let userDoc = get(/databases/$(database)/documents/users/$(userId));
-      return userDoc.data.isAuthorized == true;
-    }
-
-    // Check if requesting user has premium or is authorized
+    // Check if requesting user has premium access
     function hasPremiumAccess() {
-      return request.auth != null &&
-             (isPremiumUser(request.auth.uid) || isAuthorizedUser(request.auth.uid));
+      return request.auth != null && isPremiumUser(request.auth.uid);
     }
 
     // ==================== USER DATA ====================
