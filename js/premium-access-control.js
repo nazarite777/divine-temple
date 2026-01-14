@@ -113,7 +113,7 @@
                     resolve();
                 });
             });
-        },
+        }
 
         /**
          * Check if user is authorized for premium access
@@ -152,7 +152,7 @@
                 this.hasPremiumAccess = false;
                 localStorage.setItem('hasPremiumAccess', 'false');
             }
-        },
+        }
 
         /**
          * Get user's membership level from Firestore
@@ -294,7 +294,7 @@
                 // Redirect to free dashboard with upgrade prompt
                 window.location.href = '/free-dashboard.html?showUpgrade=true';
             }, 3000);
-        },
+        }
 
         /**
          * Redirect to upgrade page
