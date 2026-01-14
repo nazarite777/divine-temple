@@ -11,9 +11,9 @@ class DailyTriviaFreeEdition {
         this.streak = 0;
         this.totalXP = 0;
         this.questionsAnswered = 0;
-        this.maxFreeQuestions = 30;
+        this.maxFreeQuestions = 3; // Changed from 30 to 3 questions per session
         this.audioSystem = null;
-        
+
         // User Progress Data
         this.userProgress = {
             completedToday: false,
@@ -454,50 +454,101 @@ class DailyTriviaFreeEdition {
 
     async init() {
         console.log('🌟 Initializing Free Daily Trivia System');
-        
+
         try {
             // Initialize audio system
             if (window.TriviaAudioSystem) {
                 this.audioSystem = new TriviaAudioSystem();
                 await this.audioSystem.initialize();
             }
-            
-            // Load user progress
-            this.loadProgress();
-            
+
+            // Wait for Firebase auth
+            await this.waitForAuth();
+
+            // Load user progress from Firebase
+            await this.loadProgress();
+
             // Update UI
             this.updateStatsDisplay();
             this.updateQuestionProgress();
-            
+
             // Check if already completed today
             if (this.checkIfCompletedToday()) {
                 this.showCompletedMessage();
                 return;
             }
-            
+
             // Start trivia
             this.startTrivia();
-            
+
         } catch (error) {
             console.error('Initialization error:', error);
             this.showError('Failed to initialize trivia system');
         }
     }
 
-    loadProgress() {
+    async waitForAuth() {
+        return new Promise((resolve) => {
+            if (!firebase || !firebase.auth) {
+                console.warn('Firebase not available, using localStorage only');
+                resolve(null);
+                return;
+            }
+
+            const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+                this.currentUser = user;
+                unsubscribe();
+                resolve(user);
+            });
+
+            // Timeout after 5 seconds
+            setTimeout(() => {
+                unsubscribe();
+                resolve(null);
+            }, 5000);
+        });
+    }
+
+    async loadProgress() {
         try {
+            // Try loading from Firebase first if user is authenticated
+            if (this.currentUser && firebase && firebase.firestore) {
+                const doc = await firebase.firestore()
+                    .collection('triviaProgress')
+                    .doc(this.currentUser.uid)
+                    .get();
+
+                if (doc.exists) {
+                    this.userProgress = { ...this.userProgress, ...doc.data() };
+                    console.log('✅ Loaded trivia progress from Firebase');
+                    return;
+                }
+            }
+
+            // Fallback to localStorage
             const saved = localStorage.getItem('divineTemple_freeTrivia');
             if (saved) {
                 this.userProgress = { ...this.userProgress, ...JSON.parse(saved) };
+                console.log('✅ Loaded trivia progress from localStorage');
             }
         } catch (error) {
             console.error('Error loading progress:', error);
         }
     }
 
-    saveProgress() {
+    async saveProgress() {
         try {
+            // Save to localStorage for immediate persistence
             localStorage.setItem('divineTemple_freeTrivia', JSON.stringify(this.userProgress));
+
+            // Save to Firebase if user is authenticated
+            if (this.currentUser && firebase && firebase.firestore) {
+                await firebase.firestore()
+                    .collection('triviaProgress')
+                    .doc(this.currentUser.uid)
+                    .set(this.userProgress, { merge: true });
+                console.log('✅ Saved trivia progress to Firebase');
+            }
         } catch (error) {
             console.error('Error saving progress:', error);
         }
@@ -865,32 +916,42 @@ class DailyTriviaFreeEdition {
         }
     }
 
-    completeTrivia() {
+    async completeTrivia() {
         // Update progress
         this.userProgress.completedToday = true;
         this.userProgress.questionsCompleted = this.maxFreeQuestions;
         this.userProgress.totalQuizzes++;
         this.userProgress.totalXP += this.totalXP;
         this.userProgress.lastPlayed = new Date().toDateString();
-        
+
         if (this.score === this.maxFreeQuestions) {
             this.userProgress.perfectScores++;
         }
-        
+
         // Update streak
         this.updateStreak();
-        
-        // Save progress
-        this.saveProgress();
-        
+
+        // Save progress to Firebase and localStorage
+        await this.saveProgress();
+
+        // Award XP to universal progress system
+        if (window.progressSystem && this.totalXP > 0) {
+            await window.progressSystem.awardXP(
+                this.totalXP,
+                `Completed daily trivia (${this.score}/${this.maxFreeQuestions} correct)`,
+                'trivia'
+            );
+            console.log(`✨ Awarded ${this.totalXP} XP to universal progress system`);
+        }
+
         // Show completion
         this.showCompletedMessage();
-        
+
         // Show upgrade modal after a delay
         setTimeout(() => {
             showUpgradeModal();
         }, 2000);
-        
+
         // Play completion sound
         if (this.audioSystem) {
             this.audioSystem.playCompletionSound();
