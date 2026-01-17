@@ -4,7 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Journey - Divine Temple</title>
+    <meta name="description" content="Follow your sacred 4-phase journey from Awakening to Mastery. Track your progress through aligned manifestation teachings.">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="My Sacred Journey - Divine Temple">
+    <meta property="og:description" content="I'm on a transformational journey through 4 phases: Awakening, Alignment, Practice, and Mastery.">
+    <meta property="og:image" content="https://edenconsciousnesssdt.com/images/journey-share.jpg">
+    <meta property="og:url" content="https://edenconsciousnesssdt.com/journey.html">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="My Sacred Journey - Divine Temple">
+    <meta name="twitter:description" content="Join me on the path to Aligned Manifestation Mastery">
+    <meta name="twitter:image" content="https://edenconsciousnesssdt.com/images/journey-share.jpg">
+
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Confetti Celebration Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -555,6 +573,101 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+
+        /* Breadcrumb Navigation */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-gold);
+        }
+
+        .breadcrumb-separator {
+            color: var(--text-muted);
+        }
+
+        .breadcrumb-current {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Social Sharing */
+        .social-sharing {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 3rem;
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+        }
+
+        .share-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .share-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: 1px solid var(--glass-border);
+        }
+
+        .share-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .share-btn.twitter {
+            background: #1DA1F2;
+        }
+
+        .share-btn.facebook {
+            background: #4267B2;
+        }
+
+        .share-btn.linkedin {
+            background: #0077B5;
+        }
+
+        .share-btn.copy {
+            background: var(--accent-purple);
+        }
+
+        @media (max-width: 768px) {
+            .social-sharing {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -562,6 +675,13 @@
         <a href="members-new.html" class="back-btn">
             ← Back to Portal
         </a>
+
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="index.html">Home</a>
+            <span class="breadcrumb-separator">›</span>
+            <span class="breadcrumb-current">Journey</span>
+        </nav>
 
         <div class="header">
             <div class="header-content">
@@ -713,10 +833,56 @@
                 </div>
             </div>
 
+            <!-- Social Sharing -->
+            <div class="social-sharing">
+                <span class="share-label">Share Your Journey:</span>
+                <div class="share-buttons">
+                    <a href="#" class="share-btn twitter" onclick="shareToTwitter(); return false;" title="Share on Twitter">
+                        𝕏
+                    </a>
+                    <a href="#" class="share-btn facebook" onclick="shareToFacebook(); return false;" title="Share on Facebook">
+                        f
+                    </a>
+                    <a href="#" class="share-btn linkedin" onclick="shareToLinkedIn(); return false;" title="Share on LinkedIn">
+                        in
+                    </a>
+                    <a href="#" class="share-btn copy" onclick="copyJourneyLink(); return false;" title="Copy Link">
+                        🔗
+                    </a>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <!-- Journey System JavaScript -->
     <script src="js/journey-system.js"></script>
+
+    <!-- Social Sharing Scripts -->
+    <script>
+        function shareToTwitter() {
+            const text = "I'm on a transformational journey through 4 phases of spiritual growth at Divine Temple! 🌟";
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}`, '_blank');
+        }
+
+        function shareToFacebook() {
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+        }
+
+        function shareToLinkedIn() {
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+        }
+
+        function copyJourneyLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert('✅ Journey link copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+    </script>
 </body>
 </html>

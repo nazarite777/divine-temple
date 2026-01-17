@@ -512,9 +512,89 @@ class JourneySystem {
     }
 
     showAchievement(message) {
-        // Simple alert for now - can be enhanced with custom notification
         console.log(`🏆 Achievement: ${message}`);
-        // You could integrate this with the achievement system later
+
+        // Trigger confetti celebration
+        this.celebrate();
+
+        // Show custom achievement notification
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #D4AF37, #8B5CF6);
+            color: white;
+            padding: 2rem 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            animation: slideIn 0.5s ease-out;
+        `;
+        notification.innerHTML = `
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
+            <div>${message}</div>
+            <div style="margin-top: 1rem; font-size: 1rem; opacity: 0.9;">Keep going! Your transformation continues...</div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Remove after 4 seconds
+        setTimeout(() => {
+            notification.style.animation = 'fadeOut 0.5s ease-out';
+            setTimeout(() => notification.remove(), 500);
+        }, 4000);
+    }
+
+    celebrate() {
+        // Check if confetti library is available
+        if (typeof confetti === 'function') {
+            // Fire confetti from both sides
+            const count = 200;
+            const defaults = {
+                origin: { y: 0.7 },
+                colors: ['#D4AF37', '#8B5CF6', '#4fc3f7', '#F59E0B']
+            };
+
+            function fire(particleRatio, opts) {
+                confetti({
+                    ...defaults,
+                    ...opts,
+                    particleCount: Math.floor(count * particleRatio)
+                });
+            }
+
+            fire(0.25, {
+                spread: 26,
+                startVelocity: 55,
+            });
+
+            fire(0.2, {
+                spread: 60,
+            });
+
+            fire(0.35, {
+                spread: 100,
+                decay: 0.91,
+                scalar: 0.8
+            });
+
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 25,
+                decay: 0.92,
+                scalar: 1.2
+            });
+
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 45,
+            });
+        }
     }
 
     showError(message) {
