@@ -348,17 +348,21 @@ class Phase1System {
                         </div>
 
                         <div class="chapter-actions">
-                            <button class="btn btn-primary" onclick="phase1System.playChapter(${chapter.number})">
-                                ${isCompleted ? '🔄 Listen Again' : '▶️ Play Chapter'}
-                            </button>
+                            <a href="https://open.spotify.com/show/6zyMF2ljZyaDYNAJyA5I5l" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                                ${isCompleted ? '🔄 Listen Again on Spotify' : '🎧 Listen on Spotify'}
+                            </a>
                             <button class="btn btn-secondary" onclick="phase1System.openJournal(${chapter.number})">
-                                📓 Open Journal
+                                📓 Journal
                             </button>
                             ${!isCompleted ? `
                                 <button class="btn btn-success" onclick="phase1System.completeChapter(${chapter.number})">
                                     ✓ Mark Complete
                                 </button>
-                            ` : ''}
+                            ` : `
+                                <span class="btn" style="background: rgba(16, 185, 129, 0.2); color: #10b981; cursor: default;">
+                                    ✓ Completed
+                                </span>
+                            `}
                         </div>
                     </div>
                 </div>

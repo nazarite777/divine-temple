@@ -513,6 +513,193 @@
                 justify-content: center;
             }
         }
+
+        /* New Styles for Collapsible Sections */
+        .chapter-content {
+            max-height: 5000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+
+        .chapter-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .expand-button {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 0 0 15px 15px;
+            color: var(--accent-purple);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: -1px;
+        }
+
+        .expand-button:hover {
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        .journal-button {
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .journal-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .prompt {
+            background: rgba(139, 92, 246, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .complete-button {
+            padding: 0.875rem 2rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .complete-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .completed-badge {
+            padding: 0.875rem 2rem;
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: default;
+        }
+
+        .chapter-card.completed {
+            border-left: 4px solid #10b981;
+        }
+
+        .chapter-card.completed .chapter-header {
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.toast-success {
+            border-left: 4px solid #10b981;
+        }
+
+        .toast.toast-error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .toast.toast-info {
+            border-left: 4px solid #3b82f6;
+        }
+
+        /* Completion Modal */
+        .completion-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            border: 2px solid var(--accent-gold);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent-gold);
+        }
+
+        .modal-content p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .modal-actions button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -540,12 +727,12 @@
         </div>
 
         <div class="header">
-            <span class="phase-badge">Phase 1</span>
+            <span class="phase-badge">Phase 1 of 4</span>
             <div class="header-icon">🌅</div>
-            <h1 class="title">The Awakening</h1>
+            <h1 class="title">Phase 1: Awakening</h1>
             <p class="subtitle">
-                Begin your journey with "Ya Heard Me" - the foundational audiobook that awakens
-                your understanding of divine principles and sacred wisdom.
+                Ya Heard Me - A Journey from Programming to Divine Truth<br>
+                <span style="font-size: 0.9rem; opacity: 0.8;">Introduction + 9 Chapters + Conclusion | 90 Days</span>
             </p>
         </div>
 
@@ -567,42 +754,93 @@
                 <div class="progress-bar">
                     <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
                 </div>
-                <p class="progress-text" id="progressText">0 of 12 chapters completed</p>
+                <p class="progress-text" id="progressText">0 of 11 sections completed</p>
             </div>
 
             <!-- Audiobook Player -->
             <div class="audiobook-player">
                 <div class="player-header">
-                    <h2 class="player-title">🎧 Ya Heard Me Audiobook</h2>
-                    <p class="player-subtitle">Listen to the full audiobook or select chapters below</p>
+                    <h2 class="player-title">🎧 Ya Heard Me Audiobook on Spotify</h2>
+                    <p class="player-subtitle">Listen on Spotify and mark chapters complete below to track your progress</p>
                 </div>
-                <div class="audio-controls">
-                    <audio id="audioPlayer" controls>
-                        <source src="" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
-                    <div class="playback-info">
-                        <span id="currentChapter">Select a chapter to begin</span>
-                        <span id="audioTime">0:00 / 0:00</span>
-                    </div>
+
+                <!-- Spotify Podcast Embed -->
+                <div class="spotify-embed-container" style="margin: 2rem 0; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+                    <iframe
+                        data-testid="embed-iframe"
+                        style="border-radius:12px"
+                        src="https://open.spotify.com/embed/show/6zyMF2ljZyaDYNAJyA5I5l?utm_source=generator&theme=0"
+                        width="100%"
+                        height="352"
+                        frameBorder="0"
+                        allowfullscreen=""
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                        loading="lazy"
+                        title="Ya Heard Me Podcast on Spotify">
+                    </iframe>
                 </div>
-                <p style="color: var(--text-muted); text-align: center; font-size: 0.9rem;">
-                    💡 Tip: Complete each chapter and answer the reflection questions to track your progress
-                </p>
+
+                <div style="background: rgba(139, 92, 246, 0.1); border-left: 4px solid #8B5CF6; padding: 1rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">
+                        <strong style="color: var(--accent-gold);">💡 How it works:</strong><br>
+                        1. Listen to episodes on Spotify (Introduction + 9 Chapters + Conclusion = 11 total)<br>
+                        2. Read reflection questions and complete journal prompts for each section<br>
+                        3. Mark each section complete as you finish it<br>
+                        4. Complete all 11 sections to unlock Phase 2: Understanding
+                    </p>
+                </div>
+
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <a
+                        href="https://open.spotify.com/show/6zyMF2ljZyaDYNAJyA5I5l?si=aa90d1ba17294bb7"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style="display: inline-flex; align-items: center; gap: 0.5rem; background: #1DB954; color: white; padding: 12px 24px; border-radius: 24px; text-decoration: none; font-weight: 600; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);"
+                        onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 20px rgba(29, 185, 84, 0.4)';"
+                        onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(29, 185, 84, 0.3)';">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+                        </svg>
+                        Open in Spotify
+                    </a>
+                </div>
             </div>
 
-            <!-- Chapters Section -->
+            <!-- Sections (Introduction + Chapters + Conclusion) -->
             <div class="chapters-section">
-                <h2 class="section-title">📚 Chapter Guide</h2>
-                <div class="chapter-list" id="chapterList">
-                    <!-- Chapters will be dynamically loaded here -->
+                <h2 class="section-title">📚 Ya Heard Me Journey</h2>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+                    Expand each section below to read reflection questions and journal prompts.
+                    Mark complete as you progress through the audiobook.
+                </p>
+                <div class="chapter-list" id="sectionsContainer">
+                    <!-- Sections will be dynamically loaded here -->
+                </div>
+            </div>
+
+            <!-- Next Phase Preview -->
+            <div class="next-phase-preview" style="margin-top: 3rem; padding: 2rem; background: rgba(139, 92, 246, 0.05); border-radius: 15px; text-align: center;">
+                <h3 style="color: var(--accent-gold); margin-bottom: 1rem;">🔒 Phase 2: Understanding</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                    Master the 7 Principles of Aligned Manifestation
+                </p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    Complete all 11 sections of Phase 1 to unlock Phase 2
+                </p>
+                <div style="margin-top: 1rem;">
+                    <span id="unlockProgress" style="color: var(--accent-purple); font-weight: 600;">
+                        0/11 sections complete
+                    </span>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- Phase 1 System JavaScript -->
-    <script src="js/phase1-system.js"></script>
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Phase 1 Awakening JavaScript -->
+    <script src="js/phase1-awakening.js"></script>
 </body>
 </html>
