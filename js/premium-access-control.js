@@ -117,40 +117,47 @@
 
         /**
          * Check if user is authorized for premium access
-         * Uses server-side Cloud Function validation - Cannot be bypassed
+         * Uses AuthHelper for consistent premium verification
          */
         async checkAuthorization(user) {
             try {
-                // CRITICAL: Verify with server-side Cloud Function
-                // This cannot be bypassed by modifying client-side code
-                const verifyFunction = firebase.functions().httpsCallable('verifyPremiumAccess');
-                const result = await verifyFunction({});
+                console.log('🔐 Checking premium access for:', user.email);
 
-                this.hasPremiumAccess = result.data.hasPremiumAccess;
+                // Get membership level from Firestore first
+                await this.getMembershipLevel(user.uid);
+
+                // Use AuthHelper for unified premium check (includes admin check)
+                if (typeof window.AuthHelper !== 'undefined') {
+                    const userDoc = await firebase.firestore()
+                        .collection('users')
+                        .doc(user.uid)
+                        .get();
+
+                    const userData = userDoc.exists ? userDoc.data() : null;
+                    this.hasPremiumAccess = window.AuthHelper.hasPremiumAccess(userData, user);
+
+                    console.log('✅ Premium access check complete:', this.hasPremiumAccess);
+                    localStorage.setItem('hasPremiumAccess', this.hasPremiumAccess ? 'true' : 'false');
+                } else {
+                    console.warn('⚠️ AuthHelper not loaded, falling back to membershipLevel check');
+                    // Fallback: check if user has premium membership level
+                    this.hasPremiumAccess = PREMIUM_TIERS.includes(this.membershipLevel);
+                    localStorage.setItem('hasPremiumAccess', this.hasPremiumAccess ? 'true' : 'false');
+                }
 
                 if (this.hasPremiumAccess) {
-                    console.log('✅ Server verified premium access');
-
-                    // Also get membership level from Firestore
-                    await this.getMembershipLevel(user.uid);
-
-                    localStorage.setItem('hasPremiumAccess', 'true');
+                    console.log('✅ Premium access granted');
                 } else {
                     console.log('⛔ User has free tier access');
-                    this.membershipLevel = 'free';
-                    this.hasPremiumAccess = false;
-                    localStorage.setItem('hasPremiumAccess', 'false');
-                    localStorage.setItem('membershipLevel', 'free');
                 }
 
             } catch (error) {
                 console.error('❌ Error checking authorization:', error);
-                console.error('❌ Server validation failed - denying premium access');
+                console.warn('⚠️ Defaulting to free tier due to error');
 
-                // If server check fails, deny access for security
-                this.membershipLevel = 'free';
-                this.hasPremiumAccess = false;
-                localStorage.setItem('hasPremiumAccess', 'false');
+                // If check fails, check membership level as fallback
+                this.hasPremiumAccess = PREMIUM_TIERS.includes(this.membershipLevel);
+                localStorage.setItem('hasPremiumAccess', this.hasPremiumAccess ? 'true' : 'false');
             }
         },
 

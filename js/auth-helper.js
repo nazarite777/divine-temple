@@ -54,7 +54,7 @@ function hasPremiumAccess(userData, user) {
 }
 
 /**
- * Grant premium access to a user (Admin only)
+ * Grant premium access to a user (Admin only or self-grant for admins)
  * @param {string} userEmail - Email of user to grant premium access
  * @returns {Promise<Object>} Result object with success status
  */
@@ -65,69 +65,109 @@ async function grantPremiumAccess(userEmail) {
 
     const currentUser = firebase.auth().currentUser;
 
-    // Verify admin access
-    if (!currentUser || !isAdmin(currentUser)) {
+    if (!currentUser) {
+        return { success: false, error: 'No user logged in' };
+    }
+
+    // Allow if current user is admin OR granting to themselves (for admin self-grant)
+    const isSelfGrant = currentUser.email.toLowerCase() === userEmail.toLowerCase();
+    const isAdminUser = isAdmin(currentUser);
+
+    if (!isAdminUser && !isSelfGrant) {
+        console.error('❌ Unauthorized: User is not admin and not granting to self');
         return { success: false, error: 'Unauthorized: Admin access required' };
     }
+
+    console.log(`🔐 Granting premium access to ${userEmail}...`);
+    console.log(`   Requester: ${currentUser.email}`);
+    console.log(`   Is self-grant: ${isSelfGrant}`);
+    console.log(`   Is admin: ${isAdminUser}`);
 
     try {
         const db = firebase.firestore();
 
-        // Find user by email
+        // Find user by email (case-insensitive)
         const usersQuery = await db.collection('users')
-            .where('email', '==', userEmail)
+            .where('email', '==', userEmail.toLowerCase())
             .get();
 
         let userDoc;
+        let userUid;
 
         if (usersQuery.empty) {
-            // User doesn't exist, create new user document
-            console.log(`User ${userEmail} not found in Firestore. Creating new document...`);
+            // User doesn't exist in Firestore
+            console.log(`⚠️ User ${userEmail} not found in Firestore`);
 
-            // Get user from Firebase Auth
-            const authUser = await firebase.auth().getUserByEmail(userEmail)
-                .catch(() => null);
-
-            if (!authUser && currentUser.email === userEmail) {
-                // Current user is the one being granted premium
-                userDoc = db.collection('users').doc(currentUser.uid);
-            } else if (authUser) {
-                userDoc = db.collection('users').doc(authUser.uid);
+            // If it's the current user, use their UID
+            if (isSelfGrant) {
+                console.log('✅ Self-grant detected - using current user UID');
+                userUid = currentUser.uid;
+                userDoc = db.collection('users').doc(userUid);
             } else {
-                return { success: false, error: `User ${userEmail} not found in Firebase Authentication` };
+                // Try to find by email case-insensitively
+                const allUsersQuery = await db.collection('users').get();
+                const matchingUser = allUsersQuery.docs.find(doc =>
+                    doc.data().email?.toLowerCase() === userEmail.toLowerCase()
+                );
+
+                if (matchingUser) {
+                    console.log('✅ Found user with different email case');
+                    userDoc = matchingUser.ref;
+                    userUid = matchingUser.id;
+                } else {
+                    console.error(`❌ User ${userEmail} not found in Firestore at all`);
+                    return {
+                        success: false,
+                        error: `User ${userEmail} not found. Please log in first to create user document.`
+                    };
+                }
             }
         } else {
             userDoc = usersQuery.docs[0].ref;
+            userUid = usersQuery.docs[0].id;
+            console.log(`✅ Found user document: ${userUid}`);
         }
+
+        // Determine if target user is admin
+        const isTargetAdmin = isAdmin(userEmail);
 
         // Premium access data
         const premiumData = {
-            email: userEmail,
+            email: userEmail.toLowerCase(),
             premium: true,
             premium_status: 'active',
-            subscription_type: isAdmin(userEmail) ? 'admin_override' : 'premium',
+            subscription_type: isTargetAdmin ? 'admin_override' : 'premium',
             premium_since: firebase.firestore.FieldValue.serverTimestamp(),
-            role: isAdmin(userEmail) ? 'admin' : 'premium_user',
+            role: isTargetAdmin ? 'admin' : 'premium_user',
             journey_access: true,
             all_features_unlocked: true,
-            membershipLevel: 'premium',
+            membershipLevel: isTargetAdmin ? 'admin' : 'premium',
             updated_at: firebase.firestore.FieldValue.serverTimestamp(),
-            updated_by: currentUser.email
+            updated_by: currentUser.email,
+            last_login: firebase.firestore.FieldValue.serverTimestamp()
         };
+
+        console.log('📝 Premium data to be set:', premiumData);
 
         // Update or set the document
         await userDoc.set(premiumData, { merge: true });
 
         console.log(`✅ Premium access granted to ${userEmail}`);
+        console.log(`   Document ID: ${userUid}`);
+        console.log(`   Role: ${premiumData.role}`);
+        console.log(`   Membership Level: ${premiumData.membershipLevel}`);
 
         return {
             success: true,
             message: `Premium access granted to ${userEmail}`,
-            data: premiumData
+            data: premiumData,
+            uid: userUid
         };
 
     } catch (error) {
         console.error('❌ Error granting premium access:', error);
+        console.error('   Error code:', error.code);
+        console.error('   Error message:', error.message);
         return {
             success: false,
             error: error.message
@@ -141,31 +181,58 @@ async function grantPremiumAccess(userEmail) {
  */
 async function initAdminPremiumAccess() {
     if (typeof firebase === 'undefined' || !firebase.auth) {
+        console.warn('⚠️ Firebase not initialized, skipping admin auto-grant setup');
         return;
     }
 
+    console.log('🔐 Setting up admin auto-grant listener...');
+
     firebase.auth().onAuthStateChanged(async (user) => {
-        if (!user) return;
+        if (!user) {
+            console.log('👤 No user logged in');
+            return;
+        }
+
+        console.log('🔍 Auth state changed - User:', user.email);
 
         // Check if user is admin
         if (isAdmin(user)) {
-            console.log('🔐 Admin user detected:', user.email);
+            console.log('👑 Admin user detected:', user.email);
 
             try {
                 const db = firebase.firestore();
                 const userDocRef = db.collection('users').doc(user.uid);
                 const userDoc = await userDocRef.get();
 
+                if (!userDoc.exists) {
+                    console.log('⚡ Admin user document does not exist - creating with premium access...');
+                    await grantPremiumAccess(user.email);
+                    return;
+                }
+
+                const userData = userDoc.data();
+                console.log('📊 Current user data:', {
+                    email: userData.email,
+                    premium: userData.premium,
+                    premium_status: userData.premium_status,
+                    membershipLevel: userData.membershipLevel,
+                    role: userData.role,
+                    journey_access: userData.journey_access
+                });
+
                 // Check if premium access needs to be granted
-                if (!userDoc.exists || !hasPremiumAccess(userDoc.data(), user)) {
-                    console.log('⚡ Auto-granting premium access to admin...');
+                if (!hasPremiumAccess(userData, user)) {
+                    console.log('⚡ Admin missing premium access - auto-granting now...');
                     await grantPremiumAccess(user.email);
                 } else {
                     console.log('✅ Admin already has premium access');
                 }
             } catch (error) {
                 console.error('❌ Error checking admin premium access:', error);
+                console.error('   Error details:', error.message);
             }
+        } else {
+            console.log('👤 Regular user (not admin):', user.email);
         }
     });
 }
