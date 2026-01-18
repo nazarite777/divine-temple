@@ -20,7 +20,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
     <script src="js/firebase-config.js"></script>
-    
+
+    <!-- Auth Helper for Admin Auto-Grant and Premium Checks -->
+    <script src="js/auth-helper.js"></script>
+
     <!-- CRITICAL: Premium Access Control - MUST LOAD BEFORE OTHER SCRIPTS -->
     <script src="js/premium-access-control.js"></script>
     
@@ -1365,39 +1368,49 @@
         async function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 try {
-                    const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
-                    
-                    if (isAdmin) {
-                        console.log('🔱 Admin logout');
-                        // Track admin logout
-                        if (window.FirebaseConfig && FirebaseConfig.analytics) {
-                            FirebaseConfig.analytics.trackEvent('admin_logout');
-                        }
-                    } else {
-                        // Firebase sign out for regular users
-                        if (window.FirebaseConfig && FirebaseConfig.auth.isAuthenticated()) {
-                            await FirebaseConfig.auth.signOut();
-                            FirebaseConfig.analytics.trackEvent('logout');
-                        }
+                    console.log('🚪 Logging out...');
+
+                    // Sign out from Firebase
+                    if (typeof firebase !== 'undefined' && firebase.auth) {
+                        await firebase.auth().signOut();
+                        console.log('✅ Firebase sign out successful');
                     }
-                    
-                    // Clear ALL storage
+
+                    // Track logout
+                    if (window.FirebaseConfig && FirebaseConfig.analytics) {
+                        FirebaseConfig.analytics.trackEvent('logout');
+                    }
+
+                    // Clear ALL session storage
                     sessionStorage.removeItem('divineAuth');
                     sessionStorage.removeItem('adminAuth');
                     sessionStorage.removeItem('memberData');
                     sessionStorage.removeItem('firebaseUser');
+                    sessionStorage.removeItem('userData');
+                    sessionStorage.removeItem('userEmail');
+                    sessionStorage.removeItem('userId');
+                    sessionStorage.removeItem('isPremium');
+
+                    // Clear ALL local storage (items set during login)
                     localStorage.removeItem('adminAuth');
                     localStorage.removeItem('currentUser');
                     localStorage.removeItem('divineAuth');
-                    
-                    console.log('✅ Logout successful');
-                    showAuthOverlay();
+                    localStorage.removeItem('membershipLevel');
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('userId');
+                    localStorage.removeItem('hasPremiumAccess');
+
+                    console.log('✅ All session data cleared');
+                    console.log('🔄 Redirecting to login...');
+
+                    // Redirect to login page
+                    window.location.href = 'login.html';
                 } catch (error) {
                     console.error('❌ Logout failed:', error);
-                    // Fallback - clear local storage anyway
+                    // Fallback - clear all storage anyway and redirect
                     sessionStorage.clear();
                     localStorage.clear();
-                    showAuthOverlay();
+                    window.location.href = 'login.html';
                 }
             }
         }
@@ -1440,15 +1453,6 @@
                 } else {
                     showAuthOverlay();
                 }
-            }
-        }
-
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                console.log('🚪 Logging out...');
-                sessionStorage.removeItem('divineAuth');
-                sessionStorage.removeItem('memberData');
-                location.reload();
             }
         }
 

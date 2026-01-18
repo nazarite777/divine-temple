@@ -34,22 +34,25 @@ function isAdmin(user) {
  * @returns {boolean}
  */
 function hasPremiumAccess(userData, user) {
-    // Check if admin
+    // Check if admin (always has premium access)
     if (isAdmin(user)) {
         return true;
     }
 
     if (!userData) return false;
 
-    // Check various premium flags
+    // Check various premium flags (any one of these grants access)
     return (
         userData.premium === true ||
         userData.premium_status === 'active' ||
         userData.membershipLevel === 'premium' ||
         userData.membershipLevel === 'founding' ||
+        userData.membershipLevel === 'admin' ||  // Admin membership level
         userData.subscription_type === 'admin_override' ||
+        userData.subscription_type === 'stripe_subscription' ||  // Stripe paid users
         userData.all_features_unlocked === true ||
-        userData.journey_access === true
+        userData.journey_access === true ||
+        userData.role === 'admin'  // Admin role
     );
 }
 
