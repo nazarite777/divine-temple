@@ -3,134 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phase 2: Understanding - Divine Temple Journey</title>
+    <title>Phase 2: Understanding - 6 Principles of Aligned Manifestation™</title>
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/journey-styles.css">
     <link rel="stylesheet" href="css/breadcrumbs.css">
+    <link rel="stylesheet" href="css/phase2-styles.css">
+
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- System Scripts -->
     <script src="js/firebase-config.js"></script>
     <script src="js/auth-helper.js"></script>
-    <script src="js/journey-gate.js"></script>
-    <script src="js/header.js" defer></script>
+
     <style>
         body {
-            padding-top: 80px;
-            background: linear-gradient(135deg, #0A0E27 0%, #1a1f3a 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a1e 0%, #1a1a2e 50%, #0f3460 100%);
+            color: #FFFFFF;
             min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Loading State */
+        .loading {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            min-height: 400px;
+            gap: 1rem;
         }
-        .locked-phase {
-            max-width: 800px;
-            padding: 3rem;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(30px);
-            border: 2px solid rgba(239, 68, 68, 0.4);
-            border-radius: 25px;
-            text-align: center;
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #8B5CF6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
-        .lock-icon {
-            font-size: 5rem;
-            margin-bottom: 1.5rem;
-        }
-        h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #F59E0B, #8B5CF6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        p {
-            color: #A1A1AA;
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            line-height: 1.7;
-        }
-        .phase-info {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 2rem;
-            border-radius: 15px;
-            margin: 2rem 0;
-            text-align: left;
-        }
-        .phase-info h3 {
-            color: #F59E0B;
-            margin-bottom: 1rem;
-        }
-        .phase-info ul {
-            list-style: none;
-            padding: 0;
-        }
-        .phase-info li {
-            padding: 0.5rem 0;
-            color: #A1A1AA;
-        }
-        .phase-info li::before {
-            content: '✓ ';
-            color: #22C55E;
-            font-weight: bold;
-            margin-right: 0.5rem;
-        }
-        .btn {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, #8B5CF6, #F59E0B);
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin: 0.5rem;
-        }
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div id="journeyGate" style="display: none;"></div>
+    <div class="container">
 
-    <!-- Breadcrumb Navigation -->
-    <div class="breadcrumb-container">
-        <nav class="breadcrumb" aria-label="Breadcrumb">
-            <div class="breadcrumb-item">
-                <a href="index.html">🏠 Home</a>
-            </div>
-            <span class="breadcrumb-separator">›</span>
-            <div class="breadcrumb-item">
-                <a href="journey.html">Journey</a>
-            </div>
-            <span class="breadcrumb-separator">›</span>
-            <div class="breadcrumb-item">
-                <span class="breadcrumb-current">Phase 2: Understanding</span>
-            </div>
-        </nav>
-    </div>
-
-    <div class="locked-phase" id="journeyContent">
-        <div class="lock-icon">🔒</div>
-        <h1>Phase 2: Understanding Aligned Manifestation</h1>
-        <p>This phase is locked. Complete Phase 1: Ya Heard Me to unlock.</p>
-        <div class="phase-info">
-            <h3>What You'll Learn in Phase 2:</h3>
-            <ul>
-                <li>The 7 Principles of Aligned Manifestation</li>
-                <li>Advanced consciousness techniques</li>
-                <li>Reality creation mastery</li>
-                <li>Sacred geometry & divine mathematics</li>
-                <li>Energy alignment practices</li>
-            </ul>
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb-container">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <div class="breadcrumb-item">
+                    <a href="index.html">🏠 Home</a>
+                </div>
+                <span class="breadcrumb-separator">›</span>
+                <div class="breadcrumb-item">
+                    <a href="journey.html">Journey</a>
+                </div>
+                <span class="breadcrumb-separator">›</span>
+                <div class="breadcrumb-item">
+                    <span class="breadcrumb-current">Phase 2: Understanding</span>
+                </div>
+            </nav>
         </div>
-        <p><strong>Duration:</strong> 90 Days | <strong>Requirement:</strong> Complete Phase 1</p>
-        <a href="phase1-awakening.html" class="btn">Return to Phase 1</a>
-        <a href="journey.html" class="btn">Journey Dashboard</a>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <div class="spinner"></div>
+            <p>Loading Phase 2...</p>
+        </div>
+
+        <!-- Main Content (hidden until loaded) -->
+        <div id="mainContent" style="display: none;">
+
+            <!-- Phase Header Section -->
+            <section class="phase-header-section">
+                <div class="phase-badge-container">
+                    <span class="phase-badge">Phase 2 of 4</span>
+                    <span class="unlock-badge">🔓 Unlocked</span>
+                </div>
+
+                <h1>Phase 2: Understanding</h1>
+                <h2>Master the 6 Principles of Aligned Manifestation™</h2>
+
+                <div class="phase-description">
+                    <p>Over the next 90 days, you'll break your current mindset and rebuild your consciousness from a divine foundation. Each principle comes with a complete workbook guide filled with practical daily exercises.</p>
+                </div>
+
+                <div class="phase-meta">
+                    <div class="meta-item">
+                        <span class="label">Duration:</span>
+                        <span class="value">90 Days (15 weeks)</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="label">Principles:</span>
+                        <span class="value">6</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="label">Your Progress:</span>
+                        <span class="value" id="principles-completed">0/6</span>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-bar-large">
+                        <div class="progress-fill-large" id="phase2-progress-bar"></div>
+                    </div>
+                    <span class="progress-text" id="phase2-progress-text">0% Complete</span>
+                </div>
+            </section>
+
+            <!-- Principles Overview Section -->
+            <section class="principles-overview-section">
+                <h2>The 6 Principles That Will Transform Your Mind</h2>
+                <p class="section-intro">
+                    Each principle builds on the last. Work through them in order for maximum transformation.
+                </p>
+
+                <div class="principles-roadmap">
+                    <!-- Visual timeline showing all 6 principles -->
+                    <div class="principle-timeline" id="principlesTimeline">
+                        <!-- Timeline will be rendered by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Principles Cards Container -->
+            <section class="principles-section">
+                <div id="principlesContainer">
+                    <!-- Principle cards will be dynamically loaded here -->
+                </div>
+            </section>
+
+            <!-- Next Phase Preview -->
+            <section class="next-phase-section">
+                <div class="next-phase-card locked" id="phase3-preview">
+                    <h3>🔒 Next: Phase 3 - Mastery</h3>
+                    <p>Complete all 6 principles to unlock the I-N-I Year Practice</p>
+                    <div class="unlock-progress">
+                        <span id="unlock-text-phase3">0/6 principles completed</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
     </div>
+
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Phase 2 JavaScript -->
+    <script src="js/phase2.js"></script>
 </body>
 </html>
