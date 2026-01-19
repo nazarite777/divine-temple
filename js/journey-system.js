@@ -1,6 +1,7 @@
 /**
  * Divine Temple - Journey System
  * Manages the 4-phase learning journey with progress tracking
+ * Syncs with Phase 1 & Phase 2 actual progress from Firestore
  */
 
 class JourneySystem {
@@ -60,16 +61,67 @@ class JourneySystem {
         try {
             const userId = this.currentUser.uid;
 
-            // Try to load existing journey data
-            const journeyRef = this.db.collection('user_journey').doc(userId);
-            const journeyDoc = await journeyRef.get();
+            // Load from the ACTUAL progress structure used by Phase 1 & 2
+            const progressRef = this.db.collection('users')
+                .doc(userId)
+                .collection('journey_progress')
+                .doc('current');
 
-            if (journeyDoc.exists) {
-                this.journeyData = journeyDoc.data();
+            const progressDoc = await progressRef.get();
+
+            if (progressDoc.exists) {
+                const data = progressDoc.data();
+
+                // Convert actual progress to journey data structure
+                this.journeyData = {
+                    userId: userId,
+                    current_phase: data.current_phase || 1,
+                    overall_progress: 0,
+
+                    // Phase 1: 11 sections (Intro + 9 Chapters + Conclusion)
+                    phase1_progress: {
+                        sections_completed: data.phase1_awakening?.sections_completed || [],
+                        total_sections: 11,
+                        completion_percentage: data.phase1_awakening?.completion_percentage || 0,
+                        status: data.phase1_awakening?.status || 'not_started',
+                        last_activity: data.phase1_awakening?.last_updated || new Date().toISOString()
+                    },
+
+                    // Phase 2: 6 Principles
+                    phase2_progress: {
+                        principles_completed: data.phase2_understanding?.principles_completed || [],
+                        total_principles: 6,
+                        completion_percentage: data.phase2_understanding?.completion_percentage || 0,
+                        status: data.phase2_understanding?.status || 'locked',
+                        last_activity: data.phase2_understanding?.last_updated || null
+                    },
+
+                    // Phase 3: Enochian Practice (to be implemented)
+                    phase3_progress: {
+                        days_practiced: 0,
+                        streak: 0,
+                        last_practice_date: null,
+                        rituals_completed: []
+                    },
+
+                    // Phase 4: Mastery/Certification (to be implemented)
+                    phase4_progress: {
+                        certification_status: 'locked',
+                        modules_completed: [],
+                        teaching_hours: 0,
+                        exam_score: null
+                    },
+
+                    achievements: [],
+                    journey_started: new Date().toISOString(),
+                    last_updated: new Date().toISOString()
+                };
+
+                console.log('✅ Journey data loaded successfully:', this.journeyData);
             } else {
-                // Initialize new journey data
+                // No progress yet - create default
                 this.journeyData = this.createDefaultJourneyData();
-                await journeyRef.set(this.journeyData);
+                console.log('ℹ️ No existing progress, using defaults');
             }
 
             // Render the journey dashboard
@@ -87,15 +139,17 @@ class JourneySystem {
             current_phase: 1,
             overall_progress: 0,
             phase1_progress: {
-                chapters_completed: [],
-                total_chapters: 12,
-                last_activity: new Date().toISOString(),
-                notes: {}
+                sections_completed: [],
+                total_sections: 11,
+                completion_percentage: 0,
+                status: 'not_started',
+                last_activity: new Date().toISOString()
             },
             phase2_progress: {
                 principles_completed: [],
-                total_principles: 7,
-                workbook_exercises: [],
+                total_principles: 6,
+                completion_percentage: 0,
+                status: 'locked',
                 last_activity: null
             },
             phase3_progress: {
@@ -119,7 +173,8 @@ class JourneySystem {
     renderJourney() {
         // Hide loading, show content
         document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('journeyContent').style.display = 'block';
+        const journeyContent = document.querySelectorAll('#journeyContent');
+        journeyContent.forEach(elem => elem.style.display = 'block');
 
         // Calculate and display overall progress
         this.updateOverallProgress();
@@ -169,16 +224,12 @@ class JourneySystem {
 
         switch(phaseNumber) {
             case 1:
-                // Phase 1: Audiobook chapters
-                const chaptersCompleted = data.phase1_progress.chapters_completed.length;
-                const totalChapters = data.phase1_progress.total_chapters;
-                return (chaptersCompleted / totalChapters) * 100;
+                // Phase 1: 11 sections (Introduction + 9 chapters + Conclusion)
+                return data.phase1_progress.completion_percentage || 0;
 
             case 2:
-                // Phase 2: Principles completed
-                const principlesCompleted = data.phase2_progress.principles_completed.length;
-                const totalPrinciples = data.phase2_progress.total_principles;
-                return (principlesCompleted / totalPrinciples) * 100;
+                // Phase 2: 6 Principles
+                return data.phase2_progress.completion_percentage || 0;
 
             case 3:
                 // Phase 3: Practice days (target 30 days)
@@ -208,6 +259,11 @@ class JourneySystem {
         const progressText = document.getElementById(`phase${phaseNumber}Text`);
         const progressPercent = document.getElementById(`phase${phaseNumber}Percent`);
 
+        if (!card || !progressBar || !progressText || !progressPercent) {
+            console.warn(`Missing elements for phase ${phaseNumber}`);
+            return;
+        }
+
         // Update progress bar
         progressBar.style.width = `${progress}%`;
         progressPercent.textContent = `${Math.round(progress)}%`;
@@ -216,7 +272,7 @@ class JourneySystem {
         const currentPhase = this.journeyData.current_phase;
         const isCompleted = progress >= 100;
         const isLocked = phaseNumber > currentPhase && !isCompleted;
-        const isCurrent = phaseNumber === currentPhase;
+        const isCurrent = phaseNumber === currentPhase && progress < 100;
 
         // Update card classes
         card.classList.remove('locked', 'current', 'completed');
@@ -241,20 +297,29 @@ class JourneySystem {
         const progressText = document.getElementById(`phase${phaseNumber}Text`);
         const data = this.journeyData;
 
+        if (!progressText) return;
+
         switch(phaseNumber) {
             case 1:
-                const chaptersLeft = data.phase1_progress.total_chapters - data.phase1_progress.chapters_completed.length;
-                if (chaptersLeft > 0 && chaptersLeft < data.phase1_progress.total_chapters) {
-                    progressText.textContent = `${chaptersLeft} chapters remaining`;
-                } else if (chaptersLeft === 0) {
-                    progressText.textContent = 'Completed';
+                const sectionsLeft = data.phase1_progress.total_sections - data.phase1_progress.sections_completed.length;
+                if (sectionsLeft > 0 && sectionsLeft < data.phase1_progress.total_sections) {
+                    progressText.textContent = `${data.phase1_progress.sections_completed.length}/${data.phase1_progress.total_sections} sections`;
+                } else if (sectionsLeft === 0) {
+                    progressText.textContent = 'Completed ✓';
+                } else if (data.phase1_progress.sections_completed.length === 0) {
+                    progressText.textContent = 'Not started';
                 }
                 break;
 
             case 2:
                 const principlesLeft = data.phase2_progress.total_principles - data.phase2_progress.principles_completed.length;
                 if (principlesLeft > 0 && principlesLeft < data.phase2_progress.total_principles) {
-                    progressText.textContent = `${principlesLeft} principles remaining`;
+                    progressText.textContent = `${data.phase2_progress.principles_completed.length}/${data.phase2_progress.total_principles} principles`;
+                } else if (principlesLeft === 0) {
+                    progressText.textContent = 'Completed ✓';
+                } else if (data.phase2_progress.principles_completed.length === 0) {
+                    const phase1Complete = data.phase1_progress.completion_percentage >= 100;
+                    progressText.textContent = phase1Complete ? 'Ready to start' : 'Locked';
                 }
                 break;
 
@@ -262,6 +327,9 @@ class JourneySystem {
                 const daysPracticed = data.phase3_progress.days_practiced;
                 if (daysPracticed > 0 && daysPracticed < 30) {
                     progressText.textContent = `${daysPracticed}/30 days practiced`;
+                } else if (daysPracticed === 0) {
+                    const phase2Complete = data.phase2_progress.completion_percentage >= 100;
+                    progressText.textContent = phase2Complete ? 'Ready to start' : 'Locked';
                 }
                 break;
 
@@ -270,7 +338,10 @@ class JourneySystem {
                 if (status === 'in_progress') {
                     progressText.textContent = 'Certification in progress';
                 } else if (status === 'certified') {
-                    progressText.textContent = 'Certified Teacher';
+                    progressText.textContent = 'Certified Teacher ✓';
+                } else {
+                    const phase3Complete = data.phase3_progress.days_practiced >= 30;
+                    progressText.textContent = phase3Complete ? 'Ready to start' : 'Locked';
                 }
                 break;
         }
@@ -289,6 +360,8 @@ class JourneySystem {
         const focusDescription = document.getElementById('focusDescription');
         const focusAction = document.getElementById('focusAction');
 
+        if (!focusTitle || !focusDescription || !focusAction) return;
+
         let nextAction = this.getNextAction(currentPhase);
 
         focusTitle.textContent = nextAction.title;
@@ -302,61 +375,61 @@ class JourneySystem {
 
         switch(currentPhase) {
             case 1:
-                const nextChapter = data.phase1_progress.chapters_completed.length + 1;
-                if (nextChapter <= data.phase1_progress.total_chapters) {
+                const sectionsCompleted = data.phase1_progress.sections_completed.length;
+                if (sectionsCompleted < data.phase1_progress.total_sections) {
                     return {
-                        title: `Chapter ${nextChapter}: Ya Heard Me`,
-                        description: `Continue your awakening journey with chapter ${nextChapter} of the foundational audiobook.`,
-                        actionText: `Listen to Chapter ${nextChapter} →`,
+                        title: 'Phase 1: Awakening - Ya Heard Me',
+                        description: `Continue your awakening journey. You've completed ${sectionsCompleted} of ${data.phase1_progress.total_sections} sections.`,
+                        actionText: `Continue Phase 1 →`,
                         actionLink: 'phase1-awakening.html'
                     };
                 } else {
                     return {
                         title: 'Phase 1 Complete! Ready for Phase 2',
-                        description: 'You\'ve completed the Awakening phase. Move on to Aligned Manifestation Principles.',
+                        description: 'You\'ve completed the Awakening phase. Move on to the 6 Principles of Aligned Manifestation™.',
                         actionText: 'Begin Phase 2 →',
-                        actionLink: '#'
+                        actionLink: 'phase2-understanding.html'
                     };
                 }
 
             case 2:
-                const nextPrinciple = data.phase2_progress.principles_completed.length + 1;
-                if (nextPrinciple <= data.phase2_progress.total_principles) {
+                const principlesCompleted = data.phase2_progress.principles_completed.length;
+                if (principlesCompleted < data.phase2_progress.total_principles) {
                     return {
-                        title: `Principle ${nextPrinciple}: Aligned Manifestation`,
-                        description: `Learn the ${nextPrinciple}${this.getOrdinalSuffix(nextPrinciple)} principle of manifestation.`,
-                        actionText: `Study Principle ${nextPrinciple} →`,
-                        actionLink: `principle-${nextPrinciple}.html`
+                        title: 'Phase 2: Understanding - Aligned Manifestation',
+                        description: `Master the principles. You've completed ${principlesCompleted} of ${data.phase2_progress.total_principles} principles.`,
+                        actionText: `Continue Phase 2 →`,
+                        actionLink: 'phase2-understanding.html'
                     };
                 } else {
                     return {
                         title: 'Phase 2 Complete! Ready for Phase 3',
-                        description: 'You\'ve mastered the principles. Begin your daily practice with the Enochian Calendar.',
+                        description: 'You\'ve mastered the principles. Begin your daily practice with the I-N-I Year.',
                         actionText: 'Begin Phase 3 →',
-                        actionLink: '#'
+                        actionLink: 'phase3-mastery.html'
                     };
                 }
 
             case 3:
                 return {
-                    title: 'Daily Enochian Practice',
-                    description: 'Continue building your practice streak. Check today\'s sacred date and complete your ritual.',
-                    actionText: 'Practice Today →',
-                    actionLink: 'free-dashboard.html'
+                    title: 'Phase 3: Mastery - I-N-I Year Practice',
+                    description: 'Continue building your practice with the sacred calendar and daily rituals.',
+                    actionText: 'Continue Practice →',
+                    actionLink: 'phase3-mastery.html'
                 };
 
             case 4:
                 return {
-                    title: 'Teacher Certification',
+                    title: 'Phase 4: Mastery - Teacher Certification',
                     description: 'Complete your certification to become a Divine Temple teacher and guide others.',
                     actionText: 'Continue Certification →',
-                    actionLink: 'certification.html'
+                    actionLink: 'phase4-mastery.html'
                 };
 
             default:
                 return {
                     title: 'Begin Your Journey',
-                    description: 'Start with Phase 1: The Awakening',
+                    description: 'Start with Phase 1: The Awakening - Ya Heard Me audiobook journey',
                     actionText: 'Start Phase 1 →',
                     actionLink: 'phase1-awakening.html'
                 };
@@ -387,7 +460,7 @@ class JourneySystem {
             this.journeyData.phase1_progress.last_activity,
             this.journeyData.phase2_progress.last_activity,
             this.journeyData.phase3_progress.last_practice_date
-        ].filter(date => date !== null);
+        ].filter(date => date !== null && date !== undefined);
 
         if (activities.length === 0) {
             return 'Never';
@@ -408,107 +481,6 @@ class JourneySystem {
         if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
         if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
         return `${Math.floor(diffDays / 365)} years ago`;
-    }
-
-    async updateJourneyProgress(updates) {
-        try {
-            const userId = this.currentUser.uid;
-            const journeyRef = this.db.collection('user_journey').doc(userId);
-
-            // Merge updates with existing data
-            await journeyRef.update({
-                ...updates,
-                last_updated: new Date().toISOString()
-            });
-
-            // Reload journey data
-            await this.loadJourneyData();
-
-            console.log('✅ Journey progress updated successfully');
-
-        } catch (error) {
-            console.error('Error updating journey progress:', error);
-        }
-    }
-
-    async completeChapter(chapterNumber) {
-        const currentCompleted = this.journeyData.phase1_progress.chapters_completed;
-
-        if (!currentCompleted.includes(chapterNumber)) {
-            currentCompleted.push(chapterNumber);
-
-            await this.updateJourneyProgress({
-                'phase1_progress.chapters_completed': currentCompleted,
-                'phase1_progress.last_activity': new Date().toISOString()
-            });
-
-            // Check if phase 1 is complete
-            if (currentCompleted.length >= this.journeyData.phase1_progress.total_chapters) {
-                await this.unlockPhase(2);
-            }
-        }
-    }
-
-    async completePrinciple(principleNumber) {
-        const currentCompleted = this.journeyData.phase2_progress.principles_completed;
-
-        if (!currentCompleted.includes(principleNumber)) {
-            currentCompleted.push(principleNumber);
-
-            await this.updateJourneyProgress({
-                'phase2_progress.principles_completed': currentCompleted,
-                'phase2_progress.last_activity': new Date().toISOString()
-            });
-
-            // Check if phase 2 is complete
-            if (currentCompleted.length >= this.journeyData.phase2_progress.total_principles) {
-                await this.unlockPhase(3);
-            }
-        }
-    }
-
-    async recordPracticeDay() {
-        const today = new Date().toISOString().split('T')[0];
-        const lastPractice = this.journeyData.phase3_progress.last_practice_date;
-
-        // Check if already practiced today
-        if (lastPractice && lastPractice.split('T')[0] === today) {
-            return;
-        }
-
-        const newDaysPracticed = this.journeyData.phase3_progress.days_practiced + 1;
-
-        // Calculate streak
-        let newStreak = 1;
-        if (lastPractice) {
-            const lastDate = new Date(lastPractice);
-            const daysDiff = Math.floor((new Date(today) - lastDate) / (1000 * 60 * 60 * 24));
-            if (daysDiff === 1) {
-                newStreak = this.journeyData.phase3_progress.streak + 1;
-            }
-        }
-
-        await this.updateJourneyProgress({
-            'phase3_progress.days_practiced': newDaysPracticed,
-            'phase3_progress.streak': newStreak,
-            'phase3_progress.last_practice_date': new Date().toISOString()
-        });
-
-        // Check if phase 3 is complete (30 days)
-        if (newDaysPracticed >= 30) {
-            await this.unlockPhase(4);
-        }
-    }
-
-    async unlockPhase(phaseNumber) {
-        if (this.journeyData.current_phase < phaseNumber) {
-            await this.updateJourneyProgress({
-                current_phase: phaseNumber
-            });
-
-            // Show achievement notification
-            this.showAchievement(`Phase ${phaseNumber} Unlocked!`);
-        }
     }
 
     showAchievement(message) {
@@ -599,22 +571,24 @@ class JourneySystem {
 
     showError(message) {
         const loadingState = document.getElementById('loadingState');
-        loadingState.innerHTML = `
-            <div style="text-align: center; color: var(--error);">
-                <h3>⚠️ Error</h3>
-                <p>${message}</p>
-                <button onclick="location.reload()" style="
-                    margin-top: 1rem;
-                    padding: 0.75rem 1.5rem;
-                    background: var(--accent-purple);
-                    color: white;
-                    border: none;
-                    border-radius: 10px;
-                    cursor: pointer;
-                    font-size: 1rem;
-                ">Reload Page</button>
-            </div>
-        `;
+        if (loadingState) {
+            loadingState.innerHTML = `
+                <div style="text-align: center; color: #F87171;">
+                    <h3>⚠️ Error</h3>
+                    <p>${message}</p>
+                    <button onclick="location.reload()" style="
+                        margin-top: 1rem;
+                        padding: 0.75rem 1.5rem;
+                        background: #8B5CF6;
+                        color: white;
+                        border: none;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        font-size: 1rem;
+                    ">Reload Page</button>
+                </div>
+            `;
+        }
     }
 }
 
@@ -623,7 +597,7 @@ function navigateToPhase(phaseNumber) {
     const card = document.getElementById(`phase${phaseNumber}Card`);
 
     // Don't navigate if locked
-    if (card.classList.contains('locked')) {
+    if (card && card.classList.contains('locked')) {
         alert('Complete the previous phase to unlock this one!');
         return;
     }
@@ -634,10 +608,10 @@ function navigateToPhase(phaseNumber) {
             window.location.href = 'phase1-awakening.html';
             break;
         case 2:
-            window.location.href = 'phase2-alignment.html';
+            window.location.href = 'phase2-understanding.html';
             break;
         case 3:
-            window.location.href = 'phase3-practice.html';
+            window.location.href = 'phase3-mastery.html';
             break;
         case 4:
             window.location.href = 'phase4-mastery.html';
