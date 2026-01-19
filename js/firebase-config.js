@@ -72,11 +72,8 @@ function onAuthStateChanged(callback) {
     return auth.onAuthStateChanged(callback);
 }
 
-// Admin email addresses (no password in code for security)
-const ADMIN_EMAILS = [
-    'nazir@edenconsciousness.com',
-    'nazir@edenconsiousness.com' // Alternative spelling
-];
+// Admin email addresses defined in auth-helper.js
+// (removed duplicate declaration to avoid conflicts)
 
 // AUTHORIZED PREMIUM USERS - ONLY these users can access premium content
 const AUTHORIZED_PREMIUM_USERS = [
@@ -95,8 +92,12 @@ const FirebaseAuth = {
     // Check if email belongs to admin
     isAdminEmail(email) {
         if (!email) return false;
-        const lowerEmail = email.toLowerCase();
-        return ADMIN_EMAILS.some(adminEmail => lowerEmail === adminEmail.toLowerCase());
+        // Use AuthHelper if available, otherwise use local check
+        if (typeof window.AuthHelper !== 'undefined' && window.AuthHelper.ADMIN_EMAILS) {
+            const lowerEmail = email.toLowerCase();
+            return window.AuthHelper.ADMIN_EMAILS.some(adminEmail => lowerEmail === adminEmail.toLowerCase());
+        }
+        return false;
     },
 
     // Check if user is authorized for premium access
@@ -416,9 +417,21 @@ window.FirebaseConfig = {
     onAuthStateChanged
 };
 
-// Auto-initialize if Firebase is loaded
+// Auto-initialize Firebase immediately when script loads
 if (typeof firebase !== 'undefined') {
-    document.addEventListener('DOMContentLoaded', () => {
-        initializeFirebase();
-    });
+    initializeFirebase();
+} else {
+    // If Firebase SDK not loaded yet, wait for it
+    let checkCount = 0;
+    const firebaseCheck = setInterval(() => {
+        checkCount++;
+        if (typeof firebase !== 'undefined') {
+            clearInterval(firebaseCheck);
+            initializeFirebase();
+        } else if (checkCount > 50) {
+            // Stop checking after 5 seconds
+            clearInterval(firebaseCheck);
+            console.error('❌ Firebase SDK failed to load after 5 seconds');
+        }
+    }, 100);
 }
