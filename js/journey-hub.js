@@ -5,7 +5,7 @@
 
 let userProgress = null;
 let currentUser = null;
-let db = null;
+let journeyDb = null;
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('✅ Firebase ready');
 
         // Initialize Firestore
-        db = firebase.firestore();
+        journeyDb = firebase.firestore();
 
         // Wait for authentication
         await waitForAuth();
@@ -105,7 +105,7 @@ async function checkPremiumAccess() {
     try {
         if (!currentUser) return false;
 
-        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        const userDoc = await journeyDb.collection('users').doc(currentUser.uid).get();
 
         if (!userDoc.exists) {
             console.log('ℹ️ User document not found - assuming no premium');
@@ -142,7 +142,7 @@ async function checkPremiumAccess() {
  */
 async function loadJourneyProgress() {
     try {
-        const progressRef = db.collection('users')
+        const progressRef = journeyDb.collection('users')
             .doc(currentUser.uid)
             .collection('journey_progress')
             .doc('current');

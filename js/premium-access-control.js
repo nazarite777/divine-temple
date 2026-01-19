@@ -113,7 +113,7 @@
                     resolve();
                 });
             });
-        },
+        }
 
         /**
          * Check if user is authorized for premium access
