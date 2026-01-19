@@ -20,7 +20,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
     <script src="js/firebase-config.js"></script>
-    
+
+    <!-- Auth Helper for Admin Auto-Grant and Premium Checks -->
+    <script src="js/auth-helper.js"></script>
+
     <!-- CRITICAL: Premium Access Control - MUST LOAD BEFORE OTHER SCRIPTS -->
     <script src="js/premium-access-control.js"></script>
     
@@ -682,6 +685,34 @@
                 Access 14 sacred pathways designed to guide your spiritual journey.
                 Each section contains divine tools and practices for your transformation.
             </p>
+        </section>
+
+        <!-- Journey Quick Access Card -->
+        <section class="journey-quick-access" id="journey-card" style="max-width: 1400px; margin: 0 auto 2rem; padding: 0 2rem;">
+            <div class="journey-banner" style="background: linear-gradient(135deg, #8B5CF6, #3B82F6); border-radius: 20px; padding: 2rem; box-shadow: 0 10px 40px rgba(139, 92, 246, 0.3); position: relative; overflow: hidden;">
+                <!-- Decorative background -->
+                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background: url('data:image/svg+xml,<svg width=\"100\" height=\"100\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"50\" cy=\"50\" r=\"2\" fill=\"white\"/></svg>');"></div>
+
+                <div class="journey-banner-content" style="position: relative; z-index: 1; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+                    <div class="journey-icon" style="font-size: 4rem; flex-shrink: 0;">🛤️</div>
+
+                    <div class="journey-text" style="flex-grow: 1; min-width: 250px;">
+                        <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: white; font-weight: 700;">Your Journey Progress</h3>
+                        <p id="journey-status-text" style="color: rgba(255, 255, 255, 0.9); margin-bottom: 1rem; font-size: 1.1rem;">
+                            Phase 1: Awakening - Loading progress...
+                        </p>
+                        <div class="mini-progress-bar" style="background: rgba(255, 255, 255, 0.3); height: 8px; border-radius: 10px; overflow: hidden;">
+                            <div class="mini-progress-fill" id="journey-mini-progress" style="height: 100%; background: white; border-radius: 10px; width: 0%; transition: width 0.5s ease;"></div>
+                        </div>
+                    </div>
+
+                    <div class="journey-action" style="flex-shrink: 0;">
+                        <button class="cta-button" onclick="window.location.href='journey.html'" style="background: white; color: #8B5CF6; padding: 15px 30px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                            Continue Journey →
+                        </button>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Navigation -->
@@ -1365,39 +1396,49 @@
         async function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 try {
-                    const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
-                    
-                    if (isAdmin) {
-                        console.log('🔱 Admin logout');
-                        // Track admin logout
-                        if (window.FirebaseConfig && FirebaseConfig.analytics) {
-                            FirebaseConfig.analytics.trackEvent('admin_logout');
-                        }
-                    } else {
-                        // Firebase sign out for regular users
-                        if (window.FirebaseConfig && FirebaseConfig.auth.isAuthenticated()) {
-                            await FirebaseConfig.auth.signOut();
-                            FirebaseConfig.analytics.trackEvent('logout');
-                        }
+                    console.log('🚪 Logging out...');
+
+                    // Sign out from Firebase
+                    if (typeof firebase !== 'undefined' && firebase.auth) {
+                        await firebase.auth().signOut();
+                        console.log('✅ Firebase sign out successful');
                     }
-                    
-                    // Clear ALL storage
+
+                    // Track logout
+                    if (window.FirebaseConfig && FirebaseConfig.analytics) {
+                        FirebaseConfig.analytics.trackEvent('logout');
+                    }
+
+                    // Clear ALL session storage
                     sessionStorage.removeItem('divineAuth');
                     sessionStorage.removeItem('adminAuth');
                     sessionStorage.removeItem('memberData');
                     sessionStorage.removeItem('firebaseUser');
+                    sessionStorage.removeItem('userData');
+                    sessionStorage.removeItem('userEmail');
+                    sessionStorage.removeItem('userId');
+                    sessionStorage.removeItem('isPremium');
+
+                    // Clear ALL local storage (items set during login)
                     localStorage.removeItem('adminAuth');
                     localStorage.removeItem('currentUser');
                     localStorage.removeItem('divineAuth');
-                    
-                    console.log('✅ Logout successful');
-                    showAuthOverlay();
+                    localStorage.removeItem('membershipLevel');
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('userId');
+                    localStorage.removeItem('hasPremiumAccess');
+
+                    console.log('✅ All session data cleared');
+                    console.log('🔄 Redirecting to login...');
+
+                    // Redirect to login page
+                    window.location.href = 'login.html';
                 } catch (error) {
                     console.error('❌ Logout failed:', error);
-                    // Fallback - clear local storage anyway
+                    // Fallback - clear all storage anyway and redirect
                     sessionStorage.clear();
                     localStorage.clear();
-                    showAuthOverlay();
+                    window.location.href = 'login.html';
                 }
             }
         }
@@ -1443,15 +1484,6 @@
             }
         }
 
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                console.log('🚪 Logging out...');
-                sessionStorage.removeItem('divineAuth');
-                sessionStorage.removeItem('memberData');
-                location.reload();
-            }
-        }
-
         function showAuthOverlay() {
             console.log('🔓 Showing authentication overlay');
             const authOverlay = document.getElementById('auth-overlay');
@@ -1493,6 +1525,100 @@
         // ========================================
         // DASHBOARD FUNCTIONS
         // ========================================
+
+        /**
+         * Load Journey Progress and Update Card
+         */
+        async function loadJourneyProgress() {
+            console.log('🛤️ Loading journey progress for card...');
+
+            const journeyCard = document.getElementById('journey-card');
+            if (!journeyCard) {
+                console.log('⚠️ Journey card not found');
+                return;
+            }
+
+            // Check if Firebase is ready and user is authenticated
+            if (typeof firebase === 'undefined' || !firebase.auth) {
+                console.log('⚠️ Firebase not ready');
+                return;
+            }
+
+            const user = firebase.auth().currentUser;
+            if (!user) {
+                console.log('⚠️ No authenticated user for journey card');
+                journeyCard.style.display = 'none';
+                return;
+            }
+
+            try {
+                // Get journey progress from Firestore
+                const progressRef = firebase.firestore()
+                    .collection('users')
+                    .doc(user.uid)
+                    .collection('journey_progress')
+                    .doc('current');
+
+                const doc = await progressRef.get();
+
+                if (doc.exists) {
+                    const progressData = doc.data();
+                    const currentPhase = progressData.current_phase || 1;
+
+                    // Get current phase details
+                    let phaseText = '';
+                    let phaseProgress = 0;
+
+                    if (currentPhase === 1) {
+                        const chaptersCompleted = progressData.phase1_awakening?.chapters_completed?.length || 0;
+                        phaseText = `Phase 1: Awakening - ${chaptersCompleted}/12 chapters complete`;
+                        phaseProgress = (chaptersCompleted / 12) * 100;
+                    } else if (currentPhase === 2) {
+                        const principlesCompleted = progressData.phase2_understanding?.principles_completed?.length || 0;
+                        phaseText = `Phase 2: Understanding - ${principlesCompleted}/7 principles`;
+                        phaseProgress = (principlesCompleted / 7) * 100;
+                    } else if (currentPhase === 3) {
+                        const daysPracticed = progressData.phase3_mastery?.days_practiced || 0;
+                        phaseText = `Phase 3: Mastery - ${daysPracticed}/365 days`;
+                        phaseProgress = (daysPracticed / 365) * 100;
+                    } else if (currentPhase === 4) {
+                        const certStatus = progressData.phase4_teaching?.certification_status || 'not_started';
+                        phaseText = `Phase 4: Teaching - ${certStatus.replace('_', ' ')}`;
+                        phaseProgress = progressData.phase4_teaching?.completion_percentage || 0;
+                    }
+
+                    // Update journey card
+                    const statusText = document.getElementById('journey-status-text');
+                    if (statusText) {
+                        statusText.textContent = phaseText;
+                    }
+
+                    const progressBar = document.getElementById('journey-mini-progress');
+                    if (progressBar) {
+                        progressBar.style.width = phaseProgress + '%';
+                    }
+
+                    console.log(`✅ Journey card updated: ${phaseText} (${Math.round(phaseProgress)}%)`);
+                } else {
+                    // No progress yet - show default
+                    const statusText = document.getElementById('journey-status-text');
+                    if (statusText) {
+                        statusText.textContent = 'Phase 1: Awakening - Start your journey';
+                    }
+
+                    const progressBar = document.getElementById('journey-mini-progress');
+                    if (progressBar) {
+                        progressBar.style.width = '0%';
+                    }
+                }
+
+                // Show the card
+                journeyCard.style.display = 'block';
+
+            } catch (error) {
+                console.error('❌ Error loading journey progress:', error);
+            }
+        }
 
         function showDashboard(memberData) {
             console.log('🏛️ Showing dashboard for:', memberData);
@@ -1898,8 +2024,9 @@
             // Initialize Firebase authentication check
             setTimeout(() => {
                 checkAuthStatus();
+                loadJourneyProgress(); // Load journey card
             }, 1000); // Wait for Firebase to load
-            
+
             console.log('🔐 Firebase authentication check initiated');
             const dashboard = document.getElementById('dashboard');
             const memberBadge = document.getElementById('member-badge');
