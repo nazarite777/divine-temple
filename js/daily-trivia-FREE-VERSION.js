@@ -835,132 +835,131 @@ class DailyTriviaFreeEdition {
                 btn.classList.add('incorrect');
             }
         });
-        
+
         // Show explanation
-        document.getElementById('explanationSection').style.display = 'block';
-        document.getElementById('explanationIcon').textContent = isCorrect ? '🎉' : '💡';
-        document.getElementById('xpGained').textContent = isCorrect ? `+${question.xpReward} XP` : '0 XP';
-        
-        // Play sound
-        if (this.audioSystem) {
-            if (isCorrect) {
-                this.audioSystem.playCorrectSound();
-            } else {
-                this.audioSystem.playIncorrectSound();
-            }
-        }
-        
-        // Update progress
-        this.questionsAnswered++;
-        this.updateQuestionProgress();
+        const explanationBox = document.getElementById('explanationBox');
+        document.getElementById('explanationIcon').textContent = isCorrect ? '✅' : '💡';
+        document.getElementById('explanationText').textContent = question.explanation;
+        explanationBox.classList.add('show');
+
+        // Show next button
+        const nextBtn = document.getElementById('nextBtn');
+        nextBtn.classList.add('show');
+        nextBtn.onclick = () => this.nextQuestion();
     }
 
     nextQuestion() {
         this.currentQuestionIndex++;
-        
-        if (this.questionsAnswered >= this.maxFreeQuestions) {
-            this.completeTrivia();
+
+        if (this.currentQuestionIndex < 3) {
+            // Reset UI
+            document.getElementById('explanationBox').classList.remove('show');
+            document.getElementById('nextBtn').classList.remove('show');
+            this.showQuestion();
         } else {
-            this.loadCurrentQuestion();
+            this.showResults();
         }
     }
 
-    completeTrivia() {
-        // Update progress
-        this.userProgress.completedToday = true;
-        this.userProgress.questionsCompleted = this.maxFreeQuestions;
-        this.userProgress.totalQuizzes++;
-        this.userProgress.totalXP += this.totalXP;
-        this.userProgress.lastPlayed = new Date().toDateString();
-        
-        if (this.score === this.maxFreeQuestions) {
-            this.userProgress.perfectScores++;
-        }
-        
-        // Update streak
-        this.updateStreak();
-        
-        // Save progress
-        this.saveProgress();
-        
-        // Show completion
-        this.showCompletedMessage();
-        
-        // Show upgrade modal after a delay
-        setTimeout(() => {
-            showUpgradeModal();
-        }, 2000);
-        
-        // Play completion sound
-        if (this.audioSystem) {
-            this.audioSystem.playCompletionSound();
-        }
-    }
+    // ==================== RESULTS ====================
 
-    updateStreak() {
-        const today = new Date();
-        const yesterday = new Date();
-        yesterday.setDate(today.getDate() - 1);
-        
-        if (this.userProgress.lastPlayed === yesterday.toDateString()) {
-            this.userProgress.currentStreak++;
-        } else if (this.userProgress.lastPlayed !== today.toDateString()) {
-            this.userProgress.currentStreak = 1;
-        }
-    }
-
-    showCompletedMessage() {
-        document.getElementById('loadingState').style.display = 'none';
+    async showResults() {
+        // Hide quiz, show results
         document.getElementById('quizCard').style.display = 'none';
-        document.getElementById('completedMessage').style.display = 'block';
-        
-        // Calculate time until next day
-        const now = new Date();
-        const tomorrow = new Date();
-        tomorrow.setDate(now.getDate() + 1);
-        tomorrow.setHours(0, 0, 0, 0);
-        
-        const timeUntilReset = tomorrow - now;
-        const hours = Math.floor(timeUntilReset / (1000 * 60 * 60));
-        const minutes = Math.floor((timeUntilReset % (1000 * 60 * 60)) / (1000 * 60));
-        
-        document.querySelector('.time-remaining').textContent = 
-            `Next free questions in ${hours}h ${minutes}m`;
+        document.getElementById('resultsCard').classList.add('show');
+
+        // Calculate XP
+        const baseXP = this.correctAnswers * 30;
+        const perfectBonus = this.correctAnswers === 3 ? 50 : 0;
+        const totalXP = baseXP + perfectBonus;
+
+        // Update UI
+        document.getElementById('correctCount').textContent = this.correctAnswers;
+        document.getElementById('totalCount').textContent = '3';
+        document.getElementById('totalXP').textContent = totalXP;
+
+        // Results icon
+        const icon = this.correctAnswers === 3 ? '🏆' : this.correctAnswers >= 2 ? '🌟' : '💪';
+        document.getElementById('resultsIcon').textContent = icon;
+
+        const title = this.correctAnswers === 3 ? 'Perfect Score!' :
+                      this.correctAnswers >= 2 ? 'Great Job!' : 'Keep Learning!';
+        document.getElementById('resultsTitle').textContent = title;
+
+        // Update stats in database
+        await this.updateTriviaStats(totalXP);
+
+        // Increment questions completed counter
+        this.incrementQuestionsCompleted();
+
+        // FREE TIER: Show upgrade modal after 2 seconds
+        setTimeout(() => {
+            if (typeof showUpgradeModal === 'function') {
+                showUpgradeModal();
+            }
+        }, 2000);
     }
 
-    updateStatsDisplay() {
-        document.getElementById('totalQuizzes').textContent = this.userProgress.totalQuizzes;
-        document.getElementById('currentStreak').textContent = this.userProgress.currentStreak;
-        document.getElementById('perfectScores').textContent = this.userProgress.perfectScores;
-        document.getElementById('totalXPEarned').textContent = this.userProgress.totalXP;
+    async updateTriviaStats(xpEarned) {
+        try {
+            const userId = this.currentUser.uid;
+            const triviaRef = firebase.firestore()
+                .collection('users')
+                .doc(userId)
+                .collection('gamification')
+                .doc('trivia');
+
+            const updates = {
+                totalQuizzes: (this.triviaData.totalQuizzes || 0) + 1,
+                totalXPEarned: (this.triviaData.totalXPEarned || 0) + xpEarned,
+                lastPlayedDate: new Date().toDateString()
+            };
+
+            if (this.correctAnswers === 3) {
+                updates.perfectScores = (this.triviaData.perfectScores || 0) + 1;
+            }
+
+            await triviaRef.update(updates);
+            this.log('Updated trivia stats', updates);
+        } catch (error) {
+            this.error('Failed to update stats', error);
+        }
     }
 
-    updateQuestionProgress() {
-        const completed = this.questionsAnswered;
-        const total = this.maxFreeQuestions;
-        const percentage = (completed / total) * 100;
-        
-        document.getElementById('questionsCompleted').textContent = completed;
-        document.getElementById('questionProgressFill').style.width = percentage + '%';
+    updateLoadingMessage(message) {
+        const loadingText = document.querySelector('#loadingState p');
+        if (loadingText) {
+            loadingText.textContent = message;
+        }
     }
 
-    showError(message) {
-        console.error('Trivia Error:', message);
-        document.getElementById('loadingState').innerHTML = `
-            <div style="color: var(--accent-rose); text-align: center;">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
-                <p>Error loading trivia: ${message}</p>
-                <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--primary-gold); border: none; border-radius: 10px; cursor: pointer;">
-                    Retry
-                </button>
-            </div>
-        `;
+    showError(message, error) {
+        this.error(message, error);
+        alert(`Error: ${message}. Please refresh the page.`);
     }
 }
 
-// Initialize system when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    window.triviaSystem = new DailyTriviaFreeEdition();
-});
+// ==================== INITIALIZATION ====================
 
-console.log('🌟 Divine Temple Free Daily Trivia System Loaded - 30 Deprogramming Questions Ready');
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        window.triviaSystem = new FreeTierTriviaSystem();
+    });
+} else {
+    window.triviaSystem = new FreeTierTriviaSystem();
+}
+
+// ==================== SOCIAL SHARING ====================
+
+function shareResults() {
+    const text = `I just scored ${window.triviaSystem?.correctAnswers || 0}/3 on Divine Temple's Daily Spiritual Trivia! 🎯✨`;
+    const url = window.location.href;
+
+    if (navigator.share) {
+        navigator.share({ title: 'Divine Temple Trivia', text, url })
+            .catch(err => console.log('Share failed', err));
+    } else {
+        alert('Share: ' + text);
+    }
+}
