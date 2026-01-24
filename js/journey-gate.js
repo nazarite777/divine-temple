@@ -51,7 +51,17 @@
                     firebase.auth &&
                     typeof window.AuthHelper !== 'undefined' &&
                     typeof window.AuthHelper.checkJourneyAccess === 'function') {
-                    clearInterval(checkInterval);
+                    
+                    // Also wait for auth state to be established
+                    // Firebase sets currentUser once auth state is ready
+                    const authCheck = () => {
+                        // Give auth state listener time to fire
+                        setTimeout(() => {
+                            clearInterval(checkInterval);
+                            resolve();
+                        }, 500);
+                    };
+                    authCheck();
                     resolve();
                 } else if (attempts > 100) {
                     // After 10 seconds, stop trying
@@ -340,3 +350,4 @@
     console.log('🛤️ Journey Gate loaded');
 
 })();
+
