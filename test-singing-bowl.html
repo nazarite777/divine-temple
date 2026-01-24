@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singing Bowl Garden Test</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0F0F23 0%, #4C1D95 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .test-header {
+            margin-bottom: 2rem;
+        }
+        
+        .test-status {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10B981;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            color: #10B981;
+        }
+        
+        .error-status {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #EF4444;
+            color: #EF4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🥣 Singing Bowl Harmony Garden Test</h1>
+            <p>Testing the spiritual sound healing experience...</p>
+        </div>
+        
+        <div id="testStatus" class="test-status">
+            ⏳ Initializing test environment...
+        </div>
+        
+        <!-- Game Container -->
+        <div id="singingBowlContainer"></div>
+    </div>
+
+    <script src="js/singing-bowl-garden.js"></script>
+    <script src="js/singing-bowl-test-suite.js"></script>
+    
+    <script>
+        // Enhanced test script with comprehensive validation
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Starting Comprehensive Singing Bowl Garden Test');
+            
+            const statusEl = document.getElementById('testStatus');
+            
+            try {
+                // Initial container check
+                const container = document.getElementById('singingBowlContainer');
+                if (!container) {
+                    throw new Error('Container not found');
+                }
+                
+                statusEl.innerHTML = '✅ Container found, initializing comprehensive test suite...';
+                
+                // Wait for game and test suite to initialize
+                setTimeout(() => {
+                    if (window.singingBowlHarmonyGarden) {
+                        statusEl.innerHTML = `
+                            <div>🎉 Singing Bowl Harmony Garden loaded successfully!</div>
+                            <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+                                📊 Audio System: ${window.singingBowlHarmonyGarden.soundEnabled ? 'Enabled' : 'Disabled'}<br>
+                                🥣 Chakra Bowls: ${window.singingBowlHarmonyGarden.chakraBowls?.length || 0}<br>
+                                🎮 Game Mode: ${window.singingBowlHarmonyGarden.performanceMode ? 'Performance' : 'Full Experience'}
+                            </div>
+                            <div style="margin-top: 1rem; font-size: 0.9rem; color: #10B981;">
+                                ✅ Running comprehensive test suite - check console for detailed results
+                            </div>
+                        `;
+                        statusEl.classList.remove('error-status');
+                        
+                        // Run manual test if needed
+                        if (window.SingingBowlTestSuite) {
+                            window.runManualTest = () => {
+                                const testSuite = new window.SingingBowlTestSuite();
+                                return testSuite.runAllTests();
+                            };
+                            console.log('🧪 Manual test available: window.runManualTest()');
+                        }
+                        
+                    } else {
+                        statusEl.innerHTML = '⚠️ Game initialized but instance not available in global scope';
+                        statusEl.classList.add('error-status');
+                    }
+                }, 2000);
+                
+            } catch (error) {
+                console.error('🚨 Test Error:', error);
+                statusEl.innerHTML = `❌ Test failed: ${error.message}`;
+                statusEl.classList.add('error-status');
+            }
+        });
+        
+        // Enhanced error handling
+        window.addEventListener('error', function(event) {
+            console.error('🚨 Runtime Error:', event.error);
+            const statusEl = document.getElementById('testStatus');
+            statusEl.innerHTML = `
+                <div>❌ Runtime error detected</div>
+                <div style="font-size: 0.9rem; margin-top: 0.5rem; color: #EF4444;">
+                    ${event.error.message}
+                </div>
+                <div style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.8;">
+                    Check browser console for full error details
+                </div>
+            `;
+            statusEl.classList.add('error-status');
+        });
+        
+        // Performance monitoring
+        window.addEventListener('load', () => {
+            console.log('⚡ Page Load Performance:');
+            console.log(`   DOM Content Loaded: ${performance.now()}ms`);
+            
+            if (performance.getEntriesByType) {
+                const navigationTiming = performance.getEntriesByType('navigation')[0];
+                if (navigationTiming) {
+                    console.log(`   Page Load Complete: ${navigationTiming.loadEventEnd}ms`);
+                }
+            }
+        });
+        
+        console.log('🔬 Enhanced test script loaded with comprehensive validation');
+    </script>
+</body>
+</html>

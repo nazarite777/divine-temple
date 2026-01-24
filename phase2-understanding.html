@@ -3,784 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phase 2: Understanding - Eden Consciousness Journey Hub</title>
-    <link rel="stylesheet" href="phase2-styles.css">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>Phase 2: Understanding - 6 Principles of Aligned Manifestation™</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/journey-styles.css">
+    <link rel="stylesheet" href="css/breadcrumbs.css">
+    <link rel="stylesheet" href="css/phase2-styles.css">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- System Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth-helper.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a1e 0%, #1a1a2e 50%, #0f3460 100%);
+            color: #FFFFFF;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            gap: 1rem;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #8B5CF6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation Breadcrumb -->
-    <nav class="breadcrumb-nav">
-        <a href="index.html">Home</a>
-        <span class="separator">›</span>
-        <a href="journey.html">Journey</a>
-        <span class="separator">›</span>
-        <span class="current">Phase 2: Understanding</span>
-    </nav>
+    <div class="container">
 
-    <!-- Premium Access Gate -->
-    <div id="premium-gate-container"></div>
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb-container">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <div class="breadcrumb-item">
+                    <a href="index.html">🏠 Home</a>
+                </div>
+                <span class="breadcrumb-separator">›</span>
+                <div class="breadcrumb-item">
+                    <a href="journey.html">Journey</a>
+                </div>
+                <span class="breadcrumb-separator">›</span>
+                <div class="breadcrumb-item">
+                    <span class="breadcrumb-current">Phase 2: Understanding</span>
+                </div>
+            </nav>
+        </div>
 
-    <!-- Main Content -->
-    <main class="phase2-main">
-        <!-- Header Section -->
-        <section class="phase-header-section">
-            <div class="phase-badge-container">
-                <span class="phase-badge">Phase 2 of 4</span>
-                <span class="unlock-badge">🔓 Unlocked</span>
-            </div>
-            
-            <h1>Phase 2: Understanding</h1>
-            <h2>Master the 6 Principles of Aligned Manifestation™</h2>
-            
-            <div class="phase-description">
-                <p>Over the next 90 days, you'll break your current mindset and rebuild your consciousness from a divine foundation. Each principle comes with a complete workbook guide filled with practical daily exercises.</p>
-            </div>
-            
-            <div class="phase-meta">
-                <div class="meta-item">
-                    <span class="label">Duration:</span>
-                    <span class="value">90 Days (15 weeks)</span>
-                </div>
-                <div class="meta-item">
-                    <span class="label">Principles:</span>
-                    <span class="value">6</span>
-                </div>
-                <div class="meta-item">
-                    <span class="label">Your Progress:</span>
-                    <span class="value" id="principles-completed">0/6</span>
-                </div>
-            </div>
-            
-            <div class="progress-section">
-                <div class="progress-bar-large">
-                    <div class="progress-fill-large" id="phase2-progress-bar"></div>
-                </div>
-                <span class="progress-text" id="phase2-progress-text">0% Complete</span>
-            </div>
-        </section>
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <div class="spinner"></div>
+            <p>Loading Phase 2...</p>
+        </div>
 
-        <!-- Principles Overview Timeline -->
-        <section class="principles-overview-section">
-            <h2>The 6 Principles That Will Transform Your Mind</h2>
-            <p class="section-intro">Each principle builds on the last. Work through them in order for maximum transformation.</p>
-            
-            <div class="principles-roadmap">
-                <div class="principle-timeline">
-                    <div class="timeline-item" data-principle="1">
-                        <div class="timeline-icon">🌅</div>
-                        <span class="timeline-label">Awakening</span>
-                        <span class="timeline-weeks">Weeks 1-2</span>
+        <!-- Main Content (hidden until loaded) -->
+        <div id="mainContent" style="display: none;">
+
+            <!-- Phase Header Section -->
+            <section class="phase-header-section">
+                <div class="phase-badge-container">
+                    <span class="phase-badge">Phase 2 of 4</span>
+                    <span class="unlock-badge">🔓 Unlocked</span>
+                </div>
+
+                <h1>Phase 2: Understanding</h1>
+                <h2>Master the 6 Principles of Aligned Manifestation™</h2>
+
+                <div class="phase-description">
+                    <p>Over the next 90 days, you'll break your current mindset and rebuild your consciousness from a divine foundation. Each principle comes with a complete workbook guide filled with practical daily exercises.</p>
+                </div>
+
+                <div class="phase-meta">
+                    <div class="meta-item">
+                        <span class="label">Duration:</span>
+                        <span class="value">90 Days (15 weeks)</span>
                     </div>
-                    
-                    <div class="timeline-connector">→</div>
-                    
-                    <div class="timeline-item" data-principle="2">
-                        <div class="timeline-icon">✨</div>
-                        <span class="timeline-label">Manifestation</span>
-                        <span class="timeline-weeks">Weeks 3-5</span>
+                    <div class="meta-item">
+                        <span class="label">Principles:</span>
+                        <span class="value">6</span>
                     </div>
-                    
-                    <div class="timeline-connector">→</div>
-                    
-                    <div class="timeline-item" data-principle="3">
-                        <div class="timeline-icon">⏰</div>
-                        <span class="timeline-label">Sacred Timing</span>
-                        <span class="timeline-weeks">Weeks 6-8</span>
-                    </div>
-                    
-                    <div class="timeline-connector">→</div>
-                    
-                    <div class="timeline-item" data-principle="4">
-                        <div class="timeline-icon">🗣️</div>
-                        <span class="timeline-label">Divine Language</span>
-                        <span class="timeline-weeks">Weeks 9-10</span>
-                    </div>
-                    
-                    <div class="timeline-connector">→</div>
-                    
-                    <div class="timeline-item" data-principle="5">
-                        <div class="timeline-icon">👁️</div>
-                        <span class="timeline-label">Vision</span>
-                        <span class="timeline-weeks">Weeks 11-12</span>
-                    </div>
-                    
-                    <div class="timeline-connector">→</div>
-                    
-                    <div class="timeline-item" data-principle="6">
-                        <div class="timeline-icon">🌍</div>
-                        <span class="timeline-label">Five Elements</span>
-                        <span class="timeline-weeks">Weeks 13-15</span>
+                    <div class="meta-item">
+                        <span class="label">Your Progress:</span>
+                        <span class="value" id="principles-completed">0/6</span>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- Principle Cards Container -->
-        <section class="principles-section">
+                <div class="progress-section">
+                    <div class="progress-bar-large">
+                        <div class="progress-fill-large" id="phase2-progress-bar"></div>
+                    </div>
+                    <span class="progress-text" id="phase2-progress-text">0% Complete</span>
+                </div>
+            </section>
 
-            <!-- PRINCIPLE 1: AWAKENING -->
-            <div class="principle-card" data-principle="1">
-                <div class="principle-header" onclick="togglePrinciple(1)">
-                    <div class="principle-icon-container">
-                        <div class="principle-icon">🌅</div>
-                        <div class="principle-number">Principle 1</div>
-                    </div>
-                    
-                    <div class="principle-title-group">
-                        <h3>Awakening</h3>
-                        <p class="principle-subtitle">Wake Up From the Sleep</p>
-                        <span class="principle-duration">Weeks 1-2 (14 days)</span>
-                    </div>
-                    
-                    <div class="principle-status" id="principle-1-status">
-                        <span class="status-badge">Not Started</span>
+            <!-- Principles Overview Section -->
+            <section class="principles-overview-section">
+                <h2>The 6 Principles That Will Transform Your Mind</h2>
+                <p class="section-intro">
+                    Each principle builds on the last. Work through them in order for maximum transformation.
+                </p>
+
+                <div class="principles-roadmap">
+                    <!-- Visual timeline showing all 6 principles -->
+                    <div class="principle-timeline" id="principlesTimeline">
+                        <!-- Timeline will be rendered by JavaScript -->
                     </div>
                 </div>
-                
-                <div class="principle-content collapsed" id="principle-1-content">
-                    <div class="principle-overview">
-                        <h4>What You'll Master:</h4>
-                        <ul>
-                            <li>Break institutional programming that keeps you asleep</li>
-                            <li>Start observing your thoughts instead of being controlled by them</li>
-                            <li>Begin daily meditation practice for divine connection</li>
-                            <li>Recognize patterns of divine communication in your life</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="daily-practices">
-                        <h4>📅 Your Daily Practice (14 Days):</h4>
-                        <div class="practice-checklist">
-                            <div class="practice-item">
-                                <input type="checkbox" id="p1-practice-1" class="practice-checkbox" data-principle="1" data-index="1">
-                                <label for="p1-practice-1">Morning meditation (15 minutes)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p1-practice-2" class="practice-checkbox" data-principle="1" data-index="2">
-                                <label for="p1-practice-2">Observation journaling (notice your patterns)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p1-practice-3" class="practice-checkbox" data-principle="1" data-index="3">
-                                <label for="p1-practice-3">Deprogramming exercise (question one belief)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p1-practice-4" class="practice-checkbox" data-principle="1" data-index="4">
-                                <label for="p1-practice-4">Awareness tracking (note divine nudges)</label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="workbook-section">
-                        <h4>📚 Workbook Guide:</h4>
-                        <div class="workbook-card">
-                            <div class="workbook-info">
-                                <strong>Guide 1: Awakening Starter Kit</strong>
-                                <p>Your complete 14-day awakening protocol with exercises, prompts, and practices.</p>
-                            </div>
-                            <button class="download-button" onclick="downloadGuide(1)">📥 Download Guide (PDF)</button>
-                        </div>
-                    </div>
-                    
-                    <div class="key-exercises">
-                        <h4>🎯 Key Exercises in Guide 1:</h4>
-                        <ol>
-                            <li><strong>The Observation Protocol:</strong> Track your thoughts without judgment</li>
-                            <li><strong>Programming Audit:</strong> Identify limiting beliefs from childhood</li>
-                            <li><strong>Conscious Sleep Practice:</strong> Meditation as divine connection</li>
-                            <li><strong>Divine Communication Log:</strong> Notice synchronicities and signs</li>
-                        </ol>
-                    </div>
-                    
-                    <div class="reflection-questions">
-                        <h4>💭 Weekly Reflection Questions:</h4>
-                        
-                        <div class="week-questions">
-                            <h5>Week 1:</h5>
-                            <ol>
-                                <li>What patterns of thought are you noticing for the first time?</li>
-                                <li>Which beliefs feel programmed vs. divinely true?</li>
-                                <li>How is meditation changing your awareness?</li>
-                            </ol>
-                        </div>
-                        
-                        <div class="week-questions">
-                            <h5>Week 2:</h5>
-                            <ol>
-                                <li>What divine communication have you recognized this week?</li>
-                                <li>Which old programs are you ready to release?</li>
-                                <li>How does it feel to observe instead of react?</li>
-                            </ol>
-                        </div>
-                    </div>
-                    
-                    <div class="principle-actions">
-                        <button class="complete-button" onclick="markPrincipleComplete(1)">✓ Mark Principle 1 Complete</button>
+            </section>
+
+            <!-- Principles Cards Container -->
+            <section class="principles-section">
+                <div id="principlesContainer">
+                    <!-- Principle cards will be dynamically loaded here -->
+                </div>
+            </section>
+
+            <!-- Next Phase Preview -->
+            <section class="next-phase-section">
+                <div class="next-phase-card locked" id="phase3-preview">
+                    <h3>🔒 Next: Phase 3 - Mastery</h3>
+                    <p>Complete all 6 principles to unlock the I-N-I Year Practice</p>
+                    <div class="unlock-progress">
+                        <span id="unlock-text-phase3">0/6 principles completed</span>
                     </div>
                 </div>
-                
-                <button class="expand-button" onclick="togglePrinciple(1)">Show Details ▼</button>
-            </div>
+            </section>
 
-            <!-- PRINCIPLE 2: MANIFESTATION MASTERY -->
-            <div class="principle-card" data-principle="2">
-                <div class="principle-header" onclick="togglePrinciple(2)">
-                    <div class="principle-icon-container">
-                        <div class="principle-icon">✨</div>
-                        <div class="principle-number">Principle 2</div>
-                    </div>
-                    
-                    <div class="principle-title-group">
-                        <h3>Manifestation Mastery</h3>
-                        <p class="principle-subtitle">Speak Reality Into Existence</p>
-                        <span class="principle-duration">Weeks 3-5 (21 days)</span>
-                    </div>
-                    
-                    <div class="principle-status" id="principle-2-status">
-                        <span class="status-badge">Not Started</span>
-                    </div>
-                </div>
-                
-                <div class="principle-content collapsed" id="principle-2-content">
-                    <div class="principle-overview">
-                        <h4>What You'll Master:</h4>
-                        <ul>
-                            <li>Master creative language that shapes reality</li>
-                            <li>Eliminate disempowering speech patterns</li>
-                            <li>Embody your vision before it manifests</li>
-                            <li>Activate the 7-day manifestation protocol</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="daily-practices">
-                        <h4>📅 Your Daily Practice (21 Days):</h4>
-                        <div class="practice-checklist">
-                            <div class="practice-item">
-                                <input type="checkbox" id="p2-practice-1" class="practice-checkbox" data-principle="2" data-index="1">
-                                <label for="p2-practice-1">Language audit (catch and correct limiting words)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p2-practice-2" class="practice-checkbox" data-principle="2" data-index="2">
-                                <label for="p2-practice-2">Vision statement recitation (speak as if accomplished)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p2-practice-3" class="practice-checkbox" data-principle="2" data-index="3">
-                                <label for="p2-practice-3">Embodiment exercises (act as if you already have it)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p2-practice-4" class="practice-checkbox" data-principle="2" data-index="4">
-                                <label for="p2-practice-4">Manifestation tracking (document what appears)</label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="workbook-section">
-                        <h4>📚 Workbook Guide:</h4>
-                        <div class="workbook-card">
-                            <div class="workbook-info">
-                                <strong>Guide 2: Manifestation Mastery</strong>
-                                <p>Master creative language that shapes reality and eliminate disempowering patterns.</p>
-                            </div>
-                            <button class="download-button" onclick="downloadGuide(2)">📥 Download Guide (PDF)</button>
-                        </div>
-                    </div>
-                    
-                    <div class="key-exercises">
-                        <h4>🎯 Key Exercises in Guide 2:</h4>
-                        <ol>
-                            <li><strong>The Language Transformation:</strong> Eliminate "trying, hoping, wishing"</li>
-                            <li><strong>Vision Statement Creation:</strong> Write your reality in present tense</li>
-                            <li><strong>Embodiment Challenge:</strong> Live as your future self for 7 days</li>
-                            <li><strong>Manifestation Evidence Log:</strong> Track what you create with words</li>
-                        </ol>
-                    </div>
-                    
-                    <div class="reflection-questions">
-                        <h4>💭 Weekly Reflection Questions:</h4>
-                        
-                        <div class="week-questions">
-                            <h5>Week 3:</h5>
-                            <ol>
-                                <li>Which words have you eliminated from your vocabulary?</li>
-                                <li>What manifestations have appeared from your new language?</li>
-                                <li>How does it feel to speak with certainty?</li>
-                            </ol>
-                        </div>
-                        
-                        <div class="week-questions">
-                            <h5>Week 4:</h5>
-                            <ol>
-                                <li>How has embodying your vision changed your energy?</li>
-                                <li>What evidence of manifestation have you documented?</li>
-                                <li>Where are you still using limiting language?</li>
-                            </ol>
-                        </div>
+        </div>
 
-                        <div class="week-questions">
-                            <h5>Week 5:</h5>
-                            <ol>
-                                <li>How has your relationship with manifestation evolved?</li>
-                                <li>What new beliefs about your power have emerged?</li>
-                                <li>Are you ready for the deeper principles ahead?</li>
-                            </ol>
-                        </div>
-                    </div>
-                    
-                    <div class="principle-actions">
-                        <button class="complete-button" onclick="markPrincipleComplete(2)">✓ Mark Principle 2 Complete</button>
-                    </div>
-                </div>
-                
-                <button class="expand-button" onclick="togglePrinciple(2)">Show Details ▼</button>
-            </div>
+    </div>
 
-            <!-- PRINCIPLE 3: SACRED TIMING -->
-            <div class="principle-card" data-principle="3">
-                <div class="principle-header" onclick="togglePrinciple(3)">
-                    <div class="principle-icon-container">
-                        <div class="principle-icon">⏰</div>
-                        <div class="principle-number">Principle 3</div>
-                    </div>
-                    
-                    <div class="principle-title-group">
-                        <h3>Sacred Timing</h3>
-                        <p class="principle-subtitle">Align With Cosmic Rhythm</p>
-                        <span class="principle-duration">Weeks 6-8 (21 days)</span>
-                    </div>
-                    
-                    <div class="principle-status" id="principle-3-status">
-                        <span class="status-badge">Not Started</span>
-                    </div>
-                </div>
-                
-                <div class="principle-content collapsed" id="principle-3-content">
-                    <div class="principle-overview">
-                        <h4>What You'll Master:</h4>
-                        <ul>
-                            <li>Understand the Enoch Calendar system</li>
-                            <li>Track moon phases and their energies</li>
-                            <li>Recognize energetic gates for optimal action</li>
-                            <li>Time your decisions with divine flow</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="daily-practices">
-                        <h4>📅 Your Daily Practice (21 Days):</h4>
-                        <div class="practice-checklist">
-                            <div class="practice-item">
-                                <input type="checkbox" id="p3-practice-1" class="practice-checkbox" data-principle="3" data-index="1">
-                                <label for="p3-practice-1">Check your Enochian date</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p3-practice-2" class="practice-checkbox" data-principle="3" data-index="2">
-                                <label for="p3-practice-2">Moon phase awareness (align actions to lunar cycle)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p3-practice-3" class="practice-checkbox" data-principle="3" data-index="3">
-                                <label for="p3-practice-3">Gate energy alignment (know when to act vs. rest)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p3-practice-4" class="practice-checkbox" data-principle="3" data-index="4">
-                                <label for="p3-practice-4">Divine flow tracking (notice when things flow vs. resist)</label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="workbook-section">
-                        <h4>📚 Workbook Guide:</h4>
-                        <div class="workbook-card">
-                            <div class="workbook-info">
-                                <strong>Guide 3: Sacred Timing</strong>
-                                <p>Master the Enoch Calendar and align your actions with cosmic rhythm.</p>
-                            </div>
-                            <button class="download-button" onclick="downloadGuide(3)">📥 Download Guide (PDF)</button>
-                        </div>
-                    </div>
-                    
-                    <div class="key-exercises">
-                        <h4>🎯 Key Exercises in Guide 3:</h4>
-                        <ol>
-                            <li><strong>Enoch Calendar Mastery:</strong> Calculate your position in sacred time</li>
-                            <li><strong>Moon Phase Planning:</strong> Plan 30 days by lunar cycle</li>
-                            <li><strong>Gate Energy Work:</strong> Recognize the 6 gates and their messages</li>
-                            <li><strong>Timing Success Log:</strong> Document perfectly timed manifestations</li>
-                        </ol>
-                    </div>
-                    
-                    <div class="reflection-questions">
-                        <h4>💭 Weekly Reflection Questions:</h4>
-                        
-                        <div class="week-questions">
-                            <h5>Week 6:</h5>
-                            <ol>
-                                <li>What is your Enochian date and what does it reveal?</li>
-                                <li>How are you perceiving moon phase energy?</li>
-                                <li>What timing patterns are you noticing in your life?</li>
-                            </ol>
-                        </div>
-                        
-                        <div class="week-questions">
-                            <h5>Week 7:</h5>
-                            <ol>
-                                <li>Which gate energies are you recognizing most clearly?</li>
-                                <li>When have you successfully timed an important action?</li>
-                                <li>How has cosmic awareness changed your decision-making?</li>
-                            </ol>
-                        </div>
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-                        <div class="week-questions">
-                            <h5>Week 8:</h5>
-                            <ol>
-                                <li>What "divine flow" experiences have you had?</li>
-                                <li>How different is acting with timing vs. without it?</li>
-                                <li>Are you ready to master the language of manifestation?</li>
-                            </ol>
-                        </div>
-                    </div>
-                    
-                    <div class="principle-actions">
-                        <button class="complete-button" onclick="markPrincipleComplete(3)">✓ Mark Principle 3 Complete</button>
-                    </div>
-                </div>
-                
-                <button class="expand-button" onclick="togglePrinciple(3)">Show Details ▼</button>
-            </div>
-
-            <!-- PRINCIPLE 4: DIVINE LANGUAGE MASTERY -->
-            <div class="principle-card" data-principle="4">
-                <div class="principle-header" onclick="togglePrinciple(4)">
-                    <div class="principle-icon-container">
-                        <div class="principle-icon">🗣️</div>
-                        <div class="principle-number">Principle 4</div>
-                    </div>
-                    
-                    <div class="principle-title-group">
-                        <h3>Divine Language Mastery</h3>
-                        <p class="principle-subtitle">Speak As Creator, Not Creature</p>
-                        <span class="principle-duration">Weeks 9-10 (14 days)</span>
-                    </div>
-                    
-                    <div class="principle-status" id="principle-4-status">
-                        <span class="status-badge">Not Started</span>
-                    </div>
-                </div>
-                
-                <div class="principle-content collapsed" id="principle-4-content">
-                    <div class="principle-overview">
-                        <h4>What You'll Master:</h4>
-                        <ul>
-                            <li>Advanced manifestation speech patterns</li>
-                            <li>Temporal authority in your language</li>
-                            <li>Remove victim language completely</li>
-                            <li>Speak from accomplished reality always</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="daily-practices">
-                        <h4>📅 Your Daily Practice (14 Days):</h4>
-                        <div class="practice-checklist">
-                            <div class="practice-item">
-                                <input type="checkbox" id="p4-practice-1" class="practice-checkbox" data-principle="4" data-index="1">
-                                <label for="p4-practice-1">Speech pattern correction (real-time awareness)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p4-practice-2" class="practice-checkbox" data-principle="4" data-index="2">
-                                <label for="p4-practice-2">Creator language practice (declarative statements)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p4-practice-3" class="practice-checkbox" data-principle="4" data-index="3">
-                                <label for="p4-practice-3">Authority declarations (command your reality)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p4-practice-4" class="practice-checkbox" data-principle="4" data-index="4">
-                                <label for="p4-practice-4">Word power tracking (notice immediate effects)</label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="workbook-section">
-                        <h4>📚 Workbook Guide:</h4>
-                        <div class="workbook-card">
-                            <div class="workbook-info">
-                                <strong>Guide 4: Divine Language Mastery</strong>
-                                <p>Master the language of creation and command your reality with authority.</p>
-                            </div>
-                            <button class="download-button" onclick="downloadGuide(4)">📥 Download Guide (PDF)</button>
-                        </div>
-                    </div>
-                    
-                    <div class="key-exercises">
-                        <h4>🎯 Key Exercises in Guide 4:</h4>
-                        <ol>
-                            <li><strong>The Creator's Vocabulary:</strong> Replace all creature language</li>
-                            <li><strong>Temporal Authority Training:</strong> Speak as if time obeys you</li>
-                            <li><strong>Declaration Practice:</strong> Command outcomes with certainty</li>
-                            <li><strong>Language Power Journal:</strong> Document word-to-reality shifts</li>
-                        </ol>
-                    </div>
-                    
-                    <div class="reflection-questions">
-                        <h4>💭 Weekly Reflection Questions:</h4>
-                        
-                        <div class="week-questions">
-                            <h5>Week 9:</h5>
-                            <ol>
-                                <li>What victim language patterns are you catching and correcting?</li>
-                                <li>How does speaking with authority feel different?</li>
-                                <li>What immediate effects have you noticed?</li>
-                            </ol>
-                        </div>
-                        
-                        <div class="week-questions">
-                            <h5>Week 10:</h5>
-                            <ol>
-                                <li>Where are you speaking from accomplished reality?</li>
-                                <li>What declarations have already manifested?</li>
-                                <li>How has your power shifted through language mastery?</li>
-                            </ol>
-                        </div>
-                    </div>
-                    
-                    <div class="principle-actions">
-                        <button class="complete-button" onclick="markPrincipleComplete(4)">✓ Mark Principle 4 Complete</button>
-                    </div>
-                </div>
-                
-                <button class="expand-button" onclick="togglePrinciple(4)">Show Details ▼</button>
-            </div>
-
-            <!-- PRINCIPLE 5: VISION ACTIVATION -->
-            <div class="principle-card" data-principle="5">
-                <div class="principle-header" onclick="togglePrinciple(5)">
-                    <div class="principle-icon-container">
-                        <div class="principle-icon">👁️</div>
-                        <div class="principle-number">Principle 5</div>
-                    </div>
-                    
-                    <div class="principle-title-group">
-                        <h3>Vision Activation</h3>
-                        <p class="principle-subtitle">See It Before You Have It</p>
-                        <span class="principle-duration">Weeks 11-12 (14 days)</span>
-                    </div>
-                    
-                    <div class="principle-status" id="principle-5-status">
-                        <span class="status-badge">Not Started</span>
-                    </div>
-                </div>
-                
-                <div class="principle-content collapsed" id="principle-5-content">
-                    <div class="principle-overview">
-                        <h4>What You'll Master:</h4>
-                        <ul>
-                            <li>Create crystal clear vision with sensory detail</li>
-                            <li>Align vision with divine purpose</li>
-                            <li>Activate written vision power</li>
-                            <li>See your future with absolute clarity</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="daily-practices">
-                        <h4>📅 Your Daily Practice (14 Days):</h4>
-                        <div class="practice-checklist">
-                            <div class="practice-item">
-                                <input type="checkbox" id="p5-practice-1" class="practice-checkbox" data-principle="5" data-index="1">
-                                <label for="p5-practice-1">Vision board refinement (add sensory details)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p5-practice-2" class="practice-checkbox" data-principle="5" data-index="2">
-                                <label for="p5-practice-2">Multi-sensory visualization (engage all 5 senses)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p5-practice-3" class="practice-checkbox" data-principle="5" data-index="3">
-                                <label for="p5-practice-3">Vision statement updates (make it more vivid)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p5-practice-4" class="practice-checkbox" data-principle="5" data-index="4">
-                                <label for="p5-practice-4">Clarity exercises (sharpen the mental image)</label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="workbook-section">
-                        <h4>📚 Workbook Guide:</h4>
-                        <div class="workbook-card">
-                            <div class="workbook-info">
-                                <strong>Guide 5: Vision Activation</strong>
-                                <p>Craft your future in crystal-clear detail and activate its manifestation.</p>
-                            </div>
-                            <button class="download-button" onclick="downloadGuide(5)">📥 Download Guide (PDF)</button>
-                        </div>
-                    </div>
-                    
-                    <div class="key-exercises">
-                        <h4>🎯 Key Exercises in Guide 5:</h4>
-                        <ol>
-                            <li><strong>The Vision Template:</strong> Write your future in full detail</li>
-                            <li><strong>Sensory Immersion:</strong> Feel, see, hear, taste, smell your vision</li>
-                            <li><strong>Purpose Alignment:</strong> Ensure vision serves beyond yourself</li>
-                            <li><strong>Vision Activation Ceremony:</strong> Declare it into existence</li>
-                        </ol>
-                    </div>
-                    
-                    <div class="reflection-questions">
-                        <h4>💭 Weekly Reflection Questions:</h4>
-                        
-                        <div class="week-questions">
-                            <h5>Week 11:</h5>
-                            <ol>
-                                <li>What details have you added to your vision?</li>
-                                <li>Which senses are easiest to engage in visualization?</li>
-                                <li>How vivid is your internal representation?</li>
-                            </ol>
-                        </div>
-                        
-                        <div class="week-questions">
-                            <h5>Week 12:</h5>
-                            <ol>
-                                <li>How does your vision serve beyond yourself?</li>
-                                <li>What alignment shifts have occurred?</li>
-                                <li>How real does your future feel now?</li>
-                            </ol>
-                        </div>
-                    </div>
-                    
-                    <div class="principle-actions">
-                        <button class="complete-button" onclick="markPrincipleComplete(5)">✓ Mark Principle 5 Complete</button>
-                    </div>
-                </div>
-                
-                <button class="expand-button" onclick="togglePrinciple(5)">Show Details ▼</button>
-            </div>
-
-            <!-- PRINCIPLE 6: FIVE ELEMENTS MASTERY -->
-            <div class="principle-card" data-principle="6">
-                <div class="principle-header" onclick="togglePrinciple(6)">
-                    <div class="principle-icon-container">
-                        <div class="principle-icon">🌍</div>
-                        <div class="principle-number">Principle 6</div>
-                    </div>
-                    
-                    <div class="principle-title-group">
-                        <h3>Five Elements Mastery</h3>
-                        <p class="principle-subtitle">Partner With Cosmic Intelligence</p>
-                        <span class="principle-duration">Weeks 13-15 (21 days)</span>
-                    </div>
-                    
-                    <div class="principle-status" id="principle-6-status">
-                        <span class="status-badge">Not Started</span>
-                    </div>
-                </div>
-                
-                <div class="principle-content collapsed" id="principle-6-content">
-                    <div class="principle-overview">
-                        <h4>What You'll Master:</h4>
-                        <ul>
-                            <li>Work with Earth, Water, Fire, Air, Ether</li>
-                            <li>Partner with elemental council</li>
-                            <li>Understand nature as conscious intelligence</li>
-                            <li>Navigate the cosmic chess board</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="daily-practices">
-                        <h4>📅 Your Daily Practice (21 Days):</h4>
-                        <div class="practice-checklist">
-                            <div class="practice-item">
-                                <input type="checkbox" id="p6-practice-1" class="practice-checkbox" data-principle="6" data-index="1">
-                                <label for="p6-practice-1">Element of the week focus (dedicate time to one)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p6-practice-2" class="practice-checkbox" data-principle="6" data-index="2">
-                                <label for="p6-practice-2">Nature observation (notice elemental intelligence)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p6-practice-3" class="practice-checkbox" data-principle="6" data-index="3">
-                                <label for="p6-practice-3">Elemental partnership rituals (water gratitude, etc.)</label>
-                            </div>
-                            <div class="practice-item">
-                                <input type="checkbox" id="p6-practice-4" class="practice-checkbox" data-principle="6" data-index="4">
-                                <label for="p6-practice-4">Intelligence recognition (see creation as alive)</label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="workbook-section">
-                        <h4>📚 Workbook Guide:</h4>
-                        <div class="workbook-card">
-                            <div class="workbook-info">
-                                <strong>Guide 10: Five Elements Mastery</strong>
-                                <p>Master the elements and partner with cosmic intelligence in all things.</p>
-                            </div>
-                            <button class="download-button" onclick="downloadGuide(10)">📥 Download Guide (PDF)</button>
-                        </div>
-                    </div>
-                    
-                    <div class="key-exercises">
-                        <h4>🎯 Key Exercises in Guide 10:</h4>
-                        <ol>
-                            <li><strong>The Cosmic Chess Board:</strong> Understand your position in creation</li>
-                            <li><strong>Water Consciousness Experiment:</strong> Speak to water, observe results</li>
-                            <li><strong>Elemental Council Partnership:</strong> Work WITH creation, not against</li>
-                            <li><strong>Five Elements Integration:</strong> Harmonize all elements in your life</li>
-                        </ol>
-                    </div>
-                    
-                    <div class="reflection-questions">
-                        <h4>💭 Weekly Reflection Questions:</h4>
-                        
-                        <div class="week-questions">
-                            <h5>Week 13:</h5>
-                            <ol>
-                                <li>Which element are you most naturally attuned to?</li>
-                                <li>What elemental intelligence have you observed?</li>
-                                <li>How has your relationship with nature shifted?</li>
-                            </ol>
-                        </div>
-                        
-                        <div class="week-questions">
-                            <h5>Week 14:</h5>
-                            <ol>
-                                <li>What results have you noticed from your elemental work?</li>
-                                <li>How are you partnering differently with creation?</li>
-                                <li>Where do you feel more or less balanced in elements?</li>
-                            </ol>
-                        </div>
-
-                        <div class="week-questions">
-                            <h5>Week 15:</h5>
-                            <ol>
-                                <li>How have all 6 principles integrated within you?</li>
-                                <li>What has fundamentally shifted in your consciousness?</li>
-                                <li>Are you ready to live the I-N-I practice in Phase 3?</li>
-                            </ol>
-                        </div>
-                    </div>
-                    
-                    <div class="principle-actions">
-                        <button class="complete-button" onclick="markPrincipleComplete(6)">✓ Mark Principle 6 Complete</button>
-                    </div>
-                </div>
-                
-                <button class="expand-button" onclick="togglePrinciple(6)">Show Details ▼</button>
-            </div>
-
-        </section>
-
-        <!-- Next Phase Section -->
-        <section class="next-phase-section">
-            <div class="next-phase-card locked" id="phase3-preview">
-                <h3>🔒 Next: Phase 3 - Mastery</h3>
-                <p>Complete all 6 principles to unlock the I-N-I Year Practice</p>
-                <div class="unlock-progress">
-                    <span id="unlock-text-phase3">0/6 principles completed</span>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
-    <script src="phase2.js"></script>
+    <!-- Phase 2 JavaScript -->
+    <script src="js/phase2.js"></script>
 </body>
 </html>
