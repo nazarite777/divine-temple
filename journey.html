@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Journey - Divine Temple</title>
+    <meta name="description" content="Follow your sacred 4-phase journey from Awakening to Mastery. Track your progress through aligned manifestation teachings.">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="My Sacred Journey - Divine Temple">
+    <meta property="og:description" content="I'm on a transformational journey through 4 phases: Awakening, Alignment, Practice, and Mastery.">
+    <meta property="og:image" content="https://edenconsciousnesssdt.com/images/journey-share.jpg">
+    <meta property="og:url" content="https://edenconsciousnesssdt.com/journey.html">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="My Sacred Journey - Divine Temple">
+    <meta name="twitter:description" content="Join me on the path to Aligned Manifestation Mastery">
+    <meta name="twitter:image" content="https://edenconsciousnesssdt.com/images/journey-share.jpg">
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Confetti Celebration Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/journey-styles.css">
+    <link rel="stylesheet" href="css/breadcrumbs.css">
+
+    <!-- Divine Temple Systems -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth-helper.js"></script>
+    <script src="js/journey-gate.js"></script>
+    <script src="js/premium-access-control.js"></script>
+    <script src="js/universal-progress-system.js"></script>
+    <script src="js/header.js" defer></script>
+
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #4fc3f7;
+            --accent-green: #66bb6a;
+            --accent-orange: #F59E0B;
+            --dark-bg: #0F0F23;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-muted: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a1e 0%, #1a1a2e 50%, #0f3460 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(79, 195, 247, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(212, 175, 55, 0.1) 50%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Overall Progress */
+        .overall-progress {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(139, 92, 246, 0.1));
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .overall-progress::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            animation: progressShine 2s ease-in-out infinite;
+        }
+
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .overall-progress-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .progress-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .progress-percentage {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-gold);
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-gold), var(--accent-purple), var(--accent-blue));
+            border-radius: 15px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: progressFlow 2s ease-in-out infinite;
+        }
+
+        @keyframes progressFlow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-stat-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Current Focus */
+        .current-focus {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(79, 195, 247, 0.15));
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--accent-purple);
+            border-radius: 25px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .focus-badge {
+            display: inline-block;
+            background: var(--accent-purple);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .focus-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .focus-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .focus-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--accent-purple);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .focus-action:hover {
+            background: #7C3AED;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Phase Cards */
+        .phases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .phase-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .phase-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--phase-color), transparent);
+        }
+
+        .phase-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--phase-color);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .phase-card.current {
+            border-color: var(--phase-color);
+            background: linear-gradient(135deg, var(--glass-bg), rgba(var(--phase-color-rgb), 0.1));
+        }
+
+        .phase-card.completed::after {
+            content: '✓';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .phase-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .phase-card.locked::after {
+            content: '🔒';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .phase-number {
+            display: inline-block;
+            background: var(--phase-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .phase-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--phase-color);
+        }
+
+        .phase-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .phase-progress {
+            margin-bottom: 1rem;
+        }
+
+        .phase-progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .phase-progress-fill {
+            height: 100%;
+            background: var(--phase-color);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .phase-progress-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .phase-features {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .phase-features li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .phase-features li::before {
+            content: '✦';
+            color: var(--phase-color);
+        }
+
+        /* Phase specific colors */
+        .phase-1 {
+            --phase-color: #F59E0B;
+            --phase-color-rgb: 245, 158, 11;
+        }
+
+        .phase-2 {
+            --phase-color: #8B5CF6;
+            --phase-color-rgb: 139, 92, 246;
+        }
+
+        .phase-3 {
+            --phase-color: #4fc3f7;
+            --phase-color-rgb: 79, 195, 247;
+        }
+
+        .phase-4 {
+            --phase-color: #D4AF37;
+            --phase-color-rgb: 212, 175, 55;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            gap: 1rem;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--glass-border);
+            border-top-color: var(--primary-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                padding: 2rem 1rem;
+            }
+
+            .title {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .overall-progress {
+                padding: 1.5rem;
+            }
+
+            .progress-percentage {
+                font-size: 2rem;
+            }
+
+            .phases-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Premium Badge */
+        .premium-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Breadcrumb Navigation */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-gold);
+        }
+
+        .breadcrumb-separator {
+            color: var(--text-muted);
+        }
+
+        .breadcrumb-current {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Social Sharing */
+        .social-sharing {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 3rem;
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+        }
+
+        .share-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .share-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: 1px solid var(--glass-border);
+        }
+
+        .share-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .share-btn.twitter {
+            background: #1DA1F2;
+        }
+
+        .share-btn.facebook {
+            background: #4267B2;
+        }
+
+        .share-btn.linkedin {
+            background: #0077B5;
+        }
+
+        .share-btn.copy {
+            background: var(--accent-purple);
+        }
+
+        @media (max-width: 768px) {
+            .social-sharing {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Premium Gate (shown if user doesn't have access) -->
+    <div id="journeyGate" style="display: none;"></div>
+
+    <div class="container" id="journeyContainer">
+        <a href="members-new.html" class="back-btn">
+            ← Back to Portal
+        </a>
+
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb-container">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <div class="breadcrumb-item">
+                    <a href="index.html">🏠 Home</a>
+                </div>
+                <span class="breadcrumb-separator">›</span>
+                <div class="breadcrumb-item">
+                    <span class="breadcrumb-current">Journey</span>
+                </div>
+            </nav>
+        </div>
+
+        <div class="header">
+            <div class="header-content">
+                <div class="header-icon">🌟</div>
+                <h1 class="title">Your Sacred Journey</h1>
+                <p class="subtitle">
+                    Welcome to your transformational path through the Divine Temple teachings.
+                    Four phases guide you from awakening to mastery.
+                </p>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <div class="spinner"></div>
+            <p>Loading your journey...</p>
+        </div>
+
+        <!-- Journey Content (hidden until loaded) -->
+        <div id="journeyMainContent" style="display: none;">
+
+            <!-- Overall Progress -->
+            <div class="overall-progress">
+                <div class="overall-progress-content">
+                    <div class="progress-header">
+                        <h2 class="progress-title">Overall Journey Progress</h2>
+                        <div class="progress-percentage" id="overallPercentage">0%</div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="overallProgressBar" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <div class="progress-stat">
+                            <span class="progress-stat-icon">📚</span>
+                            <span id="phasesCompleted">0/4 Phases Complete</span>
+                        </div>
+                        <div class="progress-stat">
+                            <span class="progress-stat-icon">🔥</span>
+                            <span id="currentStreak">0 Day Streak</span>
+                        </div>
+                        <div class="progress-stat">
+                            <span class="progress-stat-icon">⏱️</span>
+                            <span id="lastActivity">Last activity: Today</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Focus -->
+            <div class="current-focus" id="currentFocus">
+                <span class="focus-badge">Up Next</span>
+                <h3 class="focus-title" id="focusTitle">Continue Your Journey</h3>
+                <p class="focus-description" id="focusDescription">
+                    Pick up where you left off and continue your transformation.
+                </p>
+                <a href="#" class="focus-action" id="focusAction">
+                    Continue Learning →
+                </a>
+            </div>
+
+            <!-- Phase Cards -->
+            <div class="phases-grid">
+                <!-- Phase 1: Awakening -->
+                <div class="phase-card phase-1" id="phase1Card" onclick="navigateToPhase(1)">
+                    <div class="phase-number">1</div>
+                    <h3 class="phase-title">The Awakening</h3>
+                    <p class="phase-subtitle">Ya Heard Me - Foundation</p>
+                    <div class="phase-progress">
+                        <div class="phase-progress-bar">
+                            <div class="phase-progress-fill" id="phase1Progress" style="width: 0%"></div>
+                        </div>
+                        <div class="phase-progress-text">
+                            <span id="phase1Text">Not started</span>
+                            <span id="phase1Percent">0%</span>
+                        </div>
+                    </div>
+                    <ul class="phase-features">
+                        <li>Complete audiobook with chapters</li>
+                        <li>Guided discussion questions</li>
+                        <li>Reflective journal prompts</li>
+                        <li>Foundation for transformation</li>
+                    </ul>
+                </div>
+
+                <!-- Phase 2: Understanding -->
+                <div class="phase-card phase-2 locked" id="phase2Card" onclick="navigateToPhase(2)">
+                    <div class="phase-number">2</div>
+                    <h3 class="phase-title">The Understanding</h3>
+                    <p class="phase-subtitle">6 Principles of Aligned Manifestation™</p>
+                    <div class="phase-progress">
+                        <div class="phase-progress-bar">
+                            <div class="phase-progress-fill" id="phase2Progress" style="width: 0%"></div>
+                        </div>
+                        <div class="phase-progress-text">
+                            <span id="phase2Text">Locked</span>
+                            <span id="phase2Percent">0%</span>
+                        </div>
+                    </div>
+                    <ul class="phase-features">
+                        <li>6 Principles over 90 days (15 weeks)</li>
+                        <li>Complete workbook guides & exercises</li>
+                        <li>Daily practices & reflections</li>
+                        <li>Divine foundation building</li>
+                    </ul>
+                </div>
+
+                <!-- Phase 3: Mastery -->
+                <div class="phase-card phase-3 locked" id="phase3Card" onclick="navigateToPhase(3)">
+                    <div class="phase-number">3</div>
+                    <h3 class="phase-title">The Mastery</h3>
+                    <p class="phase-subtitle">I-N-I Year Practice</p>
+                    <div class="phase-progress">
+                        <div class="phase-progress-bar">
+                            <div class="phase-progress-fill" id="phase3Progress" style="width: 0%"></div>
+                        </div>
+                        <div class="phase-progress-text">
+                            <span id="phase3Text">Locked</span>
+                            <span id="phase3Percent">0%</span>
+                        </div>
+                    </div>
+                    <ul class="phase-features">
+                        <li>Full year Enochian calendar practice</li>
+                        <li>364-day sacred rhythm mastery</li>
+                        <li>Gate energies & divine timing</li>
+                        <li>Complete cosmic integration</li>
+                    </ul>
+                </div>
+
+                <!-- Phase 4: Teacher -->
+                <div class="phase-card phase-4 locked" id="phase4Card" onclick="navigateToPhase(4)">
+                    <div class="phase-number">4</div>
+                    <h3 class="phase-title">The Teacher</h3>
+                    <p class="phase-subtitle">Certification & Community Leadership</p>
+                    <div class="phase-progress">
+                        <div class="phase-progress-bar">
+                            <div class="phase-progress-fill" id="phase4Progress" style="width: 0%"></div>
+                        </div>
+                        <div class="phase-progress-text">
+                            <span id="phase4Text">Locked</span>
+                            <span id="phase4Percent">0%</span>
+                        </div>
+                    </div>
+                    <ul class="phase-features">
+                        <li>Teaching certification program</li>
+                        <li>Practice teaching sessions</li>
+                        <li>Affiliate program access</li>
+                        <li>Community leadership role</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Social Sharing -->
+            <div class="social-sharing">
+                <span class="share-label">Share Your Journey:</span>
+                <div class="share-buttons">
+                    <a href="#" class="share-btn twitter" onclick="shareToTwitter(); return false;" title="Share on Twitter">
+                        𝕏
+                    </a>
+                    <a href="#" class="share-btn facebook" onclick="shareToFacebook(); return false;" title="Share on Facebook">
+                        f
+                    </a>
+                    <a href="#" class="share-btn linkedin" onclick="shareToLinkedIn(); return false;" title="Share on LinkedIn">
+                        in
+                    </a>
+                    <a href="#" class="share-btn copy" onclick="copyJourneyLink(); return false;" title="Copy Link">
+                        🔗
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Journey Hub JavaScript -->
+    <script src="js/journey-hub.js"></script>
+
+    <!-- Social Sharing Scripts -->
+    <script>
+        function shareToTwitter() {
+            const text = "I'm on a transformational journey through 4 phases of spiritual growth at Divine Temple! 🌟";
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}`, '_blank');
+        }
+
+        function shareToFacebook() {
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+        }
+
+        function shareToLinkedIn() {
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+        }
+
+        function copyJourneyLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert('✅ Journey link copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+    </script>
+</body>
+</html>

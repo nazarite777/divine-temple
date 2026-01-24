@@ -14,7 +14,8 @@
 
 class AIChatbot {
     constructor() {
-        this.apiKey = 'YOUR_OPENAI_API_KEY'; // Replace with real key
+        // Use Firebase Functions for secure API calls (no API key needed client-side!)
+        this.apiEndpoint = null; // Will be set after Firebase loads
         this.conversationHistory = this.loadConversationHistory();
         this.systemPrompt = this.getSystemPrompt();
         this.isTyping = false;
@@ -161,58 +162,57 @@ Remember: You are a spiritual companion, not a medical or mental health professi
     }
 
     async getAIResponse(userMessage) {
-        // Check if OpenAI API key is set
-        if (!this.apiKey || this.apiKey === 'YOUR_OPENAI_API_KEY') {
-            return this.getFallbackResponse(userMessage);
+        // Check if user is authenticated
+        if (!firebase.auth().currentUser) {
+            return {
+                success: false,
+                message: "Please log in to chat with our AI spiritual guide. 🔐✨"
+            };
         }
 
         try {
-            // Prepare messages for GPT-4
-            const messages = [
-                { role: 'system', content: this.systemPrompt }
-            ];
+            // Get recent conversation history for context
+            const recentHistory = this.conversationHistory.slice(-8).map(msg => ({
+                role: msg.role,
+                content: msg.content
+            }));
 
-            // Add recent conversation history (last 10 messages)
-            const recentHistory = this.conversationHistory.slice(-10);
-            recentHistory.forEach(msg => {
-                messages.push({
-                    role: msg.role,
-                    content: msg.content
-                });
+            // Call secure Firebase Function (no API key needed client-side!)
+            const chatFunction = firebase.functions().httpsCallable('chatWithAI');
+            const response = await chatFunction({
+                message: userMessage,
+                conversationHistory: recentHistory
             });
 
-            // Call OpenAI API
-            const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.apiKey}`
-                },
-                body: JSON.stringify({
-                    model: 'gpt-4',
-                    messages: messages,
-                    max_tokens: 500,
-                    temperature: 0.7,
-                    top_p: 1,
-                    frequency_penalty: 0.3,
-                    presence_penalty: 0.3
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.choices && data.choices[0]) {
+            if (response.data.success) {
                 return {
                     success: true,
-                    message: data.choices[0].message.content.trim()
+                    message: response.data.message,
+                    tokensUsed: response.data.tokensUsed
                 };
+            } else {
+                // If AI service fails, use fallback
+                return this.getFallbackResponse(userMessage);
             }
 
-            throw new Error('Invalid API response');
-
         } catch (error) {
-            console.error('OpenAI API error:', error);
-            return this.getFallbackResponse(userMessage);
+            console.error('AI Chat error:', error);
+            
+            // Handle specific error types
+            if (error.code === 'unauthenticated') {
+                return {
+                    success: false,
+                    message: "Please log in to chat with our AI spiritual guide. Your sacred journey awaits! 🔐✨"
+                };
+            } else if (error.code === 'resource-exhausted') {
+                return {
+                    success: false,
+                    message: "You've reached the hourly chat limit. Take this time for quiet reflection - sometimes the most profound insights come in silence. 🤫🙏"
+                };
+            } else {
+                // General fallback for other errors
+                return this.getFallbackResponse(userMessage);
+            }
         }
     }
 

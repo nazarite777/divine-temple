@@ -250,6 +250,184 @@ class RewardShopSystem {
                     duration: 24 * 60 * 60 * 1000,
                     multiplier: 2
                 }
+            ],
+            knowledge: [
+                {
+                    id: 'knowledge_etymology',
+                    name: 'Hidden Etymology Guide',
+                    description: 'Deep dive into Hebrew roots and mistranslations',
+                    cost: 300,
+                    icon: '📖',
+                    type: 'knowledge',
+                    content: 'etymology_guide.pdf'
+                },
+                {
+                    id: 'knowledge_mistranslations',
+                    name: 'Mistranslation Decoder',
+                    description: 'PDF of all major biblical mistranslations',
+                    cost: 500,
+                    icon: '📜',
+                    type: 'knowledge',
+                    content: 'mistranslations.pdf'
+                },
+                {
+                    id: 'knowledge_names',
+                    name: 'Sacred Name Codex',
+                    description: 'Complete guide to YHWH, Elohim, El, Yah',
+                    cost: 400,
+                    icon: '🔍',
+                    type: 'knowledge',
+                    content: 'sacred_names.pdf'
+                },
+                {
+                    id: 'knowledge_cosmology',
+                    name: 'Cosmology Primer',
+                    description: '"What Ya Heard Me Speaks of You" teachings',
+                    cost: 600,
+                    icon: '🌟',
+                    type: 'knowledge',
+                    premium: true,
+                    content: 'cosmology_primer.pdf'
+                },
+                {
+                    id: 'knowledge_nazarite',
+                    name: 'Nazarite Path Manual',
+                    description: 'Guide to consecration and righteousness',
+                    cost: 800,
+                    icon: '👑',
+                    type: 'knowledge',
+                    premium: true,
+                    content: 'nazarite_manual.pdf'
+                },
+                {
+                    id: 'knowledge_glossary',
+                    name: 'Full Glossary Access',
+                    description: 'Complete book glossary of all terms',
+                    cost: 1500,
+                    icon: '📚',
+                    type: 'knowledge',
+                    premium: true,
+                    content: 'full_glossary.pdf'
+                }
+            ],
+            customization: [
+                // Title Badges
+                {
+                    id: 'title_truth_awakened',
+                    name: 'Truth Awakened',
+                    description: 'Title: "Truth Awakened"',
+                    cost: 500,
+                    icon: '✨',
+                    type: 'title',
+                    displayText: 'Truth Awakened'
+                },
+                {
+                    id: 'title_etymology_scholar',
+                    name: 'Etymology Scholar',
+                    description: 'Title: "Etymology Scholar"',
+                    cost: 800,
+                    icon: '📜',
+                    type: 'title',
+                    displayText: 'Etymology Scholar'
+                },
+                {
+                    id: 'title_hebrew_sage',
+                    name: 'Hebrew Sage',
+                    description: 'Title: "Hebrew Sage"',
+                    cost: 1000,
+                    icon: '🕎',
+                    type: 'title',
+                    premium: true,
+                    displayText: 'Hebrew Sage'
+                },
+                {
+                    id: 'title_consecrated_seeker',
+                    name: 'Consecrated Seeker',
+                    description: 'Title: "Consecrated Seeker"',
+                    cost: 1200,
+                    icon: '🔥',
+                    type: 'title',
+                    premium: true,
+                    displayText: 'Consecrated Seeker'
+                },
+                {
+                    id: 'title_child_yhwh',
+                    name: 'Child of YHWH',
+                    description: 'Title: "Child of YHWH"',
+                    cost: 2000,
+                    icon: '👑',
+                    type: 'title',
+                    premium: true,
+                    displayText: 'Child of YHWH'
+                },
+                // Profile Frames
+                {
+                    id: 'frame_golden_seal',
+                    name: 'Golden Seal of El',
+                    description: 'Golden border frame',
+                    cost: 800,
+                    icon: '🔱',
+                    type: 'frame',
+                    cssClass: 'frame-golden-seal'
+                },
+                {
+                    id: 'frame_tetragrammaton',
+                    name: 'Tetragrammaton Border',
+                    description: 'Sacred name border',
+                    cost: 1000,
+                    icon: '🔯',
+                    type: 'frame',
+                    premium: true,
+                    cssClass: 'frame-tetragrammaton'
+                },
+                {
+                    id: 'frame_nazarite',
+                    name: 'Nazarite Crown',
+                    description: 'Consecrated crown frame',
+                    cost: 1500,
+                    icon: '👑',
+                    type: 'frame',
+                    premium: true,
+                    cssClass: 'frame-nazarite'
+                },
+                {
+                    id: 'frame_divine_flame',
+                    name: 'Divine Flame Aura',
+                    description: 'Animated fire border',
+                    cost: 2000,
+                    icon: '🔥',
+                    type: 'frame',
+                    premium: true,
+                    cssClass: 'frame-divine-flame'
+                },
+                // Profile Badges
+                {
+                    id: 'badge_truth_seeker',
+                    name: 'Truth Seeker Badge',
+                    description: 'Display achievement badge',
+                    cost: 300,
+                    icon: '🎯',
+                    type: 'badge'
+                },
+                {
+                    id: 'badge_master_teacher',
+                    name: 'Master Teacher Badge',
+                    description: 'Display achievement badge',
+                    cost: 1200,
+                    icon: '📚',
+                    type: 'badge',
+                    premium: true
+                },
+                {
+                    id: 'badge_nazir_elite',
+                    name: 'Nazir Elite Badge',
+                    description: 'Display elite status badge',
+                    cost: 2100,
+                    icon: '⭐',
+                    type: 'badge',
+                    premium: true,
+                    requiredLevel: 21
+                }
             ]
         };
 
