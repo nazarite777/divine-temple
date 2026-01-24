@@ -1745,36 +1745,9 @@
                 return;
             }
 
-            // FAST PATH: Check if we have recent localStorage data (just logged in)
-            const localEmail = localStorage.getItem('userEmail');
-            const localMembership = localStorage.getItem('membershipLevel');
-            const localUserId = localStorage.getItem('userId');
-
-            if (localEmail && localMembership && localUserId) {
-                console.log('📱 Found recent login data in localStorage');
-                console.log('   Email:', localEmail);
-                console.log('   Membership:', localMembership);
-
-                // If membership is free/basic, show dashboard immediately
-                if (localMembership === 'free' || localMembership === 'basic') {
-                    console.log('⚡ FAST PATH: Showing dashboard immediately from localStorage');
-
-                    // Update UI if element exists
-                    const userEmailEl = document.getElementById('userEmail');
-                    if (userEmailEl) {
-                        userEmailEl.textContent = localEmail;
-                    }
-
-                    // Hide loading screen immediately
-                    const authLoading = document.getElementById('authLoading');
-                    if (authLoading) {
-                        authLoading.classList.add('hidden');
-                        console.log('✅ Dashboard shown via fast path');
-                    }
-
-                    // Firebase will still verify in background, but user sees dashboard immediately
-                }
-            }
+            // Show loading state - don't trust localStorage for membership
+            // localStorage could be stale if user just upgraded to premium
+            console.log('📱 Checking authentication and membership status...');
 
             // Wait for Firebase to load
             const firebaseLoaded = await waitForFirebase();
@@ -1850,7 +1823,8 @@
                     .get();
 
                 if (userDoc.exists) {
-                    membershipLevel = userDoc.data().membershipLevel || 'free';
+                    const userData = userDoc.data();
+                    membershipLevel = userData.membershipLevel || userData.membership || 'free';
                     console.log('   Found membership level:', membershipLevel);
                 } else {
                     console.log('   No user doc found, defaulting to free');

@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
 admin.initializeApp();
+const db = admin.firestore();
 
 // ==================== HELPER FUNCTIONS ====================
 /**
@@ -34,6 +35,57 @@ async function checkPremiumAccess(userId) {
     console.error('Error checking premium access:', error);
     return false;
   }
+}
+
+/**
+ * Helper: Find user by email (case-insensitive)
+ */
+async function findUserByEmail(email) {
+  if (!email) return null;
+
+  const snapshot = await db.collection('users')
+    .where('email', '==', email.toLowerCase())
+    .limit(1)
+    .get();
+
+  if (snapshot.empty) {
+    // Try case-insensitive search by scanning all users
+    const allUsers = await db.collection('users').get();
+    const match = allUsers.docs.find(doc =>
+      doc.data().email?.toLowerCase() === email.toLowerCase()
+    );
+    return match || null;
+  }
+
+  return snapshot.docs[0];
+}
+
+/**
+ * Helper: Find user by Stripe subscription ID
+ */
+async function findUserBySubscriptionId(subscriptionId) {
+  if (!subscriptionId) return null;
+
+  const snapshot = await db.collection('users')
+    .where('stripeSubscriptionId', '==', subscriptionId)
+    .limit(1)
+    .get();
+
+  return snapshot.empty ? null : snapshot.docs[0];
+}
+
+/**
+ * Helper: Find user by Stripe customer ID
+ */
+async function findUserByCustomerId(customerId) {
+  if (!customerId) return null;
+
+  const snapshot = await db.collection('users')
+    .where('stripeCustomerId', '==', customerId)
+    .limit(1)
+    .get();
+
+  return snapshot.empty ? null : snapshot.docs[0];
 }
 
 // ==================== CLOUD FUNCTIONS ====================
@@ -70,6 +122,7 @@ exports.onUserCreate = functions.auth.user().onCreate(async (user) => {
       displayName: user.displayName || '',
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       isPremium: false, // Default to free - will be set to true after payment
+      membership: 'free',
       membershipLevel: 'free',
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     };
@@ -113,6 +166,7 @@ exports.grantPremiumAccess = functions.https.onCall(async (data, context) => {
   try {
     await admin.firestore().collection('users').doc(userId).update({
       isPremium: true,
+      membership: 'premium',
       membershipLevel: 'premium',
       grantedBy: context.auth.uid,
       grantReason: reason || 'manual_grant',
@@ -129,9 +183,6 @@ exports.grantPremiumAccess = functions.https.onCall(async (data, context) => {
   }
 });
 
-/**
- * Stripe Webhook Handler - Updated to handle payments
- */
 /**
  * Create Stripe Checkout Session - $9.99/month Premium Membership
  */
@@ -185,8 +236,8 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
           quantity: 1,
         },
       ],
-      success_url: `${data.successUrl || 'https://your-domain.com/success'}?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: data.cancelUrl || 'https://your-domain.com/free-dashboard',
+      success_url: `${data.successUrl || 'https://edenconsciousnesssdt.com/members-new.html'}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: data.cancelUrl || 'https://edenconsciousnesssdt.com/free-dashboard.html',
     });
 
     console.log(`Checkout session created for user ${userId}: ${session.id}`);
@@ -203,92 +254,235 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
 });
 
 /**
- * Stripe Webhook Handler - Updated to handle payments
+ * Stripe Webhook Handler
+ * Listens for Stripe events and updates user membership status in Firestore
  */
 exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
+  // Only allow POST requests
+  if (req.method !== 'POST') {
+    return res.status(405).send('Method Not Allowed');
+  }
+
   const stripeConfig = functions.config().stripe;
 
+  // Check if Stripe is configured
   if (!stripeConfig || !stripeConfig.secret || !stripeConfig.webhook_secret) {
-    console.error('Stripe configuration is missing');
+    console.error('❌ Stripe configuration is missing');
+    console.error('Run: firebase functions:config:set stripe.secret="sk_xxx" stripe.webhook_secret="whsec_xxx"');
     return res.status(500).send('Stripe configuration error');
   }
 
   const stripe = require('stripe')(stripeConfig.secret);
   const sig = req.headers['stripe-signature'];
-  const endpointSecret = stripeConfig.webhook_secret;
 
   let event;
 
+  // Verify webhook signature
   try {
-    event = stripe.webhooks.constructEvent(req.rawBody, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(req.rawBody, sig, stripeConfig.webhook_secret);
+    console.log('✅ Webhook signature verified. Event type:', event.type);
   } catch (err) {
-    console.log(`Webhook signature verification failed: ${err.message}`);
+    console.error(`❌ Webhook signature verification failed: ${err.message}`);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  switch (event.type) {
-    case 'checkout.session.completed':
-      const session = event.data.object;
-      console.log('Payment successful:', session);
+  // Handle different event types
+  try {
+    switch (event.type) {
+      case 'checkout.session.completed':
+        await handleCheckoutComplete(event.data.object);
+        break;
 
-      // Get user ID from session metadata
-      const userId = session.client_reference_id || session.metadata?.userId;
+      case 'customer.subscription.created':
+      case 'customer.subscription.updated':
+        await handleSubscriptionUpdate(event.data.object);
+        break;
 
-      if (userId) {
-        try {
-          // Update user to premium
-          await admin.firestore().collection('users').doc(userId).update({
-            isPremium: true,
-            membershipLevel: 'premium',
-            subscriptionId: session.subscription || session.id,
-            stripeCustomerId: session.customer,
-            lastPaymentDate: admin.firestore.FieldValue.serverTimestamp(),
-            paymentAmount: session.amount_total / 100, // Convert cents to dollars
-            updatedAt: admin.firestore.FieldValue.serverTimestamp()
-          });
+      case 'customer.subscription.deleted':
+        await handleSubscriptionCancelled(event.data.object);
+        break;
 
-          console.log(`User ${userId} upgraded to premium - Payment: $${session.amount_total / 100}`);
-        } catch (error) {
-          console.error('Error updating user to premium:', error);
-        }
-      }
-      break;
+      case 'invoice.payment_succeeded':
+        await handlePaymentSucceeded(event.data.object);
+        break;
 
-    case 'customer.subscription.deleted':
-      // Handle subscription cancellation
-      const subscription = event.data.object;
-      const customerId = subscription.customer;
+      case 'invoice.payment_failed':
+        await handlePaymentFailed(event.data.object);
+        break;
 
-      try {
-        // Find user by Stripe customer ID
-        const usersSnapshot = await admin.firestore()
-          .collection('users')
-          .where('stripeCustomerId', '==', customerId)
-          .limit(1)
-          .get();
-
-        if (!usersSnapshot.empty) {
-          const userDoc = usersSnapshot.docs[0];
-
-          // Downgrade user to free tier on subscription cancellation
-          await userDoc.ref.update({
-            isPremium: false,
-            membershipLevel: 'free',
-            subscriptionStatus: 'canceled',
-            updatedAt: admin.firestore.FieldValue.serverTimestamp()
-          });
-
-          console.log(`User ${userDoc.id} downgraded to free - subscription canceled`);
-        }
-      } catch (error) {
-        console.error('Error handling subscription cancellation:', error);
-      }
-      break;
-
-    default:
-      console.log(`Unhandled event type ${event.type}`);
+      default:
+        console.log(`ℹ️ Unhandled event type: ${event.type}`);
+    }
+  } catch (error) {
+    console.error('❌ Error processing webhook:', error);
+    // Still return 200 to acknowledge receipt (prevents Stripe retries)
+    return res.status(200).json({ received: true, error: error.message });
   }
 
-  res.json({received: true});
+  res.status(200).json({ received: true });
 });
 
+/**
+ * Handle successful checkout session
+ */
+async function handleCheckoutComplete(session) {
+  const customerEmail = session.customer_email || session.customer_details?.email;
+  const customerId = session.customer;
+  const subscriptionId = session.subscription;
+
+  console.log('💳 Checkout completed for:', customerEmail);
+  console.log('   Customer ID:', customerId);
+  console.log('   Subscription ID:', subscriptionId);
+
+  if (!customerEmail) {
+    console.error('❌ No customer email found in session');
+    return;
+  }
+
+  // Find user by email
+  const userDoc = await findUserByEmail(customerEmail);
+
+  if (userDoc) {
+    await userDoc.ref.update({
+      // Primary membership fields
+      isPremium: true,
+      membership: 'premium',
+      membershipLevel: 'premium',
+      subscriptionStatus: 'active',
+
+      // Stripe reference fields
+      stripeCustomerId: customerId || null,
+      stripeSubscriptionId: subscriptionId || null,
+
+      // Timestamps
+      premiumSince: admin.firestore.FieldValue.serverTimestamp(),
+      lastPaymentAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    console.log('✅ User upgraded to PREMIUM:', customerEmail);
+  } else {
+    // User doesn't exist yet - create them
+    console.log('⚠️ User not found, creating new premium user:', customerEmail);
+
+    await db.collection('users').add({
+      email: customerEmail,
+      isPremium: true,
+      membership: 'premium',
+      membershipLevel: 'premium',
+      subscriptionStatus: 'active',
+      stripeCustomerId: customerId || null,
+      stripeSubscriptionId: subscriptionId || null,
+      premiumSince: admin.firestore.FieldValue.serverTimestamp(),
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    console.log('✅ New premium user created:', customerEmail);
+  }
+}
+
+/**
+ * Handle subscription updates
+ */
+async function handleSubscriptionUpdate(subscription) {
+  const subscriptionId = subscription.id;
+  const status = subscription.status; // active, past_due, canceled, etc.
+
+  console.log('🔄 Subscription update:', subscriptionId, 'Status:', status);
+
+  const userDoc = await findUserBySubscriptionId(subscriptionId);
+
+  if (userDoc) {
+    const isPremium = ['active', 'trialing'].includes(status);
+
+    await userDoc.ref.update({
+      isPremium: isPremium,
+      membership: isPremium ? 'premium' : 'free',
+      membershipLevel: isPremium ? 'premium' : 'free',
+      subscriptionStatus: status,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    console.log('✅ Subscription status updated to:', status);
+  } else {
+    console.error('❌ No user found for subscription:', subscriptionId);
+  }
+}
+
+/**
+ * Handle subscription cancellation
+ */
+async function handleSubscriptionCancelled(subscription) {
+  const subscriptionId = subscription.id;
+
+  console.log('❌ Subscription cancelled:', subscriptionId);
+
+  const userDoc = await findUserBySubscriptionId(subscriptionId);
+
+  if (userDoc) {
+    await userDoc.ref.update({
+      isPremium: false,
+      membership: 'free',
+      membershipLevel: 'free',
+      subscriptionStatus: 'cancelled',
+      cancelledAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    console.log('✅ User downgraded to FREE');
+  } else {
+    console.error('❌ No user found for subscription:', subscriptionId);
+  }
+}
+
+/**
+ * Handle successful invoice payment (recurring)
+ */
+async function handlePaymentSucceeded(invoice) {
+  const customerEmail = invoice.customer_email;
+  const subscriptionId = invoice.subscription;
+
+  console.log('💰 Payment succeeded for:', customerEmail);
+
+  if (!subscriptionId) return; // One-time payment, not subscription
+
+  const userDoc = await findUserByEmail(customerEmail) ||
+                  await findUserBySubscriptionId(subscriptionId);
+
+  if (userDoc) {
+    await userDoc.ref.update({
+      isPremium: true,
+      membership: 'premium',
+      membershipLevel: 'premium',
+      subscriptionStatus: 'active',
+      lastPaymentAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    console.log('✅ Recurring payment recorded');
+  }
+}
+
+/**
+ * Handle failed invoice payment
+ */
+async function handlePaymentFailed(invoice) {
+  const customerEmail = invoice.customer_email;
+  const subscriptionId = invoice.subscription;
+
+  console.log('⚠️ Payment failed for:', customerEmail);
+
+  const userDoc = await findUserByEmail(customerEmail) ||
+                  await findUserBySubscriptionId(subscriptionId);
+
+  if (userDoc) {
+    await userDoc.ref.update({
+      subscriptionStatus: 'past_due',
+      paymentFailedAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    console.log('⚠️ User marked as past_due');
+  }
+}
