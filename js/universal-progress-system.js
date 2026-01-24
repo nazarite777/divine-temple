@@ -262,6 +262,199 @@ class UniversalProgressSystem {
             this.userData.spiritualRank = rank.name;
             this.userData.spiritualRankIcon = rank.icon;
         }
+
+        // Check for milestone rewards
+        this.checkMilestones();
+    }
+
+    // ==================== PROGRESSION MILESTONES ====================
+    async checkMilestones() {
+        if (!this.userData.milestones) {
+            this.userData.milestones = [];
+        }
+
+        const milestones = [
+            {
+                level: 5,
+                name: '🌟 Seeker',
+                reward: '+50 XP Bonus',
+                bonusXP: 50,
+                unlock: 'First knowledge unlock free'
+            },
+            {
+                level: 10,
+                name: '📚 Scholar',
+                reward: '+100 XP Bonus',
+                bonusXP: 100,
+                unlock: '1 free knowledge guide'
+            },
+            {
+                level: 15,
+                name: '👨‍🏫 Teacher',
+                reward: '+150 XP Bonus',
+                bonusXP: 150,
+                unlock: 'Advanced trivia mode unlocked'
+            },
+            {
+                level: 21,
+                name: '🔥 Nazarite',
+                reward: '+210 XP Bonus + Special Badge',
+                bonusXP: 210,
+                unlock: 'Nazarite badge + exclusive theme'
+            },
+            {
+                level: 30,
+                name: '🕎 Sage',
+                reward: '+300 XP Bonus + Unlocks',
+                bonusXP: 300,
+                unlock: 'All basic shop items unlocked'
+            },
+            {
+                level: 40,
+                name: '👴 Elder',
+                reward: '+400 XP Bonus + Custom Title',
+                bonusXP: 400,
+                unlock: 'Custom title creation enabled'
+            },
+            {
+                level: 50,
+                name: '🎓 Master Teacher',
+                reward: '+500 XP Bonus + All Content',
+                bonusXP: 500,
+                unlock: 'All content permanently unlocked'
+            }
+        ];
+
+        for (const milestone of milestones) {
+            // Skip if already claimed
+            if (this.userData.milestones.includes(milestone.level)) {
+                continue;
+            }
+
+            // Check if reached this level
+            if (this.userData.level >= milestone.level) {
+                this.userData.milestones.push(milestone.level);
+
+                // Award bonus XP
+                this.userData.totalXP += milestone.bonusXP;
+
+                // Show milestone notification
+                this.showMilestoneNotification(milestone);
+
+                console.log(`🎉 Milestone reached: Level ${milestone.level} - ${milestone.name}`);
+            }
+        }
+    }
+
+    showMilestoneNotification(milestone) {
+        // Create notification
+        const notification = document.createElement('div');
+        notification.className = 'milestone-notification';
+        notification.innerHTML = `
+            <div class="milestone-icon">${milestone.name.split(' ')[0]}</div>
+            <div class="milestone-content">
+                <div class="milestone-title">MILESTONE REACHED!</div>
+                <div class="milestone-name">${milestone.name}</div>
+                <div class="milestone-reward">${milestone.reward}</div>
+                ${milestone.unlock ? `<div class="milestone-unlock">🔓 ${milestone.unlock}</div>` : ''}
+            </div>
+        `;
+
+        // Add CSS if not already present
+        if (!document.getElementById('milestone-notification-styles')) {
+            const styles = document.createElement('style');
+            styles.id = 'milestone-notification-styles';
+            styles.textContent = `
+                .milestone-notification {
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: linear-gradient(135deg, #D4AF37, #FFD700, #8B5CF6);
+                    color: white;
+                    padding: 2rem 3rem;
+                    border-radius: 20px;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+                    display: flex;
+                    gap: 1.5rem;
+                    align-items: center;
+                    z-index: 10001;
+                    animation: milestoneAppear 0.8s ease;
+                    text-align: center;
+                    max-width: 500px;
+                }
+
+                @keyframes milestoneAppear {
+                    0% {
+                        transform: translate(-50%, -50%) scale(0) rotate(-180deg);
+                        opacity: 0;
+                    }
+                    50% {
+                        transform: translate(-50%, -50%) scale(1.1) rotate(10deg);
+                    }
+                    100% {
+                        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                        opacity: 1;
+                    }
+                }
+
+                .milestone-icon {
+                    font-size: 4rem;
+                }
+
+                .milestone-title {
+                    font-size: 1rem;
+                    opacity: 0.9;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                    margin-bottom: 0.5rem;
+                }
+
+                .milestone-name {
+                    font-size: 2rem;
+                    font-weight: 700;
+                    margin-bottom: 0.5rem;
+                }
+
+                .milestone-reward {
+                    font-size: 1.2rem;
+                    color: #FFD700;
+                    margin-bottom: 0.5rem;
+                }
+
+                .milestone-unlock {
+                    font-size: 1rem;
+                    background: rgba(0, 0, 0, 0.2);
+                    padding: 0.5rem 1rem;
+                    border-radius: 10px;
+                    margin-top: 0.5rem;
+                }
+            `;
+            document.head.appendChild(styles);
+        }
+
+        document.body.appendChild(notification);
+
+        // Auto remove after 6 seconds
+        setTimeout(() => {
+            notification.style.animation = 'milestoneDisappear 0.5s ease';
+            setTimeout(() => notification.remove(), 500);
+        }, 6000);
+
+        // Add disappear animation
+        const styleSheet = document.styleSheets[document.styleSheets.length - 1];
+        styleSheet.insertRule(`
+            @keyframes milestoneDisappear {
+                from {
+                    transform: translate(-50%, -50%) scale(1);
+                    opacity: 1;
+                }
+                to {
+                    transform: translate(-50%, -50%) scale(0);
+                    opacity: 0;
+                }
+            }
+        `, styleSheet.cssRules.length);
     }
 
     // ==================== STREAK TRACKING ====================

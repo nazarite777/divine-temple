@@ -806,7 +806,17 @@
 
                 // Handle specific Firebase auth errors
                 if (error.message.includes('email-already-in-use')) {
-                    errorMessage += 'An account with this email already exists. Please try signing in instead.';
+                    // Show user-friendly message with login redirect
+                    const email = document.getElementById('email').value;
+                    showMessage('✨ Welcome back! An account with this email already exists.', 'success');
+
+                    // Auto-redirect to login after 2 seconds
+                    setTimeout(() => {
+                        // Pre-fill email on login page
+                        window.location.href = `login.html?email=${encodeURIComponent(email)}&returning=true`;
+                    }, 2000);
+
+                    return; // Exit early to prevent showing error
                 } else if (error.message.includes('weak-password')) {
                     errorMessage += 'Please choose a stronger password (at least 6 characters).';
                 } else if (error.message.includes('invalid-email')) {

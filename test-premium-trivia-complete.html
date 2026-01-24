@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Consciousness Trivia - Complete System Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gold: #d4af37;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --background-dark: #0a0a1a;
+            --surface-dark: #1a1a2e;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: #b8b8d1;
+            --text-muted: #8b8ba7;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --error-red: #ef4444;
+            --gradient-primary: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at top, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundPulse 10s ease-in-out infinite;
+        }
+
+        @keyframes backgroundPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .test-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 3rem 2rem;
+        }
+
+        .test-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .test-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(212, 175, 55, 0.05) 50%, transparent 70%);
+            animation: shimmer 4s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .feature-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-gold);
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .stats-showcase {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 3rem 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .stats-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--primary-gold);
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem 1rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .categories-showcase {
+            margin-bottom: 3rem;
+        }
+
+        .categories-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--primary-gold);
+            margin-bottom: 2rem;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .category-preview {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .category-preview:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-purple);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .category-icon {
+            font-size: 1.5rem;
+        }
+
+        .category-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .category-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .test-actions {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .test-btn {
+            display: inline-block;
+            padding: 1.25rem 2.5rem;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin: 0 1rem;
+        }
+
+        .test-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
+        }
+
+        .test-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .test-btn:hover::before {
+            left: 100%;
+        }
+
+        .secondary-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+        }
+
+        .secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+        }
+
+        .comparison-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 3rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .comparison-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--primary-gold);
+            margin-bottom: 2rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .version-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .version-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .free-version .version-title {
+            color: var(--warning-orange);
+        }
+
+        .premium-version .version-title {
+            color: var(--primary-gold);
+        }
+
+        .version-features {
+            text-align: left;
+            margin: 1.5rem 0;
+        }
+
+        .version-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .feature-check {
+            color: var(--success-green);
+        }
+
+        .feature-cross {
+            color: var(--error-red);
+        }
+
+        @media (max-width: 768px) {
+            .test-container {
+                padding: 1rem;
+            }
+
+            .test-title {
+                font-size: 2.2rem;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .test-btn {
+                display: block;
+                margin: 1rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <!-- Header -->
+        <div class="test-header">
+            <h1 class="test-title">🧠 Premium Consciousness Trivia System</h1>
+            <p class="test-subtitle">
+                Advanced consciousness awakening & deprogramming questions across 12+ esoteric categories
+            </p>
+            <p style="color: var(--primary-gold); font-weight: 600;">
+                ✨ Complete System Testing & Demonstration ✨
+            </p>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-content">
+                    <div class="feature-icon">🔯</div>
+                    <div class="feature-title">12 Sacred Categories</div>
+                    <div class="feature-description">
+                        Kabbalah, Enochian mysteries, Gnosticism, Sacred Geometry, Biblical codes, Consciousness technology, Ancient mysteries, and more
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-content">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-title">3 Difficulty Levels</div>
+                    <div class="feature-description">
+                        Seeker (Beginner) → Initiate (Intermediate) → Adept (Advanced) progression system with detailed explanations
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-content">
+                    <div class="feature-icon">🏆</div>
+                    <div class="feature-title">Global Leaderboards</div>
+                    <div class="feature-description">
+                        Compete with fellow consciousness seekers, track mastery levels, and unlock achievements
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-content">
+                    <div class="feature-icon">⏱️</div>
+                    <div class="feature-title">Timed Challenges</div>
+                    <div class="feature-description">
+                        Optional timer mode, competitive scoring, daily challenges with XP rewards and streak bonuses
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-content">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">Advanced Analytics</div>
+                    <div class="feature-description">
+                        Detailed progress tracking, category mastery analytics, performance insights, and exportable data
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-content">
+                    <div class="feature-icon">📖</div>
+                    <div class="feature-title">Study Mode</div>
+                    <div class="feature-description">
+                        Browse all questions at your own pace with instant access to explanations and source references
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Showcase -->
+        <div class="stats-showcase">
+            <h2 class="stats-title">📈 System Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">Advanced Questions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Esoteric Categories</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Difficulty Levels</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Question Combinations</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories Showcase -->
+        <div class="categories-showcase">
+            <h2 class="categories-title">🔮 Sacred Knowledge Categories</h2>
+            <div class="categories-grid" id="categoriesShowcase">
+                <!-- Categories will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Free vs Premium Comparison -->
+        <div class="comparison-section">
+            <h2 class="comparison-title">⚖️ Free vs Premium Comparison</h2>
+            <div class="comparison-grid">
+                <div class="version-card free-version">
+                    <h3 class="version-title">🧠 Free Version</h3>
+                    <div class="version-features">
+                        <div class="version-feature">
+                            <span class="feature-check">✅</span>
+                            <span>30 consciousness-awakening questions</span>
+                        </div>
+                        <div class="version-feature">
+                            <span class="feature-check">✅</span>
+                            <span>Basic deprogramming topics</span>
+                        </div>
+                        <div class="version-feature">
+                            <span class="feature-check">✅</span>
+                            <span>Progress tracking & streaks</span>
+                        </div>
+                        <div class="version-feature">
+                            <span class="feature-cross">❌</span>
+                            <span>Advanced esoteric categories</span>
+                        </div>
+                        <div class="version-feature">
+                            <span class="feature-cross">❌</span>
+                            <span>Difficulty level selection</span>
+                        </div>
+                        <div class="version-feature">
+                            <span class="feature-cross">❌</span>
+                            <span>Leaderboards & competitions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="version-card premium-version">
+                    <h3 class="version-title">💎 Premium Version</h3>
+                    <div class="version-features">
+                        <div class="version-feature">
+                            <span class="feature-check">✅</span>
+                            <span>100+ advanced consciousness questions</span>
+                        </div>
+                        <div class="version-feature">
+                            <span class="feature-check">✅</span>
+                            <span>12 sacred knowledge categories</span>
+                        </div>
+                        <div class="version-feature">
+                            <span class="feature-check">✅</span>
+                            <span>3 difficulty levels (Seeker → Adept)</span>
+                        </div>
+                        <div class="version-feature">
+                            <span class="feature-check">✅</span>
+                            <span>Global leaderboards & achievements</span>
+                        </div>
+                        <div class="version-feature">
+                            <span class="feature-check">✅</span>
+                            <span>Timed challenges & competitions</span>
+                        </div>
+                        <div class="version-feature">
+                            <span class="feature-check">✅</span>
+                            <span>Advanced analytics & study mode</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Actions -->
+        <div class="test-actions">
+            <h2 style="margin-bottom: 2rem; color: var(--primary-gold);">🚀 Experience the Systems</h2>
+            
+            <a href="sections/daily-trivia-FREE.html" class="test-btn">
+                🧠 Test Free Version (30 Questions)
+            </a>
+            
+            <a href="sections/daily-trivia-PREMIUM.html" class="test-btn">
+                💎 Experience Premium System (100+ Questions)
+            </a>
+            
+            <br><br>
+            
+            <a href="test-deprogramming-trivia.html" class="test-btn secondary-btn">
+                📝 Preview Question Database
+            </a>
+            
+            <a href="members-new.html" class="test-btn secondary-btn">
+                🏛️ Visit Members Portal
+            </a>
+        </div>
+
+        <!-- Integration Notes -->
+        <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; margin-top: 3rem; text-align: center;">
+            <h3 style="color: var(--primary-gold); margin-bottom: 1rem;">🔧 Development Notes</h3>
+            <p style="color: var(--text-secondary); line-height: 1.6;">
+                This premium trivia system is fully integrated into the Divine Temple members portal. 
+                Both free and premium versions are production-ready with comprehensive question databases, 
+                progress tracking, and responsive design. The system demonstrates advanced consciousness 
+                awakening content while maintaining spiritual authenticity and professional-grade user experience.
+            </p>
+            <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(139, 92, 246, 0.1); border-radius: 15px;">
+                <strong style="color: var(--accent-purple);">✨ Status: Complete & Ready for Deployment ✨</strong>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Populate categories showcase
+        document.addEventListener('DOMContentLoaded', function() {
+            const categories = [
+                { icon: '🔯', name: 'Kabbalah & Tree of Life', description: 'Sephiroth, divine emanations, Four Worlds system', questions: 30 },
+                { icon: '👁️', name: 'Enochian Mysteries', description: 'Watchers, forbidden knowledge, sacred calendar', questions: 25 },
+                { icon: '🐍', name: 'Gnostic Wisdom', description: 'Demiurge, Sophia, Gospel of Thomas teachings', questions: 20 },
+                { icon: '🔺', name: 'Sacred Geometry', description: 'Golden Ratio, Metatron\'s Cube, Flower of Life', questions: 15 },
+                { icon: '📜', name: 'Hidden Biblical Codes', description: 'Number symbolism, Elohim mysteries, I AM consciousness', questions: 18 },
+                { icon: '🧠', name: 'Consciousness Technology', description: 'Binaural beats, gamma waves, pyramid frequencies', questions: 22 },
+                { icon: '🏛️', name: 'Ancient Mystery Schools', description: 'Eleusinian Mysteries, Hermetic principles, Egyptian initiation', questions: 16 },
+                { icon: '🌈', name: 'Chakras & Energy Systems', description: 'Kundalini, Heart chakra bridge, endocrine connections', questions: 19 },
+                { icon: '🧪', name: 'Alchemy & Transformation', description: 'Nigredo, Philosopher\'s Stone, Sol/Luna unification', questions: 14 },
+                { icon: '⭐', name: 'Astrotheology', description: 'Precession cycles, pineal gland, Schumann Resonance', questions: 17 },
+                { icon: '🌙', name: 'Divine Feminine Mysteries', description: 'Black Madonna, Shakti/Shiva, Mary Magdalene gnosis', questions: 12 },
+                { icon: '💎', name: 'Crystal Consciousness', description: 'Mineral kingdoms, vibrational healing, sacred stones', questions: 13 }
+            ];
+
+            const container = document.getElementById('categoriesShowcase');
+            
+            categories.forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category-preview';
+                categoryDiv.innerHTML = `
+                    <div class="category-header">
+                        <span class="category-icon">${category.icon}</span>
+                        <span class="category-name">${category.name}</span>
+                    </div>
+                    <div class="category-description">${category.description}</div>
+                    <div class="category-stats">
+                        <span>${category.questions} Questions</span>
+                        <span>All Levels</span>
+                    </div>
+                `;
+                container.appendChild(categoryDiv);
+            });
+        });
+    </script>
+</body>
+</html>

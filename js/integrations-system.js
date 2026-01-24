@@ -16,16 +16,16 @@ class IntegrationsSystem {
         this.connectedServices = this.loadConnectedServices();
         this.apiKeys = {
             spotify: {
-                clientId: 'YOUR_SPOTIFY_CLIENT_ID',
-                redirectUri: window.location.origin + '/callback/spotify'
+                clientId: window.INTEGRATION_CONFIG?.spotify?.clientId || 'YOUR_SPOTIFY_CLIENT_ID',
+                redirectUri: `${window.location.origin}/callback.html`
             },
             google: {
-                clientId: 'YOUR_GOOGLE_CLIENT_ID',
-                redirectUri: window.location.origin + '/callback/google',
-                apiKey: 'YOUR_GOOGLE_API_KEY'
+                clientId: window.INTEGRATION_CONFIG?.google?.clientId || 'YOUR_GOOGLE_CLIENT_ID',
+                redirectUri: `${window.location.origin}/callback.html`,
+                apiKey: window.INTEGRATION_CONFIG?.google?.apiKey || 'YOUR_GOOGLE_API_KEY'
             },
             youtube: {
-                apiKey: 'YOUR_YOUTUBE_API_KEY'
+                apiKey: window.INTEGRATION_CONFIG?.youtube?.apiKey || 'YOUR_YOUTUBE_API_KEY'
             }
         };
         this.init();

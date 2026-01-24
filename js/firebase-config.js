@@ -72,10 +72,19 @@ function onAuthStateChanged(callback) {
     return auth.onAuthStateChanged(callback);
 }
 
-// Admin email addresses (no password in code for security)
-const ADMIN_EMAILS = [
-    'nazir@edenconsciousness.com',
-    'nazir@edenconsiousness.com' // Alternative spelling
+// Admin email addresses defined in auth-helper.js
+// (removed duplicate declaration to avoid conflicts)
+
+// AUTHORIZED PREMIUM USERS - ONLY these users can access premium content
+const AUTHORIZED_PREMIUM_USERS = [
+    'cbevvv@gmail.com',
+    'nazir23' // Can be email or username
+];
+
+// AUTHORIZED ADMIN USERS - Full system access
+const AUTHORIZED_ADMIN_USERS = [
+    'cbevvv@gmail.com',
+    'nazir23'
 ];
 
 // User management functions
@@ -83,8 +92,69 @@ const FirebaseAuth = {
     // Check if email belongs to admin
     isAdminEmail(email) {
         if (!email) return false;
-        const lowerEmail = email.toLowerCase();
-        return ADMIN_EMAILS.some(adminEmail => lowerEmail === adminEmail.toLowerCase());
+        // Use AuthHelper if available, otherwise use local check
+        if (typeof window.AuthHelper !== 'undefined' && window.AuthHelper.ADMIN_EMAILS) {
+            const lowerEmail = email.toLowerCase();
+            return window.AuthHelper.ADMIN_EMAILS.some(adminEmail => lowerEmail === adminEmail.toLowerCase());
+        }
+        return false;
+    },
+
+    // Check if user is authorized for premium access
+    isAuthorizedPremiumUser(email, username) {
+        if (!email && !username) return false;
+        
+        const lowerEmail = email ? email.toLowerCase() : '';
+        const lowerUsername = username ? username.toLowerCase() : '';
+        
+        return AUTHORIZED_PREMIUM_USERS.some(authorizedUser => {
+            const lowerAuthorized = authorizedUser.toLowerCase();
+            return lowerEmail === lowerAuthorized || lowerUsername === lowerAuthorized;
+        });
+    },
+
+    // Check if user is authorized admin
+    isAuthorizedAdmin(email, username) {
+        if (!email && !username) return false;
+        
+        const lowerEmail = email ? email.toLowerCase() : '';
+        const lowerUsername = username ? username.toLowerCase() : '';
+        
+        return AUTHORIZED_ADMIN_USERS.some(authorizedUser => {
+            const lowerAuthorized = authorizedUser.toLowerCase();
+            return lowerEmail === lowerAuthorized || lowerUsername === lowerAuthorized;
+        });
+    },
+
+    // Enable premium access for purchased memberships (admin only)
+    async enablePremiumAccess(userEmail, membershipLevel = 'premium') {
+        const currentUser = auth.currentUser;
+        if (!currentUser || !this.isAuthorizedAdmin(currentUser.email, currentUser.displayName)) {
+            throw new Error('Unauthorized: Only admins can enable premium access');
+        }
+
+        try {
+            // Find user by email
+            const usersQuery = await db.collection('users').where('email', '==', userEmail).get();
+            
+            if (usersQuery.empty) {
+                throw new Error(`User not found: ${userEmail}`);
+            }
+
+            // Update membership level
+            const userDoc = usersQuery.docs[0];
+            await userDoc.ref.update({
+                membershipLevel: membershipLevel,
+                premiumEnabledAt: firebase.firestore.FieldValue.serverTimestamp(),
+                enabledBy: currentUser.email
+            });
+
+            console.log(`✅ Premium access enabled for ${userEmail} with level: ${membershipLevel}`);
+            return { success: true, message: `Premium access enabled for ${userEmail}` };
+        } catch (error) {
+            console.error('❌ Failed to enable premium access:', error);
+            throw error;
+        }
     },
 
     // Check if current user is admin (based on email)
@@ -347,9 +417,21 @@ window.FirebaseConfig = {
     onAuthStateChanged
 };
 
-// Auto-initialize if Firebase is loaded
+// Auto-initialize Firebase immediately when script loads
 if (typeof firebase !== 'undefined') {
-    document.addEventListener('DOMContentLoaded', () => {
-        initializeFirebase();
-    });
+    initializeFirebase();
+} else {
+    // If Firebase SDK not loaded yet, wait for it
+    let checkCount = 0;
+    const firebaseCheck = setInterval(() => {
+        checkCount++;
+        if (typeof firebase !== 'undefined') {
+            clearInterval(firebaseCheck);
+            initializeFirebase();
+        } else if (checkCount > 50) {
+            // Stop checking after 5 seconds
+            clearInterval(firebaseCheck);
+            console.error('❌ Firebase SDK failed to load after 5 seconds');
+        }
+    }, 100);
 }

@@ -815,9 +815,15 @@
 </head>
 <body>
     <div class="calendar-container">
-        <button class="back-btn" onclick="goBack()">
-            ← Back to Temple
-        </button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+            <button class="back-btn" onclick="goBack()">
+                ← Back to Temple
+            </button>
+
+            <a href="https://medium.com/@edenconsciousnesssdt" target="_blank" rel="noopener noreferrer" class="back-btn" style="text-decoration: none; background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(6,182,212,0.2)); border-color: rgba(6,182,212,0.3);">
+                📝 Visit Our Blog →
+            </a>
+        </div>
 
         <div class="calendar-header">
             <div class="calendar-logo">📅</div>
@@ -1028,21 +1034,25 @@
     </div>
 
     <script>
-        // ==================== FIREBASE CONFIG ====================
-        const firebaseConfig = {
-            apiKey: "AIzaSyCOyZPb4gfYE5q_RwmYaKG6cpTvrE-3LxI",
-            authDomain: "sacred-community.firebaseapp.com",
-            projectId: "sacred-community",
-            storageBucket: "sacred-community.firebasestorage.app",
-            messagingSenderId: "582271923489",
-            appId: "1:582271923489:web:aa46a8bb5ac0859fe83a60",
-            measurementId: "G-83D6SSJKMH"
-        };
+        // ==================== FIREBASE SETUP ====================
+        // Firebase is already initialized by firebase-config.js
+        // auth and db are global variables from firebase-config.js - just use them directly
+        console.log('📅 [FIREBASE SETUP] Waiting for firebase-config.js to initialize...');
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        // Check if Firebase is ready
+        function checkFirebaseReady() {
+            if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+                if (typeof auth !== 'undefined' && typeof db !== 'undefined') {
+                    console.log('✅ [FIREBASE SETUP] Firebase ready - auth and db available');
+                    return true;
+                } else {
+                    console.log('⏳ [FIREBASE SETUP] Firebase app exists but auth/db not yet initialized');
+                    return false;
+                }
+            }
+            console.log('⏳ [FIREBASE SETUP] Firebase not yet loaded');
+            return false;
+        }
 
         // ==================== ENOCH CALENDAR CONSTANTS ====================
         
@@ -1112,21 +1122,43 @@
             }
 
             async init() {
-                // Wait for auth
-                auth.onAuthStateChanged(async (user) => {
-                    if (user) {
-                        this.currentUser = user;
-                        await this.loadUserData();
-                        this.generateCalendar();
-                        this.updateAllViews();
-                        console.log('✅ Enoch Calendar initialized for:', user.email);
-                    } else {
-                        console.log('⚠️ No user logged in');
-                        // Still show calendar but without personalized data
-                        this.generateCalendar();
-                        this.updateAllViews();
-                    }
-                });
+                console.log('📅 [init] Initializing calendar system...');
+                console.log(`📅 [init] Today index: ${this.todayIndex}`);
+                console.log(`📅 [init] View month: ${this.viewMonth}, View year: ${this.viewYear}`);
+
+                try {
+                    // Generate calendar immediately so it's visible
+                    console.log('📅 [init] Calling generateCalendar()...');
+                    this.generateCalendar();
+
+                    console.log('📅 [init] Calling updateAllViews()...');
+                    this.updateAllViews();
+
+                    console.log('✅ [init] Calendar generated successfully');
+                } catch (error) {
+                    console.error('❌ [init] Error generating calendar:', error);
+                    throw error;
+                }
+
+                // Then check for auth and load user data if available
+                if (auth) {
+                    console.log('📅 [init] Setting up auth state listener...');
+                    auth.onAuthStateChanged(async (user) => {
+                        if (user) {
+                            console.log('📅 [init] User logged in:', user.email);
+                            this.currentUser = user;
+                            await this.loadUserData();
+                            console.log('📅 [init] Refreshing all views with loaded data...');
+                            this.updateAllViews();
+                            this.generateCalendar(); // Regenerate calendar to show journal dots
+                            console.log('✅ [init] User data loaded and views updated');
+                        } else {
+                            console.log('ℹ️ [init] Calendar running in guest mode (no user logged in)');
+                        }
+                    });
+                } else {
+                    console.log('ℹ️ [init] Firebase auth not available, calendar running in offline mode');
+                }
             }
 
             // ==================== DATE CALCULATIONS ====================
@@ -1186,26 +1218,83 @@
 
             // ==================== FIREBASE DATA ====================
             async loadUserData() {
-                if (!this.currentUser) return;
+                if (!this.currentUser) {
+                    console.log('📝 [loadUserData] No user logged in, skipping load');
+                    return;
+                }
+
+                console.log('📝 [loadUserData] Loading data for user:', this.currentUser.email);
+                console.log('📝 [loadUserData] User UID:', this.currentUser.uid);
+                console.log('📝 [loadUserData] Firestore path: enochCalendar/' + this.currentUser.uid);
 
                 try {
-                    const doc = await db.collection('enochCalendar').doc(this.currentUser.uid).get();
+                    const docRef = db.collection('enochCalendar').doc(this.currentUser.uid);
+                    console.log('📝 [loadUserData] Fetching document...');
+
+                    const doc = await docRef.get();
+
+                    console.log('📝 [loadUserData] Document exists:', doc.exists);
+
                     if (doc.exists) {
-                        this.userData = doc.data();
+                        const data = doc.data();
+                        console.log('📝 [loadUserData] Raw data from Firestore:', data);
+
+                        // Merge with default structure to ensure all fields exist
+                        this.userData = {
+                            goals: data.goals || [],
+                            journal: data.journal || [],
+                            achievements: data.achievements || [],
+                            stats: {
+                                streak: data.stats?.streak || 0,
+                                longestStreak: data.stats?.longestStreak || 0,
+                                meditations: data.stats?.meditations || 0,
+                                prayers: data.stats?.prayers || 0,
+                                journals: data.stats?.journals || 0,
+                                lastActivityDate: data.stats?.lastActivityDate || null
+                            }
+                        };
+
+                        console.log('✅ [loadUserData] Data loaded successfully');
+                        console.log(`   - ${this.userData.journal?.length || 0} journal entries`);
+                        console.log(`   - ${this.userData.goals?.length || 0} goals`);
+                        console.log(`   - Streak: ${this.userData.stats?.streak || 0} days`);
+
+                        // Log first journal entry as proof
+                        if (this.userData.journal.length > 0) {
+                            console.log('   - Latest journal:', {
+                                date: `Month ${this.userData.journal[0].month}, Day ${this.userData.journal[0].day}`,
+                                mood: this.userData.journal[0].mood,
+                                timestamp: this.userData.journal[0].timestamp
+                            });
+                        }
+                    } else {
+                        console.log('ℹ️ [loadUserData] No existing data found, using defaults');
+                        console.log('ℹ️ [loadUserData] This is expected for new users');
                     }
                     this.checkStreak();
                 } catch (error) {
-                    console.error('Error loading user data:', error);
+                    console.error('❌ [loadUserData] Error loading user data:', error);
+                    console.error('❌ [loadUserData] Error code:', error.code);
+                    console.error('❌ [loadUserData] Error message:', error.message);
                 }
             }
 
             async saveUserData() {
-                if (!this.currentUser) return;
+                if (!this.currentUser) {
+                    console.log('📝 [saveUserData] No user logged in, skipping save');
+                    return;
+                }
+
+                console.log('📝 [saveUserData] Saving data for user:', this.currentUser.email);
+                console.log(`   - ${this.userData.journal?.length || 0} journal entries`);
+                console.log(`   - ${this.userData.goals?.length || 0} goals`);
 
                 try {
                     await db.collection('enochCalendar').doc(this.currentUser.uid).set(this.userData);
+                    console.log('✅ [saveUserData] Data saved successfully to Firestore');
                 } catch (error) {
-                    console.error('Error saving user data:', error);
+                    console.error('❌ [saveUserData] Error saving user data:', error);
+                    console.error('   Error details:', error.message);
                 }
             }
 
@@ -1300,14 +1389,31 @@
 
             // ==================== CALENDAR GENERATION ====================
             generateCalendar() {
+                console.log('📅 [generateCalendar] Starting calendar generation...');
+                console.log(`📅 [generateCalendar] viewMonth: ${this.viewMonth}, viewYear: ${this.viewYear}`);
+
                 const grid = document.getElementById('calendar-grid');
                 const monthDisplay = document.getElementById('current-month');
 
+                if (!grid) {
+                    console.error('❌ [generateCalendar] calendar-grid element not found!');
+                    return;
+                }
+                if (!monthDisplay) {
+                    console.error('❌ [generateCalendar] current-month element not found!');
+                    return;
+                }
+
+                console.log('✅ [generateCalendar] Grid and month display found');
+
                 // Clear existing days
-                grid.querySelectorAll('.calendar-day').forEach(day => day.remove());
+                const existingDays = grid.querySelectorAll('.calendar-day');
+                console.log(`📅 [generateCalendar] Clearing ${existingDays.length} existing days`);
+                existingDays.forEach(day => day.remove());
 
                 const month = HEBREW_MONTHS[this.viewMonth - 1];
                 monthDisplay.innerHTML = `${month.emoji} ${month.name} - Year ${this.viewYear} <span style="font-size:0.8rem;color:var(--text-muted)">(${month.season})</span>`;
+                console.log(`✅ [generateCalendar] Month display set: ${month.name}`);
 
                 // Calculate starting index for this month
                 let startIndex = 0;
@@ -1317,11 +1423,15 @@
 
                 // Generate days
                 const daysInMonth = [3, 6, 9, 12].includes(this.viewMonth) ? 31 : 30;
+                console.log(`📅 [generateCalendar] Generating ${daysInMonth} days for ${month.name}`);
+
                 for (let day = 1; day <= daysInMonth; day++) {
                     const dayIndex = startIndex + day - 1;
                     const dayElement = this.createDayElement(this.viewMonth, day, dayIndex);
                     grid.appendChild(dayElement);
                 }
+
+                console.log(`✅✅ [generateCalendar] Calendar generated successfully! ${daysInMonth} days added to grid`);
             }
 
             createDayElement(month, day, globalIndex) {
@@ -1544,7 +1654,13 @@
 
             // ==================== JOURNAL ====================
             async createJournalEntry(mood, content, gratitude) {
+                console.log('📝 [createJournalEntry] Creating new journal entry...');
+                console.log(`   - Mood: ${mood}`);
+                console.log(`   - Content length: ${content.length} chars`);
+                console.log(`   - Gratitude: ${gratitude ? 'Yes' : 'No'}`);
+
                 if (!this.currentUser) {
+                    console.error('❌ [createJournalEntry] No user logged in!');
                     showToast('Please sign in to journal', 'error');
                     return;
                 }
@@ -1555,6 +1671,7 @@
 
                 // Use stored date if quick journaling from day modal
                 const journalDate = window.currentJournalDate || { month, day };
+                console.log(`   - Date: Month ${journalDate.month}, Day ${journalDate.day}`);
 
                 const entry = {
                     id: Date.now().toString(),
@@ -1567,6 +1684,8 @@
                 };
 
                 this.userData.journal.unshift(entry);
+                console.log(`✅ [createJournalEntry] Entry added to userData.journal (now ${this.userData.journal.length} entries)`);
+
                 await this.saveUserData();
                 await this.logActivity('journal');
 
@@ -1583,6 +1702,7 @@
                 this.generateCalendar(); // Refresh to show journal dot
 
                 showToast('Journal entry saved! 📝', 'success');
+                console.log('✅✅ [createJournalEntry] Journal entry complete!');
                 window.currentJournalDate = null;
             }
 
@@ -1779,9 +1899,74 @@
         let enochCalendar;
 
         document.addEventListener('DOMContentLoaded', () => {
-            enochCalendar = new EnochCalendarSystem();
-            console.log('📅 Enoch Calendar System loaded');
+            console.log('📅 [CALENDAR] DOM Content Loaded');
+            console.log('📅 [CALENDAR] Checking for required elements...');
+
+            const grid = document.getElementById('calendar-grid');
+            const monthDisplay = document.getElementById('current-month');
+
+            if (!grid) {
+                console.error('❌ [CALENDAR] calendar-grid element not found!');
+                return;
+            }
+            if (!monthDisplay) {
+                console.error('❌ [CALENDAR] current-month element not found!');
+                return;
+            }
+
+            console.log('✅ [CALENDAR] Required elements found');
+            console.log('📅 [CALENDAR] Checking Firebase availability...');
+
+            // Ensure Firebase is initialized before creating calendar
+            let attempts = 0;
+            const maxAttempts = 30; // 3 seconds total
+
+            function startCalendar() {
+                attempts++;
+                console.log(`📅 [CALENDAR] Initialization attempt ${attempts}/${maxAttempts}`);
+
+                if (checkFirebaseReady()) {
+                    // Firebase is ready! Create calendar
+                    try {
+                        console.log('📅 [CALENDAR] Creating EnochCalendarSystem...');
+                        enochCalendar = new EnochCalendarSystem();
+                        console.log('✅✅✅ [CALENDAR] Calendar System loaded successfully! ✅✅✅');
+                    } catch (error) {
+                        console.error('❌ [CALENDAR] Error creating calendar:', error);
+                        console.error('❌ [CALENDAR] Error stack:', error.stack);
+                        showCalendarError('Error initializing calendar: ' + error.message);
+                    }
+                } else {
+                    // Not ready yet, retry
+                    if (attempts < maxAttempts) {
+                        console.log(`⏳ [CALENDAR] Retrying in 100ms... (${attempts}/${maxAttempts})`);
+                        setTimeout(startCalendar, 100);
+                    } else {
+                        console.error('❌ [CALENDAR] Timeout waiting for Firebase after 3 seconds');
+                        showCalendarError('Calendar initialization timeout. Please refresh the page.');
+                    }
+                }
+            }
+
+            startCalendar();
+
+            // Hide back button if in iframe (already on dashboard)
+            if (window.parent && window.parent !== window) {
+                const backBtns = document.querySelectorAll('.back-btn');
+                backBtns.forEach(btn => {
+                    if (btn.textContent.includes('Back to Temple')) {
+                        btn.style.display = 'none';
+                    }
+                });
+            }
         });
+
+        function showCalendarError(message) {
+            const monthDisplay = document.getElementById('current-month');
+            if (monthDisplay) {
+                monthDisplay.innerHTML = `<div style="color: #fca5a5; padding: 2rem; text-align: center;">⚠️ ${message}</div>`;
+            }
+        }
 
         function previousMonth() {
             enochCalendar.previousMonth();
@@ -1854,9 +2039,11 @@
 
         function goBack() {
             if (window.parent && window.parent !== window) {
+                // In iframe - communicate with parent
                 window.parent.postMessage('back', '*');
             } else {
-                window.history.back();
+                // Standalone - navigate directly to dashboard
+                window.location.href = '../free-dashboard.html';
             }
         }
 

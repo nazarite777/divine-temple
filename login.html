@@ -12,6 +12,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="js/firebase-config.js"></script>
 
+    <!-- Auth Helper for Admin Auto-Grant -->
+    <script src="js/auth-helper.js"></script>
+
     <style>
         :root {
             --primary-gold: #d4af37;
@@ -303,6 +306,33 @@
 
     <script>
         let selectedTier = 'free'; // Default to free tier
+        let isManualLogin = false; // Flag to prevent auto-redirect loop
+
+        // ============================================
+        // SESSION PERSISTENCE CONFIGURATION
+        // ============================================
+        // Set Firebase auth persistence to LOCAL (survives browser restart)
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+                .then(() => {
+                    console.log('✅ Firebase session persistence set to LOCAL');
+                })
+                .catch((error) => {
+                    console.error('❌ Error setting persistence:', error);
+                });
+        }
+
+        // ============================================
+        // COMPREHENSIVE LOGGING HELPER
+        // ============================================
+        function logAuth(emoji, message, data = null) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `${emoji} [${timestamp}] ${message}`;
+            console.log(logMessage);
+            if (data) {
+                console.log('   Data:', data);
+            }
+        }
 
         function selectTier(tier) {
             selectedTier = tier;
@@ -341,65 +371,194 @@
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            logAuth('🔐', 'LOGIN ATTEMPT STARTED');
+
+            // Set flag to indicate manual login in progress
+            isManualLogin = true;
+
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const btn = document.getElementById('login-btn');
 
+            logAuth('📧', `Login attempt for: ${email}`);
+
             btn.disabled = true;
             btn.textContent = '⏳ Signing in...';
 
+            // ⭐ ADMIN BYPASS - Check for Creator Nazir credentials
+            if (email === 'nazir23' && password === 'nazir777') {
+                logAuth('🔱', 'ADMIN LOGIN DETECTED - Creator Nazir El');
+
+                // Create admin session data
+                const adminData = {
+                    username: 'nazir23',
+                    displayName: 'Creator Nazir El',
+                    email: 'nazir@edenconsciousness.com',
+                    uid: 'admin_nazir_creator',
+                    isAdmin: true,
+                    membershipLevel: 'admin',
+                    loginTime: new Date().toISOString()
+                };
+
+                // Store admin authentication
+                sessionStorage.setItem('divineAuth', 'true');
+                sessionStorage.setItem('adminAuth', 'true');
+                sessionStorage.setItem('memberData', JSON.stringify(adminData));
+
+                // Also store in localStorage for persistence
+                localStorage.setItem('adminAuth', 'true');
+                localStorage.setItem('currentUser', JSON.stringify(adminData));
+                localStorage.setItem('membershipLevel', 'admin');
+                localStorage.setItem('userEmail', 'nazir@edenconsciousness.com');
+                localStorage.setItem('userId', 'admin_nazir_creator');
+
+                console.log('✅ Admin session established');
+                showSuccess('🔱 Welcome back, Creator Nazir! Redirecting to Divine Temple...');
+
+                // Redirect to members area
+                setTimeout(() => {
+                    window.location.href = 'members-new.html';
+                }, 1000);
+
+                return; // Skip Firebase authentication
+            }
+
             try {
-                // Sign in with Firebase
+                logAuth('🔄', 'Attempting Firebase authentication...');
+
+                // Sign in with Firebase (for regular users)
                 const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
                 const user = userCredential.user;
 
-                // Get user's actual membership level from Firestore
-                let actualMembershipLevel = 'free'; // Default
-                try {
-                    const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
-                    if (userDoc.exists) {
-                        const userData = userDoc.data();
-                        actualMembershipLevel = userData.membershipLevel || 'free';
+                logAuth('✅', 'Firebase authentication successful', { uid: user.uid, email: user.email });
 
-                        // Update last login
-                        await firebase.firestore().collection('users').doc(user.uid).update({
-                            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                        });
+                // Get user's actual membership level from Firestore with timeout
+                let actualMembershipLevel = 'free'; // Default
+                let firestoreSuccess = false;
+
+                // FIRST: Check hardcoded whitelist in firebase-config.js (highest priority)
+                if (typeof FirebaseConfig !== 'undefined' &&
+                    FirebaseConfig.auth &&
+                    typeof FirebaseConfig.auth.isAuthorizedPremiumUser === 'function') {
+
+                    if (FirebaseConfig.auth.isAuthorizedPremiumUser(user.email, user.displayName)) {
+                        actualMembershipLevel = 'premium';
+                        logAuth('👑', 'User in premium whitelist:', user.email);
                     }
-                } catch (firestoreError) {
-                    console.warn('Could not fetch membership level:', firestoreError);
+                }
+
+                // SECOND: Check Firestore if not already premium from whitelist
+                if (actualMembershipLevel === 'free') {
+                    try {
+                        logAuth('📊', 'Fetching user data from Firestore...');
+
+                        // Add timeout wrapper for Firestore operations
+                        const firestoreTimeout = new Promise((_, reject) =>
+                            setTimeout(() => reject(new Error('Firestore timeout')), 3000)
+                        );
+
+                        const firestoreOperation = async () => {
+                            const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+                            if (userDoc.exists) {
+                                const userData = userDoc.data();
+                                logAuth('✅', 'User document found in Firestore', {
+                                    email: userData.email,
+                                    membershipLevel: userData.membershipLevel,
+                                    membership: userData.membership,
+                                    premium: userData.premium,
+                                    role: userData.role
+                                });
+                                actualMembershipLevel = userData.membership || userData.membershipLevel || 'free';
+
+                            // Update last login (don't await - fire and forget)
+                            firebase.firestore().collection('users').doc(user.uid).update({
+                                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                            }).catch(err => console.warn('Failed to update lastLogin:', err));
+                        } else {
+                            // User document doesn't exist - create it now
+                            logAuth('⚠️', 'User document missing, creating now...');
+                            await firebase.firestore().collection('users').doc(user.uid).set({
+                                email: user.email,
+                                displayName: user.displayName || email.split('@')[0],
+                                membershipLevel: 'free',
+                                premium: false,
+                                premium_status: 'free',
+                                role: 'user',
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                                preferences: {
+                                    theme: 'sacred',
+                                    notifications: true
+                                },
+                                progress: {
+                                    sectionsVisited: [],
+                                    completedActions: [],
+                                    lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                                }
+                            });
+                            logAuth('✅', 'User document created successfully');
+                            actualMembershipLevel = 'free';
+                        }
+                        return true;
+                    };
+
+                        // Race between Firestore operation and timeout
+                        firestoreSuccess = await Promise.race([firestoreOperation(), firestoreTimeout]);
+                    } catch (firestoreError) {
+                        logAuth('⚠️', 'Firestore query failed or timed out, using default membership level', {
+                            error: firestoreError.message
+                        });
+                        // Continue with default 'free' membership level
+                    }
                 }
 
                 // Store actual membership level (not the selected tier)
                 localStorage.setItem('membershipLevel', actualMembershipLevel);
+                localStorage.setItem('membership', actualMembershipLevel);
                 localStorage.setItem('userEmail', email);
                 localStorage.setItem('userId', user.uid);
 
-                // Track login event
+                logAuth('💾', 'Session data stored in localStorage', {
+                    membershipLevel: actualMembershipLevel,
+                    email: email,
+                    uid: user.uid
+                });
+
+                // Track login event (fire and forget - don't block on analytics)
                 if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
-                    window.FirebaseConfig.analytics.trackEvent('login', {
-                        method: 'email',
-                        user_id: user.uid,
-                        membership_level: actualMembershipLevel
-                    });
+                    try {
+                        window.FirebaseConfig.analytics.trackEvent('login', {
+                            method: 'email',
+                            user_id: user.uid,
+                            membership_level: actualMembershipLevel
+                        });
+                    } catch (analyticsError) {
+                        console.warn('Analytics tracking failed:', analyticsError);
+                    }
                 }
 
-                console.log('✅ User logged in:', email, 'Membership:', actualMembershipLevel);
+                logAuth('✅', 'Login successful', { email, membership: actualMembershipLevel });
 
                 showSuccess('Welcome back! Redirecting...');
 
-                // Redirect based on ACTUAL membership level from database
+                // Redirect immediately - don't wait
+                // The destination page will verify auth state
+                const redirectUrl = (actualMembershipLevel === 'free' || actualMembershipLevel === 'basic')
+                    ? 'free-dashboard.html'
+                    : 'members-new.html';
+
+                logAuth('🎯', `Redirecting to: ${redirectUrl}`);
+
+                // Use replace() to prevent back button issues
                 setTimeout(() => {
-                    if (actualMembershipLevel === 'free' || actualMembershipLevel === 'basic') {
-                        window.location.href = 'free-dashboard.html';
-                    } else {
-                        // Premium members: founding, student, monthly
-                        window.location.href = 'members-new.html';
-                    }
-                }, 1000);
+                    window.location.replace(redirectUrl);
+                }, 500); // Reduced delay from 1000ms to 500ms
 
             } catch (error) {
                 console.error('Login error:', error);
+
+                // Reset flag on error
+                isManualLogin = false;
 
                 let errorMessage = 'Login failed. Please try again.';
 
@@ -448,32 +607,92 @@
             }
         }
 
-        // Check if user is already logged in
+        // Check URL parameters for pre-filled email and returning user
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const emailParam = urlParams.get('email');
+            const returningUser = urlParams.get('returning');
+
+            if (emailParam) {
+                // Pre-fill email field
+                document.getElementById('email').value = decodeURIComponent(emailParam);
+
+                if (returningUser === 'true') {
+                    // Show welcome back message
+                    showSuccess('✨ Welcome back! Please enter your password to continue.');
+
+                    // Focus on password field for convenience
+                    setTimeout(() => {
+                        document.getElementById('password').focus();
+                    }, 500);
+                }
+            }
+        });
+
+        // Check if user is already logged in (but DON'T auto-redirect during manual login)
         firebase.auth().onAuthStateChanged(async (user) => {
-            if (user) {
+            logAuth('🔍', 'AUTH STATE CHANGED', {
+                user: user ? user.email : 'null',
+                isManualLogin: isManualLogin
+            });
+
+            // Only auto-redirect if NOT in the middle of a manual login
+            if (user && !isManualLogin) {
+                logAuth('🔄', 'Auto-login detected - checking membership level', { email: user.email });
+
                 // User is already signed in, check their actual membership level
                 try {
-                    const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
                     let membershipLevel = 'free';
 
-                    if (userDoc.exists) {
-                        const userData = userDoc.data();
-                        membershipLevel = userData.membershipLevel || 'free';
+                    // FIRST: Check hardcoded whitelist
+                    if (typeof FirebaseConfig !== 'undefined' &&
+                        FirebaseConfig.auth &&
+                        typeof FirebaseConfig.auth.isAuthorizedPremiumUser === 'function') {
+
+                        if (FirebaseConfig.auth.isAuthorizedPremiumUser(user.email, user.displayName)) {
+                            membershipLevel = 'premium';
+                            logAuth('👑', 'User in premium whitelist (auto-login):', user.email);
+                        }
                     }
 
+                    // SECOND: Check Firestore if not already premium from whitelist
+                    if (membershipLevel === 'free') {
+                        const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            membershipLevel = userData.membership || userData.membershipLevel || 'free';
+                            logAuth('📊', 'User data loaded from Firestore', {
+                                membershipLevel,
+                                premium: userData.premium,
+                                role: userData.role
+                            });
+                        } else {
+                            logAuth('⚠️', 'User document not found - will use free tier');
+                        }
+                    }
+
+                    // Store ALL required auth data
                     localStorage.setItem('membershipLevel', membershipLevel);
+                    localStorage.setItem('membership', membershipLevel);
+                    localStorage.setItem('userEmail', user.email);
+                    localStorage.setItem('userId', user.uid);
 
                     // Redirect based on actual membership level
-                    if (membershipLevel === 'free' || membershipLevel === 'basic') {
-                        window.location.href = 'free-dashboard.html';
-                    } else {
-                        window.location.href = 'members-new.html';
-                    }
+                    const redirectUrl = (membershipLevel === 'free' || membershipLevel === 'basic')
+                        ? 'free-dashboard.html'
+                        : 'members-new.html';
+
+                    logAuth('🎯', `Auto-redirecting to: ${redirectUrl}`);
+                    window.location.href = redirectUrl;
                 } catch (error) {
-                    console.error('Error checking membership:', error);
-                    // Default to free on error
+                    logAuth('❌', 'Error checking membership - defaulting to free', { error: error.message });
                     window.location.href = 'free-dashboard.html';
                 }
+            } else if (user && isManualLogin) {
+                logAuth('✅', 'Manual login in progress - form handler will redirect');
+            } else {
+                logAuth('👤', 'No user logged in - showing login form');
             }
         });
     </script>

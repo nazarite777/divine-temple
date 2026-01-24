@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tarot Wisdom - Divine Temple</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/premium-access-control.js"></script>
+
     <style>
         :root {
             --primary-gold: #D4AF37;
@@ -285,6 +292,60 @@
             <button class="action-btn" onclick="save()">💾 Save</button>
             <button class="action-btn secondary" onclick="share()">📤 Share</button>
         </div>
+
+        <!-- Recommended Tarot Products -->
+        <div style="margin: 4rem 0; text-align: center;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--primary-gold); margin-bottom: 1rem;">🎴 Recommended Tarot Decks</h2>
+            <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 2rem;">Deepen your divination practice with these beautiful tarot decks</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 2rem 0 4rem;">
+
+            <!-- Product 1: Rider-Waite Deck -->
+            <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); text-align: center; padding: 2rem; border-radius: 20px;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🎴</div>
+                <h3 style="color: var(--primary-gold); margin-bottom: 0.5rem; font-size: 1.2rem;">Rider-Waite Tarot Deck</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Classic deck - perfect for beginners & experts</p>
+                <a href="https://www.amazon.com/dp/091386613X?tag=edenconscious-20" target="_blank" rel="nofollow noopener" style="background: linear-gradient(135deg, var(--accent-purple), var(--primary-gold)); color: white; padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; display: inline-block; font-weight: 600;">
+                    View on Amazon →
+                </a>
+            </div>
+
+            <!-- Product 2: Modern Witch Deck -->
+            <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); text-align: center; padding: 2rem; border-radius: 20px;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">✨</div>
+                <h3 style="color: var(--primary-gold); margin-bottom: 0.5rem; font-size: 1.2rem;">Modern Witch Tarot</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Contemporary art with traditional symbolism</p>
+                <a href="https://www.amazon.com/dp/1454938692?tag=edenconscious-20" target="_blank" rel="nofollow noopener" style="background: linear-gradient(135deg, var(--accent-purple), var(--primary-gold)); color: white; padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; display: inline-block; font-weight: 600;">
+                    View on Amazon →
+                </a>
+            </div>
+
+            <!-- Product 3: Tarot Guide Book -->
+            <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); text-align: center; padding: 2rem; border-radius: 20px;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📖</div>
+                <h3 style="color: var(--primary-gold); margin-bottom: 0.5rem; font-size: 1.2rem;">Complete Book of Tarot</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Comprehensive guide to tarot meanings & spreads</p>
+                <a href="https://www.amazon.com/dp/0738719234?tag=edenconscious-20" target="_blank" rel="nofollow noopener" style="background: linear-gradient(135deg, var(--accent-purple), var(--primary-gold)); color: white; padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; display: inline-block; font-weight: 600;">
+                    View on Amazon →
+                </a>
+            </div>
+
+            <!-- Product 4: Tarot Cloth -->
+            <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); text-align: center; padding: 2rem; border-radius: 20px;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🌙</div>
+                <h3 style="color: var(--primary-gold); margin-bottom: 0.5rem; font-size: 1.2rem;">Velvet Tarot Cloth</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Beautiful altar cloth for readings</p>
+                <a href="https://www.amazon.com/dp/B07Y97L9B5?tag=edenconscious-20" target="_blank" rel="nofollow noopener" style="background: linear-gradient(135deg, var(--accent-purple), var(--primary-gold)); color: white; padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; display: inline-block; font-weight: 600;">
+                    View on Amazon →
+                </a>
+            </div>
+
+        </div>
+
+        <p style="text-align: center; color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 3rem;">
+            <em>As an Amazon Associate, Divine Temple earns from qualifying purchases.</em>
+        </p>
     </div>
 
     <script>
@@ -333,6 +394,12 @@
             const card = getRandomCard();
             displayCards([card], 'Single Card Reading');
             currentReading = [card];
+
+            // Award XP for tarot reading
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(15, 'Single tarot card drawn', 'tarot');
+                window.progressSystem.logActivity('tarot_single', 'tarot', {card: card.name});
+            }
         }
 
         function drawThree() {
@@ -343,6 +410,12 @@
             ];
             displayCards(cards, 'Three Card Spread');
             currentReading = cards;
+
+            // Award XP for three-card spread
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(25, 'Three-card tarot spread', 'tarot');
+                window.progressSystem.logActivity('tarot_three', 'tarot');
+            }
         }
 
         function drawCeltic() {
@@ -385,6 +458,12 @@ function save() {
         saved.unshift(reading);
         saved.splice(10);
         localStorage.setItem('tarotReadings', JSON.stringify(saved));
+
+        // Award XP for saving reading
+        if (window.progressSystem) {
+            window.progressSystem.awardXP(10, 'Tarot reading saved', 'tarot');
+        }
+
         showNotification('🎴 Reading saved!');
     }
 

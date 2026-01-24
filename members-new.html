@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Divine Temple - Sacred Members Portal</title>
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#d4af37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Divine Temple">
+    <link rel="apple-touch-icon" href="images/icons/icon-192.png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <!-- Firebase SDKs -->
@@ -12,6 +20,12 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
     <script src="js/firebase-config.js"></script>
+
+    <!-- Auth Helper for Admin Auto-Grant and Premium Checks -->
+    <script src="js/auth-helper.js"></script>
+
+    <!-- CRITICAL: Premium Access Control - MUST LOAD BEFORE OTHER SCRIPTS -->
+    <script src="js/premium-access-control.js"></script>
     
     <!-- Performance Optimized CSS -->
     <link rel="stylesheet" href="css/performance-optimized.css">
@@ -530,9 +544,86 @@
                 height: calc(100vh - 120px);
             }
         }
+        /* PWA Install Button - Sidebar Style */
+        .pwa-install-btn {
+            position: fixed;
+            top: 50%;
+            right: -60px;
+            z-index: 10000;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            border: none;
+            color: white;
+            padding: 1rem 0.75rem;
+            border-radius: 15px 0 0 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: -5px 0 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.4s ease;
+            transform: translateY(-50%) rotate(-90deg);
+            transform-origin: center;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            width: 120px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pwa-install-btn:hover {
+            right: -20px;
+            box-shadow: -8px 0 25px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(135deg, #f4c430, #9d6bfc);
+        }
+
+        .pwa-install-btn:active {
+            transform: translateY(-50%) rotate(-90deg) scale(0.95);
+        }
+
+        .pwa-install-btn.show {
+            right: -20px;
+            opacity: 1;
+        }
+
+        .pwa-install-btn.hidden {
+            right: -120px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .pwa-install-btn {
+                top: 60%;
+                right: -90px;
+                width: 100px;
+                height: 35px;
+                font-size: 0.75rem;
+                padding: 0.75rem 0.5rem;
+            }
+            
+            .pwa-install-btn:hover {
+                right: -50px;
+            }
+            
+            .pwa-install-btn.hidden {
+                right: -130px;
+            }
+        }
     </style>
+    
+    <!-- Enhanced PWA Installer -->
+    <script src="js/enhanced-pwa-installer.js"></script>
+    
+    <!-- PWA Button Debug CSS -->
+    <link rel="stylesheet" href="css/pwa-button-force-show.css">
 </head>
 <body>
+    <!-- PWA Install Button -->
+    <button id="pwaInstallBtn" class="pwa-install-btn" onclick="window.enhancedPWAInstaller ? window.enhancedPWAInstaller.install() : installPWA()" title="Install Divine Temple App">
+        🏛️ Install App
+    </button>
+
     <!-- Auth Overlay -->
     <div id="auth-overlay" class="auth-overlay">
         <div class="auth-container">
@@ -568,9 +659,19 @@
                 <h1 class="logo">🏛️ Divine Temple</h1>
                 <p class="tagline">Sacred Members Portal</p>
             </div>
-            <div class="member-badge" id="member-badge">
-                <div class="member-name" id="member-display"></div>
-                <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <a href="https://medium.com/@edenconsciousnesssdt" target="_blank" rel="noopener noreferrer"
+                   style="text-decoration: none; color: var(--accent-gold); font-weight: 600; padding: 0.5rem 1rem;
+                   background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 10px;
+                   transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem;"
+                   onmouseover="this.style.background='rgba(245, 158, 11, 0.2)'; this.style.transform='translateY(-2px)'"
+                   onmouseout="this.style.background='rgba(245, 158, 11, 0.1)'; this.style.transform='translateY(0)'">
+                    📝 Blog
+                </a>
+                <div class="member-badge" id="member-badge">
+                    <div class="member-name" id="member-display"></div>
+                    <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+                </div>
             </div>
         </div>
     </header>
@@ -586,10 +687,54 @@
             </p>
         </section>
 
+        <!-- Journey Quick Access Card -->
+        <section class="journey-quick-access" id="journey-card" style="max-width: 1400px; margin: 0 auto 2rem; padding: 0 2rem;">
+            <div class="journey-banner" style="background: linear-gradient(135deg, #8B5CF6, #3B82F6); border-radius: 20px; padding: 2rem; box-shadow: 0 10px 40px rgba(139, 92, 246, 0.3); position: relative; overflow: hidden;">
+                <!-- Decorative background -->
+                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background: url('data:image/svg+xml,<svg width=\"100\" height=\"100\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"50\" cy=\"50\" r=\"2\" fill=\"white\"/></svg>');"></div>
+
+                <div class="journey-banner-content" style="position: relative; z-index: 1; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+                    <div class="journey-icon" style="font-size: 4rem; flex-shrink: 0;">🛤️</div>
+
+                    <div class="journey-text" style="flex-grow: 1; min-width: 250px;">
+                        <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: white; font-weight: 700;">Your Journey Progress</h3>
+                        <p id="journey-status-text" style="color: rgba(255, 255, 255, 0.9); margin-bottom: 1rem; font-size: 1.1rem;">
+                            Phase 1: Awakening - Loading progress...
+                        </p>
+                        <div class="mini-progress-bar" style="background: rgba(255, 255, 255, 0.3); height: 8px; border-radius: 10px; overflow: hidden;">
+                            <div class="mini-progress-fill" id="journey-mini-progress" style="height: 100%; background: white; border-radius: 10px; width: 0%; transition: width 0.5s ease;"></div>
+                        </div>
+                    </div>
+
+                    <div class="journey-action" style="flex-shrink: 0;">
+                        <button class="cta-button" onclick="window.location.href='journey.html'" style="background: white; color: #8B5CF6; padding: 15px 30px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                            Continue Journey →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Navigation -->
         <section class="navigation-section">
             <h3 class="section-title">Choose Your Sacred Path</h3>
             <div class="nav-grid">
+                <!-- JOURNEY HUB - Featured -->
+                <div class="nav-card" onclick="window.location.href='journey.html'"
+                     style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(212, 175, 55, 0.15)); border: 2px solid var(--accent-orange);">
+                    <span class="nav-icon">🌟</span>
+                    <h4 class="nav-title" style="background: linear-gradient(135deg, var(--accent-orange), var(--primary-gold)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Your Sacred Journey</h4>
+                    <p class="nav-description">
+                        Follow your transformational path through 4 guided phases: Awakening → Alignment → Practice → Mastery
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag" style="background: rgba(245, 158, 11, 0.2); border-color: var(--accent-orange); color: var(--accent-orange);">4 Phases</span>
+                        <span class="feature-tag" style="background: rgba(245, 158, 11, 0.2); border-color: var(--accent-orange); color: var(--accent-orange);">Progress Tracking</span>
+                        <span class="feature-tag" style="background: rgba(245, 158, 11, 0.2); border-color: var(--accent-orange); color: var(--accent-orange);">Certification</span>
+                        <span class="feature-tag" style="background: rgba(245, 158, 11, 0.2); border-color: var(--accent-orange); color: var(--accent-orange);">NEW ✨</span>
+                    </div>
+                </div>
+
                 <!-- 1. Oracle & Divination -->
                 <div class="nav-card" onclick="showSection('oracle-divination')">
                     <span class="nav-icon">🔮</span>
@@ -704,17 +849,18 @@
                     </div>
                 </div>
 
-                <!-- 9. Sacred Calendar -->
+                <!-- 9. Enochian Sacred Calendar -->
                 <div class="nav-card" onclick="showSection('calendar')">
                     <span class="nav-icon">📅</span>
-                    <h4 class="nav-title">Sacred Calendar</h4>
+                    <h4 class="nav-title">Enochian Sacred Calendar</h4>
                     <p class="nav-description">
-                        Track moon phases, celestial events, and optimal spiritual timing.
+                        364-day Enochian calendar with Hebrew months, sacred journal, goal tracking, achievements, and divine timing aligned with Spring Equinox.
                     </p>
                     <div class="nav-features">
-                        <span class="feature-tag">Moon Phases</span>
-                        <span class="feature-tag">Celestial</span>
-                        <span class="feature-tag">Timing</span>
+                        <span class="feature-tag">364-Day System</span>
+                        <span class="feature-tag">Sacred Journal</span>
+                        <span class="feature-tag">Goal Tracking</span>
+                        <span class="feature-tag">Achievements</span>
                     </div>
                 </div>
 
@@ -793,6 +939,36 @@
                     </div>
                 </div>
 
+                <!-- 15. Mandala Coloring Canvas -->
+                <div class="nav-card" onclick="showSection('mandala-coloring')">
+                    <span class="nav-icon">🎨</span>
+                    <h4 class="nav-title">Mandala Coloring Canvas</h4>
+                    <p class="nav-description">
+                        Meditative mandala coloring with sacred geometry patterns, healing colors, and mindfulness features.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">Sacred Geometry</span>
+                        <span class="feature-tag">6 Healing Palettes</span>
+                        <span class="feature-tag">Meditation Timer</span>
+                        <span class="feature-tag">Save & Share</span>
+                    </div>
+                </div>
+
+                <!-- 16. Singing Bowl Harmony Garden -->
+                <div class="nav-card" onclick="showSection('singing-bowl-garden')">
+                    <span class="nav-icon">🥣</span>
+                    <h4 class="nav-title">Singing Bowl Harmony Garden</h4>
+                    <p class="nav-description">
+                        Immersive sound healing experience with chakra-tuned singing bowls, zen garden creation, and meditation practices.
+                    </p>
+                    <div class="nav-features">
+                        <span class="feature-tag">7 Chakra Bowls</span>
+                        <span class="feature-tag">Interactive Zen Garden</span>
+                        <span class="feature-tag">3D Spatial Audio</span>
+                        <span class="feature-tag">Achievements</span>
+                    </div>
+                </div>
+
                 <!-- ADMIN PANEL (Only visible to admin) -->
                 <div class="nav-card admin-only" onclick="showAdminPanel()" style="display: none; background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1)); border: 2px solid #F59E0B; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);">
                     <span class="nav-icon">🔱</span>
@@ -854,7 +1030,13 @@
             'crystals-elements': 'sections/crystals-elements.html',
             'spiritual-music': 'sections/spiritual-music.html',
             'sacred-books': 'sections/sacred-books.html',
-            'videos-media': 'sections/videos-media.html'
+            'videos-media': 'sections/videos-media.html',
+            'mandala-coloring': 'sections/mandala-coloring.html',
+            'singing-bowl-garden': 'sections/singing-bowl-garden.html',
+            'chakra-memory-match': 'sections/chakra-memory-match.html',
+            'crystal-memory-game': 'sections/crystal-memory-game.html',
+            'daily-trivia': 'sections/daily-trivia.html',
+            'daily-trivia-premium': 'sections/daily-trivia-PREMIUM.html'
         };
 
         const SECTION_TITLES = {
@@ -871,7 +1053,13 @@
             'crystals-elements': 'Crystals & Elements',
             'spiritual-music': 'Spiritual Music & Sound Therapy',
             'sacred-books': 'Sacred Books & Wisdom Library',
-            'videos-media': 'Videos & Media Library'
+            'videos-media': 'Videos & Media Library',
+            'mandala-coloring': 'Mandala Coloring Canvas',
+            'singing-bowl-garden': 'Singing Bowl Harmony Garden',
+            'chakra-memory-match': '🎯 Divine Memory Match - Full Game',
+            'crystal-memory-game': '💎 Crystal Memory Quest - Learn Crystals',
+            'daily-trivia': '🎓 Spiritual Trivia Challenge',
+            'daily-trivia-premium': '🧠 Advanced Consciousness Trivia - Premium'
         };
 
         // ========================================
@@ -1038,19 +1226,39 @@
             
             const isAuth = sessionStorage.getItem('divineAuth');
             const memberDataStr = sessionStorage.getItem('memberData');
+            const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
+            
+            console.log('🔍 Auth check - isAuth:', isAuth);
+            console.log('🔍 Auth check - memberData exists:', !!memberDataStr);
+            console.log('🔍 Auth check - isAdmin:', isAdmin);
             
             if (isAuth === 'true' && memberDataStr) {
                 try {
                     const memberData = JSON.parse(memberDataStr);
-                    console.log('✅ User authenticated:', memberData.username);
+                    const displayName = memberData.username || memberData.displayName || memberData.name || 'User';
+                    
+                    console.log('✅ User authenticated:', displayName);
+                    console.log('🔍 Member data:', memberData);
+                    
+                    if (isAdmin) {
+                        console.log('🔱 Admin user detected');
+                    }
+                    
                     showDashboard(memberData);
+                    return true;
                 } catch (error) {
                     console.error('❌ Error parsing member data:', error);
+                    // Clear corrupted data
+                    sessionStorage.removeItem('divineAuth');
+                    sessionStorage.removeItem('memberData');
+                    sessionStorage.removeItem('adminAuth');
                     showAuthOverlay();
+                    return false;
                 }
             } else {
-                console.log('📝 No authentication found');
+                console.log('📝 No authentication found - showing auth overlay');
                 showAuthOverlay();
+                return false;
             }
         }
 
@@ -1188,39 +1396,49 @@
         async function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 try {
-                    const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
-                    
-                    if (isAdmin) {
-                        console.log('🔱 Admin logout');
-                        // Track admin logout
-                        if (window.FirebaseConfig && FirebaseConfig.analytics) {
-                            FirebaseConfig.analytics.trackEvent('admin_logout');
-                        }
-                    } else {
-                        // Firebase sign out for regular users
-                        if (window.FirebaseConfig && FirebaseConfig.auth.isAuthenticated()) {
-                            await FirebaseConfig.auth.signOut();
-                            FirebaseConfig.analytics.trackEvent('logout');
-                        }
+                    console.log('🚪 Logging out...');
+
+                    // Sign out from Firebase
+                    if (typeof firebase !== 'undefined' && firebase.auth) {
+                        await firebase.auth().signOut();
+                        console.log('✅ Firebase sign out successful');
                     }
-                    
-                    // Clear ALL storage
+
+                    // Track logout
+                    if (window.FirebaseConfig && FirebaseConfig.analytics) {
+                        FirebaseConfig.analytics.trackEvent('logout');
+                    }
+
+                    // Clear ALL session storage
                     sessionStorage.removeItem('divineAuth');
                     sessionStorage.removeItem('adminAuth');
                     sessionStorage.removeItem('memberData');
                     sessionStorage.removeItem('firebaseUser');
+                    sessionStorage.removeItem('userData');
+                    sessionStorage.removeItem('userEmail');
+                    sessionStorage.removeItem('userId');
+                    sessionStorage.removeItem('isPremium');
+
+                    // Clear ALL local storage (items set during login)
                     localStorage.removeItem('adminAuth');
                     localStorage.removeItem('currentUser');
                     localStorage.removeItem('divineAuth');
-                    
-                    console.log('✅ Logout successful');
-                    showAuthOverlay();
+                    localStorage.removeItem('membershipLevel');
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('userId');
+                    localStorage.removeItem('hasPremiumAccess');
+
+                    console.log('✅ All session data cleared');
+                    console.log('🔄 Redirecting to login...');
+
+                    // Redirect to login page
+                    window.location.href = 'login.html';
                 } catch (error) {
                     console.error('❌ Logout failed:', error);
-                    // Fallback - clear local storage anyway
+                    // Fallback - clear all storage anyway and redirect
                     sessionStorage.clear();
                     localStorage.clear();
-                    showAuthOverlay();
+                    window.location.href = 'login.html';
                 }
             }
         }
@@ -1266,15 +1484,6 @@
             }
         }
 
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                console.log('🚪 Logging out...');
-                sessionStorage.removeItem('divineAuth');
-                sessionStorage.removeItem('memberData');
-                location.reload();
-            }
-        }
-
         function showAuthOverlay() {
             console.log('🔓 Showing authentication overlay');
             const authOverlay = document.getElementById('auth-overlay');
@@ -1316,6 +1525,100 @@
         // ========================================
         // DASHBOARD FUNCTIONS
         // ========================================
+
+        /**
+         * Load Journey Progress and Update Card
+         */
+        async function loadJourneyProgress() {
+            console.log('🛤️ Loading journey progress for card...');
+
+            const journeyCard = document.getElementById('journey-card');
+            if (!journeyCard) {
+                console.log('⚠️ Journey card not found');
+                return;
+            }
+
+            // Check if Firebase is ready and user is authenticated
+            if (typeof firebase === 'undefined' || !firebase.auth) {
+                console.log('⚠️ Firebase not ready');
+                return;
+            }
+
+            const user = firebase.auth().currentUser;
+            if (!user) {
+                console.log('⚠️ No authenticated user for journey card');
+                journeyCard.style.display = 'none';
+                return;
+            }
+
+            try {
+                // Get journey progress from Firestore
+                const progressRef = firebase.firestore()
+                    .collection('users')
+                    .doc(user.uid)
+                    .collection('journey_progress')
+                    .doc('current');
+
+                const doc = await progressRef.get();
+
+                if (doc.exists) {
+                    const progressData = doc.data();
+                    const currentPhase = progressData.current_phase || 1;
+
+                    // Get current phase details
+                    let phaseText = '';
+                    let phaseProgress = 0;
+
+                    if (currentPhase === 1) {
+                        const chaptersCompleted = progressData.phase1_awakening?.chapters_completed?.length || 0;
+                        phaseText = `Phase 1: Awakening - ${chaptersCompleted}/12 chapters complete`;
+                        phaseProgress = (chaptersCompleted / 12) * 100;
+                    } else if (currentPhase === 2) {
+                        const principlesCompleted = progressData.phase2_understanding?.principles_completed?.length || 0;
+                        phaseText = `Phase 2: Understanding - ${principlesCompleted}/7 principles`;
+                        phaseProgress = (principlesCompleted / 7) * 100;
+                    } else if (currentPhase === 3) {
+                        const daysPracticed = progressData.phase3_mastery?.days_practiced || 0;
+                        phaseText = `Phase 3: Mastery - ${daysPracticed}/365 days`;
+                        phaseProgress = (daysPracticed / 365) * 100;
+                    } else if (currentPhase === 4) {
+                        const certStatus = progressData.phase4_teaching?.certification_status || 'not_started';
+                        phaseText = `Phase 4: Teaching - ${certStatus.replace('_', ' ')}`;
+                        phaseProgress = progressData.phase4_teaching?.completion_percentage || 0;
+                    }
+
+                    // Update journey card
+                    const statusText = document.getElementById('journey-status-text');
+                    if (statusText) {
+                        statusText.textContent = phaseText;
+                    }
+
+                    const progressBar = document.getElementById('journey-mini-progress');
+                    if (progressBar) {
+                        progressBar.style.width = phaseProgress + '%';
+                    }
+
+                    console.log(`✅ Journey card updated: ${phaseText} (${Math.round(phaseProgress)}%)`);
+                } else {
+                    // No progress yet - show default
+                    const statusText = document.getElementById('journey-status-text');
+                    if (statusText) {
+                        statusText.textContent = 'Phase 1: Awakening - Start your journey';
+                    }
+
+                    const progressBar = document.getElementById('journey-mini-progress');
+                    if (progressBar) {
+                        progressBar.style.width = '0%';
+                    }
+                }
+
+                // Show the card
+                journeyCard.style.display = 'block';
+
+            } catch (error) {
+                console.error('❌ Error loading journey progress:', error);
+            }
+        }
 
         function showDashboard(memberData) {
             console.log('🏛️ Showing dashboard for:', memberData);
@@ -1721,8 +2024,9 @@
             // Initialize Firebase authentication check
             setTimeout(() => {
                 checkAuthStatus();
+                loadJourneyProgress(); // Load journey card
             }, 1000); // Wait for Firebase to load
-            
+
             console.log('🔐 Firebase authentication check initiated');
             const dashboard = document.getElementById('dashboard');
             const memberBadge = document.getElementById('member-badge');
@@ -1770,19 +2074,99 @@
             // Force admin login
             forceAdminLogin: function() {
                 console.log('🔱 Force admin login...');
-                sessionStorage.setItem('divineAuth', 'true');
-                sessionStorage.setItem('adminAuth', 'true');
-                sessionStorage.setItem('memberData', JSON.stringify({
+                
+                // Clear any existing auth
+                sessionStorage.clear();
+                
+                const adminData = {
                     uid: 'admin_nazir_creator',
                     email: 'nazir@edenconsciousness.com',
                     displayName: 'Nazir El - Creator',
+                    username: 'nazir23',
+                    name: 'Nazir El',
                     role: 'admin',
-                    isAdmin: true
-                }));
+                    isAdmin: true,
+                    createdAt: new Date().toISOString(),
+                    loginTime: new Date().toISOString()
+                };
                 
-                hideAuthOverlay();
-                showDashboard();
-                console.log('✅ Admin logged in (forced)');
+                // Set all auth flags
+                sessionStorage.setItem('divineAuth', 'true');
+                sessionStorage.setItem('adminAuth', 'true');
+                sessionStorage.setItem('memberData', JSON.stringify(adminData));
+                localStorage.setItem('adminAuth', 'true');
+                localStorage.setItem('currentUser', JSON.stringify(adminData));
+                
+                console.log('✅ Admin session data set');
+                console.log('🔍 Session data:', adminData);
+                
+                // Force hide auth overlay and show dashboard
+                const authOverlay = document.getElementById('auth-overlay');
+                if (authOverlay) {
+                    authOverlay.style.display = 'none';
+                    authOverlay.classList.add('hidden');
+                }
+                
+                const dashboard = document.getElementById('dashboard');
+                if (dashboard) {
+                    dashboard.style.display = 'block';
+                    dashboard.classList.add('active');
+                    dashboard.style.opacity = '1';
+                }
+                
+                // Show member badge with admin styling
+                const memberBadge = document.getElementById('member-badge');
+                const memberDisplay = document.getElementById('member-display');
+                
+                if (memberBadge) {
+                    memberBadge.style.display = 'flex';
+                    memberBadge.style.background = 'linear-gradient(135deg, #F59E0B, #FBBF24)';
+                    memberBadge.style.border = '2px solid #F59E0B';
+                    memberBadge.style.boxShadow = '0 0 20px rgba(245, 158, 11, 0.4)';
+                }
+                
+                if (memberDisplay) {
+                    memberDisplay.innerHTML = `
+                        <div style="font-weight: 600; color: #0A0E27;">Nazir El - Creator</div>
+                        <div style="font-size: 0.8rem; opacity: 0.8; color: #0A0E27;">🔱 DIVINE TEMPLE CREATOR</div>
+                    `;
+                }
+                
+                // Show admin card
+                const adminCard = document.querySelector('.admin-only');
+                if (adminCard) {
+                    adminCard.style.display = 'block';
+                }
+                
+                document.body.style.overflow = 'auto';
+                
+                console.log('✅ Admin dashboard force-loaded');
+                alert('🔱 ADMIN ACCESS GRANTED! You are now logged in as Creator.');
+                
+                return true;
+            },
+            
+            // Quick auth check
+            checkAuthState: function() {
+                const auth = sessionStorage.getItem('divineAuth');
+                const admin = sessionStorage.getItem('adminAuth');
+                const data = sessionStorage.getItem('memberData');
+                
+                console.log('🔍 Auth state check:');
+                console.log('  - divineAuth:', auth);
+                console.log('  - adminAuth:', admin);
+                console.log('  - memberData exists:', !!data);
+                
+                if (data) {
+                    try {
+                        const parsed = JSON.parse(data);
+                        console.log('  - parsed data:', parsed);
+                    } catch (e) {
+                        console.log('  - data parsing error:', e);
+                    }
+                }
+                
+                return { auth, admin, data };
             },
             
             // Debug info
@@ -1829,6 +2213,13 @@
     
     <!-- Final Testing Suite -->
     <script src="js/final-testing.js"></script>
+    
+    <!-- Integration System -->
+    <script src="js/integration-config.js"></script>
+    <script src="js/integrations-system.js"></script>
+    
+    <!-- Mandala Coloring Canvas Game -->
+    <script src="js/mandala-coloring.js"></script>
     
     <!-- Initialize Final Polish -->
     <script>
@@ -2045,6 +2436,241 @@
                 }, 1000);
             }
         });
+    </script>
+    
+    <!-- Member Chat System -->
+    <script src="js/member-chat-system.js"></script>
+
+    <!-- Member Chat UI Integration -->
+    <script>
+        // Add floating chat button to page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create floating chat button
+            const chatButton = document.createElement('button');
+            chatButton.id = 'floatingChatBtn';
+            chatButton.innerHTML = '💬';
+            chatButton.title = 'Member Chat';
+            chatButton.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                font-size: 28px;
+                cursor: pointer;
+                box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+                z-index: 9999;
+                transition: all 0.3s ease;
+                display: none;
+            `;
+
+            chatButton.onmouseover = function() {
+                this.style.transform = 'scale(1.1)';
+                this.style.boxShadow = '0 6px 30px rgba(102, 126, 234, 0.6)';
+            };
+
+            chatButton.onmouseout = function() {
+                this.style.transform = 'scale(1)';
+                this.style.boxShadow = '0 4px 20px rgba(102, 126, 234, 0.4)';
+            };
+
+            chatButton.onclick = function() {
+                if (window.memberChatSystem) {
+                    window.memberChatSystem.openChatModal();
+                }
+            };
+
+            document.body.appendChild(chatButton);
+
+            // Show chat button when user is authenticated
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    chatButton.style.display = 'flex';
+                    chatButton.style.alignItems = 'center';
+                    chatButton.style.justifyContent = 'center';
+                }
+            });
+        });
+    </script>
+
+    <!-- PWA Installation Script -->
+    <script>
+        let deferredPrompt;
+        
+        // PWA Setup for Members Portal
+        document.addEventListener('DOMContentLoaded', function() {
+            // Register service worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('🏛️ Members Portal SW registered:', registration);
+                    })
+                    .catch(error => {
+                        console.error('❌ SW registration failed:', error);
+                    });
+            }
+            
+            setupMembersPWA();
+        });
+        
+        function setupMembersPWA() {
+            const installBtn = document.getElementById('pwaInstallBtn');
+            
+            // Handle button visibility based on install status
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+                // Already installed - hide button
+                if (installBtn) {
+                    installBtn.classList.add('hidden');
+                    console.log('🏛️ Members Portal - PWA already installed, hiding button');
+                }
+            } else if ('serviceWorker' in navigator && installBtn) {
+                // PWA supported - show button immediately
+                installBtn.classList.remove('hidden');
+                installBtn.classList.add('show');
+                installBtn.style.display = 'flex';
+                console.log('📱 Members Portal - PWA supported, showing install button immediately');
+                
+                // Auto-slide in after page load
+                setTimeout(() => {
+                    installBtn.classList.add('show');
+                }, 2000);
+            }
+            
+            // Listen for beforeinstallprompt with enhanced handling
+            window.addEventListener('beforeinstallprompt', (e) => {
+                console.log('📱 Members Portal - beforeinstallprompt event fired');
+                e.preventDefault();
+                deferredPrompt = e;
+                
+                // Update button visibility
+                if (installBtn) {
+                    installBtn.classList.remove('hidden');
+                    installBtn.style.display = 'flex';
+                }
+            });
+            
+            // Listen for app installed
+            window.addEventListener('appinstalled', () => {
+                console.log('🎉 Divine Temple PWA installed from members portal');
+                
+                // Hide install button with animation
+                if (installBtn) {
+                    installBtn.classList.add('hidden');
+                    setTimeout(() => {
+                        installBtn.style.display = 'none';
+                    }, 400);
+                }
+                
+                // Show success notification using existing system
+                if (window.uxEnhancementManager) {
+                    window.uxEnhancementManager.showNotification(
+                        '🎉 Divine Temple installed successfully! Check your home screen or app launcher.',
+                        'success',
+                        5000
+                    );
+                }
+                
+                // Store installation status
+                localStorage.setItem('pwa-installed', 'true');
+            });
+        }
+        
+        async function installPWA() {
+            console.log('🏛️ Members Portal - Install PWA triggered');
+            
+            // Check if already installed
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+                if (window.uxEnhancementManager) {
+                    window.uxEnhancementManager.showNotification(
+                        '✅ Divine Temple is already installed!',
+                        'success',
+                        4000
+                    );
+                }
+                return;
+            }
+            
+            if (!deferredPrompt) {
+                // Enhanced fallback with platform-specific instructions
+                const userAgent = navigator.userAgent.toLowerCase();
+                let instructions = '';
+                
+                if (userAgent.includes('chrome') && !userAgent.includes('edg')) {
+                    instructions = '🌐 Chrome: Click the install icon (⊕) in the address bar';
+                } else if (userAgent.includes('edg')) {
+                    instructions = '🔷 Edge: Click the install icon (⊕) in the address bar';
+                } else if (userAgent.includes('firefox')) {
+                    instructions = '🦊 Firefox: Look for install option in address bar or menu';
+                } else if (userAgent.includes('safari')) {
+                    instructions = '🧭 Safari: Tap Share button → "Add to Home Screen"';
+                } else {
+                    instructions = '📱 Use your browser menu → "Install app"';
+                }
+                
+                if (window.uxEnhancementManager) {
+                    window.uxEnhancementManager.showNotification(
+                        `🏛️ ${instructions}`,
+                        'info',
+                        6000
+                    );
+                }
+                return;
+            }
+            
+            try {
+                // Show the install prompt
+                const result = await deferredPrompt.prompt();
+                console.log('📱 Members Portal - Install prompt shown');
+                
+                // Wait for the user to respond to the prompt
+                const choiceResult = await deferredPrompt.userChoice;
+                console.log('👤 Members Portal - User choice:', choiceResult.outcome);
+                
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('✅ User accepted PWA install from members portal');
+                    if (window.uxEnhancementManager) {
+                        window.uxEnhancementManager.showNotification(
+                            '🎉 Installing Divine Temple...',
+                            'success',
+                            4000
+                        );
+                    }
+                } else {
+                    console.log('❌ User dismissed PWA install from members portal');
+                    if (window.uxEnhancementManager) {
+                        window.uxEnhancementManager.showNotification(
+                            '📱 Install anytime using your browser menu',
+                            'info',
+                            4000
+                        );
+                    }
+                }
+                
+                deferredPrompt = null;
+            } catch (error) {
+                console.error('❌ PWA install failed:', error);
+                if (window.uxEnhancementManager) {
+                    window.uxEnhancementManager.showNotification(
+                        '❌ Installation failed. Try using your browser menu → "Install app"',
+                        'error',
+                        4000
+                    );
+                }
+            }
+        }
+        
+        // Check if running as PWA
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('🏛️ Members Portal running as installed PWA');
+            document.body.classList.add('pwa-mode');
+        }
+        
+        // Make functions globally available
+        window.installPWA = installPWA;
     </script>
 </body>
 </html>
