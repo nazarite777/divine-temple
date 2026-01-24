@@ -994,56 +994,6 @@
     </footer>
 
     <script>
-    // Handle Continue Journey button - check premium status
-    async function handleContinueJourney() {
-        console.log(' Continue Journey button clicked');
-        
-        // Get current user
-        const user = firebase.auth().currentUser;
-        if (!user) {
-            console.warn('User not authenticated');
-            window.location.href = 'login.html';
-            return;
-        }
-        
-        try {
-            // Get user's premium status from Firestore
-            const db = firebase.firestore();
-            const userDoc = await db.collection('users').doc(user.uid).get();
-            
-            if (!userDoc.exists) {
-                console.warn('User document not found');
-                window.location.href = 'login.html';
-                return;
-            }
-            
-            const userData = userDoc.data();
-            
-            // Check if user is admin or has premium membership
-            const hasAdmin = userData.role === 'admin' || userData.membershipLevel === 'admin';
-            const hasPremium = userData.premium === true || userData.premium_status === 'active' || 
-                              userData.membershipLevel === 'premium' || userData.membershipLevel === 'founding' ||
-                              userData.membership === 'premium' || userData.all_features_unlocked === true;
-            
-            if (hasAdmin || hasPremium) {
-                console.log(' Premium/Admin user - allowing access to journey');
-                window.location.href = 'journey.html';
-            } else {
-                console.log(' Not a premium member - showing upgrade prompt');
-                // Show premium upgrade modal or redirect to premium page
-                if (typeof showPremiumUpgradeModal === 'function') {
-                    showPremiumUpgradeModal('journey_access_required');
-                } else {
-                    // Fallback: show alert and redirect to pricing
-                    alert('Journey access is a Premium feature. Please upgrade to access this powerful tool.');
-                    window.location.href = 'index.html#pricing';
-                }
-            }
-        } catch (error) {
-            console.error('Error checking premium status:', error);
-            alert('Error verifying access. Please try again.');
-        }
-    }
         // ========================================
         // CONFIGURATION
         // ========================================
@@ -2707,5 +2657,6 @@
     </script>
 </body>
 </html>
+
 
 

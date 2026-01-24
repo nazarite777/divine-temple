@@ -15,47 +15,25 @@
         if (journeyGateInitialized) return;
         journeyGateInitialized = true;
 
-        console.log(' Journey gate initializing...');
+        console.log('Journey gate initializing...');
 
         // Wait for Firebase and AuthHelper to be ready
         await waitForDependencies();
 
-        // Check access with timeout to prevent infinite loading on mobile
-        const accessCheckTimeout = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Journey access check timed out')), 10000)
-        );
-
-        try {
-            const accessCheck = await Promise.race([
-                window.AuthHelper.checkJourneyAccess(),
-                accessCheckTimeout
-            ]);
-
-            if (!accessCheck.hasAccess) {
-                console.log(' Journey access denied:', accessCheck.reason);
-                handleAccessDenied(accessCheck.reason);
-            } else {
-                console.log(' Journey access granted');
-
-                if (accessCheck.isAdmin) {
-                    console.log(' Admin user detected');
-                    showAdminBadge();
-                }
-
-                // Initialize journey content
-                initJourneyContent(accessCheck);
-            }
-        } catch (error) {
-            console.error(' Journey gate error:', error.message);
-            
-            // On timeout, redirect to login to prevent infinite loading
-            if (error.message.includes('timed out')) {
-                console.error(' Journey access check timed out - redirecting to login');
-                handleAccessDenied('timeout');
-            } else {
-                handleAccessDenied('error');
-            }
+        // Simple check: just verify user is logged in
+        const user = firebase.auth().currentUser;
+        
+        if (!user) {
+            console.log('No user logged in - redirecting to login');
+            handleAccessDenied('not_logged_in');
+            return;
         }
+
+        console.log('User logged in:', user.email);
+        
+        // User is authenticated - allow page to load
+        // Premium gate will be handled elsewhere if needed
+        initJourneyContent({ hasAccess: true, user });
     }
 
     /**
@@ -219,3 +197,4 @@
         showAdminBadge
     };
 })();
+
