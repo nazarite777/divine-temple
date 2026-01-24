@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Spiritual Trivia - Divine Temple</title>
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#d4af37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Divine Temple">
+    
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <!-- Firebase SDKs -->
@@ -609,9 +617,77 @@
                 font-size: 2rem;
             }
         }
+        
+        /* PWA Install Button - Sidebar Style */
+        .pwa-install-btn {
+            position: fixed;
+            top: 50%;
+            right: -60px;
+            z-index: 10000;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            border: none;
+            color: white;
+            padding: 1rem 0.75rem;
+            border-radius: 15px 0 0 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: -5px 0 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.4s ease;
+            transform: translateY(-50%) rotate(-90deg);
+            transform-origin: center;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            width: 120px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pwa-install-btn:hover {
+            right: -20px;
+            box-shadow: -8px 0 25px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(135deg, #f4c430, #9d6bfc);
+        }
+
+        .pwa-install-btn.show {
+            right: -20px;
+            opacity: 1;
+        }
+
+        .pwa-install-btn.hidden {
+            right: -120px;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 768px) {
+            .pwa-install-btn {
+                top: 60%;
+                right: -70px;
+                width: 100px;
+                height: 35px;
+                font-size: 0.75rem;
+                padding: 0.75rem 0.5rem;
+            }
+            
+            .pwa-install-btn:hover,
+            .pwa-install-btn.show {
+                right: -30px;
+            }
+        }
     </style>
+    
+    <!-- Enhanced PWA Installer -->
+    <script src="../js/enhanced-pwa-installer.js"></script>
 </head>
 <body>
+    <!-- PWA Install Button -->
+    <button id="pwaInstallBtn" class="pwa-install-btn" onclick="window.enhancedPWAInstaller ? window.enhancedPWAInstaller.install() : installPWA()" title="Install Divine Temple App">
+        🏛️ Install App
+    </button>
+    
     <div class="trivia-container">
         <a href="../free-dashboard.html" class="back-btn">
             <span>←</span>

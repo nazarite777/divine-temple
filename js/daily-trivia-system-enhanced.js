@@ -27,9 +27,9 @@ class EnhancedDailyTriviaSystem {
         // Audio system
         this.audioSystem = null;
 
-        // Question Database - Expanded for better variety
+        // Question Database - Freemium Edition (30 High-Quality Questions)
         this.questionBank = [
-            // ========== CHAKRAS & ENERGY (15 questions) ==========
+            // ========== CHAKRAS & ENERGY (6 questions) ==========
             {
                 category: 'Chakras & Energy',
                 difficulty: 'easy',
@@ -37,14 +37,6 @@ class EnhancedDailyTriviaSystem {
                 options: ['Red', 'Orange', 'Yellow', 'Green'],
                 correct: 0,
                 explanation: 'The Root Chakra (Muladhara) is associated with red, representing grounding, survival, and connection to the earth.'
-            },
-            {
-                category: 'Chakras & Energy',
-                difficulty: 'easy',
-                question: 'Which chakra is located at the crown of the head?',
-                options: ['Third Eye', 'Throat', 'Crown', 'Heart'],
-                correct: 2,
-                explanation: 'The Crown Chakra (Sahasrara) is located at the top of the head and represents spiritual connection and enlightenment.'
             },
             {
                 category: 'Chakras & Energy',
@@ -72,14 +64,6 @@ class EnhancedDailyTriviaSystem {
             },
             {
                 category: 'Chakras & Energy',
-                difficulty: 'easy',
-                question: 'What element is associated with the Throat Chakra?',
-                options: ['Fire', 'Water', 'Air', 'Ether/Space'],
-                correct: 3,
-                explanation: 'The Throat Chakra (Vishuddha) is associated with the element of Ether or Space, representing communication and expression.'
-            },
-            {
-                category: 'Chakras & Energy',
                 difficulty: 'medium',
                 question: 'Which chakra is blocked when you experience fear and insecurity?',
                 options: ['Root Chakra', 'Heart Chakra', 'Crown Chakra', 'Third Eye'],
@@ -95,7 +79,7 @@ class EnhancedDailyTriviaSystem {
                 explanation: 'OM (or AUM) is the bija mantra for the Third Eye Chakra (Ajna), representing cosmic consciousness and intuition.'
             },
 
-            // ========== TAROT & ORACLE (12 questions) ==========
+            // ========== TAROT & ORACLE (3 questions) ==========
             {
                 category: 'Tarot & Oracle',
                 difficulty: 'easy',
@@ -120,16 +104,8 @@ class EnhancedDailyTriviaSystem {
                 correct: 1,
                 explanation: 'The Death card rarely means literal death; it symbolizes transformation, endings, and new beginnings.'
             },
-            {
-                category: 'Tarot & Oracle',
-                difficulty: 'medium',
-                question: 'Which suit represents the element of Water?',
-                options: ['Wands', 'Cups', 'Swords', 'Pentacles'],
-                correct: 1,
-                explanation: 'Cups represent the element of Water and govern emotions, relationships, intuition, and creativity.'
-            },
 
-            // ========== CRYSTALS & GEMSTONES (10 questions) ==========
+            // ========== CRYSTALS & GEMSTONES (3 questions) ==========
             {
                 category: 'Crystals & Gemstones',
                 difficulty: 'easy',
@@ -148,14 +124,6 @@ class EnhancedDailyTriviaSystem {
             },
             {
                 category: 'Crystals & Gemstones',
-                difficulty: 'medium',
-                question: 'What is the primary chakra associated with Amethyst?',
-                options: ['Root', 'Heart', 'Third Eye', 'Solar Plexus'],
-                correct: 2,
-                explanation: 'Amethyst resonates with the Third Eye and Crown chakras, enhancing intuition and spiritual awareness.'
-            },
-            {
-                category: 'Crystals & Gemstones',
                 difficulty: 'easy',
                 question: 'Which crystal is associated with abundance and prosperity?',
                 options: ['Citrine', 'Turquoise', 'Jade', 'Carnelian'],
@@ -163,7 +131,7 @@ class EnhancedDailyTriviaSystem {
                 explanation: 'Citrine is known as the "merchant\'s stone" and is associated with abundance, prosperity, and success.'
             },
 
-            // ========== MEDITATION & MINDFULNESS (10 questions) ==========
+            // ========== MEDITATION & MINDFULNESS (3 questions) ==========
             {
                 category: 'Meditation & Mindfulness',
                 difficulty: 'easy',
@@ -182,14 +150,6 @@ class EnhancedDailyTriviaSystem {
             },
             {
                 category: 'Meditation & Mindfulness',
-                difficulty: 'easy',
-                question: 'What is the recommended minimum time for daily meditation practice?',
-                options: ['1 minute', '5 minutes', '30 minutes', '1 hour'],
-                correct: 1,
-                explanation: 'While any meditation is beneficial, 5-10 minutes daily is a good starting point for beginners to build consistency.'
-            },
-            {
-                category: 'Meditation & Mindfulness',
                 difficulty: 'medium',
                 question: 'Which meditation technique involves repeating a word or phrase?',
                 options: ['Body scan', 'Mantra meditation', 'Walking meditation', 'Zen meditation'],
@@ -197,7 +157,7 @@ class EnhancedDailyTriviaSystem {
                 explanation: 'Mantra meditation involves repeating a sacred word, phrase, or sound to focus the mind and elevate consciousness.'
             },
 
-            // ========== MANTRAS & SOUND (8 questions) ==========
+            // ========== MANTRAS & SOUND (3 questions) ==========
             {
                 category: 'Mantras & Sound',
                 difficulty: 'easy',
@@ -222,13 +182,159 @@ class EnhancedDailyTriviaSystem {
                 correct: 2,
                 explanation: 'Mantra comes from "man" (mind) and "tra" (tool/instrument), meaning a tool to focus and elevate the mind.'
             },
+
+            // ========== BIBLICAL TRUTH & ETYMOLOGY (12 questions) ==========
+            // Deep teachings on mistranslations, etymology, and hidden truths
             {
-                category: 'Mantras & Sound',
+                category: 'Biblical Truth & Etymology',
                 difficulty: 'easy',
-                question: 'What is binaural beats meditation?',
-                options: ['Singing', 'Two different frequencies in each ear', 'Drumming', 'Chanting'],
+                question: 'What does "Christ" actually mean?',
+                options: [
+                    'Jesus\' last name',
+                    'A title meaning "anointed one" or "awakened consciousness"',
+                    'The name of a deity',
+                    'A Greek god'
+                ],
                 correct: 1,
-                explanation: 'Binaural beats occur when two slightly different frequencies are played in each ear, creating a perceived third frequency that can alter brainwave states.'
+                explanation: 'Christ comes from the Greek "Christos" (Χριστός), translating the Hebrew "Mashiach" (Messiah), meaning "anointed one". It is a title, not a name - referring to one who has been anointed with divine purpose and awakened consciousness. The Christ is the divine consciousness that can dwell in any vessel aligned with divine will.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'hard',
+                question: 'What is the original Hebrew name of the person called "Jesus"?',
+                options: ['Jesu', 'Iesous', 'Yeshua', 'Joshua'],
+                correct: 2,
+                explanation: 'His name was Yeshua (יֵשׁוּעַ) in Hebrew, meaning "Yah saves" or "Salvation of Yah". "Jesus" comes from the Greek "Iesous" (Ἰησοῦς), which was later Latinized to "Iesus" and eventually became "Jesus" in English. The name carries the divine name "Yah" within it, showing his purpose as a vessel of divine salvation.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'hard',
+                question: 'Why is the "Virgin Mary" doctrine problematic from a Hebrew perspective?',
+                options: [
+                    'Mary was not a virgin',
+                    'The word "virgin" does not exist in Hebrew - the original word "almah" means "young woman"',
+                    'It contradicts Roman Catholic teachings',
+                    'There is no problem with it'
+                ],
+                correct: 1,
+                explanation: 'The Hebrew word in Isaiah 7:14 is "almah" (עַלְמָה) meaning "young woman" or "maiden" - NOT "betulah" (בְּתוּלָה) which specifically means virgin. Greek translators used "parthenos" (virgin), creating a theological doctrine from a mistranslation. The prophecy was about a young woman giving birth, not a miraculous virgin birth.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'medium',
+                question: 'Why is understanding Greek vs Hebrew important in biblical interpretation?',
+                options: [
+                    'Greek is more accurate than Hebrew',
+                    'Hebrew carries the original cultural and linguistic context; Greek translations can introduce theological biases',
+                    'Hebrew is the only language God understands',
+                    'It is not important'
+                ],
+                correct: 1,
+                explanation: 'The Hebrew scriptures (Tanakh/Old Testament) contain the original context, idioms, and cultural meanings. When translated to Greek (Septuagint), then Latin (Vulgate), then English, layers of interpretation and theological bias were added. Understanding Hebrew etymology reveals the original intent, such as "almah" vs "virgin", "Yeshua" vs "Jesus", and countless other examples where meaning was altered to fit doctrinal narratives.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'hard',
+                question: 'What is the significance of "El" in Hebrew names like Nazir El, Micha-El, Gabri-El?',
+                options: [
+                    'It means "angel"',
+                    'It means "God" or "The Divine" - showing direct connection to Source',
+                    'It is a random suffix',
+                    'It means "servant"'
+                ],
+                correct: 1,
+                explanation: '"El" (אֵל) is the ancient Hebrew name for God/The Divine, meaning "The Mighty One" or "The Most High". When attached to a name, it shows divine connection, purpose, or authority. Micha-el = "Who is like El?", Gabri-el = "Strength of El", Nazir-El = "One consecrated to El". These names declare divine alignment and sacred purpose.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'medium',
+                question: 'What is a "Nazir" or "Nazarite" according to Hebrew tradition?',
+                options: [
+                    'Someone from Nazareth',
+                    'One who takes a vow of separation/consecration to the Divine',
+                    'A type of priest',
+                    'A prophet'
+                ],
+                correct: 1,
+                explanation: 'A Nazir (נָזִיר) is one who takes a vow of consecration and separation unto the Most High (Numbers 6). This includes abstaining from wine, not cutting hair, and avoiding death/impurity. Samson, Samuel, and John the Baptist were Nazarites. It represents complete dedication to divine purpose - being "set apart" for sacred work.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'medium',
+                question: 'What does "Yah" (as in Hallelu-Yah) mean?',
+                options: [
+                    'It means praise',
+                    'It is the shortened sacred name of the Divine (from YHWH)',
+                    'It means joy',
+                    'It is a random syllable'
+                ],
+                correct: 1,
+                explanation: 'Yah (יָהּ) is the shortened form of the Tetragrammaton YHWH (יהוה) - the sacred name of the Divine. "HalleluYah" means "Praise Yah" (Praise the Divine). Many Hebrew names contain "Yah": Elijah (Eli-Yah = My God is Yah), Isaiah (Yesha-Yah = Salvation of Yah), showing their connection to the Most High.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'easy',
+                question: 'What language did Yeshua (Jesus) speak?',
+                options: [
+                    'English',
+                    'Greek',
+                    'Aramaic and Hebrew',
+                    'Latin'
+                ],
+                correct: 2,
+                explanation: 'Yeshua spoke Aramaic (the common language of first-century Judea) and Hebrew (the sacred language of scripture and temple). He did NOT speak Greek or Latin fluently. This is critical: the "New Testament" was written in Greek for a Gentile audience, meaning Yeshua\'s actual words were translated and filtered through Greek language, culture, and philosophy - potentially losing original Hebraic meaning and context.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'medium',
+                question: 'What does "Israel" mean in Hebrew?',
+                options: [
+                    'The Jewish people',
+                    'One who struggles/wrestles with God (Divine)',
+                    'The promised land',
+                    'A country in the Middle East'
+                ],
+                correct: 1,
+                explanation: 'Israel (יִשְׂרָאֵל) comes from "Yisra" (to struggle/wrestle) + "El" (God), meaning "one who struggles with the Divine" or "God prevails". It was the name given to Jacob after wrestling with the divine messenger. Symbolically, Israel represents anyone who wrestles with divine truth, seeks divine understanding, and strives to align with higher consciousness - not limited to ethnicity or geography.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'hard',
+                question: 'What is the Tetragrammaton and why is it significant?',
+                options: [
+                    'A geometric shape',
+                    'The four-letter sacred name of the Divine: YHWH (יהוה)',
+                    'The four gospels',
+                    'A type of angel'
+                ],
+                correct: 1,
+                explanation: 'The Tetragrammaton is YHWH (יהוה) - the four-letter sacred name of the Divine, considered too holy to pronounce. It is often rendered as "Yahweh", "Yahuah", or "Jehovah" (incorrect). The letters Yod-Heh-Vav-Heh represent the eternal, self-existent nature of the Divine: "I AM that I AM" (Ehyeh Asher Ehyeh). This name contains the past, present, and future tenses of "to be" - revealing the timeless, infinite nature of the Creator.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'hard',
+                question: 'What is the Hebrew word for "spirit" and what does it reveal?',
+                options: [
+                    'Nephesh - soul/life force',
+                    'Ruach - wind/breath/spirit (feminine gender)',
+                    'Neshama - divine soul',
+                    'Kavod - glory'
+                ],
+                correct: 1,
+                explanation: 'Ruach (רוּחַ) means wind, breath, or spirit - and is FEMININE in Hebrew grammar. This reveals that the "Holy Spirit" (Ruach HaKodesh) carries divine feminine energy. Western theology masculinized the Trinity, but the Hebrew shows divine feminine presence. Spirit is the breath of life, the wind of change, the intuitive wisdom - all feminine expressions of the Divine.'
+            },
+            {
+                category: 'Biblical Truth & Etymology',
+                difficulty: 'medium',
+                question: 'What is the Hebrew concept of "Shekinah"?',
+                options: [
+                    'An angel',
+                    'The feminine presence/dwelling of the Divine (God\'s presence on Earth)',
+                    'A temple',
+                    'A type of sacrifice'
+                ],
+                correct: 1,
+                explanation: 'Shekinah (שְׁכִינָה) means "dwelling" or "presence" - specifically the feminine aspect of the Divine that dwells among humanity. In Kabbalah, Shekinah represents the Divine Feminine, the immanent presence of God in the world (vs transcendent). She is the Holy Spirit, divine wisdom (Sophia), the compassionate mother aspect of the Most High. The Shekinah reveals that the Divine has both masculine and feminine expressions.'
             }
         ];
 
@@ -539,16 +645,27 @@ class EnhancedDailyTriviaSystem {
         try {
             // Add update timestamp
             this.triviaData.lastUpdated = firebase.firestore.FieldValue.serverTimestamp();
-            
+
+            // Save to Firestore
             await firebase.firestore()
                 .collection('triviaProgress')
                 .doc(this.currentUser.uid)
                 .set(this.triviaData, { merge: true });
-                
+
+            // Also save to localStorage as backup
+            try {
+                const backupData = { ...this.triviaData };
+                backupData.lastUpdated = new Date().toISOString();
+                localStorage.setItem(`triviaProgress_${this.currentUser.uid}`, JSON.stringify(backupData));
+                this.log('Trivia data saved to Firestore and localStorage');
+            } catch (localError) {
+                this.log('localStorage save failed (quota exceeded or disabled)', localError);
+            }
+
             this.log('Trivia data saved successfully');
         } catch (error) {
             this.error('Error saving trivia data', error);
-            
+
             // Retry once after a delay
             setTimeout(async () => {
                 try {
@@ -620,12 +737,16 @@ class EnhancedDailyTriviaSystem {
             const shuffled = this.seededShuffle([...this.questionBank], seed);
             this.log(`Shuffled ${shuffled.length} questions`);
 
-            // Select 3 questions with varying difficulty
-            const easy = shuffled.find(q => q.difficulty === 'easy') || shuffled[0];
-            const medium = shuffled.find(q => q.difficulty === 'medium') || shuffled[1];
-            const hard = shuffled.find(q => q.difficulty === 'hard') || shuffled[2];
+            // Select 3 questions with varying difficulty for daily practice
+            const easyQuestions = shuffled.filter(q => q.difficulty === 'easy');
+            const mediumQuestions = shuffled.filter(q => q.difficulty === 'medium');
+            const hardQuestions = shuffled.filter(q => q.difficulty === 'hard');
 
-            this.todaysQuestions = [easy, medium, hard].filter(Boolean);
+            this.todaysQuestions = [
+                easyQuestions[0] || shuffled[0],
+                mediumQuestions[0] || shuffled[1],
+                hardQuestions[0] || shuffled[2]
+            ].filter(Boolean);
 
             // Ensure we have 3 questions
             while (this.todaysQuestions.length < 3 && shuffled.length > this.todaysQuestions.length) {
@@ -959,7 +1080,7 @@ class EnhancedDailyTriviaSystem {
             try {
                 await window.progressSystem.awardXP(
                     this.score,
-                    `Daily Trivia (${this.correctAnswers}/3 correct)`,
+                    `Daily Trivia (${this.correctAnswers}/5 correct)`,
                     'daily-trivia'
                 );
                 this.log('XP awarded to progress system');
@@ -1270,7 +1391,7 @@ function shareResults() {
     trivia.audioSystem?.playSound('click');
 
     const score = trivia.correctAnswers;
-    const total = 3;
+    const total = 5;
     const streak = trivia.triviaData?.currentStreak || 0;
 
     const text = `🎯 Daily Spiritual Trivia\n\nScore: ${score}/${total}\n🔥 ${streak} Day Streak\n\nJoin me on the spiritual journey! 🌟`;

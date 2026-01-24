@@ -27,11 +27,27 @@
     <meta name="googlebot" content="index, follow">
     <link rel="canonical" href="https://edenconsciousnesssdt.com/">
 
-    <!-- Additional SEO -->
-    <meta name="theme-color" content="#0A0E27">
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#d4af37">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Divine Temple">
+    <link rel="apple-touch-icon" href="images/icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="images/icons/icon-512.png">
+
+    <!-- Additional SEO -->
+    <meta name="theme-color" content="#F59E0B">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Eden Temple">
+
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="icons/temple-icon-152.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/temple-icon-152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/temple-icon-192.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="icons/temple-icon-192.png">
 
     <!-- Schema.org Structured Data -->
     <script type="application/ld+json">
@@ -124,6 +140,8 @@
 
     <!-- Main Stylesheet -->
     <link rel="stylesheet" href="css/main.min.css">
+    <link rel="stylesheet" href="css/header-styles.css">
+    <link rel="stylesheet" href="css/journey-showcase.css">
 
     <!-- Fonts with optimal loading -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -143,70 +161,129 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
-    <script src="js/firebase-config.min.js" defer></script>
+    <script src="js/firebase-config.js"></script>
+    
+    <!-- Enhanced PWA Installer -->
+    <script src="js/enhanced-pwa-installer.js"></script>
+
+    <!-- Header Navigation -->
+    <script src="js/auth-helper.js" defer></script>
+    <script src="js/header-nav.js" defer></script>
+
+    <!-- PWA Button Debug CSS -->
+    <link rel="stylesheet" href="css/pwa-button-force-show.css">
 </head>
 <body>
+    <!-- PWA Install Banner -->
+    <div id="pwaInstallBanner" class="pwa-install-banner" style="display: none;">
+        <div class="install-banner-content">
+            <div class="install-icon">🏛️</div>
+            <div class="install-text">
+                <h4>Install Divine Temple</h4>
+                <p>Get the complete spiritual platform on your device</p>
+            </div>
+            <button id="pwaInstallBtn" class="install-btn">Install App</button>
+            <button id="pwaDismissBtn" class="dismiss-btn">✕</button>
+        </div>
+    </div>
+
+    <!-- PWA Manual Install Button -->
+    <button id="pwaManualBtn" class="pwa-manual-btn" onclick="window.enhancedPWAInstaller ? window.enhancedPWAInstaller.install() : installPWA()" title="Install Divine Temple App">
+        🏛️ Install App
+    </button>
+
     <!-- Skip to main content for accessibility -->
     <a href="#main-content" class="skip-link sr-only">Skip to main content</a>
 
     <!-- Header -->
-    <header role="banner">
-        <nav role="navigation" aria-label="Main navigation">
+    <header class="site-header" role="banner">
+        <div class="header-container">
+            <!-- Logo -->
             <div class="logo">
-                <picture>
-                    <source srcset="logoyogabg.webp" type="image/webp">
-                    <img src="logoyogabg.png" alt="Eden Consciousness Logo">
-                </picture>
-                <span class="logo-text">Eden Consciousness</span>
+                <a href="index.html" class="logo-link">
+                    <picture>
+                        <source srcset="logoyogabg.webp" type="image/webp">
+                        <img src="logoyogabg.png" alt="Eden Consciousness Logo" class="logo-image">
+                    </picture>
+                    <span class="logo-text">Eden Consciousness</span>
+                </a>
             </div>
-            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle mobile menu">
-                ☰
+
+            <!-- Desktop Navigation -->
+            <nav class="main-nav" role="navigation" aria-label="Main navigation">
+                <a href="index.html" class="nav-link">Home</a>
+
+                <a href="journey.html" class="nav-link premium-link">
+                    Journey <span class="premium-badge">👑</span>
+                </a>
+
+                <div class="nav-dropdown">
+                    <button class="nav-link dropdown-toggle" aria-expanded="false">
+                        Learn <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="books.html" class="dropdown-item">📚 Books</a>
+                        <a href="audiobook.html" class="dropdown-item">🎧 Audiobook</a>
+                        <a href="resources.html" class="dropdown-item">📖 Resources</a>
+                        <a href="about.html" class="dropdown-item">ℹ️ About</a>
+                    </div>
+                </div>
+
+                <a href="members-new.html" class="nav-link">Practice</a>
+            </nav>
+
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <!-- Login/Upgrade Buttons (shown when logged out) -->
+                <a href="login.html" class="btn-login" id="login-btn">Login</a>
+                <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00" class="upgrade-button" id="upgrade-btn">
+                    Upgrade to Premium
+                </a>
+
+                <!-- User Menu (shown when logged in) -->
+                <div class="user-menu" id="user-menu" style="display: none;">
+                    <div class="user-info">
+                        <span class="user-email" id="header-user-email">User</span>
+                        <span class="user-icon">👤</span>
+                    </div>
+                    <div class="user-dropdown">
+                        <a href="members-new.html" class="account-link">My Account</a>
+                        <button onclick="logout()" class="logout-btn">Logout</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle mobile menu">
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#home">Home</a></li>
-                <li><a href="books.html">Books</a></li>
-                <li><a href="audiobook.html">Audiobook</a></li>
-                <li><a href="#temple">Temple</a></li>
-                <li><a href="login.html">✨ Free Access</a></li>
-                <li><a href="members-new.html">Member Portal</a></li>
-                <li><a href="testimonials.html">Testimonials</a></li>
-                <li><a href="resources.html">Resources</a></li>
-            </ul>
-            <a href="https://square.link/u/xuKzAPeA" class="cta-nav">Join Premium</a>
-        </nav>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobile-menu">
+            <div class="mobile-menu-header">
+                <span class="mobile-menu-title">Menu</span>
+                <button class="close-menu" id="close-menu" aria-label="Close menu">✕</button>
+            </div>
+            <nav class="mobile-nav">
+                <a href="index.html" class="mobile-menu-item">🏠 Home</a>
+                <a href="journey.html" class="mobile-menu-item premium-item">👑 Journey</a>
+                <a href="books.html" class="mobile-menu-item">📚 Books</a>
+                <a href="audiobook.html" class="mobile-menu-item">🎧 Audiobook</a>
+                <a href="resources.html" class="mobile-menu-item">📖 Resources</a>
+                <a href="about.html" class="mobile-menu-item">ℹ️ About</a>
+                <a href="members-new.html" class="mobile-menu-item">🏛️ Practice</a>
+                <div class="mobile-divider"></div>
+                <a href="login.html" class="mobile-menu-item mobile-login">🔐 Login</a>
+                <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00" class="mobile-menu-item mobile-upgrade">✨ Upgrade</a>
+            </nav>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
     </header>
-
-    <script>
-        // Mobile menu toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const navLinks = document.getElementById('navLinks');
-
-            if (mobileMenuToggle && navLinks) {
-                mobileMenuToggle.addEventListener('click', function() {
-                    navLinks.classList.toggle('active');
-                    this.setAttribute('aria-expanded', navLinks.classList.contains('active'));
-                });
-
-                // Close menu when clicking outside
-                document.addEventListener('click', function(event) {
-                    if (!event.target.closest('nav')) {
-                        navLinks.classList.remove('active');
-                        mobileMenuToggle.setAttribute('aria-expanded', 'false');
-                    }
-                });
-
-                // Close menu when clicking on a link
-                const links = navLinks.querySelectorAll('a');
-                links.forEach(link => {
-                    link.addEventListener('click', function() {
-                        navLinks.classList.remove('active');
-                        mobileMenuToggle.setAttribute('aria-expanded', 'false');
-                    });
-                });
-            }
-        });
-    </script>
 
     <!-- Main Content -->
     <main role="main" id="main-content">
@@ -216,13 +293,33 @@
             <div class="hero-content">
                 <div class="hero-text">
                     <h1 id="hero-heading">You Never Left Eden</h1>
-                    <p>Discover the profound truth that has been hidden in plain sight. Eden was never a place you left—it's a state of consciousness you forgot. Join thousands who are remembering their divine nature and transforming their reality.</p>
+                    <p class="hero-subheading" style="font-size: 1.5rem; font-weight: 600; color: var(--accent-gold, #F59E0B); margin: 1rem 0; background: linear-gradient(135deg, #F59E0B, #8B5CF6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Begin Your 4-Phase Transformation Journey</p>
+                    <p style="font-size: 1.1rem; line-height: 1.7; margin-bottom: 2rem;">Experience a complete guided path from awakening to mastery. Journey through Nazir's audiobook "Ya Heard Me," master the 7 Aligned Manifestation principles, practice daily for 365 days, and earn your teaching certification. Your transformation awaits.</p>
                     <div class="hero-cta">
-                        <a href="login.html" class="btn btn-primary">✨ Start Free Access</a>
-                        <a href="books.html" class="btn btn-secondary">Explore Books</a>
+                        <a href="journey.html" class="btn btn-primary btn-large">👑 Begin Your Journey</a>
+                        <a href="login.html" class="btn btn-secondary btn-large" style="margin-left: 1rem;">Start Free Trial</a>
                     </div>
+                    <p style="margin-top: 0.75rem; font-size: 0.9rem; color: var(--text-secondary); text-align: center;">
+                        ✅ Enochian Calendar free forever · ✅ Full Journey access with Premium ($9.99/month)
+                    </p>
+
+                    <!-- Subscriber Count Display -->
+                    <div id="subscriberCount" style="margin-top: 1.5rem; padding: 1rem; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 15px; display: inline-block;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <span style="font-size: 1.5rem;">🌟</span>
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-gold);" id="memberCountDisplay">
+                                    40+
+                                </div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                                    Sacred Members Awakening
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <p style="margin-top: 1rem; font-size: 0.95rem; color: var(--text-secondary);">
-                        Try the Enochian Calendar free, then unlock premium features
+                        🌟 Start with free tools, unlock your complete transformation journey with Premium
                     </p>
                 </div>
                 <div class="hero-visual">
@@ -328,52 +425,297 @@
             </div>
         </div>
 
-    <!-- Book CTA Section -->
-    <section class="product-showcase" id="products">
+    <!-- Platform Features Section -->
+    <section class="platform-features" id="features">
         <div class="container">
             <div class="section-header">
-                <h2>Ready to Transform Your Reality?</h2>
-                <p>Discover "You Never Left Eden" - the revolutionary book that will awaken your divine consciousness</p>
+                <h2>Your Spiritual Practice Toolkit</h2>
+                <p>Engage with powerful features designed for spiritual growth and consciousness expansion</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 3rem;">
+                <!-- Feature: Enochian Calendar -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
+                    <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Enochian Calendar</h3>
+                    <div style="display: inline-block; background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;">FREE FOREVER</div>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">Track sacred time, sabbaths, holy days, and divine cycles. Your foundation for spiritual practice.</p>
+                </div>
+
+                <!-- Feature: Spiritual Games -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎮</div>
+                    <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Wisdom Games</h3>
+                    <div style="display: inline-block; background: rgba(139, 92, 246, 0.2); color: #8b5cf6; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;">PREMIUM</div>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">Test your knowledge with daily trivia, memory games, and spiritual challenges. Earn XP and level up.</p>
+                </div>
+
+                <!-- Feature: Sacred Journal -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                    <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Sacred Journal</h3>
+                    <div style="display: inline-block; background: rgba(139, 92, 246, 0.2); color: #8b5cf6; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;">PREMIUM</div>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">Document your spiritual journey with 5 journal types: daily reflections, dreams, gratitude, and more.</p>
+                </div>
+
+                <!-- Feature: AI Spiritual Guide -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🤖</div>
+                    <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">AI Spiritual Guide</h3>
+                    <div style="display: inline-block; background: rgba(139, 92, 246, 0.2); color: #8b5cf6; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;">PREMIUM</div>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">Chat with GPT-4 powered spiritual guide. Get personalized insights and wisdom 24/7.</p>
+                </div>
+
+                <!-- Feature: Daily Quests -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">⚔️</div>
+                    <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Daily Quests</h3>
+                    <div style="display: inline-block; background: rgba(139, 92, 246, 0.2); color: #8b5cf6; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;">PREMIUM</div>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">Complete 3 spiritual quests each day. Build streaks, earn achievements, and track your growth.</p>
+                </div>
+
+                <!-- Feature: Meditation Library -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🧘</div>
+                    <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Meditation Library</h3>
+                    <div style="display: inline-block; background: rgba(139, 92, 246, 0.2); color: #8b5cf6; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;">PREMIUM</div>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">Access guided meditations, solfeggio frequencies, and healing audio content.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Journey Showcase Section -->
+    <section class="journey-showcase-section">
+        <div class="journey-showcase-container">
+
+            <!-- Section Header -->
+            <div class="section-header">
+                <h2 class="section-title">Your Path to Aligned Manifestation Mastery</h2>
+                <p class="section-subtitle">
+                    A structured 4-phase transformation from awakening to teaching.
+                    Each phase builds on the last, creating lasting change.
+                </p>
+            </div>
+
+            <!-- Journey Path with 4 Phase Cards -->
+            <div class="journey-path">
+
+                <!-- Phase 1: Awakening -->
+                <div class="journey-phase-card phase-1-card">
+                    <div class="phase-icon-large">🌅</div>
+                    <div class="phase-badge phase-1-badge">Phase 1</div>
+                    <h3 class="phase-title">Awakening</h3>
+                    <p class="phase-description">
+                        Begin with the Ya Heard Me audiobook journey.
+                        12 chapters of revelation and remembering.
+                    </p>
+                    <div class="phase-meta">
+                        <span class="meta-item">📅 90 Days</span>
+                        <span class="meta-item">📖 12 Chapters</span>
+                    </div>
+                    <a href="journey.html#phase1" class="phase-link">Learn More →</a>
+                </div>
+
+                <!-- Arrow -->
+                <div class="journey-arrow">→</div>
+
+                <!-- Phase 2: Understanding -->
+                <div class="journey-phase-card phase-2-card">
+                    <div class="phase-icon-large">🧠</div>
+                    <div class="phase-badge phase-2-badge">Phase 2</div>
+                    <h3 class="phase-title">Understanding</h3>
+                    <p class="phase-description">
+                        Master the 7 Principles of Aligned Manifestation
+                        through video lessons and workbooks.
+                    </p>
+                    <div class="phase-meta">
+                        <span class="meta-item">📅 90 Days</span>
+                        <span class="meta-item">📚 7 Principles</span>
+                    </div>
+                    <a href="journey.html#phase2" class="phase-link">Learn More →</a>
+                </div>
+
+                <!-- Arrow -->
+                <div class="journey-arrow">→</div>
+
+                <!-- Phase 3: Mastery -->
+                <div class="journey-phase-card phase-3-card">
+                    <div class="phase-icon-large">⚡</div>
+                    <div class="phase-badge phase-3-badge">Phase 3</div>
+                    <h3 class="phase-title">Mastery</h3>
+                    <p class="phase-description">
+                        Live the teachings daily through the full
+                        I-N-I Enochian Calendar year.
+                    </p>
+                    <div class="phase-meta">
+                        <span class="meta-item">📅 365 Days</span>
+                        <span class="meta-item">🗓️ Daily Practice</span>
+                    </div>
+                    <a href="journey.html#phase3" class="phase-link">Learn More →</a>
+                </div>
+
+                <!-- Arrow -->
+                <div class="journey-arrow">→</div>
+
+                <!-- Phase 4: Teaching -->
+                <div class="journey-phase-card phase-4-card">
+                    <div class="phase-icon-large">👑</div>
+                    <div class="phase-badge phase-4-badge">Phase 4</div>
+                    <h3 class="phase-title">Teaching</h3>
+                    <p class="phase-description">
+                        Become certified to guide others.
+                        Lead study groups and share the wisdom.
+                    </p>
+                    <div class="phase-meta">
+                        <span class="meta-item">📅 Ongoing</span>
+                        <span class="meta-item">🎓 Certification</span>
+                    </div>
+                    <a href="journey.html#phase4" class="phase-link">Learn More →</a>
+                </div>
+
+            </div>
+
+            <!-- CTA Button -->
+            <div class="journey-cta-container">
+                <a href="journey.html" class="journey-cta-button">
+                    Explore the Full Journey →
+                </a>
+                <p class="journey-cta-note">
+                    Premium members get full access to all 4 phases
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Platform Features Section -->
+    <section class="platform-features" id="features">
+        <div class="container">
+            <!-- Pricing Comparison Table -->
+            <div style="margin-top: 5rem;" id="pricing">
+                <div class="section-header">
+                    <h2>Start Free, Unlock Your Complete Transformation Journey</h2>
+                    <p>Try the Enochian Calendar free forever. Upgrade to access the complete 4-phase Journey + all premium features for $9.99/month.</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem; max-width: 900px; margin-left: auto; margin-right: auto;">
+                    <!-- Free Plan -->
+                    <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 2px solid var(--glass-border); border-radius: 25px; padding: 2.5rem; position: relative;">
+                        <h3 style="font-size: 1.5rem; color: var(--accent-gold); margin-bottom: 1rem;">Free Forever</h3>
+                        <div style="font-size: 3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">$0</div>
+                        <div style="color: var(--text-secondary); margin-bottom: 2rem;">Forever free</div>
+
+                        <ul style="list-style: none; padding: 0; margin-bottom: 2rem;">
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ <strong>Enochian Calendar</strong> (full access)</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Sacred date tracking</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Sabbath & holy day alerts</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Community (read-only)</li>
+                            <li style="padding: 0.5rem 0; color: rgba(255,255,255,0.3);">❌ 4-Phase Transformation Journey</li>
+                            <li style="padding: 0.5rem 0; color: rgba(255,255,255,0.3);">❌ Spiritual games</li>
+                            <li style="padding: 0.5rem 0; color: rgba(255,255,255,0.3);">❌ Daily quests & XP</li>
+                            <li style="padding: 0.5rem 0; color: rgba(255,255,255,0.3);">❌ Sacred journaling</li>
+                            <li style="padding: 0.5rem 0; color: rgba(255,255,255,0.3);">❌ AI spiritual guide</li>
+                        </ul>
+
+                        <a href="login.html" class="btn btn-secondary" style="width: 100%; text-align: center;">Start Free Now</a>
+                    </div>
+
+                    <!-- Premium Plan -->
+                    <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(245, 158, 11, 0.2)); backdrop-filter: blur(20px); border: 2px solid var(--accent-gold); border-radius: 25px; padding: 2.5rem; position: relative; transform: scale(1.05);">
+                        <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--accent-gold); color: #0a0e27; padding: 0.5rem 1.5rem; border-radius: 20px; font-weight: 700; font-size: 0.9rem;">🌟 MOST POPULAR</div>
+
+                        <h3 style="font-size: 1.5rem; color: var(--accent-gold); margin-bottom: 1rem;">Premium</h3>
+                        <div style="font-size: 3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">$9.99</div>
+                        <div style="color: var(--text-secondary); margin-bottom: 2rem;">per month</div>
+
+                        <ul style="list-style: none; padding: 0; margin-bottom: 2rem;">
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);"><strong>Everything in Free, plus:</strong></li>
+                            <li style="padding: 0.5rem 0; color: var(--accent-gold); font-weight: 600;">👑 <strong>Complete 4-Phase Transformation Journey</strong></li>
+                            <li style="padding: 0.75rem 0 0.75rem 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">🌅 Phase 1: Awakening (Ya Heard Me audiobook)</li>
+                            <li style="padding: 0.25rem 0 0.25rem 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">🧠 Phase 2: Understanding (7 Principles)</li>
+                            <li style="padding: 0.25rem 0 0.25rem 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">⚡ Phase 3: Mastery (365-day practice)</li>
+                            <li style="padding: 0.25rem 0 0.75rem 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">👑 Phase 4: Teaching (Certification)</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ All 14 spiritual sections</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Wisdom games & trivia</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Daily quests & XP system</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Sacred journal (5 types)</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ AI spiritual guide (GPT-4)</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Meditation & audio library</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Full community features</li>
+                        </ul>
+
+                        <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00" class="btn btn-primary" style="width: 100%; text-align: center;">Upgrade to Premium</a>
+                        <p style="text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary);">Cancel anytime · 7-day money-back guarantee</p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 3rem;">
+                    <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+                        <strong style="color: var(--accent-gold);">Your complete transformation journey costs less than 2 coffees per month.</strong> Go from awakening to certified teacher with a structured 4-phase path + all premium tools.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section - Social Proof -->
+    <section class="testimonials-featured">
+        <div class="container">
+            <div class="section-header">
+                <h2>What Our Members Are Saying</h2>
+                <p>Real transformations from spiritual practitioners using Eden Consciousness</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem;">
+                <!-- Testimonial 1 -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="color: var(--accent-gold); font-size: 1.2rem; margin-bottom: 1rem;">⭐⭐⭐⭐⭐</div>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.5rem;">
+                        "The Enochian Calendar transformed how I view time. I started with the free version and was hooked within days. Now I'm premium and use the AI guide, journaling, and quests every single day. My consciousness has expanded tremendously."
+                    </p>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #8b5cf6, #d946ef); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">👤</div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary);">Sarah M.</div>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary);">Premium member • Level 23</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="color: var(--accent-gold); font-size: 1.2rem; margin-bottom: 1rem;">⭐⭐⭐⭐⭐</div>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.5rem;">
+                        "I've tried many spiritual apps but Eden Consciousness is different. The gamification keeps me engaged—I actually WANT to complete my daily quests. The trivia games are fun AND educational. Best $10/month I spend."
+                    </p>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">👤</div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary);">Michael R.</div>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary);">Premium member • 45-day streak</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="color: var(--accent-gold); font-size: 1.2rem; margin-bottom: 1rem;">⭐⭐⭐⭐⭐</div>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.5rem;">
+                        "The free Enochian Calendar alone is worth signing up for. I tracked sacred time for a week and then upgraded to get the AI chatbot and meditation library. The depth of features is incredible for the price."
+                    </p>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">👤</div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary);">Jennifer K.</div>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary);">Free → Premium convert</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div style="text-align: center; margin-top: 3rem;">
-                <div style="display: inline-block; background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 25px; padding: 3rem; max-width: 600px;">
-                    <img src="https://i.imgur.com/LYVHJr5.jpeg" alt="You Never Left Eden Book Cover" loading="lazy" style="max-width: 200px; width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); margin-bottom: 2rem;">
-                    
-                    <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent-gold); margin-bottom: 1rem;">You Never Left Eden</h3>
-                    
-                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 2rem;">
-                        A transformational journey that reveals the profound truth hidden in plain sight. 
-                        Eden was never a place you left—it's a state of consciousness you forgot.
-                    </p>
-                    
-                    <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
-                        <a href="books.html" class="btn btn-primary">📖 Explore All Books</a>
-                        <a href="#email-capture" class="btn btn-secondary">🎁 Get Free Chapter</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Temple Access -->
-            <div style="text-align: center; margin-top: 4rem;">
-                <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(245, 158, 11, 0.15)); border-radius: 25px; padding: 3rem; border: 1px solid rgba(245, 158, 11, 0.3);">
-                    <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent-gold); margin-bottom: 1rem;">🏛️ Enter The Divine Temple</h3>
-                    
-                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-                        Join thousands of awakening souls in our sacred digital sanctuary. Experience 9 chambers of spiritual growth, 
-                        divine tools, and a community dedicated to consciousness expansion.
-                    </p>
-                    
-                    <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
-                        <a href="login.html" class="btn btn-primary">✨ Try Free Access</a>
-                        <a href="https://square.link/u/g8CFT019" class="btn btn-secondary">Join Premium ($27/month)</a>
-                    </div>
-
-                    <p style="margin-top: 1.5rem; color: var(--text-secondary); font-size: 0.95rem;">
-                        Start with <strong style="color: var(--accent-gold);">free access</strong> to the Enochian Calendar,
-                        then unlock all 14 spiritual tools with premium membership
-                    </p>
-                </div>
+                <a href="testimonials.html" class="btn btn-secondary">Read More Testimonials →</a>
             </div>
         </div>
     </section>
@@ -453,6 +795,561 @@
             </div>
         </div>
     </section>
+
+    <!-- Game Promo Popup -->
+    <div id="gamePromoPopup" class="game-flash-notification" style="display: none;">
+        <div class="flash-content">
+            <div class="flash-icon">🎮</div>
+            <div class="flash-text">
+                <div class="flash-heading"></div>
+                <div class="flash-subtext"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating PWA Install Button -->
+    <button id="floatingInstallBtn" class="floating-pwa-install" style="display: none;">
+        <div class="install-icon">📱</div>
+        <div class="install-text">Install App</div>
+    </button>
+
+    <style>
+        .floating-pwa-install {
+            position: fixed;
+            right: -250px;
+            top: 35%;
+            transform: translateY(-50%);
+            z-index: 9998;
+            background: linear-gradient(135deg, #8B5CF6, #D946EF);
+            color: white;
+            border: none;
+            border-radius: 12px 0 0 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.5);
+            cursor: pointer;
+            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .floating-pwa-install.show {
+            right: 0;
+        }
+
+        .floating-pwa-install:hover {
+            transform: translateY(-50%) translateX(-5px);
+            box-shadow: 0 15px 50px rgba(139, 92, 246, 0.7);
+        }
+
+        .install-icon {
+            font-size: 1.8rem;
+            animation: bounce 2s infinite;
+        }
+
+        .install-text {
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 10px 40px rgba(139, 92, 246, 0.5);
+            }
+            50% {
+                box-shadow: 0 15px 50px rgba(217, 70, 239, 0.7);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .floating-pwa-install {
+                padding: 0.8rem 1.2rem;
+                top: 40%;
+            }
+
+            .install-icon {
+                font-size: 1.5rem;
+            }
+
+            .install-text {
+                font-size: 0.9rem;
+            }
+        }
+
+        .game-flash-notification {
+            position: fixed;
+            right: -400px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10000;
+            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .game-flash-notification.show {
+            right: 2rem;
+        }
+
+        .flash-content {
+            background: rgba(10, 14, 39, 0.85);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            max-width: 300px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+        }
+
+        .flash-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .flash-text {
+            flex: 1;
+        }
+
+        .flash-heading {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            margin-bottom: 0.25rem;
+            line-height: 1.3;
+        }
+
+        .flash-subtext {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.3;
+        }
+
+        @media (max-width: 768px) {
+            .game-flash-notification.show {
+                right: 1rem;
+            }
+
+            .flash-content {
+                max-width: 280px;
+                padding: 0.9rem 1.2rem;
+            }
+
+            .flash-icon {
+                font-size: 1.8rem;
+            }
+
+            .flash-heading {
+                font-size: 0.85rem;
+            }
+
+            .flash-subtext {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* PWA Install Banner Styles */
+        .pwa-install-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10000;
+            background: linear-gradient(135deg, #d4af37, #8b5cf6);
+            padding: 1rem;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .pwa-install-banner.show {
+            transform: translateY(0);
+        }
+
+        .install-banner-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .install-icon {
+            font-size: 1.5rem;
+        }
+
+        .install-text h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        .install-text p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: white;
+        }
+
+        .install-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .install-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .dismiss-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .dismiss-btn:hover {
+            opacity: 1;
+        }
+
+        .pwa-manual-btn {
+            position: fixed;
+            top: 50%;
+            right: -60px;
+            z-index: 9999;
+            background: linear-gradient(135deg, #d4af37, #8b5cf6);
+            border: none;
+            color: white;
+            padding: 1rem 0.75rem;
+            border-radius: 15px 0 0 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: -5px 0 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.4s ease;
+            transform: translateY(-50%) rotate(-90deg);
+            transform-origin: center;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            width: 120px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pwa-manual-btn:hover {
+            right: -20px;
+            box-shadow: -8px 0 25px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(135deg, #f4c430, #9d6bfc);
+        }
+
+        .pwa-manual-btn:active {
+            transform: translateY(-50%) rotate(-90deg) scale(0.95);
+        }
+
+        .pwa-manual-btn.show {
+            right: -20px;
+            opacity: 1;
+        }
+
+        .pwa-manual-btn.hidden {
+            right: -120px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .install-banner-content {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                text-align: center;
+            }
+
+            .pwa-manual-btn {
+                top: 60%;
+                right: -70px;
+                width: 100px;
+                height: 35px;
+                font-size: 0.75rem;
+                padding: 0.75rem 0.5rem;
+            }
+            
+            .pwa-manual-btn:hover,
+            .pwa-manual-btn.show {
+                right: -30px;
+            }
+            
+            .pwa-manual-btn.hidden {
+                right: -130px;
+            }
+        }
+    </style>
+
+    <script>
+        // Time-based messaging for flash notification
+        function getTimeBasedMessage() {
+            const hour = new Date().getHours();
+
+            if (hour >= 5 && hour < 12) {
+                // Morning (5am - 12pm)
+                return {
+                    icon: '🌅',
+                    heading: 'Start Your Day with Trivia!',
+                    subheading: 'Play spiritual games • Unlock premium',
+                    timeOfDay: 'morning'
+                };
+            } else if (hour >= 12 && hour < 17) {
+                // Afternoon (12pm - 5pm)
+                return {
+                    icon: '☀️',
+                    heading: 'Afternoon Break Games!',
+                    subheading: 'Trivia & Memory Match • Try free',
+                    timeOfDay: 'afternoon'
+                };
+            } else if (hour >= 17 && hour < 21) {
+                // Evening (5pm - 9pm)
+                return {
+                    icon: '🌆',
+                    heading: 'Unwind with Divine Games!',
+                    subheading: '100+ questions • $9.99/month',
+                    timeOfDay: 'evening'
+                };
+            } else {
+                // Night (9pm - 5am)
+                return {
+                    icon: '🌙',
+                    heading: 'Night Reflection Games!',
+                    subheading: 'Test your wisdom • Play now',
+                    timeOfDay: 'night'
+                };
+            }
+        }
+
+        // Game Flash Notification Logic
+        function showGamePopup() {
+            const popup = document.getElementById('gamePromoPopup');
+            if (popup) {
+                // Get time-based message
+                const message = getTimeBasedMessage();
+
+                // Update flash content
+                const iconElement = popup.querySelector('.flash-icon');
+                const headingElement = popup.querySelector('.flash-heading');
+                const subheadingElement = popup.querySelector('.flash-subtext');
+
+                if (iconElement) iconElement.textContent = message.icon;
+                if (headingElement) headingElement.textContent = message.heading;
+                if (subheadingElement) subheadingElement.textContent = message.subheading;
+
+                // Show notification
+                popup.style.display = 'block';
+                setTimeout(() => {
+                    popup.classList.add('show');
+                }, 100);
+
+                // Track analytics
+                if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
+                    window.FirebaseConfig.analytics.trackEvent('game_popup_shown', {
+                        page: 'home',
+                        time_of_day: message.timeOfDay,
+                        hour: new Date().getHours()
+                    });
+                }
+
+                console.log(`🎮 Game flash: ${message.timeOfDay} (${message.icon})`);
+
+                // Auto-dismiss after 5 seconds
+                setTimeout(() => {
+                    closeGamePopup();
+                }, 5000);
+            }
+        }
+
+        function closeGamePopup() {
+            const popup = document.getElementById('gamePromoPopup');
+            if (popup) {
+                popup.classList.remove('show');
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                }, 500);
+
+                // Store dismissal time in localStorage
+                localStorage.setItem('gamePopupDismissed', Date.now().toString());
+
+                // Track dismissal
+                if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
+                    window.FirebaseConfig.analytics.trackEvent('game_popup_dismissed', {
+                        page: 'home'
+                    });
+                }
+            }
+        }
+
+        // Click to open premium page
+        document.addEventListener('DOMContentLoaded', function() {
+            const popup = document.getElementById('gamePromoPopup');
+            if (popup) {
+                popup.addEventListener('click', function() {
+                    window.location.href = 'https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00';
+                });
+            }
+        });
+
+        // Popup timing logic - REDUCED SPAM
+        window.addEventListener('load', function() {
+            // Check if popup was recently dismissed (within last 24 hours)
+            const lastDismissed = localStorage.getItem('gamePopupDismissed');
+            const now = Date.now();
+            const oneDayInMs = 24 * 60 * 60 * 1000;
+
+            if (lastDismissed && (now - parseInt(lastDismissed)) < oneDayInMs) {
+                // Don't show popup if dismissed within last 24 hours
+                console.log('🎮 Game popup: Dismissed recently, skipping');
+                return;
+            }
+
+            // Show first popup after 90 seconds (reduced spam)
+            setTimeout(function() {
+                showGamePopup();
+            }, 90000); // 90 seconds
+
+            // Show popup again every 10 minutes if still on page (reduced frequency)
+            setInterval(function() {
+                const lastDismissed = localStorage.getItem('gamePopupDismissed');
+                const now = Date.now();
+                const tenMinutesInMs = 10 * 60 * 1000;
+
+                // Only show if not dismissed in last 10 minutes
+                if (!lastDismissed || (now - parseInt(lastDismissed)) > tenMinutesInMs) {
+                    showGamePopup();
+                }
+            }, 600000); // 10 minutes
+
+            console.log('🎮 Game popup: Initialized - Will show after 90 seconds');
+        });
+
+        // Scroll-triggered popup DISABLED to reduce spam
+        // Users can click the "Join Premium" button if interested
+    </script>
+
+
+    <script>
+        // PWA Install Prompt - Floating Button Only
+        let deferredPrompt;
+        const floatingInstallBtn = document.getElementById('floatingInstallBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+
+            // Show the floating install button
+            if (floatingInstallBtn) {
+                floatingInstallBtn.style.display = 'flex';
+                // Slide in after 2 seconds
+                setTimeout(() => {
+                    floatingInstallBtn.classList.add('show');
+                }, 2000);
+            }
+
+            console.log('📱 PWA install prompt available');
+        });
+
+        // Floating Install Button Click Handler
+        if (floatingInstallBtn) {
+            floatingInstallBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) {
+                    console.log('No install prompt available');
+                    return;
+                }
+
+                // Show the install prompt
+                deferredPrompt.prompt();
+
+                // Wait for the user to respond to the prompt
+                const { outcome } = await deferredPrompt.userChoice;
+
+                console.log(`User response to install prompt: ${outcome}`);
+
+                // Track analytics
+                if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
+                    window.FirebaseConfig.analytics.trackEvent('pwa_install_prompt', {
+                        outcome: outcome,
+                        source: 'floating_button'
+                    });
+                }
+
+                // Clear the deferred prompt
+                deferredPrompt = null;
+
+                // Hide the button
+                floatingInstallBtn.classList.remove('show');
+                setTimeout(() => {
+                    floatingInstallBtn.style.display = 'none';
+                }, 500);
+            });
+        }
+
+        // Detect when PWA is successfully installed
+        window.addEventListener('appinstalled', () => {
+            console.log('🎉 Eden Temple PWA installed successfully!');
+            // Hide the button
+            if (floatingInstallBtn) {
+                floatingInstallBtn.classList.remove('show');
+                setTimeout(() => {
+                    floatingInstallBtn.style.display = 'none';
+                }, 500);
+            }
+            // Track installation
+            if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
+                window.FirebaseConfig.analytics.trackEvent('pwa_installed', {
+                    platform: 'web'
+                });
+            }
+        });
+
+        // Detect if app is running as PWA
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+            console.log('📱 Running as installed PWA');
+            // Track PWA usage
+            if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
+                window.FirebaseConfig.analytics.trackEvent('pwa_opened', {
+                    display_mode: 'standalone'
+                });
+            }
+        }
+    </script>
     </main>
 
     <!-- Footer -->
@@ -460,30 +1357,26 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>Products</h3>
-                    <a href="https://square.link/u/A953t7Hr">Digital Book</a>
-                    <a href="https://square.link/u/iBLVYLEQ">Audiobook</a>
-                    <a href="https://square.link/u/7K4TPYQt">Complete Bundle</a>
-                    <a href="https://square.link/u/7wKyFAHg">Workbook</a>
+                    <h3>Platform</h3>
+                    <a href="login.html">Start Free</a>
+                    <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00">Premium ($9.99/month)</a>
+                    <a href="members-new.html">Member Login</a>
+                    <a href="#pricing">Pricing</a>
                 </div>
                 <div class="footer-section">
-                    <h3>Temple Access</h3>
-                    <a href="https://square.link/u/g8CFT019">Monthly Membership</a>
-                    <a href="https://square.link/u/qodANI9O">Student Access</a>
-                    <a href="https://square.link/u/xuKzAPeA">Founding Members</a>
-                    <a href="members-new.html">Member Login</a>
+                    <h3>Learn More</h3>
+                    <a href="about-nazir.html">About Nazir</a>
+                    <a href="books.html">Books & Guides</a>
+                    <a href="resources.html">Free Resources</a>
+                    <a href="https://medium.com/@edenconsciousnesssdt" target="_blank" rel="noopener noreferrer">Blog</a>
                 </div>
                 <div class="footer-section">
                     <h3>Community</h3>
                     <a href="testimonials.html">Testimonials</a>
-                    <a href="book-reviews.html">Book Reviews</a>
-                    <a href="https://medium.com/@edenconsciousnesssdt" target="_blank" rel="noopener noreferrer">Blog</a>
-                    <a href="events.html">Live Events</a>
+                    <a href="contact.html">Contact Us</a>
                 </div>
                 <div class="footer-section">
-                    <h3>Support</h3>
-                    <a href="contact.html">Contact Us</a>
-                    <a href="resources.html">Free Resources</a>
+                    <h3>Legal</h3>
                     <a href="privacy.html">Privacy Policy</a>
                     <a href="terms.html">Terms of Service</a>
                     <a href="affiliate-disclosure.html">Affiliate Disclosure</a>
@@ -726,5 +1619,289 @@
 
     <!-- Load section validation utility -->
     <script src="js/section-validation.min.js" defer></script>
+
+    <!-- Header Navigation Script -->
+    <script src="js/header.js" defer></script>
+
+    <!-- PWA Installation Script -->
+    <script>
+        // Use global deferredPrompt (declared above)
+        
+        // PWA Installation Setup
+        document.addEventListener('DOMContentLoaded', function() {
+            // Register service worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('🏛️ Divine Temple SW registered:', registration);
+                    })
+                    .catch(error => {
+                        console.error('❌ SW registration failed:', error);
+                    });
+            }
+            
+            // Setup PWA install functionality
+            setupPWAInstall();
+        });
+        
+        function setupPWAInstall() {
+            const installBanner = document.getElementById('pwaInstallBanner');
+            const installBtn = document.getElementById('pwaInstallBtn');
+            const dismissBtn = document.getElementById('pwaDismissBtn');
+            const manualBtn = document.getElementById('pwaManualBtn');
+            
+            if (!installBanner || !installBtn || !dismissBtn || !manualBtn) return;
+            
+            // Handle button visibility based on install status
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+                // Already installed - hide button
+                manualBtn.classList.add('hidden');
+                console.log('🏛️ PWA already installed, hiding install button');
+            } else if ('serviceWorker' in navigator) {
+                // PWA supported - show button immediately
+                manualBtn.classList.remove('hidden');
+                manualBtn.classList.add('show');
+                manualBtn.style.display = 'flex';
+                console.log('📱 PWA supported, showing install button immediately');
+                
+                // Auto-slide in after page load
+                setTimeout(() => {
+                    manualBtn.classList.add('show');
+                }, 2000);
+            } else {
+                console.log('❌ PWA not supported on this browser');
+            }
+            
+            // Listen for beforeinstallprompt with enhanced handling
+            window.addEventListener('beforeinstallprompt', (e) => {
+                console.log('📱 beforeinstallprompt event fired');
+                e.preventDefault();
+                deferredPrompt = e;
+                
+                // Update button visibility
+                if (manualBtn) {
+                    manualBtn.classList.remove('hidden');
+                    manualBtn.classList.add('show');
+                    manualBtn.style.display = 'flex';
+                }
+                
+                // Show install banner after delay (only if not dismissed recently)
+                const lastDismissed = localStorage.getItem('pwa-install-dismissed');
+                const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+                
+                if (!lastDismissed || parseInt(lastDismissed) < oneDayAgo) {
+                    setTimeout(() => {
+                        showInstallBanner();
+                    }, 3000);
+                }
+            });
+            
+            // Install button click
+            installBtn.addEventListener('click', installPWA);
+            
+            // Dismiss button click
+            dismissBtn.addEventListener('click', () => {
+                hideInstallBanner();
+                localStorage.setItem('pwa-install-dismissed', Date.now().toString());
+            });
+            
+            // Listen for app installed
+            window.addEventListener('appinstalled', () => {
+                console.log('🎉 Divine Temple PWA installed successfully');
+                hideInstallBanner();
+                
+                // Hide install button with animation
+                if (manualBtn) {
+                    manualBtn.classList.add('hidden');
+                    setTimeout(() => {
+                        manualBtn.style.display = 'none';
+                    }, 400);
+                }
+                
+                // Show success message
+                showNotification('🎉 Divine Temple installed successfully! Check your home screen or app launcher.', 'success');
+                
+                // Store installation status
+                localStorage.setItem('pwa-installed', 'true');
+            });
+        }
+        
+        function showInstallBanner() {
+            const banner = document.getElementById('pwaInstallBanner');
+            if (banner) {
+                banner.style.display = 'block';
+                setTimeout(() => banner.classList.add('show'), 100);
+            }
+        }
+        
+        function hideInstallBanner() {
+            const banner = document.getElementById('pwaInstallBanner');
+            if (banner) {
+                banner.classList.remove('show');
+                setTimeout(() => banner.style.display = 'none', 300);
+            }
+        }
+        
+        async function installPWA() {
+            console.log('🏛️ Install PWA triggered, deferredPrompt:', !!deferredPrompt);
+            
+            // Check if already installed
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+                showNotification('✅ Divine Temple is already installed!', 'success');
+                return;
+            }
+            
+            if (!deferredPrompt) {
+                // Enhanced fallback with platform-specific instructions
+                const userAgent = navigator.userAgent.toLowerCase();
+                let instructions = '';
+                
+                if (userAgent.includes('chrome') && !userAgent.includes('edg')) {
+                    instructions = '🌐 Chrome: Click the install icon (⊕) in the address bar';
+                } else if (userAgent.includes('edg')) {
+                    instructions = '🔷 Edge: Click the install icon (⊕) in the address bar';
+                } else if (userAgent.includes('firefox')) {
+                    instructions = '🦊 Firefox: Look for install option in address bar or menu';
+                } else if (userAgent.includes('safari')) {
+                    instructions = '🧭 Safari: Tap Share button → "Add to Home Screen"';
+                } else {
+                    instructions = '📱 Use your browser menu → "Install app" or "Add to Home Screen"';
+                }
+                
+                showNotification(`🏛️ ${instructions}`, 'info');
+                return;
+            }
+            
+            try {
+                // Show the install prompt
+                const result = await deferredPrompt.prompt();
+                console.log('📱 Install prompt shown');
+                
+                // Wait for the user to respond to the prompt
+                const choiceResult = await deferredPrompt.userChoice;
+                console.log('👤 User choice:', choiceResult.outcome);
+                
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('✅ User accepted PWA install');
+                    hideInstallBanner();
+                    showNotification('🎉 Installing Divine Temple...', 'success');
+                } else {
+                    console.log('❌ User dismissed PWA install');
+                    showNotification('📱 Install anytime using your browser menu', 'info');
+                }
+                
+                // Reset the deferred prompt
+                deferredPrompt = null;
+            } catch (error) {
+                console.error('❌ PWA install failed:', error);
+                showNotification('❌ Installation failed. Try using your browser menu → "Install app"', 'error');
+            }
+        }
+        
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `pwa-notification pwa-notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()">✕</button>
+                </div>
+            `;
+            
+            // Add notification styles if not already added
+            if (!document.querySelector('#pwa-notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'pwa-notification-styles';
+                style.textContent = `
+                    .pwa-notification {
+                        position: fixed;
+                        top: 1rem;
+                        right: 1rem;
+                        z-index: 10001;
+                        background: #1a1a2e;
+                        border: 1px solid #d4af37;
+                        border-radius: 10px;
+                        padding: 1rem;
+                        color: white;
+                        max-width: 300px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                        animation: slideIn 0.3s ease;
+                    }
+                    .pwa-notification-success { border-color: #10b981; }
+                    .pwa-notification-error { border-color: #ef4444; }
+                    .notification-content { display: flex; justify-content: space-between; align-items: center; }
+                    .notification-content button { background: transparent; border: none; color: white; cursor: pointer; }
+                    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+        
+        // Check if running as PWA
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('🏛️ Running as installed PWA');
+            document.body.classList.add('pwa-mode');
+        }
+        
+        // Make installPWA globally available
+        window.installPWA = installPWA;
+    </script>
+    <!-- Subscriber Count Update Script -->
+    <script>
+        // Load and update subscriber count from Firestore
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (typeof firebase !== 'undefined' && firebase.firestore) {
+                try {
+                    const db = firebase.firestore();
+
+                    // Listen for real-time updates to subscriber count
+                    db.collection('stats').doc('globalStats')
+                        .onSnapshot((doc) => {
+                            if (doc.exists) {
+                                const data = doc.data();
+                                const count = data.totalMembers || data.totalSubscribers || 40;
+                                const displayElement = document.getElementById('memberCountDisplay');
+
+                                if (displayElement) {
+                                    // Animate the count update
+                                    const currentCount = parseInt(displayElement.textContent) || 40;
+                                    const targetCount = count;
+
+                                    if (targetCount > currentCount) {
+                                        let current = currentCount;
+                                        const increment = Math.ceil((targetCount - currentCount) / 20);
+                                        const interval = setInterval(() => {
+                                            current += increment;
+                                            if (current >= targetCount) {
+                                                current = targetCount;
+                                                clearInterval(interval);
+                                            }
+                                            displayElement.textContent = current >= 100 ? current.toLocaleString() : `${current}+`;
+                                        }, 50);
+                                    } else {
+                                        displayElement.textContent = targetCount >= 100 ? targetCount.toLocaleString() : `${targetCount}+`;
+                                    }
+                                }
+                            }
+                        }, (error) => {
+                            console.error('Error fetching subscriber count:', error);
+                            // Keep the default 40+ if error occurs
+                        });
+
+                } catch (error) {
+                    console.error('Error initializing subscriber count:', error);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
