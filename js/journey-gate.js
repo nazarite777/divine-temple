@@ -17,23 +17,8 @@
 
         console.log('Journey gate initializing...');
 
-        // Wait for Firebase and AuthHelper to be ready
-        await waitForDependencies();
-
-        // Simple check: just verify user is logged in
-        const user = firebase.auth().currentUser;
-        
-        if (!user) {
-            console.log('No user logged in - redirecting to login');
-            handleAccessDenied('not_logged_in');
-            return;
-        }
-
-        console.log('User logged in:', user.email);
-        
-        // User is authenticated - allow page to load
-        // Premium gate will be handled elsewhere if needed
-        initJourneyContent({ hasAccess: true, user });
+        // Just load the content - no login required
+        initJourneyContent({ hasAccess: true });
     }
 
     /**
@@ -197,4 +182,5 @@
         showAdminBadge
     };
 })();
+
 
