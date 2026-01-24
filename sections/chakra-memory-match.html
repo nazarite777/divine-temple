@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chakra Memory Match - Divine Temple</title>
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#d4af37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Divine Temple">
+    
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <!-- Firebase SDKs -->
@@ -158,9 +166,24 @@
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
+            position: relative;
         }
 
-        .theme-btn:hover {
+        .theme-btn.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .theme-btn.locked::after {
+            content: '🔒';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .theme-btn:hover:not(.locked) {
             transform: translateY(-3px);
             border-color: var(--primary-gold);
             box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
@@ -170,6 +193,62 @@
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(139, 92, 246, 0.2));
             border-color: var(--primary-gold);
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .locked-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .upgrade-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .upgrade-modal.show {
+            display: flex;
+        }
+
+        .upgrade-modal-content {
+            background: linear-gradient(135deg, #0F0F23, #1a1a2e);
+            border: 2px solid var(--primary-gold);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.4);
+        }
+
+        .upgrade-modal h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .upgrade-modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
         }
 
         .theme-icon {
@@ -720,9 +799,76 @@
                 font-size: 2rem;
             }
         }
+        /* PWA Install Button - Sidebar Style */
+        .pwa-install-btn {
+            position: fixed;
+            top: 50%;
+            right: -60px;
+            z-index: 10000;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            border: none;
+            color: white;
+            padding: 1rem 0.75rem;
+            border-radius: 15px 0 0 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: -5px 0 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.4s ease;
+            transform: translateY(-50%) rotate(-90deg);
+            transform-origin: center;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            width: 120px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pwa-install-btn:hover {
+            right: -20px;
+            box-shadow: -8px 0 25px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(135deg, #f4c430, #9d6bfc);
+        }
+
+        .pwa-install-btn.show {
+            right: -20px;
+            opacity: 1;
+        }
+
+        .pwa-install-btn.hidden {
+            right: -120px;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 768px) {
+            .pwa-install-btn {
+                top: 60%;
+                right: -70px;
+                width: 100px;
+                height: 35px;
+                font-size: 0.75rem;
+                padding: 0.75rem 0.5rem;
+            }
+            
+            .pwa-install-btn:hover,
+            .pwa-install-btn.show {
+                right: -30px;
+            }
+        }
     </style>
+    
+    <!-- Enhanced PWA Installer -->
+    <script src="../js/enhanced-pwa-installer.js"></script>
 </head>
 <body>
+    <!-- PWA Install Button -->
+    <button id="pwaInstallBtn" class="pwa-install-btn" onclick="window.enhancedPWAInstaller ? window.enhancedPWAInstaller.install() : installPWA()" title="Install Divine Temple App">
+        🏛️ Install App
+    </button>
+    
     <div class="game-container">
         <a href="../free-dashboard.html" class="back-btn">
             <span>←</span>
@@ -747,20 +893,23 @@
                         <div class="theme-name">Chakra Energy</div>
                         <div class="theme-desc">Sanskrit names & symbols</div>
                     </div>
-                    <div class="theme-btn" data-theme="etymology" onclick="selectTheme('etymology')">
+                    <div class="theme-btn" data-theme="etymology" onclick="selectTheme('etymology')" id="theme-etymology">
                         <div class="theme-icon">📜</div>
                         <div class="theme-name">Biblical Etymology</div>
                         <div class="theme-desc">Hebrew terms & meanings</div>
+                        <span class="locked-badge" style="display: none;">🔒 Premium</span>
                     </div>
-                    <div class="theme-btn" data-theme="names" onclick="selectTheme('names')">
+                    <div class="theme-btn" data-theme="names" onclick="selectTheme('names')" id="theme-names">
                         <div class="theme-icon">👑</div>
                         <div class="theme-name">Divine Names</div>
                         <div class="theme-desc">Sacred names & meanings</div>
+                        <span class="locked-badge" style="display: none;">🔒 Premium</span>
                     </div>
-                    <div class="theme-btn" data-theme="numbers" onclick="selectTheme('numbers')">
+                    <div class="theme-btn" data-theme="numbers" onclick="selectTheme('numbers')" id="theme-numbers">
                         <div class="theme-icon">🔢</div>
                         <div class="theme-name">Sacred Numbers</div>
                         <div class="theme-desc">Numbers & spiritual meanings</div>
+                        <span class="locked-badge" style="display: none;">🔒 Premium</span>
                     </div>
                 </div>
             </div>
@@ -883,7 +1032,109 @@
         </div>
     </div>
 
+    <!-- Upgrade Modal -->
+    <div id="upgradeModal" class="upgrade-modal">
+        <div class="upgrade-modal-content">
+            <h2>🔒 Premium Theme Locked</h2>
+            <p style="color: var(--text-secondary); margin: 1.5rem 0; line-height: 1.7;">
+                Unlock <strong style="color: var(--primary-gold);">Biblical Etymology</strong>,
+                <strong style="color: var(--primary-gold);">Divine Names</strong>, and
+                <strong style="color: var(--primary-gold);">Sacred Numbers</strong> themes with premium access.
+            </p>
+
+            <div style="background: rgba(212, 175, 55, 0.1); border: 1px solid var(--primary-gold); border-radius: 15px; padding: 1.5rem; margin: 1.5rem 0;">
+                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Premium Benefits:</div>
+                <div style="color: var(--primary-gold); font-weight: 600;">✨ 4 Unique Themes</div>
+                <div style="color: var(--primary-gold); font-weight: 600;">✨ 100+ Card Pairs</div>
+                <div style="color: var(--primary-gold); font-weight: 600;">✨ All Difficulty Levels</div>
+                <div style="color: var(--primary-gold); font-weight: 600;">✨ Biblical Wisdom Unlocked</div>
+                <div style="color: var(--primary-gold); font-weight: 600;">✨ 14+ Spiritual Tools & Features</div>
+            </div>
+
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <div style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.2;">
+                    $9.99<span style="font-size: 1.2rem;">/month</span>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                    Premium Access • Cancel Anytime
+                </div>
+            </div>
+
+            <div class="upgrade-modal-buttons">
+                <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00" class="btn btn-primary" style="text-decoration: none;">
+                    Upgrade to Premium
+                </a>
+                <button class="btn btn-secondary" onclick="closeUpgradeModal()">
+                    Maybe Later
+                </button>
+            </div>
+
+            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 1rem; font-style: italic;">
+                More features being added regularly
+            </div>
+        </div>
+    </div>
+
     <!-- Enhanced chakra memory system with sounds and improved persistence -->
     <script src="../js/chakra-memory-system-enhanced.js"></script>
+
+    <!-- Freemium restrictions script -->
+    <script>
+        // Detect if user is on freemium tier (coming from free-dashboard)
+        const isFreemium = document.referrer.includes('free-dashboard') ||
+                          window.location.search.includes('tier=free') ||
+                          !window.location.pathname.includes('members');
+
+        console.log('🎮 Memory Match - Freemium mode:', isFreemium);
+
+        if (isFreemium) {
+            // Lock premium themes
+            const premiumThemes = ['etymology', 'names', 'numbers'];
+
+            premiumThemes.forEach(themeId => {
+                const themeBtn = document.getElementById(`theme-${themeId}`);
+                if (themeBtn) {
+                    themeBtn.classList.add('locked');
+                    const badge = themeBtn.querySelector('.locked-badge');
+                    if (badge) {
+                        badge.style.display = 'inline-block';
+                    }
+                }
+            });
+
+            // Override selectTheme function to show upgrade modal for locked themes
+            const originalSelectTheme = window.selectTheme;
+            window.selectTheme = function(theme) {
+                if (premiumThemes.includes(theme)) {
+                    showUpgradeModal();
+                    return;
+                }
+                if (originalSelectTheme) {
+                    originalSelectTheme(theme);
+                }
+            };
+        }
+
+        function showUpgradeModal() {
+            const modal = document.getElementById('upgradeModal');
+            if (modal) {
+                modal.classList.add('show');
+            }
+        }
+
+        function closeUpgradeModal() {
+            const modal = document.getElementById('upgradeModal');
+            if (modal) {
+                modal.classList.remove('show');
+            }
+        }
+
+        // Close modal on background click
+        document.getElementById('upgradeModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeUpgradeModal();
+            }
+        });
+    </script>
 </body>
 </html>

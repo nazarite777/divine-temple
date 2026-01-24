@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Spiritual Trivia - Free Edition - Divine Temple</title>
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="../manifest-trivia-free.json">
+    <meta name="theme-color" content="#d4af37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Consciousness Trivia Free">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <!-- Firebase SDKs -->
@@ -44,6 +51,120 @@
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
+        }
+
+        /* PWA Install Banner Styles */
+        .install-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            padding: 1rem;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .install-banner.show {
+            transform: translateY(0);
+        }
+
+        .install-banner-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .install-icon {
+            font-size: 1.5rem;
+        }
+
+        .install-text h4 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .install-text p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .install-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .install-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .dismiss-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .dismiss-btn:hover {
+            opacity: 1;
+        }
+
+        .manual-install-btn {
+            position: fixed;
+            top: 50%;
+            right: -80px;
+            z-index: 999;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            border: none;
+            color: white;
+            padding: 1rem 0.75rem;
+            border-radius: 15px 0 0 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: -5px 0 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.4s ease;
+            transform: translateY(-50%) rotate(-90deg);
+            transform-origin: center;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            width: 120px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .manual-install-btn:hover {
+            right: -40px;
+            box-shadow: -8px 0 25px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(135deg, #f4c430, #9d6bfc);
+        }
+
+        .manual-install-btn:active {
+            transform: translateY(-50%) rotate(-90deg) scale(0.95);
+        }
+
+        .manual-install-btn.hidden {
+            right: -120px;
+            opacity: 0;
         }
 
         body::before {
@@ -154,6 +275,109 @@
             color: var(--text-secondary);
             font-size: 1.1rem;
             margin-bottom: 1rem;
+        }
+
+        /* PREMIUM CATEGORIES PREVIEW (LOCKED) */
+        .premium-categories-preview {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(212, 175, 55, 0.1));
+            border: 2px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .locked-categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .locked-category-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .locked-category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(139, 92, 246, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .locked-category-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .locked-category-card:hover::before {
+            opacity: 1;
+        }
+
+        .category-icon {
+            font-size: 2rem;
+            z-index: 1;
+        }
+
+        .category-info {
+            flex: 1;
+            z-index: 1;
+        }
+
+        .category-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .category-count {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .premium-badge {
+            background: linear-gradient(135deg, var(--accent-purple), var(--primary-gold));
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            z-index: 1;
+        }
+
+        .unlock-all-btn {
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .unlock-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
         }
 
         /* UPGRADE CTA BANNER */
@@ -423,43 +647,194 @@
             }
         }
     </style>
+    
+    <!-- Enhanced PWA Installer -->
+    <script src="../js/enhanced-pwa-installer.js"></script>
+    
+    <!-- PWA Button Debug CSS -->
+    <link rel="stylesheet" href="../css/pwa-button-force-show.css">
 </head>
 <body>
+    <!-- PWA Install Banner -->
+    <div id="installBanner" class="install-banner" style="display: none;">
+        <div class="install-banner-content">
+            <div class="install-icon">📱</div>
+            <div class="install-text">
+                <h4>Install Consciousness Trivia</h4>
+                <p>Get offline access and native app experience</p>
+            </div>
+            <button id="installBtn" class="install-btn">Install App</button>
+            <button id="dismissInstall" class="dismiss-btn">✕</button>
+        </div>
+    </div>
+
     <div class="trivia-container">
         <a href="../free-dashboard.html" class="back-btn">
             <span>←</span>
             <span>Back to Dashboard</span>
         </a>
+        
+        <!-- PWA Manual Install Button -->
+        <button id="manualInstallBtn" class="manual-install-btn" onclick="window.enhancedPWAInstaller ? window.enhancedPWAInstaller.install() : installPWA()" title="Install as PWA">
+            📱 Install App
+        </button>
 
         <div class="trivia-header">
             <div class="free-edition-badge">
-                <span>✨</span>
-                <span>Free Edition - 30 Questions</span>
+                <span>🧠</span>
+                <span>Deprogramming Edition - 30 Questions</span>
             </div>
-            <h1>✨ Daily Spiritual Trivia ✨</h1>
-            <p class="trivia-subtitle">Test your knowledge, earn XP, and expand your consciousness</p>
+            <h1>🔓 Consciousness Awakening Trivia</h1>
+            <p class="trivia-subtitle">Challenge religious programming • Discover hidden truths • Awaken divine consciousness</p>
+            <p style="color: var(--primary-gold); font-weight: 600; margin-top: 0.5rem;">"You will know the truth, and the truth will set you free" - John 8:32</p>
         </div>
 
         <!-- Question Limit Indicator -->
         <div class="question-limit-indicator">
             <div class="question-limit-text">
-                <strong id="questionsCompleted">0</strong> of <strong>30</strong> free questions explored
+                <strong id="questionsCompleted">0</strong> of <strong>30</strong> consciousness-expanding questions explored
             </div>
             <div class="question-progress-bar">
                 <div class="question-progress-fill" id="questionProgressFill" style="width: 0%"></div>
             </div>
             <p style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--primary-gold);">
-                💎 Premium members get 100+ questions across 10+ categories
+                🔓 Premium members access 100+ advanced truth revelations across 12 forbidden knowledge categories
             </p>
+        </div>
+
+        <!-- Premium Categories Preview (Locked) -->
+        <div class="premium-categories-preview">
+            <h3 style="text-align: center; margin-bottom: 1.5rem; color: var(--primary-gold); font-family: 'Playfair Display', serif;">
+                🔒 Premium Categories - Unlock Advanced Knowledge
+            </h3>
+            <div class="locked-categories-grid">
+                <!-- Row 1 -->
+                <div class="locked-category-card" onclick="showUpgradePrompt()">
+                    <div class="category-icon">🔯</div>
+                    <div class="category-info">
+                        <div class="category-name">Kabbalah & Tree of Life</div>
+                        <div class="category-count">9 questions</div>
+                    </div>
+                    <div class="premium-badge">🔒 PREMIUM</div>
+                </div>
+
+                <div class="locked-category-card" onclick="showUpgradePrompt()">
+                    <div class="category-icon">👁️</div>
+                    <div class="category-info">
+                        <div class="category-name">Enochian Mysteries</div>
+                        <div class="category-count">9 questions</div>
+                    </div>
+                    <div class="premium-badge">🔒 PREMIUM</div>
+                </div>
+
+                <div class="locked-category-card" onclick="showUpgradePrompt()">
+                    <div class="category-icon">🐍</div>
+                    <div class="category-info">
+                        <div class="category-name">Gnostic Wisdom</div>
+                        <div class="category-count">9 questions</div>
+                    </div>
+                    <div class="premium-badge">🔒 PREMIUM</div>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="locked-category-card" onclick="showUpgradePrompt()">
+                    <div class="category-icon">🔺</div>
+                    <div class="category-info">
+                        <div class="category-name">Sacred Geometry</div>
+                        <div class="category-count">9 questions</div>
+                    </div>
+                    <div class="premium-badge">🔒 PREMIUM</div>
+                </div>
+
+                <div class="locked-category-card" onclick="showUpgradePrompt()">
+                    <div class="category-icon">📜</div>
+                    <div class="category-info">
+                        <div class="category-name">Hidden Biblical Codes</div>
+                        <div class="category-count">9 questions</div>
+                    </div>
+                    <div class="premium-badge">🔒 PREMIUM</div>
+                </div>
+
+                <div class="locked-category-card" onclick="showUpgradePrompt()">
+                    <div class="category-icon">🧠</div>
+                    <div class="category-info">
+                        <div class="category-name">Consciousness Technology</div>
+                        <div class="category-count">9 questions</div>
+                    </div>
+                    <div class="premium-badge">🔒 PREMIUM</div>
+                </div>
+
+                <!-- Row 3 -->
+                <div class="locked-category-card" onclick="showUpgradePrompt()">
+                    <div class="category-icon">🏛️</div>
+                    <div class="category-info">
+                        <div class="category-name">Ancient Mystery Schools</div>
+                        <div class="category-count">9 questions</div>
+                    </div>
+                    <div class="premium-badge">🔒 PREMIUM</div>
+                </div>
+
+                <div class="locked-category-card" onclick="showUpgradePrompt()">
+                    <div class="category-icon">🌈</div>
+                    <div class="category-info">
+                        <div class="category-name">Chakras & Energy Systems</div>
+                        <div class="category-count">9 questions</div>
+                    </div>
+                    <div class="premium-badge">🔒 PREMIUM</div>
+                </div>
+
+                <div class="locked-category-card" onclick="showUpgradePrompt()">
+                    <div class="category-icon">🧪</div>
+                    <div class="category-info">
+                        <div class="category-name">Alchemy & Transformation</div>
+                        <div class="category-count">9 questions</div>
+                    </div>
+                    <div class="premium-badge">🔒 PREMIUM</div>
+                </div>
+
+                <!-- Row 4 -->
+                <div class="locked-category-card" onclick="showUpgradePrompt()">
+                    <div class="category-icon">⭐</div>
+                    <div class="category-info">
+                        <div class="category-name">Astrotheology</div>
+                        <div class="category-count">9 questions</div>
+                    </div>
+                    <div class="premium-badge">🔒 PREMIUM</div>
+                </div>
+
+                <div class="locked-category-card" onclick="showUpgradePrompt()">
+                    <div class="category-icon">🌙</div>
+                    <div class="category-info">
+                        <div class="category-name">Divine Feminine Mysteries</div>
+                        <div class="category-count">9 questions</div>
+                    </div>
+                    <div class="premium-badge">🔒 PREMIUM</div>
+                </div>
+
+                <div class="locked-category-card" onclick="showUpgradePrompt()">
+                    <div class="category-icon">🔢</div>
+                    <div class="category-info">
+                        <div class="category-name">Sacred Numerology</div>
+                        <div class="category-count">9 questions</div>
+                    </div>
+                    <div class="premium-badge">🔒 PREMIUM</div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="unlock-all-btn" onclick="showUpgradePrompt()">
+                    💎 Unlock All 100+ Questions
+                </button>
+            </div>
         </div>
 
         <!-- Upgrade Banner -->
         <div class="upgrade-banner">
             <div class="upgrade-banner-content">
-                <h3>🚀 Ready for More Challenges?</h3>
-                <p>Unlock 100+ advanced questions, leaderboards, timed challenges, and exclusive categories!</p>
-                <a href="mailto:support@divinetemple.com?subject=Premium Access" class="upgrade-btn">
-                    Unlock Premium Access
+                <h3>🔥 Ready to Go Deeper Down the Rabbit Hole?</h3>
+                <p>Premium members access 100+ advanced deprogramming questions (growing to 500+) covering Kabbalah, Enochian mysteries, hidden biblical truths, sacred geometry, and consciousness expansion that religious institutions don't want you to know!</p>
+                <a href="mailto:support@divinetemple.com?subject=Premium Access - Ready for Truth" class="upgrade-btn">
+                    💎 Unlock Hidden Knowledge
                 </a>
             </div>
         </div>
@@ -468,19 +843,19 @@
         <div class="stats-bar">
             <div class="stat-card">
                 <div class="stat-value" id="totalQuizzes">0</div>
-                <div class="stat-label">Quizzes Completed</div>
+                <div class="stat-label">Truth Sessions</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="currentStreak">0</div>
-                <div class="stat-label">Day Streak 🔥</div>
+                <div class="stat-label">Awakening Streak 🔥</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="perfectScores">0</div>
-                <div class="stat-label">Perfect Scores</div>
+                <div class="stat-label">Perfect Awakenings</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="totalXPEarned">0</div>
-                <div class="stat-label">Total XP</div>
+                <div class="stat-label">Consciousness XP</div>
             </div>
         </div>
 
@@ -492,15 +867,18 @@
 
         <!-- Already Completed Message -->
         <div id="completedMessage" class="completed-message" style="display: none;">
-            <div class="completed-icon">🎉</div>
-            <h2 class="completed-title">You've completed today's free trivia!</h2>
-            <p class="time-remaining">Come back tomorrow for new questions</p>
+            <div class="completed-icon">🧠</div>
+            <h2 class="completed-title">Consciousness Expansion Complete!</h2>
+            <p class="time-remaining">Return tomorrow for more truth revelations</p>
             <div style="background: rgba(139, 92, 246, 0.15); border: 1px solid var(--accent-purple); border-radius: 15px; padding: 1.5rem; margin: 2rem 0;">
                 <p style="font-size: 1.1rem; margin-bottom: 1rem;">
-                    🌟 Want unlimited access to 100+ questions?
+                    🔓 Ready to access the forbidden knowledge vault?
                 </p>
-                <a href="mailto:support@divinetemple.com?subject=Premium Access" class="upgrade-btn">
-                    Upgrade to Premium
+                <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                    Premium members explore advanced topics: Enochian magic, Kabbalah secrets, hidden biblical codes, sacred geometry mysteries, and consciousness technologies.
+                </p>
+                <a href="mailto:support@divinetemple.com?subject=Premium Access - Unlock Hidden Knowledge" class="upgrade-btn">
+                    💎 Access Hidden Vault
                 </a>
             </div>
             <div class="action-buttons">
@@ -574,11 +952,19 @@
     <!-- Enhanced trivia system with FREE TIER limitations -->
     <script src="../js/trivia-audio-system.js"></script>
     <script src="../js/daily-trivia-FREE-VERSION.js"></script>
+    
+    <!-- PWA Service Worker -->
+    <script src="../js/pwa-handler.js"></script>
 
     <script>
         // Show upgrade modal after completing free trivia
         function showUpgradeModal() {
             document.getElementById('upgradeModal').classList.add('show');
+        }
+
+        // Alias for locked category cards
+        function showUpgradePrompt() {
+            showUpgradeModal();
         }
 
         function closeUpgradeModal() {
@@ -589,6 +975,54 @@
         document.getElementById('upgradeModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeUpgradeModal();
+            }
+        });
+
+        // Initialize PWA functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enhanced PWA install button management with new installer
+            const manualBtn = document.getElementById('manualInstallBtn');
+            if (manualBtn && window.enhancedPWAInstaller) {
+                console.log('🏛️ Free Trivia - Setting up enhanced PWA installer');
+                
+                // Initial setup - wait for installer to initialize
+                setTimeout(() => {
+                    const status = window.enhancedPWAInstaller.getStatus();
+                    
+                    if (status.isStandalone) {
+                        manualBtn.classList.add('hidden');
+                        console.log('📱 PWA already installed, hiding button');
+                    } else if (status.supportsPWA) {
+                        manualBtn.classList.remove('hidden');
+                        manualBtn.style.display = 'flex';
+                        
+                        // Auto-show on page load
+                        setTimeout(() => {
+                            manualBtn.classList.add('show');
+                        }, 2000);
+                        
+                        console.log('✅ PWA supported, showing install button');
+                    } else {
+                        manualBtn.classList.add('hidden');
+                        console.log('❌ PWA not supported');
+                    }
+                }, 500);
+                
+                // Enhanced click handler using new installer
+                manualBtn.addEventListener('click', async () => {
+                    console.log('🎯 Free Trivia - Enhanced install clicked');
+                    
+                    try {
+                        const result = await window.enhancedPWAInstaller.install();
+                        
+                        if (result.outcome === 'accepted') {
+                            manualBtn.classList.add('hidden');
+                            console.log('🎉 PWA install accepted');
+                        }
+                    } catch (error) {
+                        console.error('❌ Enhanced install error:', error);
+                    }
+                });
             }
         });
     </script>

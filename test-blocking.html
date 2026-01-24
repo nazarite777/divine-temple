@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔒 Access Control Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #fff;
+        }
+        .test-section {
+            background: #16213e;
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .authorized { border-color: #10b981; }
+        .blocked { border-color: #ef4444; }
+        button {
+            background: #d4af37;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .result {
+            background: #000;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔒 Premium Access Control Test</h1>
+    
+    <div class="test-section">
+        <h2>🚨 IMMEDIATE ACCESS TEST</h2>
+        <p style="color: #ef4444; margin-bottom: 15px;">If you created a free account and can still access premium content, this shows the current blocking status:</p>
+        <button onclick="checkCurrentUser()">Check My Access Status</button>
+        <button onclick="testPremiumPages()" style="background: #ef4444;">Test Premium Page Access</button>
+        <div id="current-user-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Email Authorization</h2>
+        <input type="email" id="test-email" placeholder="Enter email to test" style="padding: 8px; margin: 5px; width: 300px;">
+        <button onclick="testEmailAccess()">Test Email</button>
+        <div id="email-test-result" class="result"></div>
+    </div>
+
+    <div class="test-section authorized">
+        <h2>✅ AUTHORIZED USERS</h2>
+        <p>These users have premium access:</p>
+        <ul>
+            <li><strong>cbevvv@gmail.com</strong></li>
+            <li><strong>nazir23</strong></li>
+        </ul>
+    </div>
+
+    <div class="test-section blocked">
+        <h2>❌ BLOCKED USERS</h2>
+        <p>ALL other users are blocked from premium content, including:</p>
+        <ul>
+            <li>Users who purchased memberships</li>
+            <li>Existing premium members</li>
+            <li>Any other email addresses</li>
+        </ul>
+    </div>
+
+    <!-- Firebase and access control scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="js/firebase-config.js"></script>
+
+    <script>
+        // Initialize Firebase when DOM loads
+        document.addEventListener('DOMContentLoaded', function() {
+            FirebaseConfig.initialize();
+        });
+
+        function checkCurrentUser() {
+            const user = firebase.auth().currentUser;
+            const resultDiv = document.getElementById('current-user-result');
+            
+            if (!user) {
+                resultDiv.innerHTML = '❌ Not logged in';
+                return;
+            }
+            
+            const email = user.email;
+            const isAuthorized = FirebaseConfig.auth.isAuthorizedPremiumUser(email, user.displayName);
+            
+            resultDiv.innerHTML = `
+                <strong>Current User:</strong> ${email}<br>
+                <strong>Is Authorized:</strong> ${isAuthorized ? '✅ YES - HAS ACCESS' : '❌ NO - BLOCKED'}<br>
+                <strong>Status:</strong> ${isAuthorized ? 'Can access premium content' : 'Blocked from premium content'}
+            `;
+        }
+
+        function testEmailAccess() {
+            const email = document.getElementById('test-email').value;
+            const resultDiv = document.getElementById('email-test-result');
+            
+            if (!email) {
+                resultDiv.innerHTML = '❌ Please enter an email address';
+                return;
+            }
+            
+            const isAuthorized = FirebaseConfig.auth.isAuthorizedPremiumUser(email, email);
+            
+            resultDiv.innerHTML = `
+                <strong>Testing:</strong> ${email}<br>
+                <strong>Access Status:</strong> ${isAuthorized ? '✅ AUTHORIZED - Would have access' : '❌ BLOCKED - No access'}<br>
+                <strong>Result:</strong> ${isAuthorized ? 'This user can access premium content' : 'This user is blocked from premium content'}
+            `;
+        }
+
+        function testPremiumPages() {
+            const resultDiv = document.getElementById('current-user-result');
+            
+            resultDiv.innerHTML = `
+                <h3>🧪 Testing Premium Page Access</h3>
+                <p><strong>Click these links to test if blocking works:</strong></p>
+                <ul>
+                    <li><a href="members-new.html" target="_blank" style="color: #ef4444;">members-new.html</a> - Should be BLOCKED now</li>
+                    <li><a href="sections/daily-trivia-PREMIUM.html" target="_blank" style="color: #ef4444;">daily-trivia-PREMIUM.html</a> - Should be BLOCKED</li>
+                    <li><a href="sections/chakras-auras.html" target="_blank" style="color: #ef4444;">chakras-auras.html</a> - Should be BLOCKED</li>
+                    <li><a href="sections/oracle-divination.html" target="_blank" style="color: #ef4444;">oracle-divination.html</a> - Should be BLOCKED</li>
+                </ul>
+                <p style="color: #10b981; margin-top: 15px;"><strong>Free pages that should work:</strong></p>
+                <ul>
+                    <li><a href="sections/daily-trivia-FREE.html" target="_blank" style="color: #10b981;">daily-trivia-FREE.html</a> - Should work</li>
+                    <li><a href="free-dashboard.html" target="_blank" style="color: #10b981;">free-dashboard.html</a> - Should work</li>
+                </ul>
+            `;
+        }
+
+        // Test some common emails automatically
+        setTimeout(() => {
+            const testEmails = [
+                'user@example.com',
+                'premium@user.com', 
+                'test@gmail.com',
+                'cbevvv@gmail.com',
+                'nazir23'
+            ];
+            
+            console.log('🧪 Testing email access:');
+            testEmails.forEach(email => {
+                const isAuthorized = FirebaseConfig.auth.isAuthorizedPremiumUser(email, email);
+                console.log(`${isAuthorized ? '✅' : '❌'} ${email}: ${isAuthorized ? 'AUTHORIZED' : 'BLOCKED'}`);
+            });
+        }, 2000);
+    </script>
+</body>
+</html>

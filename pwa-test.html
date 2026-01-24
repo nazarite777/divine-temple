@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA Button Test - Divine Temple</title>
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#d4af37">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .test-container {
+            text-align: center;
+            max-width: 600px;
+            padding: 2rem;
+        }
+        
+        h1 {
+            color: #d4af37;
+            margin-bottom: 1rem;
+        }
+        
+        .status {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid #d4af37;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .debug-info {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: left;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        /* TEST PWA BUTTON - FORCE VISIBLE */
+        .pwa-test-btn {
+            position: fixed;
+            top: 50%;
+            right: -50px !important;  /* Force visible */
+            z-index: 9999;
+            background: linear-gradient(135deg, #d4af37, #8b5cf6) !important;
+            border: none;
+            color: white;
+            padding: 1rem 0.75rem;
+            border-radius: 15px 0 0 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: -5px 0 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.4s ease;
+            transform: translateY(-50%) rotate(-90deg);
+            transform-origin: center;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            width: 120px;
+            height: 40px;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            opacity: 1 !important;
+        }
+        
+        .pwa-test-btn:hover {
+            right: -10px !important;
+            box-shadow: -8px 0 25px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(135deg, #f4c430, #9d6bfc) !important;
+        }
+        
+        .manual-test-btn {
+            background: #d4af37;
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .manual-test-btn:hover {
+            background: #f4c430;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🏛️ PWA Button Test</h1>
+        <p>Testing PWA install button visibility and functionality</p>
+        
+        <div class="status" id="pwaStatus">
+            <h3>PWA Status</h3>
+            <div id="statusInfo">Checking...</div>
+        </div>
+        
+        <div class="debug-info" id="debugInfo">
+            <strong>Debug Information:</strong><br>
+            <div id="debugContent">Loading...</div>
+        </div>
+        
+        <button class="manual-test-btn" onclick="testInstall()">
+            🚀 Test Install Function
+        </button>
+        
+        <button class="manual-test-btn" onclick="showDebugInfo()">
+            🔍 Show Debug Info
+        </button>
+    </div>
+    
+    <!-- TEST PWA BUTTON - SHOULD BE VISIBLE -->
+    <button id="pwaTestBtn" class="pwa-test-btn" onclick="testInstall()" title="Test PWA Install">
+        🏛️ Install App
+    </button>
+    
+    <!-- Enhanced PWA Installer -->
+    <script src="js/enhanced-pwa-installer.js"></script>
+    
+    <script>
+        let deferredPrompt = null;
+        
+        // Test PWA functionality
+        function updateStatus() {
+            const statusEl = document.getElementById('statusInfo');
+            const debugEl = document.getElementById('debugContent');
+            
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            const supportsPWA = 'serviceWorker' in navigator;
+            const hasPrompt = !!deferredPrompt;
+            const hasEnhancedInstaller = !!window.enhancedPWAInstaller;
+            
+            statusEl.innerHTML = `
+                <div>Standalone Mode: <strong>${isStandalone ? '✅ Yes' : '❌ No'}</strong></div>
+                <div>PWA Support: <strong>${supportsPWA ? '✅ Yes' : '❌ No'}</strong></div>
+                <div>Install Prompt: <strong>${hasPrompt ? '✅ Available' : '⏳ Waiting'}</strong></div>
+                <div>Enhanced Installer: <strong>${hasEnhancedInstaller ? '✅ Loaded' : '❌ Missing'}</strong></div>
+            `;
+            
+            debugEl.innerHTML = `
+                User Agent: ${navigator.userAgent}<br>
+                Screen: ${screen.width}x${screen.height}<br>
+                Viewport: ${window.innerWidth}x${window.innerHeight}<br>
+                Connection: ${navigator.connection ? navigator.connection.effectiveType : 'Unknown'}<br>
+                Service Worker: ${navigator.serviceWorker ? 'Supported' : 'Not supported'}<br>
+                Manifest: ${document.querySelector('link[rel="manifest"]') ? 'Present' : 'Missing'}
+            `;
+        }
+        
+        function showDebugInfo() {
+            updateStatus();
+            console.log('🔍 Debug Info Updated');
+        }
+        
+        async function testInstall() {
+            console.log('🚀 Test Install clicked');
+            
+            if (window.enhancedPWAInstaller) {
+                try {
+                    const result = await window.enhancedPWAInstaller.install();
+                    console.log('Enhanced installer result:', result);
+                    alert('Enhanced installer result: ' + JSON.stringify(result, null, 2));
+                } catch (error) {
+                    console.error('Enhanced installer error:', error);
+                    alert('Enhanced installer error: ' + error.message);
+                }
+            } else if (deferredPrompt) {
+                try {
+                    await deferredPrompt.prompt();
+                    const choiceResult = await deferredPrompt.userChoice;
+                    console.log('Manual prompt result:', choiceResult);
+                    alert('Manual prompt result: ' + choiceResult.outcome);
+                } catch (error) {
+                    console.error('Manual prompt error:', error);
+                    alert('Manual prompt error: ' + error.message);
+                }
+            } else {
+                alert('❌ No install method available. Check console for details.');
+                console.log('No install method available');
+            }
+        }
+        
+        // Listen for beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('📱 beforeinstallprompt fired');
+            e.preventDefault();
+            deferredPrompt = e;
+            updateStatus();
+        });
+        
+        // Listen for app installed
+        window.addEventListener('appinstalled', (e) => {
+            console.log('🎉 App installed');
+            updateStatus();
+        });
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🏛️ PWA Test page loaded');
+            updateStatus();
+            
+            // Update status every 2 seconds
+            setInterval(updateStatus, 2000);
+        });
+    </script>
+</body>
+</html>
