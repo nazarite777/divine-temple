@@ -104,7 +104,7 @@ function proceedToPayment() {
             paymentUrl = 'https://square.link/u/xuKzAPeA';
             break;
         case 'monthly':
-            paymentUrl = 'https://square.link/u/g8CFT019';
+            paymentUrl = 'https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00';
             break;
         case 'student':
             paymentUrl = 'https://square.link/u/qodANI9O';

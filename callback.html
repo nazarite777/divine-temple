@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth Callback - Divine Temple</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0A0E27, #1a1f3a);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .callback-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .spinner {
+            border: 3px solid rgba(139, 92, 246, 0.3);
+            border-top: 3px solid #8B5CF6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .success { color: #10B981; }
+        .error { color: #EF4444; }
+    </style>
+</head>
+<body>
+    <div class="callback-container">
+        <h2>🔗 Connecting Your Account</h2>
+        <div class="spinner"></div>
+        <p id="status">Processing OAuth callback...</p>
+        <p id="details" style="font-size: 0.9rem; opacity: 0.7;"></p>
+    </div>
+
+    <script>
+        // OAuth Callback Handler for Spotify, YouTube, Google Calendar
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            const error = urlParams.get('error');
+            
+            const statusEl = document.getElementById('status');
+            const detailsEl = document.getElementById('details');
+
+            if (error) {
+                handleError(error);
+                return;
+            }
+
+            if (!code) {
+                handleError('No authorization code received');
+                return;
+            }
+
+            // Parse state to determine which service
+            let service = 'unknown';
+            try {
+                const stateData = JSON.parse(atob(state));
+                service = stateData.service;
+            } catch (e) {
+                console.warn('Could not parse state:', state);
+            }
+
+            handleCallback(service, code, state);
+
+            function handleCallback(service, code, state) {
+                statusEl.textContent = `Connecting to ${service}...`;
+                detailsEl.textContent = 'Exchanging authorization code for access token';
+
+                // Store the authorization code for the main app to handle
+                const callbackData = {
+                    service: service,
+                    code: code,
+                    state: state,
+                    timestamp: Date.now()
+                };
+
+                localStorage.setItem('oauth_callback_data', JSON.stringify(callbackData));
+
+                // Show success and redirect
+                setTimeout(() => {
+                    statusEl.textContent = `✅ ${service} Connected Successfully!`;
+                    statusEl.className = 'success';
+                    detailsEl.textContent = 'Redirecting back to Divine Temple...';
+
+                    setTimeout(() => {
+                        // Return to the integration page
+                        window.location.href = 'members-new.html#integrations';
+                    }, 2000);
+                }, 1000);
+            }
+
+            function handleError(errorMsg) {
+                statusEl.textContent = '❌ Connection Failed';
+                statusEl.className = 'error';
+                detailsEl.textContent = `Error: ${errorMsg}`;
+
+                setTimeout(() => {
+                    window.location.href = 'members-new.html#integrations';
+                }, 3000);
+            }
+
+            // Handle OAuth errors
+            if (urlParams.get('error_description')) {
+                handleError(urlParams.get('error_description'));
+            }
+        })();
+    </script>
+</body>
+</html>
