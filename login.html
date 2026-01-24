@@ -454,7 +454,7 @@
                                 premium: userData.premium,
                                 role: userData.role
                             });
-                            actualMembershipLevel = userData.membershipLevel || 'free';
+                            actualMembershipLevel = userData.membershipLevel || userData.membership || 'free';
 
                             // Update last login (don't await - fire and forget)
                             firebase.firestore().collection('users').doc(user.uid).update({
@@ -631,7 +631,7 @@
 
                     if (userDoc.exists) {
                         const userData = userDoc.data();
-                        membershipLevel = userData.membershipLevel || 'free';
+                        membershipLevel = userData.membershipLevel || userData.membership || 'free';
                         logAuth('📊', 'User data loaded', {
                             membershipLevel,
                             premium: userData.premium,
