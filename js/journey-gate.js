@@ -44,20 +44,25 @@
      */
     function waitForDependencies() {
         return new Promise((resolve) => {
+            let attempts = 0;
             const checkInterval = setInterval(() => {
+                attempts++;
                 if (typeof firebase !== 'undefined' &&
                     firebase.auth &&
-                    typeof window.AuthHelper !== 'undefined') {
+                    typeof window.AuthHelper !== 'undefined' &&
+                    typeof window.AuthHelper.checkJourneyAccess === 'function') {
                     clearInterval(checkInterval);
                     resolve();
+                } else if (attempts > 100) {
+                    // After 10 seconds, stop trying
+                    clearInterval(checkInterval);
+                    console.error('❌ Journey Gate: Dependencies failed to load after 10 seconds');
+                    console.error('- Firebase loaded:', typeof firebase !== 'undefined');
+                    console.error('- AuthHelper loaded:', typeof window.AuthHelper !== 'undefined');
+                    console.error('- checkJourneyAccess available:', typeof window.AuthHelper?.checkJourneyAccess === 'function');
+                    resolve(); // Resolve anyway to prevent hanging
                 }
             }, 100);
-
-            // Timeout after 10 seconds
-            setTimeout(() => {
-                clearInterval(checkInterval);
-                resolve();
-            }, 10000);
         });
     }
 

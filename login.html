@@ -436,25 +436,39 @@
                 let actualMembershipLevel = 'free'; // Default
                 let firestoreSuccess = false;
 
-                try {
-                    logAuth('📊', 'Fetching user data from Firestore...');
+                // FIRST: Check hardcoded whitelist in firebase-config.js (highest priority)
+                if (typeof FirebaseConfig !== 'undefined' &&
+                    FirebaseConfig.auth &&
+                    typeof FirebaseConfig.auth.isAuthorizedPremiumUser === 'function') {
 
-                    // Add timeout wrapper for Firestore operations
-                    const firestoreTimeout = new Promise((_, reject) =>
-                        setTimeout(() => reject(new Error('Firestore timeout')), 3000)
-                    );
+                    if (FirebaseConfig.auth.isAuthorizedPremiumUser(user.email, user.displayName)) {
+                        actualMembershipLevel = 'premium';
+                        logAuth('👑', 'User in premium whitelist:', user.email);
+                    }
+                }
 
-                    const firestoreOperation = async () => {
-                        const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
-                        if (userDoc.exists) {
-                            const userData = userDoc.data();
-                            logAuth('✅', 'User document found in Firestore', {
-                                email: userData.email,
-                                membershipLevel: userData.membershipLevel,
-                                premium: userData.premium,
-                                role: userData.role
-                            });
-                            actualMembershipLevel = userData.membershipLevel || 'free';
+                // SECOND: Check Firestore if not already premium from whitelist
+                if (actualMembershipLevel === 'free') {
+                    try {
+                        logAuth('📊', 'Fetching user data from Firestore...');
+
+                        // Add timeout wrapper for Firestore operations
+                        const firestoreTimeout = new Promise((_, reject) =>
+                            setTimeout(() => reject(new Error('Firestore timeout')), 3000)
+                        );
+
+                        const firestoreOperation = async () => {
+                            const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+                            if (userDoc.exists) {
+                                const userData = userDoc.data();
+                                logAuth('✅', 'User document found in Firestore', {
+                                    email: userData.email,
+                                    membershipLevel: userData.membershipLevel,
+                                    membership: userData.membership,
+                                    premium: userData.premium,
+                                    role: userData.role
+                                });
+                                actualMembershipLevel = userData.membership || userData.membershipLevel || 'free';
 
                             // Update last login (don't await - fire and forget)
                             firebase.firestore().collection('users').doc(user.uid).update({
@@ -488,17 +502,19 @@
                         return true;
                     };
 
-                    // Race between Firestore operation and timeout
-                    firestoreSuccess = await Promise.race([firestoreOperation(), firestoreTimeout]);
-                } catch (firestoreError) {
-                    logAuth('⚠️', 'Firestore query failed or timed out, using default membership level', {
-                        error: firestoreError.message
-                    });
-                    // Continue with default 'free' membership level
+                        // Race between Firestore operation and timeout
+                        firestoreSuccess = await Promise.race([firestoreOperation(), firestoreTimeout]);
+                    } catch (firestoreError) {
+                        logAuth('⚠️', 'Firestore query failed or timed out, using default membership level', {
+                            error: firestoreError.message
+                        });
+                        // Continue with default 'free' membership level
+                    }
                 }
 
                 // Store actual membership level (not the selected tier)
                 localStorage.setItem('membershipLevel', actualMembershipLevel);
+                localStorage.setItem('membership', actualMembershipLevel);
                 localStorage.setItem('userEmail', email);
                 localStorage.setItem('userId', user.uid);
 
@@ -626,23 +642,39 @@
 
                 // User is already signed in, check their actual membership level
                 try {
-                    const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
                     let membershipLevel = 'free';
 
-                    if (userDoc.exists) {
-                        const userData = userDoc.data();
-                        membershipLevel = userData.membershipLevel || 'free';
-                        logAuth('📊', 'User data loaded', {
-                            membershipLevel,
-                            premium: userData.premium,
-                            role: userData.role
-                        });
-                    } else {
-                        logAuth('⚠️', 'User document not found - will use free tier');
+                    // FIRST: Check hardcoded whitelist
+                    if (typeof FirebaseConfig !== 'undefined' &&
+                        FirebaseConfig.auth &&
+                        typeof FirebaseConfig.auth.isAuthorizedPremiumUser === 'function') {
+
+                        if (FirebaseConfig.auth.isAuthorizedPremiumUser(user.email, user.displayName)) {
+                            membershipLevel = 'premium';
+                            logAuth('👑', 'User in premium whitelist (auto-login):', user.email);
+                        }
+                    }
+
+                    // SECOND: Check Firestore if not already premium from whitelist
+                    if (membershipLevel === 'free') {
+                        const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            membershipLevel = userData.membership || userData.membershipLevel || 'free';
+                            logAuth('📊', 'User data loaded from Firestore', {
+                                membershipLevel,
+                                premium: userData.premium,
+                                role: userData.role
+                            });
+                        } else {
+                            logAuth('⚠️', 'User document not found - will use free tier');
+                        }
                     }
 
                     // Store ALL required auth data
                     localStorage.setItem('membershipLevel', membershipLevel);
+                    localStorage.setItem('membership', membershipLevel);
                     localStorage.setItem('userEmail', user.email);
                     localStorage.setItem('userId', user.uid);
 

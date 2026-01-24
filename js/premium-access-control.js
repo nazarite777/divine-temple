@@ -113,7 +113,7 @@
                     resolve();
                 });
             });
-        },
+        }
 
         /**
          * Check if user is authorized for premium access
@@ -159,7 +159,7 @@
                 this.hasPremiumAccess = PREMIUM_TIERS.includes(this.membershipLevel);
                 localStorage.setItem('hasPremiumAccess', this.hasPremiumAccess ? 'true' : 'false');
             }
-        },
+        }
 
         /**
          * Get user's membership level from Firestore
@@ -301,7 +301,7 @@
                 // Redirect to free dashboard with upgrade prompt
                 window.location.href = '/free-dashboard.html?showUpgrade=true';
             }, 3000);
-        },
+        }
 
         /**
          * Redirect to upgrade page

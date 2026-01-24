@@ -28,23 +28,38 @@ function isAdmin(user) {
 
 /**
  * Check if user has premium access
- * Admins automatically have premium access
+ * Checks in order: whitelist → admin status → Firestore flags
  * @param {Object} userData - User document data from Firestore
  * @param {Object} user - Firebase auth user object
  * @returns {boolean}
  */
 function hasPremiumAccess(userData, user) {
-    // Check if admin (always has premium access)
+    // FIRST: Check hardcoded whitelist in firebase-config.js (highest priority)
+    if (typeof window.FirebaseConfig !== 'undefined' &&
+        window.FirebaseConfig.auth &&
+        typeof window.FirebaseConfig.auth.isAuthorizedPremiumUser === 'function') {
+
+        const email = user?.email || userData?.email;
+        const displayName = user?.displayName || userData?.displayName;
+
+        if (window.FirebaseConfig.auth.isAuthorizedPremiumUser(email, displayName)) {
+            console.log('👑 User in premium whitelist:', email);
+            return true;
+        }
+    }
+
+    // SECOND: Check if admin (always has premium access)
     if (isAdmin(user)) {
         return true;
     }
 
     if (!userData) return false;
 
-    // Check various premium flags (any one of these grants access)
+    // THIRD: Check various premium flags from Firestore (any one of these grants access)
     return (
         userData.premium === true ||
         userData.premium_status === 'active' ||
+        userData.membership === 'premium' ||  // Check membership field (set by webhook)
         userData.membershipLevel === 'premium' ||
         userData.membershipLevel === 'founding' ||
         userData.membershipLevel === 'admin' ||  // Admin membership level
