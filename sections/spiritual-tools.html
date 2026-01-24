@@ -1,0 +1,2577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spiritual Tools - Divine Temple</title>
+    <style>
+        :root {
+            --accent-gold: #d4af37;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+        .section-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .tool-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            cursor: pointer;
+            transition: all 0.4s;
+            text-align: center;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--accent-gold);
+        }
+        
+        .tool-card:active {
+            transform: translateY(-5px) scale(1.01);
+        }
+        
+        .tool-card.implemented {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        
+        .tool-card.implemented:hover {
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.2), 0 0 0 1px var(--accent-gold);
+        }
+        
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .tool-status {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-complete {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .status-placeholder {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 2.5rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.6s;
+        }
+        
+        .back-btn:hover::before {
+            left: 100%;
+        }
+        
+        .back-btn:hover {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            border-color: var(--accent-gold);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .back-btn .back-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+        
+        .back-btn:hover .back-icon {
+            transform: translateX(-3px);
+        }
+        
+        /* Modal Styles */
+        .tool-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        
+        .tool-modal {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            border: 2px solid var(--glass-border);
+            border-radius: 20px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .tool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .tool-header h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-gold);
+            margin: 0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+        
+        .tool-content {
+            padding: 2rem;
+        }
+        
+        .tool-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .tool-section h3 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+        
+        /* Mystic Arts Styles */
+        #sacred-canvas {
+            border: 2px solid var(--accent-gold);
+            border-radius: 10px;
+            background: white;
+            cursor: crosshair;
+            display: block;
+            margin: 1rem 0;
+        }
+        
+        .canvas-tools {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .canvas-tools input, .canvas-tools button {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .inspiration-btn, .pattern-btn, .shadow-btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0.5rem;
+        }
+        
+        .inspiration-btn:hover, .pattern-btn:hover, .shadow-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+        
+        .inspiration-display {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 3px solid var(--accent-gold);
+            border-radius: 8px;
+            font-style: italic;
+            color: var(--accent-gold);
+        }
+        
+        .pattern-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        /* Shadow Integration Styles */
+        .assessment-area, .exercise-area, .practice-area {
+            margin-top: 1rem;
+        }
+        
+        .question-card, .completion-card, .exercise-card, .practice-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+        
+        .question-card textarea, #shadow-journal {
+            width: 100%;
+            min-height: 100px;
+            padding: 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .insight-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(212, 175, 55, 0.2));
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+        
+        .insight-text {
+            font-style: italic;
+            color: var(--accent-gold);
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .timer-display {
+            font-size: 2rem;
+            text-align: center;
+            color: var(--accent-gold);
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        
+        .timer-complete {
+            text-align: center;
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .tool-modal {
+                width: 95vw;
+                height: 95vh;
+            }
+            
+            .tool-content {
+                padding: 1rem;
+            }
+            
+            .canvas-tools {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            #sacred-canvas {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        /* Oracle Cards Styles */
+        .oracle-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .oracle-modal {
+            background: linear-gradient(135deg, rgba(26, 31, 58, 0.95), rgba(15, 52, 96, 0.95));
+            backdrop-filter: blur(30px);
+            border: 2px solid var(--glass-border);
+            border-radius: 25px;
+            width: 100%;
+            height: 100%;
+            max-width: 1400px;
+            max-height: 900px;
+            overflow-y: auto;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .oracle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid var(--glass-border);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(139, 92, 246, 0.1));
+            flex-shrink: 0;
+        }
+
+        .oracle-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin: 0;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(239, 68, 68, 0.4);
+            transform: scale(1.1);
+        }
+
+        .oracle-content {
+            padding: 2rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .reading-types h3 {
+            text-align: center;
+            color: var(--accent-gold);
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .reading-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .reading-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+            border: 2px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .reading-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3);
+        }
+
+        .reading-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .reading-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .reading-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .reading-card h4 {
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .reading-card p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .card-selection h3 {
+            text-align: center;
+            color: var(--accent-gold);
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-selection p {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .card-deck {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .oracle-card-back {
+            aspect-ratio: 2/3;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--glass-border);
+            min-height: 120px;
+        }
+
+        .oracle-card-back:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .card-back-design {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-symbol {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-pattern {
+            width: 25px;
+            height: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+        }
+
+        .oracle-card-back.selected {
+            background: linear-gradient(135deg, var(--accent-gold), #fbbf24);
+            animation: pulse 1s infinite;
+            transform: scale(1.1);
+        }
+
+        .card-selected {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #0f3460;
+        }
+
+        .selection-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .selection-progress {
+            text-align: center;
+            margin: 2rem 0;
+            font-size: 1.4rem;
+            color: var(--accent-gold);
+            padding: 1rem;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 15px;
+            border: 1px solid var(--accent-gold);
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .oracle-btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            color: white;
+            border: none;
+            padding: 1.2rem 2.5rem;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .oracle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+        }
+
+        .oracle-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+        }
+
+        .reading-results {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95));
+            border-radius: 25px;
+            padding: 3rem;
+            margin: 2rem 0;
+            border: 2px solid var(--accent-gold);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .reading-results h3 {
+            text-align: center;
+            color: var(--accent-purple);
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--accent-gold);
+            font-weight: 700;
+        }
+
+        .revealed-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .revealed-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+            border: 3px solid var(--accent-gold);
+            border-radius: 25px;
+            padding: 2.5rem;
+            display: grid;
+            grid-template-columns: 1fr 180px 2fr;
+            gap: 2.5rem;
+            align-items: start;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            margin-bottom: 2rem;
+        }
+
+        .card-position h4 {
+            color: var(--accent-purple);
+            margin-bottom: 0.8rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .position-meaning {
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        .card-reveal {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            border-radius: 20px;
+            color: white;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .card-image {
+            font-size: 4rem;
+            margin-bottom: 1.2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            margin: 0;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-message {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .message-section h5 {
+            color: var(--accent-gold);
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .message-section p {
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.8;
+            margin: 0;
+            font-size: 1.1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-gold);
+        }
+
+        .affirmation {
+            font-style: italic;
+            color: var(--accent-gold) !important;
+            font-weight: 600;
+            font-size: 1.2rem !important;
+            text-align: center;
+            padding: 1.5rem !important;
+            background: rgba(212, 175, 55, 0.15) !important;
+            border: 2px solid var(--accent-gold) !important;
+            border-radius: 15px !important;
+        }
+
+        .reading-actions {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        /* Database Integration Styles */
+        .reading-context {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--accent-gold);
+        }
+
+        .context-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .input-group input,
+        .input-group select {
+            padding: 0.8rem;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .save-success-message,
+        .save-error-message {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 10000;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .save-success-message {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            border: 1px solid #059669;
+        }
+
+        .save-error-message {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            border: 1px solid #dc2626;
+        }
+
+        .success-content,
+        .error-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .guest-message {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
+            border: 2px solid var(--accent-gold);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .guest-notice {
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .guest-notice a {
+            color: var(--accent-purple);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .guest-notice a:hover {
+            text-decoration: underline;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .history-header h4 {
+            color: var(--accent-purple);
+            margin: 0;
+        }
+
+        .history-date {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .favorite-star {
+            font-size: 1.2rem;
+            margin-left: 0.5rem;
+        }
+
+        .history-cards,
+        .history-question {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .stat-card h3 {
+            color: var(--accent-gold);
+            font-size: 2rem;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .stat-card p {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .top-cards {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .top-cards h4 {
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+        }
+
+        .card-stat {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .card-stat:last-child {
+            border-bottom: none;
+        }
+
+        .card-stat .card-symbol {
+            font-size: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+
+        .card-stat .card-name {
+            flex: 1;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .card-stat .card-count {
+            color: var(--accent-gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .reading-summary {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--accent-gold);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .summary-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .summary-header h3 {
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .reading-type {
+            color: var(--accent-purple);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .reading-date {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .meditation-prompt {
+            margin-top: 1.5rem;
+        }
+
+        .meditation-prompt h4 {
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+        }
+
+        .meditation-prompt ul {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+        }
+
+        .meditation-prompt li {
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @media (max-width: 768px) {
+            .oracle-modal {
+                width: 95vw;
+                height: 95vh;
+            }
+
+            .oracle-header {
+                padding: 1rem;
+            }
+
+            .oracle-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .oracle-content {
+                padding: 1rem;
+            }
+
+            .reading-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-deck {
+                grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            }
+
+            .revealed-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .card-reveal {
+                order: -1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="section-container">
+        <button class="back-btn" onclick="goBackToDashboard()">
+            <span class="back-icon">←</span>
+            <span>Back to Dashboard</span>
+        </button>
+        
+        <div class="section-header">
+            <h1>🔮 Spiritual Tools</h1>
+            <p>Access powerful spiritual instruments for your divine journey</p>
+        </div>
+        
+        <div class="tools-grid">
+            <div class="tool-card implemented" onclick="openOracleCards()">
+                <div class="tool-icon">🔮</div>
+                <h3>Divine Oracle Cards</h3>
+                <p>Receive spiritual guidance through sacred divination cards based on divine principles</p>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="tool-card implemented" onclick="openMeditationCenter()">
+                <div class="tool-icon">🧘</div>
+                <h3>Meditation Center</h3>
+                <p>Choose environment, adjust natural sounds, set timer, begin practice</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    🌲 Forest sounds • 🌊 Ocean waves • 🔥 Crackling fire • ⏰ Custom timers
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="tool-card implemented" onclick="openEnergyHealing()">
+                <div class="tool-icon">⚡</div>
+                <h3>Energy Healing</h3>
+                <p>Chakra balancing, aura cleansing, crystal guidance, energy assessment</p>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="tool-card implemented" onclick="openDailyDevotions()">
+                <div class="tool-icon">📿</div>
+                <h3>Daily Devotions</h3>
+                <p>Morning prayers, evening reflections, sacred affirmations, gratitude journaling</p>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="tool-card implemented" onclick="openSacredSound()">
+                <div class="tool-icon">🎵</div>
+                <h3>Sacred Sound</h3>
+                <p>Frequency healing, sound baths, singing bowls, mantra chanting, binaural beats</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    🔊 Nature sounds • 🎼 Healing frequencies • 🔔 Tibetan bowls • 🎧 Binaural beats
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="tool-card implemented" onclick="openMysticArts()">
+                <div class="tool-icon">🎨</div>
+                <h3>Mystic Arts</h3>
+                <p>Sacred art creation, spiritual expression, divine creativity, digital painting</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    🎨 Digital Canvas • 🌟 Sacred Patterns • 💫 Divine Inspiration • 🖌️ Spiritual Expression
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+            
+            <div class="tool-card implemented" onclick="openShadowIntegration()">
+                <div class="tool-icon">🌑</div>
+                <h3>Shadow Integration</h3>
+                <p>Inner healing work, shadow exploration, light-dark balance, emotional release</p>
+                <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                    🌑 Shadow Assessment • 💡 Integration Exercises • 🔄 Balance Practices • 📖 Reflection Journal
+                </div>
+                <div class="tool-status status-complete">✅ Fully Implemented</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Enhanced back navigation with feedback
+        function goBackToDashboard() {
+            try {
+                if (window.parent && window.parent.showSection) {
+                    window.parent.showSection('dashboard');
+                } else {
+                    // Fallback for direct access
+                    window.location.href = '../members.html';
+                }
+            } catch (error) {
+                console.error('Navigation error:', error);
+                window.location.href = '../members.html';
+            }
+        }
+        
+        // Enhanced tool opening functions with loading feedback
+        function openTool(toolName, fallbackFunction) {
+            try {
+                if (window.parent && window.parent[fallbackFunction]) {
+                    window.parent[fallbackFunction]();
+                } else {
+                    console.warn(`${toolName} function not found in parent window`);
+                    // Could add a modal here showing tool is loading
+                }
+            } catch (error) {
+                console.error(`Error opening ${toolName}:`, error);
+            }
+        }
+        
+        function openOracleCards() {
+            // Create Oracle Cards modal
+            const modal = document.createElement('div');
+            modal.className = 'oracle-modal-overlay';
+            modal.onclick = closeOracleCards;
+            
+            modal.innerHTML = `
+                <div class="oracle-modal" onclick="event.stopPropagation()">
+                    <div class="oracle-header">
+                        <h2>🔮 Divine Oracle Cards</h2>
+                        <button onclick="closeOracleCards()" class="close-btn">×</button>
+                    </div>
+                    
+                    <div class="oracle-content">
+                        <!-- Reading Type Selection -->
+                        <div class="reading-types" id="reading-types">
+                            <h3>Choose Your Sacred Reading</h3>
+                            <div class="reading-grid">
+                                <div class="reading-card" onclick="startReading('single')">
+                                    <div class="reading-icon">🌟</div>
+                                    <h4>Single Card Guidance</h4>
+                                    <p>Receive clear divine guidance for your current situation</p>
+                                </div>
+                                
+                                <div class="reading-card" onclick="startReading('three')">
+                                    <div class="reading-icon">🔮</div>
+                                    <h4>Three Card Spread</h4>
+                                    <p>Past • Present • Future or Mind • Body • Spirit</p>
+                                </div>
+                                
+                                <div class="reading-card" onclick="startReading('celtic')">
+                                    <div class="reading-icon">✨</div>
+                                    <h4>Celtic Cross</h4>
+                                    <p>Comprehensive 10-card reading for deep insight</p>
+                                </div>
+                                
+                                <div class="reading-card" onclick="startReading('daily')">
+                                    <div class="reading-icon">🌅</div>
+                                    <h4>Daily Guidance</h4>
+                                    <p>One card for today's spiritual message</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Card Selection Interface -->
+                        <div class="card-selection" id="card-selection" style="display: none;">
+                            <h3 id="selection-title">Select Your Cards</h3>
+                            <p id="selection-instruction">Take a deep breath and choose the cards that call to you</p>
+                            
+                            <div class="card-deck" id="card-deck">
+                                <!-- Cards will be generated here -->
+                            </div>
+                            
+                            <div class="selection-progress">
+                                <span id="cards-selected">0</span> / <span id="cards-needed">1</span> cards selected
+                            </div>
+                            
+                            <button id="reveal-cards" onclick="revealSelectedCards()" style="display: none;" class="oracle-btn">
+                                ✨ Reveal Divine Messages ✨
+                            </button>
+                        </div>
+                        
+                        <!-- Reading Results -->
+                        <div class="reading-results" id="reading-results" style="display: none;">
+                            <h3>Your Divine Reading</h3>
+                            <div id="revealed-cards" class="revealed-cards">
+                                <!-- Revealed cards will appear here -->
+                            </div>
+                            
+                            <div class="reading-actions">
+                                <button onclick="saveReading()" class="oracle-btn secondary">📖 Save Reading</button>
+                                <button onclick="shareReading()" class="oracle-btn secondary">🤝 Share Insight</button>
+                                <button onclick="newReading()" class="oracle-btn">🔮 New Reading</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            generateCardDeck();
+        }
+        
+        function closeOracleCards() {
+            const modal = document.querySelector('.oracle-modal-overlay');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        let currentReading = {
+            type: '',
+            selectedCards: [],
+            revealedCards: []
+        };
+        
+        const oracleCardDatabase = [
+            {
+                name: "Divine Light",
+                image: "🌟",
+                message: "You are surrounded by divine light and protection. Trust in the guidance that flows through you.",
+                meaning: "A time of spiritual awakening and divine connection. Your intuition is heightened.",
+                affirmation: "I am a beacon of divine light, guided by infinite wisdom."
+            },
+            {
+                name: "Sacred Path",
+                image: "🛤️",
+                message: "Your path is divinely ordained. Every step leads you closer to your highest purpose.",
+                meaning: "Trust your journey. You are exactly where you need to be for your soul's growth.",
+                affirmation: "I trust my sacred path and walk with divine confidence."
+            },
+            {
+                name: "Inner Wisdom",
+                image: "🧠",
+                message: "The answers you seek lie within. Quiet your mind and listen to your inner voice.",
+                meaning: "A time for meditation and inner reflection. Your wisdom is greater than you know.",
+                affirmation: "I trust my inner wisdom and divine knowing."
+            },
+            {
+                name: "Heart Chakra",
+                image: "💚",
+                message: "Open your heart to love and compassion. Healing begins with self-acceptance.",
+                meaning: "Focus on matters of the heart. Love is your greatest teacher and healer.",
+                affirmation: "My heart is open to divine love and infinite compassion."
+            },
+            {
+                name: "Third Eye",
+                image: "👁️",
+                message: "Your psychic abilities are awakening. Pay attention to visions and dreams.",
+                meaning: "Heightened intuition and spiritual sight. Trust what you see beyond the physical.",
+                affirmation: "My third eye is open and I see with divine clarity."
+            },
+            {
+                name: "Crown Connection",
+                image: "👑",
+                message: "You are connected to the divine source. Feel the energy flowing through you.",
+                meaning: "A strong spiritual connection. You are receiving divine downloads and guidance.",
+                affirmation: "I am one with the divine source of all creation."
+            },
+            {
+                name: "Angel Guidance",
+                image: "👼",
+                message: "Your angels are near. Call upon them for support and guidance in all matters.",
+                meaning: "Divine helpers surround you. You are loved and supported beyond measure.",
+                affirmation: "I am surrounded by loving angels who guide my every step."
+            },
+            {
+                name: "Earth Connection",
+                image: "🌍",
+                message: "Ground yourself in nature. The Earth provides healing and stability.",
+                meaning: "Reconnect with the natural world. Find peace in simplicity and natural beauty.",
+                affirmation: "I am grounded in Earth's wisdom and draw strength from nature."
+            },
+            {
+                name: "Water Flow",
+                image: "🌊",
+                message: "Emotions are flowing. Allow them to cleanse and purify your spirit.",
+                meaning: "Emotional healing and release. Let your feelings flow without resistance.",
+                affirmation: "I flow with life's currents and trust in divine timing."
+            },
+            {
+                name: "Fire Transformation",
+                image: "🔥",
+                message: "Old patterns are burning away. Embrace the transformation happening within you.",
+                meaning: "Powerful transformation and rebirth. Release what no longer serves you.",
+                affirmation: "I embrace transformation and rise like a phoenix from the ashes."
+            },
+            {
+                name: "Air Clarity",
+                image: "💨",
+                message: "Clear thinking and divine inspiration are coming to you. Breathe deeply.",
+                meaning: "Mental clarity and inspired ideas. Your mind is attuned to higher wisdom.",
+                affirmation: "My mind is clear and filled with divine inspiration."
+            },
+            {
+                name: "Moon Cycles",
+                image: "🌙",
+                message: "Honor the natural rhythms of life. Rest, release, and renew.",
+                meaning: "Divine feminine wisdom and intuitive cycles. Trust in perfect timing.",
+                affirmation: "I honor my natural rhythms and trust in divine timing."
+            },
+            {
+                name: "Sun Power",
+                image: "☀️",
+                message: "Your inner light is shining brightly. Share your gifts with the world.",
+                meaning: "Vitality, joy, and self-expression. It's time to shine your light.",
+                affirmation: "I shine my divine light brightly and illuminate the world."
+            },
+            {
+                name: "Star Wisdom",
+                image: "⭐",
+                message: "You are a child of the stars. Remember your cosmic heritage and purpose.",
+                meaning: "Higher purpose and cosmic connection. You have important work to do.",
+                affirmation: "I remember my star origin and fulfill my cosmic purpose."
+            },
+            {
+                name: "Tree of Life",
+                image: "🌳",
+                message: "Growth happens slowly but surely. Your roots are strong, reach for the sky.",
+                meaning: "Steady spiritual growth and deep wisdom. You are becoming who you're meant to be.",
+                affirmation: "I grow steadily in wisdom, rooted in love, reaching for light."
+            },
+            {
+                name: "Rainbow Bridge",
+                image: "🌈",
+                message: "After every storm comes beauty. You are crossing into a new phase of life.",
+                meaning: "Transition and hope. Beautiful new beginnings await you.",
+                affirmation: "I cross the rainbow bridge into my beautiful new life."
+            },
+            {
+                name: "Crystal Clarity",
+                image: "💎",
+                message: "Your inner diamond is shining. Pressure has created something beautiful in you.",
+                meaning: "Inner strength and clarity formed through challenges. You are precious and strong.",
+                affirmation: "I am a precious diamond, clear and strong, shaped by divine love."
+            },
+            {
+                name: "Butterfly Rebirth",
+                image: "🦋",
+                message: "Your metamorphosis is complete. Spread your wings and fly to new heights.",
+                meaning: "Transformation completed. You are ready for a new phase of life.",
+                affirmation: "I spread my wings and soar into my transformed life."
+            },
+            {
+                name: "Phoenix Rising",
+                image: "🔥🦅",
+                message: "From the ashes of the old, you rise more magnificent than before.",
+                meaning: "Powerful rebirth and renewal. What seemed like an ending is actually a beginning.",
+                affirmation: "I rise from every challenge more beautiful and powerful than before."
+            },
+            {
+                name: "Golden Key",
+                image: "🗝️",
+                message: "You hold the key to unlock your highest potential. The door is opening.",
+                meaning: "New opportunities and access to higher levels of consciousness.",
+                affirmation: "I hold the golden key to my infinite potential and possibilities."
+            }
+        ];
+        
+        function generateCardDeck() {
+            const deck = document.getElementById('card-deck');
+            deck.innerHTML = '';
+            
+            // Create shuffled deck
+            const shuffledCards = [...oracleCardDatabase].sort(() => Math.random() - 0.5);
+            
+            // Generate 21 cards in a sacred arrangement
+            for (let i = 0; i < 21; i++) {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'oracle-card-back';
+                cardElement.onclick = () => selectCard(i, shuffledCards[i]);
+                cardElement.innerHTML = `
+                    <div class="card-back-design">
+                        <div class="card-symbol">🔮</div>
+                        <div class="card-pattern"></div>
+                    </div>
+                `;
+                deck.appendChild(cardElement);
+            }
+        }
+        
+        function startReading(type) {
+            currentReading.type = type;
+            currentReading.selectedCards = [];
+            currentReading.revealedCards = [];
+            
+            document.getElementById('reading-types').style.display = 'none';
+            document.getElementById('card-selection').style.display = 'block';
+            
+            const titles = {
+                'single': 'Select One Card',
+                'three': 'Select Three Cards',
+                'celtic': 'Select Ten Cards',
+                'daily': 'Select Your Daily Card'
+            };
+            
+            const instructions = {
+                'single': 'Choose the card that calls to your heart for divine guidance',
+                'three': 'Choose three cards for Past • Present • Future insight',
+                'celtic': 'Choose ten cards for a comprehensive Celtic Cross reading',
+                'daily': 'Choose one card for today\'s spiritual message and guidance'
+            };
+            
+            const cardsNeeded = {
+                'single': 1,
+                'three': 3,
+                'celtic': 10,
+                'daily': 1
+            };
+            
+            document.getElementById('selection-title').textContent = titles[type];
+            document.getElementById('selection-instruction').textContent = instructions[type];
+            document.getElementById('cards-needed').textContent = cardsNeeded[type];
+            
+            generateCardDeck();
+        }
+        
+        function selectCard(index, cardData) {
+            const cardElement = document.querySelectorAll('.oracle-card-back')[index];
+            const neededCards = parseInt(document.getElementById('cards-needed').textContent);
+            
+            if (currentReading.selectedCards.length >= neededCards) {
+                return; // Max cards selected
+            }
+            
+            // Add selection visual
+            cardElement.classList.add('selected');
+            cardElement.innerHTML = `
+                <div class="card-selected">
+                    <div class="selection-number">${currentReading.selectedCards.length + 1}</div>
+                    <div class="card-symbol">✨</div>
+                </div>
+            `;
+            
+            currentReading.selectedCards.push({
+                index: index,
+                data: cardData,
+                element: cardElement
+            });
+            
+            document.getElementById('cards-selected').textContent = currentReading.selectedCards.length;
+            
+            if (currentReading.selectedCards.length === neededCards) {
+                document.getElementById('reveal-cards').style.display = 'block';
+            }
+        }
+        
+        function revealSelectedCards() {
+            document.getElementById('card-selection').style.display = 'none';
+            document.getElementById('reading-results').style.display = 'block';
+
+            // Award XP for completing reading
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(20, 'Oracle reading completed', 'spiritual-tools');
+                window.progressSystem.logActivity('oracle_reading', 'spiritual-tools', {type: currentReading.type});
+            }
+
+            const revealedContainer = document.getElementById('revealed-cards');
+            revealedContainer.innerHTML = '';
+
+            const positions = getReadingPositions(currentReading.type);
+            
+            currentReading.selectedCards.forEach((card, index) => {
+                const cardReveal = document.createElement('div');
+                cardReveal.className = 'revealed-card';
+                
+                const position = positions[index] || { name: `Card ${index + 1}`, meaning: 'General guidance' };
+                
+                cardReveal.innerHTML = `
+                    <div class="card-position">
+                        <h4>${position.name}</h4>
+                        <p class="position-meaning">${position.meaning}</p>
+                    </div>
+                    
+                    <div class="card-reveal">
+                        <div class="card-image">${card.data.image}</div>
+                        <h3 class="card-name">${card.data.name}</h3>
+                    </div>
+                    
+                    <div class="card-message">
+                        <div class="message-section">
+                            <h5>💫 Divine Message</h5>
+                            <p>${card.data.message}</p>
+                        </div>
+                        
+                        <div class="message-section">
+                            <h5>🔍 Meaning</h5>
+                            <p>${card.data.meaning}</p>
+                        </div>
+                        
+                        <div class="message-section">
+                            <h5>🌟 Affirmation</h5>
+                            <p class="affirmation">"${card.data.affirmation}"</p>
+                        </div>
+                    </div>
+                `;
+                
+                revealedContainer.appendChild(cardReveal);
+            });
+            
+            // Add overall reading summary
+            addReadingSummary();
+            
+            // Move context inputs to results and add save button for logged-in users
+            const contextInputs = document.querySelector('.reading-context');
+            const saveBtn = document.getElementById('save-reading-btn');
+            
+            if (contextInputs && saveBtn) {
+                const resultsContainer = document.getElementById('reading-results');
+                resultsContainer.appendChild(contextInputs);
+                resultsContainer.appendChild(saveBtn);
+            }
+        }
+        
+        function getReadingPositions(type) {
+            const positions = {
+                'single': [
+                    { name: 'Divine Guidance', meaning: 'Your main message for this moment' }
+                ],
+                'three': [
+                    { name: 'Past Influences', meaning: 'What brought you to this moment' },
+                    { name: 'Present Situation', meaning: 'Where you are right now' },
+                    { name: 'Future Potential', meaning: 'Where you are heading' }
+                ],
+                'daily': [
+                    { name: 'Today\'s Guidance', meaning: 'Your spiritual message for today' }
+                ],
+                'celtic': [
+                    { name: 'Present Situation', meaning: 'Your current state' },
+                    { name: 'Challenge/Cross', meaning: 'What challenges or helps you' },
+                    { name: 'Distant Past', meaning: 'Foundation of the situation' },
+                    { name: 'Recent Past', meaning: 'Recent events affecting you' },
+                    { name: 'Possible Future', meaning: 'Potential outcome' },
+                    { name: 'Immediate Future', meaning: 'What\'s coming next' },
+                    { name: 'Your Approach', meaning: 'How you\'re handling things' },
+                    { name: 'External Influences', meaning: 'Others\' impact on you' },
+                    { name: 'Inner Feelings', meaning: 'Your deepest emotions' },
+                    { name: 'Final Outcome', meaning: 'The ultimate result' }
+                ]
+            };
+            
+            return positions[type] || [];
+        }
+        
+        function addReadingSummary() {
+            const summary = document.createElement('div');
+            summary.className = 'reading-summary';
+            
+            const readingTypes = {
+                'single': 'Single Card Reading',
+                'three': 'Three Card Spread',
+                'daily': 'Daily Guidance',
+                'celtic': 'Celtic Cross Reading'
+            };
+            
+            summary.innerHTML = `
+                <div class="summary-header">
+                    <h3>✨ Reading Summary</h3>
+                    <p class="reading-type">${readingTypes[currentReading.type]}</p>
+                    <p class="reading-date">${new Date().toLocaleDateString()}</p>
+                </div>
+                
+                <div class="summary-content">
+                    <p>Your divine oracle reading reveals important guidance for your spiritual journey. Meditate on these messages and allow their wisdom to integrate into your consciousness.</p>
+                    
+                    <div class="meditation-prompt">
+                        <h4>🧘 Reflection Questions</h4>
+                        <ul>
+                            <li>How do these messages resonate with my current life situation?</li>
+                            <li>What actions can I take based on this guidance?</li>
+                            <li>Which affirmation speaks most strongly to my heart?</li>
+                            <li>How can I apply this wisdom in my daily spiritual practice?</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('revealed-cards').appendChild(summary);
+        }
+        
+        function saveReading() {
+            const readingData = {
+                type: currentReading.type,
+                date: new Date().toISOString(),
+                cards: currentReading.selectedCards.map(card => ({
+                    name: card.data.name,
+                    message: card.data.message,
+                    meaning: card.data.meaning,
+                    affirmation: card.data.affirmation
+                }))
+            };
+
+            const savedReadings = JSON.parse(localStorage.getItem('oracleReadings') || '[]');
+            savedReadings.push(readingData);
+            localStorage.setItem('oracleReadings', JSON.stringify(savedReadings));
+
+            // Award XP for saving reading
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(15, 'Reading saved to journal', 'spiritual-tools');
+            }
+
+            alert('🔮 Reading saved to your spiritual journal! ✨');
+        }
+        
+        function shareReading() {
+            const readingText = currentReading.selectedCards.map(card => 
+                `${card.data.name}: ${card.data.message}`
+            ).join('\n\n');
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Divine Oracle Reading',
+                    text: `My Oracle Card Reading:\n\n${readingText}`,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(readingText).then(() => {
+                    alert('🤝 Reading copied to clipboard for sharing! ✨');
+                });
+            }
+        }
+        
+        function newReading() {
+            document.getElementById('reading-results').style.display = 'none';
+            document.getElementById('reading-types').style.display = 'block';
+            currentReading = { type: '', selectedCards: [], revealedCards: [] };
+        }
+        
+        function openMeditationCenter() {
+            openTool('Meditation Center', 'openMeditationCenter');
+        }
+        
+        function openEnergyHealing() {
+            openTool('Energy Healing', 'openEnergyHealing');
+        }
+        
+        function openDailyDevotions() {
+            openTool('Daily Devotions', 'openDailyDevotions');
+        }
+        
+        function openSacredSound() {
+            openTool('Sacred Sound', 'openSacredSound');
+        }
+        
+        function openMysticArts() {
+            openTool('Mystic Arts', 'openMysticArts');
+        }
+        
+        function openShadowIntegration() {
+            openTool('Shadow Integration', 'openShadowIntegration');
+        }
+        
+        // Add loading animation when tools are clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            const toolCards = document.querySelectorAll('.tool-card');
+            
+            toolCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Add visual feedback for tool activation
+                    this.style.transform = 'translateY(-5px) scale(1.01)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+            });
+            
+            // Initialize tools
+            initializeMysticArts();
+            initializeShadowIntegration();
+        });
+        
+        // Mystic Arts Implementation
+        function initializeMysticArts() {
+            // Create Mystic Arts modal container
+            const mysticModal = document.createElement('div');
+            mysticModal.id = 'mystic-arts-modal';
+            mysticModal.innerHTML = `
+                <div class="tool-modal-overlay" onclick="closeMysticArts()">
+                    <div class="tool-modal" onclick="event.stopPropagation()">
+                        <div class="tool-header">
+                            <h2>🎨 Mystic Arts Studio</h2>
+                            <button onclick="closeMysticArts()" class="close-btn">×</button>
+                        </div>
+                        <div class="tool-content">
+                            <div class="art-tools">
+                                <div class="tool-section">
+                                    <h3>🌟 Sacred Canvas</h3>
+                                    <canvas id="sacred-canvas" width="400" height="300"></canvas>
+                                    <div class="canvas-tools">
+                                        <input type="color" id="brush-color" value="#d4af37">
+                                        <input type="range" id="brush-size" min="1" max="20" value="5">
+                                        <button onclick="clearCanvas()">Clear</button>
+                                        <button onclick="saveArt()">Save Art</button>
+                                    </div>
+                                </div>
+                                <div class="tool-section">
+                                    <h3>💫 Divine Inspiration</h3>
+                                    <div class="inspiration-cards">
+                                        <button onclick="generateInspiration()" class="inspiration-btn">Get Divine Inspiration</button>
+                                        <div id="inspiration-text" class="inspiration-display"></div>
+                                    </div>
+                                </div>
+                                <div class="tool-section">
+                                    <h3>🖌️ Sacred Patterns</h3>
+                                    <div class="pattern-gallery">
+                                        <button onclick="drawMandala()" class="pattern-btn">Draw Mandala</button>
+                                        <button onclick="drawSacredGeometry()" class="pattern-btn">Sacred Geometry</button>
+                                        <button onclick="drawFlowerOfLife()" class="pattern-btn">Flower of Life</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(mysticModal);
+        }
+        
+        function openMysticArts() {
+            document.getElementById('mystic-arts-modal').style.display = 'flex';
+            setupCanvas();
+        }
+        
+        function closeMysticArts() {
+            document.getElementById('mystic-arts-modal').style.display = 'none';
+        }
+        
+        function setupCanvas() {
+            const canvas = document.getElementById('sacred-canvas');
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+            
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                draw(e);
+            });
+            
+            canvas.addEventListener('mousemove', (e) => {
+                if (isDrawing) draw(e);
+            });
+            
+            canvas.addEventListener('mouseup', () => {
+                isDrawing = false;
+                ctx.beginPath();
+            });
+            
+            function draw(e) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const color = document.getElementById('brush-color').value;
+                const size = document.getElementById('brush-size').value;
+                
+                ctx.lineWidth = size;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = color;
+                
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+            }
+        }
+        
+        function clearCanvas() {
+            const canvas = document.getElementById('sacred-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        function saveArt() {
+            const canvas = document.getElementById('sacred-canvas');
+            const link = document.createElement('a');
+            link.download = 'sacred-art-' + Date.now() + '.png';
+            link.href = canvas.toDataURL();
+            link.click();
+
+            // Award XP for creating sacred art
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(25, 'Created sacred art', 'spiritual-tools');
+                window.progressSystem.logActivity('sacred_art_created', 'spiritual-tools');
+            }
+        }
+        
+        function generateInspiration() {
+            const inspirations = [
+                "Let your soul express its divine light through colors that speak your truth.",
+                "Draw from the infinite well of cosmic creativity within your being.",
+                "Channel the sacred feminine and masculine energies through your artistic expression.",
+                "Create patterns that reflect the divine geometry of your soul's blueprint.",
+                "Allow your higher self to guide each stroke, each color, each sacred symbol.",
+                "Express the unity of all creation through your divine artistic vision.",
+                "Paint your prayers, draw your dreams, create your healing.",
+                "Let divine inspiration flow through you like rivers of liquid gold."
+            ];
+            
+            const randomInspiration = inspirations[Math.floor(Math.random() * inspirations.length)];
+            document.getElementById('inspiration-text').innerHTML = `<p>"${randomInspiration}"</p>`;
+        }
+        
+        function drawMandala() {
+            const canvas = document.getElementById('sacred-canvas');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            ctx.strokeStyle = '#d4af37';
+            ctx.lineWidth = 2;
+            
+            // Draw concentric circles
+            for (let r = 20; r < 120; r += 20) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Draw radial lines
+                for (let i = 0; i < 8; i++) {
+                    const angle = (i * Math.PI) / 4;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(centerX + Math.cos(angle) * r, centerY + Math.sin(angle) * r);
+                    ctx.stroke();
+                }
+            }
+        }
+        
+        function drawSacredGeometry() {
+            const canvas = document.getElementById('sacred-canvas');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            ctx.strokeStyle = '#8b5cf6';
+            ctx.lineWidth = 2;
+            
+            // Draw hexagon
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                const x = centerX + Math.cos(angle) * 80;
+                const y = centerY + Math.sin(angle) * 80;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+            
+            // Draw inner triangles
+            for (let i = 0; i < 6; i++) {
+                const angle1 = (i * Math.PI) / 3;
+                const angle2 = ((i + 2) * Math.PI) / 3;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(centerX + Math.cos(angle1) * 80, centerY + Math.sin(angle1) * 80);
+                ctx.lineTo(centerX + Math.cos(angle2) * 80, centerY + Math.sin(angle2) * 80);
+                ctx.closePath();
+                ctx.stroke();
+            }
+        }
+        
+        function drawFlowerOfLife() {
+            const canvas = document.getElementById('sacred-canvas');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 30;
+            
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 2;
+            
+            // Center circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Surrounding circles
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+        }
+        
+        // Shadow Integration Implementation
+        function initializeShadowIntegration() {
+            const shadowModal = document.createElement('div');
+            shadowModal.id = 'shadow-integration-modal';
+            shadowModal.innerHTML = `
+                <div class="tool-modal-overlay" onclick="closeShadowIntegration()">
+                    <div class="tool-modal" onclick="event.stopPropagation()">
+                        <div class="tool-header">
+                            <h2>🌑 Shadow Integration Portal</h2>
+                            <button onclick="closeShadowIntegration()" class="close-btn">×</button>
+                        </div>
+                        <div class="tool-content">
+                            <div class="shadow-tools">
+                                <div class="tool-section">
+                                    <h3>🌑 Shadow Assessment</h3>
+                                    <button onclick="startShadowAssessment()" class="shadow-btn">Begin Assessment</button>
+                                    <div id="assessment-questions" class="assessment-area"></div>
+                                </div>
+                                <div class="tool-section">
+                                    <h3>💡 Integration Exercises</h3>
+                                    <button onclick="loadIntegrationExercise()" class="shadow-btn">Get Exercise</button>
+                                    <div id="integration-exercise" class="exercise-area"></div>
+                                </div>
+                                <div class="tool-section">
+                                    <h3>🔄 Balance Practices</h3>
+                                    <button onclick="beginBalancePractice()" class="shadow-btn">Start Practice</button>
+                                    <div id="balance-practice" class="practice-area"></div>
+                                </div>
+                                <div class="tool-section">
+                                    <h3>📖 Reflection Journal</h3>
+                                    <textarea id="shadow-journal" placeholder="Write your shadow integration insights here..."></textarea>
+                                    <button onclick="saveShadowJournal()" class="shadow-btn">Save Entry</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(shadowModal);
+        }
+        
+        function openShadowIntegration() {
+            document.getElementById('shadow-integration-modal').style.display = 'flex';
+        }
+        
+        function closeShadowIntegration() {
+            document.getElementById('shadow-integration-modal').style.display = 'none';
+        }
+        
+        let currentQuestion = 0;
+        const shadowQuestions = [
+            "What emotions do you try to avoid or suppress most often?",
+            "What aspects of your personality do you judge or criticize?",
+            "What triggers anger or frustration in you about others?",
+            "What do you fear others might discover about you?",
+            "When do you feel most ashamed or embarrassed?"
+        ];
+        
+        function startShadowAssessment() {
+            currentQuestion = 0;
+            showNextQuestion();
+        }
+        
+        function showNextQuestion() {
+            const questionsArea = document.getElementById('assessment-questions');
+            if (currentQuestion < shadowQuestions.length) {
+                questionsArea.innerHTML = `
+                    <div class="question-card">
+                        <p class="question-text">${shadowQuestions[currentQuestion]}</p>
+                        <textarea id="answer-${currentQuestion}" placeholder="Reflect deeply and write your honest response..."></textarea>
+                        <button onclick="nextQuestion()" class="shadow-btn">Next Question</button>
+                    </div>
+                `;
+            } else {
+                questionsArea.innerHTML = `
+                    <div class="completion-card">
+                        <h4>🌟 Assessment Complete</h4>
+                        <p>You've taken the first brave step in shadow integration. Your responses are stored for reflection.</p>
+                        <button onclick="generateShadowInsight()" class="shadow-btn">Get Insight</button>
+                        <div id="shadow-insight"></div>
+                    </div>
+                `;
+            }
+        }
+        
+        function nextQuestion() {
+            const answer = document.getElementById(`answer-${currentQuestion}`).value;
+            if (answer.trim()) {
+                localStorage.setItem(`shadowAnswer_${currentQuestion}`, answer);
+                currentQuestion++;
+                showNextQuestion();
+            } else {
+                alert('Please write your response before continuing.');
+            }
+        }
+        
+        function generateShadowInsight() {
+            const insights = [
+                "Your shadows are not flaws but unexplored gifts waiting to be integrated.",
+                "What you resist in others often reflects what you resist in yourself.",
+                "Shadow work is love work - loving all parts of yourself unconditionally.",
+                "Your greatest wounds often contain your greatest wisdom.",
+                "Integration happens through compassionate witnessing, not judgment."
+            ];
+
+            const insight = insights[Math.floor(Math.random() * insights.length)];
+            document.getElementById('shadow-insight').innerHTML = `
+                <div class="insight-card">
+                    <p class="insight-text">"${insight}"</p>
+                </div>
+            `;
+
+            // Award XP for completing shadow assessment
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(40, 'Completed shadow work assessment', 'spiritual-tools');
+                window.progressSystem.logActivity('shadow_assessment', 'spiritual-tools');
+            }
+        }
+        
+        function loadIntegrationExercise() {
+            const exercises = [
+                {
+                    title: "Mirror Work",
+                    description: "Look into a mirror for 5 minutes. Notice any judgments that arise about your appearance. Send love to each part you criticize.",
+                    steps: ["Find a quiet space with a mirror", "Look into your eyes for 1 minute", "Scan your face without judgment", "Send love to any parts you criticize", "End with 'I love and accept all of myself'"]
+                },
+                {
+                    title: "Trigger Transmutation",
+                    description: "Transform your triggers into teachers by exploring what they reflect about your inner world.",
+                    steps: ["Identify a recent trigger", "Ask: What quality in them triggered me?", "Explore: Where do I have this quality?", "Find the gift in this quality", "Thank the trigger for the teaching"]
+                },
+                {
+                    title: "Shadow Dialogue",
+                    description: "Have a conversation with your shadow self to understand its needs and wisdom.",
+                    steps: ["Write a letter to your shadow", "Ask what it needs from you", "Listen for its response", "Write back with compassion", "Find ways to honor its needs"]
+                }
+            ];
+            
+            const exercise = exercises[Math.floor(Math.random() * exercises.length)];
+            document.getElementById('integration-exercise').innerHTML = `
+                <div class="exercise-card">
+                    <h4>${exercise.title}</h4>
+                    <p>${exercise.description}</p>
+                    <ol>
+                        ${exercise.steps.map(step => `<li>${step}</li>`).join('')}
+                    </ol>
+                </div>
+            `;
+        }
+        
+        function beginBalancePractice() {
+            const practices = [
+                {
+                    name: "Light-Shadow Breathing",
+                    instruction: "Breathe in light, breathe out shadow. Let them dance together in harmony.",
+                    duration: "5 minutes"
+                },
+                {
+                    name: "Polarity Integration",
+                    instruction: "Hold both your light and shadow with equal love and acceptance.",
+                    duration: "10 minutes"
+                },
+                {
+                    name: "Wholeness Meditation",
+                    instruction: "Visualize all parts of yourself - light and shadow - as one complete being.",
+                    duration: "15 minutes"
+                }
+            ];
+            
+            const practice = practices[Math.floor(Math.random() * practices.length)];
+            document.getElementById('balance-practice').innerHTML = `
+                <div class="practice-card">
+                    <h4>${practice.name}</h4>
+                    <p>${practice.instruction}</p>
+                    <p><strong>Duration:</strong> ${practice.duration}</p>
+                    <button onclick="startPracticeTimer('${practice.duration}')" class="shadow-btn">Start Timer</button>
+                    <div id="practice-timer"></div>
+                </div>
+            `;
+        }
+        
+        function startPracticeTimer(duration) {
+            const minutes = parseInt(duration);
+            let seconds = minutes * 60;
+            const timerDiv = document.getElementById('practice-timer');
+            
+            const timer = setInterval(() => {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                timerDiv.innerHTML = `<div class="timer-display">${mins}:${secs.toString().padStart(2, '0')}</div>`;
+                
+                if (seconds <= 0) {
+                    clearInterval(timer);
+                    timerDiv.innerHTML = '<div class="timer-complete">✨ Practice Complete! ✨</div>';
+                }
+                seconds--;
+            }, 1000);
+        }
+        
+        function saveShadowJournal() {
+            const journal = document.getElementById('shadow-journal').value;
+            if (journal.trim()) {
+                const timestamp = new Date().toISOString();
+                const entries = JSON.parse(localStorage.getItem('shadowJournalEntries') || '[]');
+                entries.push({ timestamp, entry: journal });
+                localStorage.setItem('shadowJournalEntries', JSON.stringify(entries));
+
+                // Award XP for shadow journal entry
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(20, 'Shadow journal entry saved', 'spiritual-tools');
+                    window.progressSystem.logActivity('shadow_journal', 'spiritual-tools');
+                }
+
+                alert('Journal entry saved! 📖');
+                document.getElementById('shadow-journal').value = '';
+            }
+        }
+
+        // ===========================================
+        // DATABASE INTEGRATION FOR ORACLE CARDS
+        // ===========================================
+
+        /**
+         * Save Oracle Cards reading to user's spiritual history
+         */
+        async function saveOracleReading() {
+            try {
+                if (!currentReading.selectedCards || currentReading.selectedCards.length === 0) {
+                    throw new Error('No cards selected to save');
+                }
+
+                // Prepare reading data for database
+                const readingData = {
+                    reading_type: currentReading.type,
+                    cards_drawn: currentReading.selectedCards.map((card, index) => ({
+                        position: index + 1,
+                        name: card.data.name,
+                        symbol: card.data.image,
+                        message: card.data.message,
+                        meaning: card.data.meaning,
+                        affirmation: card.data.affirmation
+                    })),
+                    reading_question: document.getElementById('reading-question')?.value || '',
+                    reading_interpretation: generateReadingInterpretation(),
+                    emotional_state: document.getElementById('emotional-state')?.value || '',
+                    life_focus: document.getElementById('life-focus')?.value || ''
+                };
+
+                const response = await fetch('/api/auth.php?action=save_reading', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(readingData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSaveSuccessMessage(result.reading_id);
+                    currentReading.savedId = result.reading_id;
+                } else {
+                    throw new Error(result.message || 'Failed to save reading');
+                }
+
+            } catch (error) {
+                console.error('Error saving reading:', error);
+                showSaveErrorMessage(error.message);
+            }
+        }
+
+        /**
+         * Generate interpretation summary for the reading
+         */
+        function generateReadingInterpretation() {
+            const cards = currentReading.selectedCards;
+            const type = currentReading.type;
+            
+            let interpretation = `Your ${type} reading reveals: `;
+            
+            if (type === 'single' || type === 'daily') {
+                interpretation += `The ${cards[0].data.name} brings a message of ${cards[0].data.meaning.toLowerCase()}. `;
+            } else if (type === 'three') {
+                interpretation += `Your past (${cards[0].data.name}) influences your present (${cards[1].data.name}) `;
+                interpretation += `and guides you toward a future of ${cards[2].data.meaning.toLowerCase()}. `;
+            } else if (type === 'celtic') {
+                interpretation += `A comprehensive journey through your spiritual landscape, `;
+                interpretation += `with ${cards[0].data.name} at the center of your current situation. `;
+            }
+            
+            interpretation += 'Trust in the divine guidance you have received.';
+            return interpretation;
+        }
+
+        /**
+         * Load user's reading history
+         */
+        async function loadReadingHistory(limit = 10, offset = 0) {
+            try {
+                const response = await fetch(`/api/auth.php?action=get_readings&limit=${limit}&offset=${offset}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayReadingHistory(result.readings);
+                } else {
+                    throw new Error(result.message || 'Failed to load reading history');
+                }
+
+            } catch (error) {
+                console.error('Error loading reading history:', error);
+            }
+        }
+
+        /**
+         * Display reading history in UI
+         */
+        function displayReadingHistory(readings) {
+            const historyContainer = document.getElementById('reading-history');
+            if (!historyContainer) return;
+
+            historyContainer.innerHTML = '';
+            
+            readings.forEach(reading => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                const date = new Date(reading.created_at).toLocaleDateString();
+                const cardNames = reading.cards_drawn.map(card => card.name).join(', ');
+                
+                historyItem.innerHTML = `
+                    <div class="history-header">
+                        <h4>${reading.reading_type} Reading</h4>
+                        <span class="history-date">${date}</span>
+                        ${reading.is_favorite ? '<span class="favorite-star">⭐</span>' : ''}
+                    </div>
+                    <div class="history-cards">Cards: ${cardNames}</div>
+                    ${reading.reading_question ? `<div class="history-question">Question: ${reading.reading_question}</div>` : ''}
+                    <div class="history-actions">
+                        <button onclick="viewReading(${reading.id})" class="oracle-btn secondary">View</button>
+                        <button onclick="toggleReadingFavorite(${reading.id})" class="oracle-btn secondary">
+                            ${reading.is_favorite ? 'Unfavorite' : 'Favorite'}
+                        </button>
+                    </div>
+                `;
+                
+                historyContainer.appendChild(historyItem);
+            });
+        }
+
+        /**
+         * Toggle reading favorite status
+         */
+        async function toggleReadingFavorite(readingId) {
+            try {
+                const response = await fetch('/api/auth.php?action=toggle_favorite', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ reading_id: readingId })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    loadReadingHistory(); // Refresh the history
+                } else {
+                    throw new Error(result.message || 'Failed to update favorite status');
+                }
+
+            } catch (error) {
+                console.error('Error toggling favorite:', error);
+            }
+        }
+
+        /**
+         * Load and display user statistics
+         */
+        async function loadUserStats() {
+            try {
+                const response = await fetch('/api/auth.php?action=get_stats');
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayUserStats(result.reading_stats, result.card_stats);
+                } else {
+                    throw new Error(result.message || 'Failed to load statistics');
+                }
+
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        /**
+         * Display user statistics
+         */
+        function displayUserStats(readingStats, cardStats) {
+            const statsContainer = document.getElementById('user-stats');
+            if (!statsContainer) return;
+
+            statsContainer.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>${readingStats.total_readings}</h3>
+                        <p>Total Readings</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>${readingStats.favorites}</h3>
+                        <p>Favorite Readings</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>${readingStats.avg_accuracy || 'N/A'}</h3>
+                        <p>Avg Accuracy</p>
+                    </div>
+                </div>
+                
+                <div class="top-cards">
+                    <h4>Your Most Drawn Cards</h4>
+                    ${cardStats.map(card => `
+                        <div class="card-stat">
+                            <span class="card-symbol">${card.card_symbol}</span>
+                            <span class="card-name">${card.card_name}</span>
+                            <span class="card-count">${card.times_drawn}x</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        /**
+         * Show success message after saving reading
+         */
+        function showSaveSuccessMessage(readingId) {
+            const message = document.createElement('div');
+            message.className = 'save-success-message';
+            message.innerHTML = `
+                <div class="success-content">
+                    ✨ Sacred reading saved to your spiritual journal! 
+                    <button onclick="this.parentElement.parentElement.remove()" class="close-btn">×</button>
+                </div>
+            `;
+            
+            document.querySelector('.reading-results').appendChild(message);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (message.parentElement) {
+                    message.remove();
+                }
+            }, 5000);
+        }
+
+        /**
+         * Show error message if saving fails
+         */
+        function showSaveErrorMessage(errorMessage) {
+            const message = document.createElement('div');
+            message.className = 'save-error-message';
+            message.innerHTML = `
+                <div class="error-content">
+                    ⚠️ Could not save reading: ${errorMessage}
+                    <button onclick="this.parentElement.parentElement.remove()" class="close-btn">×</button>
+                </div>
+            `;
+            
+            document.querySelector('.reading-results').appendChild(message);
+            
+            // Auto-remove after 7 seconds
+            setTimeout(() => {
+                if (message.parentElement) {
+                    message.remove();
+                }
+            }, 7000);
+        }
+
+        /**
+         * Check if user is logged in
+         */
+        async function checkUserSession() {
+            try {
+                const response = await fetch('/api/auth.php?action=validate_session');
+                const result = await response.json();
+                
+                if (result.valid) {
+                    enableDatabaseFeatures(result.user);
+                    return true;
+                } else {
+                    disableDatabaseFeatures();
+                    return false;
+                }
+
+            } catch (error) {
+                console.error('Error checking session:', error);
+                disableDatabaseFeatures();
+                return false;
+            }
+        }
+
+        /**
+         * Enable database features for logged-in users
+         */
+        function enableDatabaseFeatures(user) {
+            // Add save button to reading results
+            const saveBtn = document.createElement('button');
+            saveBtn.id = 'save-reading-btn';
+            saveBtn.className = 'oracle-btn';
+            saveBtn.textContent = '💾 Save to Spiritual Journal';
+            saveBtn.onclick = saveOracleReading;
+            
+            // Add spiritual context inputs
+            const contextInputs = document.createElement('div');
+            contextInputs.className = 'reading-context';
+            contextInputs.innerHTML = `
+                <div class="context-inputs">
+                    <div class="input-group">
+                        <label for="reading-question">Sacred Question (Optional):</label>
+                        <input type="text" id="reading-question" placeholder="What guidance do you seek?">
+                    </div>
+                    <div class="input-group">
+                        <label for="emotional-state">Current Emotional State:</label>
+                        <select id="emotional-state">
+                            <option value="">Select...</option>
+                            <option value="peaceful">Peaceful</option>
+                            <option value="anxious">Anxious</option>
+                            <option value="hopeful">Hopeful</option>
+                            <option value="confused">Confused</option>
+                            <option value="excited">Excited</option>
+                            <option value="contemplative">Contemplative</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="life-focus">Life Focus Area:</label>
+                        <select id="life-focus">
+                            <option value="">Select...</option>
+                            <option value="relationships">Relationships</option>
+                            <option value="career">Career</option>
+                            <option value="spirituality">Spirituality</option>
+                            <option value="health">Health</option>
+                            <option value="creativity">Creativity</option>
+                            <option value="personal-growth">Personal Growth</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+            
+            // Insert before card selection (will be moved to results when revealed)
+            const cardSelection = document.getElementById('card-selection');
+            cardSelection.insertBefore(contextInputs, cardSelection.firstChild);
+        }
+
+        /**
+         * Disable database features for guests
+         */
+        function disableDatabaseFeatures() {
+            // Show guest message
+            const guestMessage = document.createElement('div');
+            guestMessage.className = 'guest-message';
+            guestMessage.innerHTML = `
+                <div class="guest-notice">
+                    🌟 To save your readings and track your spiritual journey, 
+                    <a href="../members-new.html">please login to your Divine Temple account</a> 🌟
+                </div>
+            `;
+            
+            document.querySelector('#oracle-cards-content .oracle-intro').appendChild(guestMessage);
+        }
+
+        // Initialize database features when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            checkUserSession();
+            
+            // Spiritual Tools specific validation
+            const requiredFunctions = [
+                'checkUserSession', 'disableDatabaseFeatures', 'openSacredGeometry',
+                'openEnergyCenter', 'openDreamJournal', 'openMantraCenter'
+            ];
+            
+            if (window.DivineTemplateUtils) {
+                window.DivineTemplateUtils.validateSectionFunctions('Spiritual Tools', requiredFunctions);
+                window.DivineTemplateUtils.initializeSectionListeners('Spiritual Tools');
+                window.DivineTemplateUtils.trackSectionPerformance('Spiritual Tools');
+            } else {
+                console.log('🔧 Spiritual Tools loaded (validation script not found)');
+            }
+        });
+
+        // Enhanced error handling for spiritual tools
+        function handleToolError(operation, error) {
+            console.error(`🔧 Spiritual Tools Error in ${operation}:`, error);
+            
+            if (window.DivineTemplateUtils) {
+                window.DivineTemplateUtils.handleSectionError('Spiritual Tools', operation, error, '🔧');
+            }
+        }
+    </script>
+
+    <!-- Load universal validation script -->
+    <script src="../js/section-validation.js" defer></script>
+</body>
+</html>

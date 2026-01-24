@@ -1,0 +1,3611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divine Temple - Free Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs - LOAD FIRST -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+
+    <!-- Realistic Nature Audio System -->
+    <script src="js/realistic-nature-audio-manager.js"></script>
+    <script src="js/soundboard-integration.js"></script>
+
+    <style>
+        :root {
+            --primary-gold: #d4af37;
+            --deep-purple: #8b5cf6;
+            --soft-blue: #3b82f6;
+            --dark-bg: #0f0f1e;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-glow: rgba(212, 175, 55, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Loading Screen */
+        .auth-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .auth-loading.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(212, 175, 55, 0.3);
+            border-top-color: var(--primary-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(15, 15, 30, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-glow);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-gold), var(--deep-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .free-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            animation: glow-pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .welcome-banner h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-banner p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Calendar Section */
+        .calendar-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-gold), var(--deep-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .calendar-frame {
+            width: 100%;
+            height: 1000px;
+            min-height: 800px;
+            border: 2px solid var(--border-glow);
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .calendar-frame {
+                height: 600px;
+                min-height: 500px;
+            }
+        }
+
+        /* Upgrade CTA */
+        .upgrade-cta {
+            background: linear-gradient(135deg, var(--deep-purple), var(--soft-blue));
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upgrade-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .upgrade-cta h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .upgrade-cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-btn {
+            background: white;
+            color: var(--deep-purple);
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .cta-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .cta-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-gold);
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        .locked-badge {
+            display: inline-block;
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Oracle Card Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .oracle-card {
+            background: linear-gradient(135deg, var(--deep-purple), var(--soft-blue));
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.4);
+            transform: perspective(1000px) rotateY(0deg);
+            transition: transform 0.6s;
+        }
+
+        .oracle-card.flipping {
+            transform: perspective(1000px) rotateY(180deg);
+        }
+
+        .oracle-card-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .oracle-card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-gold), white);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .oracle-card-message {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .draw-button {
+            background: linear-gradient(135deg, var(--primary-gold), var(--deep-purple));
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .draw-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .draw-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Audio Player Styles */
+        /* Sound Dashboard Trigger Button */
+        .sound-trigger {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, var(--deep-purple), var(--soft-blue));
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--border-glow);
+            border-radius: 50px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: slideInFromRight 0.5s ease;
+        }
+
+        .sound-trigger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(139, 92, 246, 0.7);
+        }
+
+        .sound-trigger-text {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        @keyframes slideInFromRight {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Sound Dashboard Modal */
+        .sound-dashboard-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .sound-dashboard-modal.active {
+            display: flex;
+        }
+
+        .sound-dashboard-content {
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            border: 2px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 2rem;
+            max-width: 1000px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            animation: modalSlideIn 0.4s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .sound-dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .sound-dashboard-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary-gold), var(--deep-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: rgba(239, 68, 68, 0.4);
+            transform: rotate(90deg);
+        }
+
+        /* Headphone Banner */
+        .headphone-banner {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .headphone-icon {
+            font-size: 3rem;
+            animation: headphonePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes headphonePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .headphone-banner strong {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-gold);
+        }
+
+        .headphone-banner p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+        }
+
+        /* Presets */
+        .sound-presets {
+            margin-bottom: 2rem;
+        }
+
+        .sound-presets h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .preset-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .preset-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-glow);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .preset-btn:hover {
+            background: linear-gradient(135deg, var(--deep-purple), var(--soft-blue));
+            border-color: var(--deep-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Sound Controls Grid */
+        .sound-controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .sound-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .sound-card:hover {
+            border-color: var(--deep-purple);
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .sound-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .sound-card-header .sound-icon {
+            font-size: 2rem;
+        }
+
+        .sound-card-header h4 {
+            flex: 1;
+            margin: 0 0 0 0.75rem;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: 0.4s;
+            border-radius: 34px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background: linear-gradient(135deg, var(--deep-purple), var(--soft-blue));
+            border-color: var(--deep-purple);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Volume Controls */
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .volume-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            min-width: 55px;
+        }
+
+        .sound-volume-slider {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+            transition: background 0.3s;
+        }
+
+        .sound-volume-slider:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .sound-volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.5);
+            transition: all 0.3s;
+        }
+
+        .sound-volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.7);
+        }
+
+        .sound-volume-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.5);
+            transition: all 0.3s;
+        }
+
+        .sound-volume-slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.7);
+        }
+
+        .volume-value {
+            font-size: 0.85rem;
+            color: var(--primary-gold);
+            min-width: 40px;
+            font-weight: 600;
+        }
+
+        /* Master Volume */
+        .master-volume {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(139, 92, 246, 0.1));
+            border: 2px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .master-volume h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .master-volume .sound-volume-slider {
+            height: 8px;
+        }
+
+        .master-volume .sound-volume-slider::-webkit-slider-thumb {
+            width: 20px;
+            height: 20px;
+        }
+
+        .master-volume .sound-volume-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sound-controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .preset-buttons {
+                justify-content: center;
+            }
+
+            .sound-dashboard-content {
+                padding: 1.5rem;
+            }
+        }
+
+        /* User Stats Dashboard */
+        .stats-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-gold), var(--deep-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-action-btn {
+            background: linear-gradient(135deg, var(--deep-purple), var(--soft-blue));
+            border: none;
+            border-radius: 16px;
+            padding: 1.5rem 1rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+        }
+
+        .quick-action-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Daily Quote */
+        .daily-quote {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(139, 92, 246, 0.1));
+            border: 2px solid var(--border-glow);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .daily-quote::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 8rem;
+            opacity: 0.1;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .quote-text {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote-author {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        /* User Info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .welcome-banner {
+                padding: 2rem 1rem;
+            }
+
+            .welcome-banner h1 {
+                font-size: 1.8rem;
+            }
+
+            .upgrade-cta h2 {
+                font-size: 1.8rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .calendar-frame {
+                height: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="auth-loading" id="authLoading">
+        <div class="spinner"></div>
+        <p style="color: var(--primary-gold); font-size: 1.1rem;">🔮 Verifying access...</p>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">⚡ Divine Temple</div>
+        <div class="user-info">
+            <a href="https://medium.com/@edenconsciousnesssdt" target="_blank" rel="noopener noreferrer"
+               style="text-decoration: none; color: var(--primary-gold); font-weight: 600; padding: 0.5rem 1rem;
+               background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 8px;
+               margin-right: 1rem; transition: all 0.3s ease;">
+                📝 Blog
+            </a>
+            <span class="free-badge">✨ Free Access</span>
+            <span id="userEmail" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;"></span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Sound Dashboard Trigger -->
+    <div class="sound-trigger" onclick="openSoundDashboard()" title="Open Sound Dashboard">
+        <span id="soundTriggerIcon">🎵</span>
+        <span class="sound-trigger-text">Ambient Sounds</span>
+    </div>
+
+    <!-- Sound Dashboard Modal -->
+    <div class="sound-dashboard-modal" id="soundDashboard">
+        <div class="sound-dashboard-content">
+            <div class="sound-dashboard-header">
+                <h2>🎵 Sacred Soundscape</h2>
+                <button class="close-btn" onclick="closeSoundDashboard()">✕</button>
+            </div>
+
+            <!-- Headphone Recommendation -->
+            <div class="headphone-banner">
+                <span class="headphone-icon">🎧</span>
+                <div>
+                    <strong>Headphones Recommended</strong>
+                    <p>For the best immersive experience, use headphones to fully appreciate the spatial audio</p>
+                </div>
+            </div>
+
+            <!-- Presets -->
+            <div class="sound-presets">
+                <h3>Quick Presets</h3>
+                <div class="preset-buttons">
+                    <button class="preset-btn" onclick="applyPreset('silent')">🔇 Silent</button>
+                    <button class="preset-btn" onclick="applyPreset('forest')">🌲 Deep Forest</button>
+                    <button class="preset-btn" onclick="applyPreset('rain')">🌧️ Thunderstorm</button>
+                    <button class="preset-btn" onclick="applyPreset('night')">🌙 Night Ambience</button>
+                    <button class="preset-btn" onclick="applyPreset('stream')">💧 Mountain Stream</button>
+                    <button class="preset-btn" onclick="applyPreset('temple')">🏛️ Sacred Temple</button>
+                    <button class="preset-btn" onclick="applyPreset('ocean')">🌊 Ocean Beach</button>
+                    <button class="preset-btn" onclick="applyPreset('summer')">☀️ Summer Day</button>
+                </div>
+            </div>
+
+            <!-- Sound Controls Grid -->
+            <div class="sound-controls-grid">
+                <!-- Rain -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">🌧️</span>
+                        <h4>Rain</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-rain" onchange="toggleSound('rain', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="50" class="sound-volume-slider" id="volume-rain" oninput="setVolume('rain', this.value)">
+                        <span class="volume-value" id="value-rain">50%</span>
+                    </div>
+                </div>
+
+                <!-- Thunder -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">⚡</span>
+                        <h4>Thunder</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-thunder" onchange="toggleSound('thunder', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="40" class="sound-volume-slider" id="volume-thunder" oninput="setVolume('thunder', this.value)">
+                        <span class="volume-value" id="value-thunder">40%</span>
+                    </div>
+                </div>
+
+                <!-- Crickets -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">🦗</span>
+                        <h4>Crickets</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-crickets" onchange="toggleSound('crickets', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="60" class="sound-volume-slider" id="volume-crickets" oninput="setVolume('crickets', this.value)">
+                        <span class="volume-value" id="value-crickets">60%</span>
+                    </div>
+                </div>
+
+                <!-- Birds -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">🐦</span>
+                        <h4>Birds</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-birds" onchange="toggleSound('birds', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="50" class="sound-volume-slider" id="volume-birds" oninput="setVolume('birds', this.value)">
+                        <span class="volume-value" id="value-birds">50%</span>
+                    </div>
+                </div>
+
+                <!-- Fire -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">🔥</span>
+                        <h4>Fire</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-fire" onchange="toggleSound('fire', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="45" class="sound-volume-slider" id="volume-fire" oninput="setVolume('fire', this.value)">
+                        <span class="volume-value" id="value-fire">45%</span>
+                    </div>
+                </div>
+
+                <!-- Wind Chimes -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">🎐</span>
+                        <h4>Wind Chimes</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-chimes" onchange="toggleSound('chimes', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="35" class="sound-volume-slider" id="volume-chimes" oninput="setVolume('chimes', this.value)">
+                        <span class="volume-value" id="value-chimes">35%</span>
+                    </div>
+                </div>
+
+                <!-- Ocean Waves -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">🌊</span>
+                        <h4>Ocean</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-ocean" onchange="toggleSound('ocean', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="55" class="sound-volume-slider" id="volume-ocean" oninput="setVolume('ocean', this.value)">
+                        <span class="volume-value" id="value-ocean">55%</span>
+                    </div>
+                </div>
+
+                <!-- Singing Bowl -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">🔔</span>
+                        <h4>Singing Bowl</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-bowl" onchange="toggleSound('bowl', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="30" class="sound-volume-slider" id="volume-bowl" oninput="setVolume('bowl', this.value)">
+                        <span class="volume-value" id="value-bowl">30%</span>
+                    </div>
+                </div>
+
+                <!-- Brown Noise -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">🌫️</span>
+                        <h4>Brown Noise</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-brown" onchange="toggleSound('brown', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="40" class="sound-volume-slider" id="volume-brown" oninput="setVolume('brown', this.value)">
+                        <span class="volume-value" id="value-brown">40%</span>
+                    </div>
+                </div>
+
+                <!-- Wind -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">💨</span>
+                        <h4>Wind</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-wind" onchange="toggleSound('wind', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="45" class="sound-volume-slider" id="volume-wind" oninput="setVolume('wind', this.value)">
+                        <span class="volume-value" id="value-wind">45%</span>
+                    </div>
+                </div>
+
+                <!-- Stream -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">💧</span>
+                        <h4>Stream</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-stream" onchange="toggleSound('stream', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="50" class="sound-volume-slider" id="volume-stream" oninput="setVolume('stream', this.value)">
+                        <span class="volume-value" id="value-stream">50%</span>
+                    </div>
+                </div>
+
+                <!-- Owl -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">🦉</span>
+                        <h4>Owl</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-owl" onchange="toggleSound('owl', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="35" class="sound-volume-slider" id="volume-owl" oninput="setVolume('owl', this.value)">
+                        <span class="volume-value" id="value-owl">35%</span>
+                    </div>
+                </div>
+
+                <!-- Frogs -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">🐸</span>
+                        <h4>Frogs</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-frogs" onchange="toggleSound('frogs', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="40" class="sound-volume-slider" id="volume-frogs" oninput="setVolume('frogs', this.value)">
+                        <span class="volume-value" id="value-frogs">40%</span>
+                    </div>
+                </div>
+
+                <!-- Cicadas -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">🦗</span>
+                        <h4>Cicadas</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-cicadas" onchange="toggleSound('cicadas', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="45" class="sound-volume-slider" id="volume-cicadas" oninput="setVolume('cicadas', this.value)">
+                        <span class="volume-value" id="value-cicadas">45%</span>
+                    </div>
+                </div>
+
+                <!-- Leaves -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">🍃</span>
+                        <h4>Leaves</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-leaves" onchange="toggleSound('leaves', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="30" class="sound-volume-slider" id="volume-leaves" oninput="setVolume('leaves', this.value)">
+                        <span class="volume-value" id="value-leaves">30%</span>
+                    </div>
+                </div>
+
+                <!-- Wolf -->
+                <div class="sound-card">
+                    <div class="sound-card-header">
+                        <span class="sound-icon">🐺</span>
+                        <h4>Wolf Howl</h4>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-wolf" onchange="toggleSound('wolf', this.checked)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="volume-control">
+                        <span class="volume-label">Volume</span>
+                        <input type="range" min="0" max="100" value="25" class="sound-volume-slider" id="volume-wolf" oninput="setVolume('wolf', this.value)">
+                        <span class="volume-value" id="value-wolf">25%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Master Volume -->
+            <div class="master-volume">
+                <h3>🎚️ Master Volume</h3>
+                <div class="volume-control">
+                    <input type="range" min="0" max="100" value="70" class="sound-volume-slider master" id="masterVolume" oninput="setMasterVolume(this.value)">
+                    <span class="volume-value" id="masterVolumeValue">70%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+            <h1>🌟 Welcome to Divine Temple Free Access</h1>
+            <p>Explore the sacred Enochian calendar and discover cosmic timing for your spiritual journey</p>
+        </div>
+
+        <!-- Daily Spiritual Quote -->
+        <div class="daily-quote">
+            <div class="quote-text" id="dailyQuote">
+                "The soul always knows what to do to heal itself. The challenge is to silence the mind."
+            </div>
+            <div class="quote-author" id="quoteAuthor">— Caroline Myss</div>
+        </div>
+
+        <!-- User Progress Dashboard -->
+        <div class="calendar-section">
+            <h2 class="section-title">📊 Your Spiritual Journey</h2>
+            <div class="stats-dashboard">
+                <div class="stat-card">
+                    <div class="stat-number" id="statJournals">0</div>
+                    <div class="stat-label">📝 Journal Entries</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="statStreak">0</div>
+                    <div class="stat-label">🔥 Day Streak</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="statDaysActive">0</div>
+                    <div class="stat-label">📅 Days Active</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="statOracleCards">0</div>
+                    <div class="stat-label">🔮 Oracle Cards Drawn</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="calendar-section">
+            <h2 class="section-title">⚡ Quick Actions</h2>
+            <div class="quick-actions">
+                <button class="quick-action-btn" onclick="openCalendarNewJournal()">
+                    <div class="quick-action-icon">📝</div>
+                    <div>New Journal</div>
+                </button>
+                <button class="quick-action-btn" onclick="openOracleCard()">
+                    <div class="quick-action-icon">🔮</div>
+                    <div>Draw Oracle</div>
+                </button>
+                <button class="quick-action-btn" onclick="scrollToCalendar()">
+                    <div class="quick-action-icon">📅</div>
+                    <div>View Calendar</div>
+                </button>
+                <button class="quick-action-btn" onclick="window.open('resources.html', '_blank')">
+                    <div class="quick-action-icon">🎁</div>
+                    <div>Free Tools</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chapter 1 Audio & Affiliate Section -->
+        <div style="max-width: 900px; margin: 3rem auto; background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(139, 92, 246, 0.15)); backdrop-filter: blur(20px); border: 2px solid var(--primary-gold); border-radius: 25px; padding: 2.5rem; box-shadow: 0 20px 60px rgba(245, 158, 11, 0.3);">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--primary-gold); margin-bottom: 0.5rem;">🎧 Listen to Chapter 1 Free</h2>
+                <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; margin-bottom: 1rem;">Experience "The Garden Within" - Chapter 1 of You Never Left Eden</p>
+                <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.95rem; font-style: italic;">
+                    "In this opening chapter, you'll begin to understand the profound truth that has been hidden in plain sight. The Garden of Eden isn't a place you left—it's the consciousness you've always carried within."
+                </p>
+            </div>
+
+            <!-- Audio Player -->
+            <div style="background: rgba(255, 255, 255, 0.08); border-radius: 15px; padding: 2rem; margin-bottom: 2rem;">
+                <audio controls style="width: 100%; max-width: 600px; height: 60px; margin: 0 auto; display: block; margin-bottom: 1rem;" preload="metadata" id="chapter1-audio">
+                    <source src="audio/chapter-1-preview.mp3" type="audio/mpeg">
+                    <source src="https://github.com/nazarite777/divine-temple/raw/main/audio/chapter-1-preview.mp3" type="audio/mpeg">
+                    <p style="color: rgba(255, 255, 255, 0.7);">Your browser does not support the audio element. <a href="https://github.com/nazarite777/divine-temple/raw/main/audio/chapter-1-preview.mp3" style="color: var(--primary-gold);" target="_blank">Download the audio file</a></p>
+                </audio>
+
+                <!-- Audio Status -->
+                <div id="audio-status" style="text-align: center; color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; margin-bottom: 1rem;"></div>
+
+                <div style="display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+                    <span style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.7);">🎤 High-quality AI narration</span>
+                    <span style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.7);">⏱️ ~15 minutes</span>
+                    <span style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.7);">🎧 Best with headphones</span>
+                </div>
+            </div>
+
+            <!-- CTA Buttons -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                <a href="https://square.link/u/iBLVYLEQ"
+                   style="background: linear-gradient(135deg, var(--primary-gold), #FBBF24); color: #0f0f1e; padding: 1.2rem 1.5rem; border-radius: 15px; text-decoration: none; font-weight: 600; text-align: center; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4); display: flex; flex-direction: column; align-items: center; gap: 0.5rem;"
+                   onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(212, 175, 55, 0.6)'"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(212, 175, 55, 0.4)'"
+                   target="_blank">
+                    <span style="font-size: 1.5rem;">🎧</span>
+                    <span>Get Full Audiobook</span>
+                    <span style="font-size: 0.9rem; opacity: 0.9;">Only $17</span>
+                </a>
+
+                <a href="https://try.elevenlabs.io/3kzjj59tn1qx"
+                   style="background: linear-gradient(135deg, var(--deep-purple), var(--soft-blue)); color: white; padding: 1.2rem 1.5rem; border-radius: 15px; text-decoration: none; font-weight: 600; text-align: center; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); display: flex; flex-direction: column; align-items: center; gap: 0.5rem;"
+                   onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(139, 92, 246, 0.6)'"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(139, 92, 246, 0.4)'"
+                   target="_blank"
+                   rel="noopener">
+                    <span style="font-size: 1.5rem;">🎤</span>
+                    <span>Try ElevenLabs Studio</span>
+                    <span style="font-size: 0.9rem; opacity: 0.9;">Create AI audiobooks</span>
+                </a>
+            </div>
+
+            <p style="text-align: center; color: rgba(255, 255, 255, 0.5); font-size: 0.85rem;">
+                ✨ Loved Chapter 1? Get instant access to all 12 chapters + bonus meditations
+            </p>
+        </div>
+
+        <!-- Calendar Section -->
+        <div class="calendar-section">
+            <h2 class="section-title">📅 Sacred Enochian Calendar</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.7); margin-bottom: 1rem;">
+                Track your spiritual journey with the ancient Enochian calendar system
+            </p>
+            <iframe
+                src="sections/calendar.html"
+                class="calendar-frame"
+                frameborder="0"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                id="calendar-iframe"
+            ></iframe>
+            <div style="text-align: center; margin-top: 1rem;">
+                <a href="sections/calendar.html" target="_blank" class="upgrade-btn" style="background: linear-gradient(135deg, #3B82F6, #2563EB); padding: 0.75rem 1.5rem; text-decoration: none; color: white; border-radius: 25px; font-weight: 600; display: inline-block;">
+                    🔗 Open Calendar in New Tab
+                </a>
+            </div>
+        </div>
+
+        <!-- Free Bonus Resources -->
+        <div class="calendar-section">
+            <h2 class="section-title">🎁 Your Free Access Features</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.7); margin-bottom: 2rem;">
+                Powerful spiritual tools available now - click to explore!
+            </p>
+
+            <div class="features-grid">
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.1)); border-color: rgba(16,185,129,0.3); cursor: pointer;" onclick="openOracleCard()">
+                    <div class="feature-icon">🔮</div>
+                    <h3>Daily Oracle Card</h3>
+                    <p>Receive divine guidance through our sacred oracle card system with daily insights</p>
+                    <button class="upgrade-btn" style="background: linear-gradient(135deg, #10B981, #059669); margin-top: 1rem; padding: 0.75rem 1.5rem; border: none; color: white; border-radius: 25px; font-weight: 600; cursor: pointer; width: 100%;">
+                        Draw Card Now →
+                    </button>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(139,92,246,0.1)); border-color: rgba(212,175,55,0.3); cursor: pointer;" onclick="window.location.href='sections/daily-trivia.html'">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Daily Spiritual Trivia</h3>
+                    <p>Test your spiritual knowledge with 3 daily questions. Earn XP, build streaks, and expand your consciousness!</p>
+                    <button class="upgrade-btn" style="background: linear-gradient(135deg, #D4AF37, #8B5CF6); margin-top: 1rem; padding: 0.75rem 1.5rem; border: none; color: white; border-radius: 25px; font-weight: 600; cursor: pointer; width: 100%;">
+                        Play Today's Trivia →
+                    </button>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(72,187,120,0.1), rgba(102,187,106,0.1)); border-color: rgba(72,187,120,0.3); cursor: pointer;" onclick="window.location.href='sections/chakra-memory-match.html'">
+                    <div class="feature-icon">🧘</div>
+                    <h3>Chakra Memory Match</h3>
+                    <p>Match chakra pairs in this beautiful memory game! 3 difficulty levels, earn up to 400 XP per game!</p>
+                    <button class="upgrade-btn" style="background: linear-gradient(135deg, #48BB78, #4299E1); margin-top: 1rem; padding: 0.75rem 1.5rem; border: none; color: white; border-radius: 25px; font-weight: 600; cursor: pointer; width: 100%;">
+                        Play Memory Match →
+                    </button>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(124,58,237,0.1)); border-color: rgba(139,92,246,0.3);">
+                    <div class="feature-icon">📚</div>
+                    <h3>All Free Resources</h3>
+                    <p>Access our complete collection of free spiritual tools, guides, and calculators</p>
+                    <a href="resources.html" class="upgrade-btn" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED); margin-top: 1rem; display: inline-block; padding: 0.75rem 1.5rem; text-decoration: none; color: white; border-radius: 25px; font-weight: 600; width: 100%; text-align: center;">
+                        Explore Resources →
+                    </a>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(251,191,36,0.1)); border-color: rgba(245,158,11,0.3);">
+                    <div class="feature-icon">📝</div>
+                    <h3>Medium Blog</h3>
+                    <p>Read powerful articles on manifestation, consciousness expansion, and spiritual growth</p>
+                    <a href="https://medium.com/@edenconsciousnesssdt" target="_blank" rel="noopener noreferrer" class="upgrade-btn" style="background: linear-gradient(135deg, #F59E0B, #FBBF24); margin-top: 1rem; display: inline-block; padding: 0.75rem 1.5rem; text-decoration: none; color: #0f0f1e; border-radius: 25px; font-weight: 600; width: 100%; text-align: center;">
+                        Read Articles →
+                    </a>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(245,158,11,0.15)); border: 2px solid var(--primary-gold); box-shadow: 0 0 20px rgba(212,175,55,0.3);">
+                    <div class="feature-icon">💰</div>
+                    <h3>Become an Affiliate</h3>
+                    <p>Earn commissions by sharing Divine Temple. Get paid to help others on their spiritual journey!</p>
+                    <a href="https://divinetemple.tapfiliate.com/" target="_blank" rel="noopener noreferrer" class="upgrade-btn" style="background: linear-gradient(135deg, var(--primary-gold), #FBBF24); margin-top: 1rem; display: inline-block; padding: 0.75rem 1.5rem; text-decoration: none; color: #0f0f1e; border-radius: 25px; font-weight: 600; box-shadow: 0 4px 15px rgba(212,175,55,0.4); width: 100%; text-align: center;">
+                        Join Program →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Locked Features Preview -->
+        <div class="calendar-section">
+            <h2 class="section-title">🔒 Premium Features</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.7); margin-bottom: 2rem;">
+                Unlock the full Divine Temple experience with these powerful spiritual tools
+            </p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧘</div>
+                    <h3>Meditation Center</h3>
+                    <p>Guided meditations, breathing exercises, and mindfulness practices</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔮</div>
+                    <h3>Oracle & Divination</h3>
+                    <p>Tarot readings, I Ching, runes, and sacred geometry tools</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Energy Healing</h3>
+                    <p>Chakra balancing, aura cleansing, crystal healing database</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🙏</div>
+                    <h3>Devotion & Growth</h3>
+                    <p>Prayer wheel, mantra practice, gratitude journal</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📖</div>
+                    <h3>Sacred Knowledge</h3>
+                    <p>Ancient texts, mystical teachings, dream journal</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎵</div>
+                    <h3>Spiritual Music</h3>
+                    <p>Solfeggio frequencies, binaural beats, healing sounds</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>Community</h3>
+                    <p>Connect with fellow seekers, share experiences</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Progress Tracking</h3>
+                    <p>XP system, daily quests, achievements, insights</p>
+                    <span class="locked-badge">🔒 Premium</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upgrade CTA -->
+        <div class="upgrade-cta">
+            <h2>✨ Unlock Your Full Spiritual Potential</h2>
+            <p>Get full access to all 14 powerful spiritual tools, progress tracking, and our supportive community for just <strong>$9.99/month</strong></p>
+            <div class="cta-buttons">
+                <button onclick="showPremiumUpgradeModal()" class="cta-btn premium-upgrade-btn" style="
+                    background: linear-gradient(135deg, #d4af37, #f59e0b);
+                    color: white;
+                    border: none;
+                    padding: 1rem 2rem;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    💎 Upgrade to Premium - $9.99/month
+                </button>
+                <a href="#" id="mediumBlogLink" class="cta-btn secondary" target="_blank" style="display: inline-block; margin-top: 1rem;">
+                    📚 Learn More
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Oracle Card Modal -->
+    <div class="modal" id="oracleModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeOracleModal()">×</button>
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 1rem;">
+                🔮 Daily Oracle Card
+            </h2>
+            <p style="color: rgba(255,255,255,0.7); margin-bottom: 2rem;">
+                Draw your card for divine guidance today
+            </p>
+
+            <div class="oracle-card" id="oracleCard">
+                <div class="oracle-card-icon" id="cardIcon">✨</div>
+                <div class="oracle-card-title" id="cardTitle">Click Draw to Reveal</div>
+                <div class="oracle-card-message" id="cardMessage">
+                    Your divine message awaits...
+                </div>
+            </div>
+
+            <button class="draw-button" id="drawButton" onclick="drawOracleCard()">
+                🌟 Draw Card
+            </button>
+        </div>
+    </div>
+
+    <!-- Freemium Config -->
+    <script src="js/freemium-config.js"></script>
+
+    <!-- Premium Checkout System -->
+    <script src="js/premium-checkout.js"></script>
+
+    <script>
+        console.log('🔍 FREE-DASHBOARD: Starting initialization...');
+
+        // CRITICAL: Wait for Firebase to fully initialize before doing ANYTHING
+        let authReady = false;
+        let redirectTimeout = null;
+
+        // ⭐ CHECK FOR ADMIN SESSION FIRST (before Firebase auth)
+        function checkAdminSession() {
+            const adminAuth = sessionStorage.getItem('adminAuth') === 'true' || localStorage.getItem('adminAuth') === 'true';
+            const memberData = JSON.parse(sessionStorage.getItem('memberData') || localStorage.getItem('currentUser') || '{}');
+
+            console.log('🔱 Checking admin session...');
+            console.log('   Admin auth:', adminAuth);
+            console.log('   Member data:', memberData);
+
+            if (adminAuth && memberData.isAdmin) {
+                console.log('🔱 ADMIN SESSION DETECTED - bypassing Firebase auth');
+                console.log('🔱 Admin user:', memberData.displayName);
+
+                // Set up admin session for free dashboard
+                const userEmailElement = document.getElementById('userEmail');
+                if (userEmailElement) {
+                    userEmailElement.textContent = memberData.email || 'nazir@edenconsciousness.com';
+                }
+
+                localStorage.setItem('userEmail', memberData.email || 'nazir@edenconsciousness.com');
+                localStorage.setItem('userId', memberData.uid || 'admin_nazir_creator');
+                localStorage.setItem('membershipLevel', 'admin');
+
+                // Hide loading and show dashboard
+                const authLoading = document.getElementById('authLoading');
+                if (authLoading) {
+                    authLoading.classList.add('hidden');
+                }
+
+                console.log('✅ Admin dashboard loaded successfully');
+                return true;
+            }
+
+            console.log('❌ No admin session found');
+            return false;
+        }
+
+        // Wait for Firebase to be fully loaded
+        function waitForFirebase() {
+            return new Promise((resolve) => {
+                let attempts = 0;
+                const maxAttempts = 100; // 10 seconds max wait
+
+                const checkFirebase = setInterval(() => {
+                    attempts++;
+                    console.log(`🔍 Checking Firebase... Attempt ${attempts}`);
+
+                    if (typeof firebase !== 'undefined' && firebase.auth) {
+                        console.log('✅ Firebase loaded successfully!');
+                        clearInterval(checkFirebase);
+                        resolve(true);
+                    } else if (attempts >= maxAttempts) {
+                        console.error('❌ Firebase failed to load after 10 seconds');
+                        clearInterval(checkFirebase);
+                        resolve(false);
+                    }
+                }, 100); // Check every 100ms
+            });
+        }
+
+        // Initialize authentication
+        async function initializeAuth() {
+            console.log('🔥 Initializing authentication...');
+
+            // Check admin session first
+            if (checkAdminSession()) {
+                console.log('🔱 Admin session active - skipping Firebase auth');
+                return;
+            }
+
+            // Show loading state - don't trust localStorage for membership
+            // localStorage could be stale if user just upgraded to premium
+            console.log('📱 Checking authentication and membership status...');
+
+            // Wait for Firebase to load
+            const firebaseLoaded = await waitForFirebase();
+
+            if (!firebaseLoaded) {
+                console.error('❌ Firebase failed to load - showing error');
+                document.getElementById('authLoading').innerHTML = `
+                    <div class="spinner"></div>
+                    <p style="color: #EF4444; font-size: 1.1rem;">⚠️ Connection error. Please refresh the page.</p>
+                    <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.75rem 1.5rem; background: var(--primary-gold); border: none; border-radius: 10px; color: #0f0f1e; font-weight: 600; cursor: pointer;">Refresh Page</button>
+                `;
+                return;
+            }
+
+            console.log('🔥 Firebase ready - proceeding with auth');
+
+            // Set up ONE auth listener that waits properly
+            const unsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
+            // Clear any pending redirect timeout
+            if (redirectTimeout) {
+                clearTimeout(redirectTimeout);
+                redirectTimeout = null;
+            }
+
+            console.log('🔍 Auth state changed. User:', user ? user.email : 'NULL');
+            
+            if (!authReady) {
+                console.log('   First auth state received');
+                authReady = true;
+            }
+
+            if (!user) {
+                // NO USER - redirect to login after a brief delay (allow Firebase to restore session)
+                console.log('   No user detected, waiting 500ms to confirm...');
+                
+                redirectTimeout = setTimeout(() => {
+                    const currentUser = firebase.auth().currentUser;
+                    if (!currentUser) {
+                        console.log('❌ Confirmed no user - redirecting to login');
+                        window.location.href = 'login.html';
+                    } else {
+                        console.log('✅ User appeared during delay, staying');
+                    }
+                }, 500);
+                return;
+            }
+
+            // USER EXISTS - proceed
+            console.log('✅ User authenticated:', user.email);
+
+            // Update UI safely
+            try {
+                const userEmailEl = document.getElementById('userEmail');
+                if (userEmailEl) {
+                    userEmailEl.textContent = user.email;
+                }
+            } catch (e) {
+                console.warn('Could not update userEmail element:', e);
+            }
+
+            localStorage.setItem('userEmail', user.email);
+            localStorage.setItem('userId', user.uid);
+
+            // Check membership level
+            let membershipLevel = 'free';
+            let shouldHideLoading = true;
+
+            try {
+                console.log('📊 Checking membership level...');
+
+                // FIRST: Check hardcoded whitelist (for authorized premium users)
+                if (typeof FirebaseConfig !== 'undefined' &&
+                    typeof FirebaseConfig.auth !== 'undefined' &&
+                    FirebaseConfig.auth.isAuthorizedPremiumUser) {
+
+                    if (FirebaseConfig.auth.isAuthorizedPremiumUser(user.email, user.displayName)) {
+                        membershipLevel = 'premium';
+                        console.log('👑 User is in authorized premium whitelist:', user.email);
+                    }
+                }
+
+                // SECOND: Check Firestore if not already premium from whitelist
+                if (membershipLevel === 'free') {
+                    const userDoc = await firebase.firestore()
+                        .collection('users')
+                        .doc(user.uid)
+                        .get();
+
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        membershipLevel = userData.membership || userData.membershipLevel || 'free';
+                        console.log('   Found membership level in Firestore:', membershipLevel);
+                    } else {
+                        console.log('   No user doc found, defaulting to free');
+                        membershipLevel = 'free';
+                    }
+                }
+
+                // Store fresh membership data
+                localStorage.setItem('membershipLevel', membershipLevel);
+                localStorage.setItem('membership', membershipLevel);
+
+                console.log('📊 Final membership level:', membershipLevel);
+
+                // Redirect premium users
+                if (membershipLevel !== 'free' && membershipLevel !== 'basic') {
+                    console.log('💎 Premium user - redirecting to members-new.html');
+                    window.location.href = 'members-new.html';
+                    shouldHideLoading = false; // Don't hide, we're redirecting
+                    return;
+                }
+
+                // Free user - show dashboard
+                console.log('✨ Free user - showing dashboard');
+
+            } catch (error) {
+                console.error('❌ Error checking membership:', error);
+                // Still proceed as free user on error
+                membershipLevel = 'free';
+                localStorage.setItem('membershipLevel', 'free');
+            }
+
+            // ALWAYS hide loading screen for free users
+            if (shouldHideLoading) {
+                console.log('🎯 Hiding loading screen...');
+                const authLoading = document.getElementById('authLoading');
+                if (authLoading) {
+                    authLoading.classList.add('hidden');
+                    console.log('✅ Loading screen hidden successfully');
+                } else {
+                    console.error('❌ Could not find authLoading element!');
+                }
+            }
+            });
+
+            // Failsafe #1 - if no auth state after 8 seconds, redirect to login
+            setTimeout(() => {
+                if (!authReady && !checkAdminSession()) {
+                    console.error('⏱️  TIMEOUT: No auth state received in 8 seconds');
+                    window.location.href = 'login.html';
+                }
+            }, 8000);
+
+            // Failsafe #2 - Force hide loading screen after 5 seconds if user is logged in
+            setTimeout(() => {
+                const authLoading = document.getElementById('authLoading');
+                if (authLoading && !authLoading.classList.contains('hidden')) {
+                    const currentUser = firebase.auth().currentUser;
+                    if (currentUser) {
+                        console.warn('⚠️ FORCE HIDING: User authenticated but loading still visible');
+                        authLoading.classList.add('hidden');
+                    }
+                }
+            }, 5000);
+        }
+
+        // Start authentication when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeAuth);
+        } else {
+            // DOM already loaded
+            initializeAuth();
+        }
+
+        // Logout function
+        function logout() {
+            const isAdmin = sessionStorage.getItem('adminAuth') === 'true' || localStorage.getItem('adminAuth') === 'true';
+            
+            if (isAdmin) {
+                console.log('🔱 Admin logout');
+                // Clear admin session
+                sessionStorage.removeItem('adminAuth');
+                sessionStorage.removeItem('memberData');
+                localStorage.removeItem('adminAuth');
+                localStorage.removeItem('currentUser');
+                localStorage.clear();
+                window.location.href = 'members-new.html';
+            } else {
+                // Regular Firebase logout
+                firebase.auth().signOut()
+                    .then(() => {
+                        localStorage.clear();
+                        window.location.href = 'login.html';
+                    })
+                    .catch((error) => {
+                        console.error('Logout error:', error);
+                        alert('Error logging out. Please try again.');
+                    });
+            }
+        }
+
+        // Load config after DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.FREEMIUM_CONFIG) {
+                const mediumLink = document.getElementById('mediumBlogLink');
+                if (mediumLink) {
+                    mediumLink.href = FREEMIUM_CONFIG.mediumBlogUrl;
+                }
+            }
+        });
+
+        // Oracle Card System
+        const oracleCards = [
+            {
+                icon: '🌟',
+                title: 'Divine Alignment',
+                message: 'You are perfectly aligned with your highest path. Trust the synchronicities appearing in your life. The universe is conspiring in your favor.'
+            },
+            {
+                icon: '🔮',
+                title: 'Intuitive Knowing',
+                message: 'Your inner wisdom is speaking loudly today. Trust your gut feelings and the quiet voice within. Your intuition is your divine GPS.'
+            },
+            {
+                icon: '✨',
+                title: 'Manifestation Power',
+                message: 'Your thoughts are creating your reality with accelerated speed. Focus on what you desire, not what you fear. You are a powerful creator.'
+            },
+            {
+                icon: '🌙',
+                title: 'Sacred Rest',
+                message: 'The divine is calling you to rest and restore. In stillness, you receive. Allow yourself to simply be without doing.'
+            },
+            {
+                icon: '⚡',
+                title: 'Breakthrough Energy',
+                message: 'A major breakthrough is imminent. Keep pushing forward with faith. What seemed impossible is becoming possible now.'
+            },
+            {
+                icon: '💎',
+                title: 'Inner Treasure',
+                message: 'Look within to find the answers you seek externally. Your greatest power, peace, and wisdom already reside in your heart.'
+            },
+            {
+                icon: '🌈',
+                title: 'New Beginnings',
+                message: 'A beautiful new chapter is opening. Release the old with gratitude and step boldly into this fresh start with an open heart.'
+            },
+            {
+                icon: '🕉️',
+                title: 'Divine Peace',
+                message: 'Let go of control and surrender to the flow. Peace comes not from arranging circumstances, but from accepting what is.'
+            },
+            {
+                icon: '🦋',
+                title: 'Transformation',
+                message: 'You are in a sacred process of metamorphosis. Trust the journey even when you cannot see the destination. Beautiful wings are forming.'
+            },
+            {
+                icon: '🔥',
+                title: 'Purification',
+                message: 'Old patterns are burning away to make room for your highest self. What leaves was never meant to stay. Welcome this sacred clearing.'
+            },
+            {
+                icon: '💫',
+                title: 'Soul Purpose',
+                message: 'You are being called to step more fully into your mission. Your unique gifts are needed. The world is waiting for your light.'
+            },
+            {
+                icon: '🌺',
+                title: 'Self Love',
+                message: 'The relationship with yourself is your most important one. Treat yourself with the compassion and kindness you give others.'
+            }
+        ];
+
+        function openOracleCard() {
+            document.getElementById('oracleModal').classList.add('active');
+            // Reset card state
+            document.getElementById('cardIcon').textContent = '✨';
+            document.getElementById('cardTitle').textContent = 'Click Draw to Reveal';
+            document.getElementById('cardMessage').textContent = 'Your divine message awaits...';
+            document.getElementById('drawButton').disabled = false;
+        }
+
+        function closeOracleModal() {
+            document.getElementById('oracleModal').classList.remove('active');
+        }
+
+        function drawOracleCard() {
+            const card = oracleCards[Math.floor(Math.random() * oracleCards.length)];
+            const cardElement = document.getElementById('oracleCard');
+            const button = document.getElementById('drawButton');
+
+            // Disable button during animation
+            button.disabled = true;
+
+            // Flip animation
+            cardElement.classList.add('flipping');
+
+            setTimeout(() => {
+                // Update card content
+                document.getElementById('cardIcon').textContent = card.icon;
+                document.getElementById('cardTitle').textContent = card.title;
+                document.getElementById('cardMessage').textContent = card.message;
+
+                // Remove flip animation
+                cardElement.classList.remove('flipping');
+
+                // Change button text
+                button.textContent = '🔄 Draw Another Card';
+                button.disabled = false;
+
+                // Track oracle card draw
+                if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
+                    window.FirebaseConfig.analytics.trackEvent('oracle_card_drawn', {
+                        card_title: card.title,
+                        user_email: localStorage.getItem('userEmail')
+                    });
+                }
+            }, 300);
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('oracleModal');
+            if (e.target === modal) {
+                closeOracleModal();
+            }
+        });
+
+        // ==================== SOUND DASHBOARD SYSTEM ====================
+        let audioContext;
+        let masterGainNode;
+        const activeSounds = {};
+        const soundGains = {};
+        const soundIntervals = {};
+
+        // Initialize audio context
+        function initAudioContext() {
+            if (!audioContext) {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    masterGainNode = audioContext.createGain();
+                    masterGainNode.connect(audioContext.destination);
+
+                    // Resume audio context for autoplay policy compliance
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+
+                    // Load saved master volume
+                    const savedMaster = localStorage.getItem('masterVolume') || 70;
+                    masterGainNode.gain.value = savedMaster / 100;
+                    document.getElementById('masterVolume').value = savedMaster;
+                    document.getElementById('masterVolumeValue').textContent = savedMaster + '%';
+                    
+                    console.log('🎵 AudioContext initialized successfully');
+                } catch (error) {
+                    console.error('🚫 Failed to initialize AudioContext:', error);
+                }
+            }
+        }
+
+        // Modal controls
+        function openSoundDashboard() {
+            initAudioContext();
+            
+            // Ensure AudioContext is resumed (required for autoplay policy)
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    console.log('🎵 AudioContext resumed successfully');
+                }).catch(error => {
+                    console.error('🚫 Failed to resume AudioContext:', error);
+                });
+            }
+            
+            document.getElementById('soundDashboard').classList.add('active');
+            loadSoundPreferences();
+        }
+
+        function closeSoundDashboard() {
+            document.getElementById('soundDashboard').classList.remove('active');
+            saveSoundPreferences();
+        }
+
+        // Make test function globally available for debugging
+        window.testSound = testSound;
+        window.debugAudio = () => {
+            console.log('🔧 Audio Debug Info:');
+            console.log('AudioContext state:', audioContext ? audioContext.state : 'Not initialized');
+            console.log('Active sounds:', Object.keys(activeSounds));
+            console.log('Master volume:', masterGainNode ? masterGainNode.gain.value : 'Not set');
+            console.log('\n🎮 Test individual sounds with: testSound("soundName")');
+            console.log('Available sounds: rain, thunder, crickets, birds, fire, chimes, ocean, bowl, brown, wind, stream, owl, frogs, cicadas, leaves, wolf');
+        };
+
+        // Save/Load preferences
+        function saveSoundPreferences() {
+            const prefs = {};
+            ['rain', 'thunder', 'crickets', 'birds', 'fire', 'chimes', 'ocean', 'bowl', 'brown', 'wind', 'stream', 'owl', 'frogs', 'cicadas', 'leaves', 'wolf'].forEach(sound => {
+                prefs[sound] = {
+                    enabled: document.getElementById(`toggle-${sound}`).checked,
+                    volume: document.getElementById(`volume-${sound}`).value
+                };
+            });
+            localStorage.setItem('soundPreferences', JSON.stringify(prefs));
+        }
+
+        function loadSoundPreferences() {
+            const prefs = JSON.parse(localStorage.getItem('soundPreferences') || '{}');
+            Object.keys(prefs).forEach(sound => {
+                const pref = prefs[sound];
+                document.getElementById(`toggle-${sound}`).checked = pref.enabled;
+                document.getElementById(`volume-${sound}`).value = pref.volume;
+                document.getElementById(`value-${sound}`).textContent = pref.volume + '%';
+
+                if (pref.enabled) {
+                    startSound(sound);
+                }
+            });
+        }
+
+        // Enhanced noise buffer generators
+        function createWhiteNoise(duration = 2) {
+            const bufferSize = audioContext.sampleRate * duration;
+            const buffer = audioContext.createBuffer(2, bufferSize, audioContext.sampleRate); // Stereo
+            for (let channel = 0; channel < 2; channel++) {
+                const data = buffer.getChannelData(channel);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+            }
+            return buffer;
+        }
+
+        function createPinkNoise(duration = 2) {
+            const bufferSize = audioContext.sampleRate * duration;
+            const buffer = audioContext.createBuffer(2, bufferSize, audioContext.sampleRate);
+            for (let channel = 0; channel < 2; channel++) {
+                const data = buffer.getChannelData(channel);
+                let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+                for (let i = 0; i < bufferSize; i++) {
+                    const white = Math.random() * 2 - 1;
+                    b0 = 0.99886 * b0 + white * 0.0555179;
+                    b1 = 0.99332 * b1 + white * 0.0750759;
+                    b2 = 0.96900 * b2 + white * 0.1538520;
+                    b3 = 0.86650 * b3 + white * 0.3104856;
+                    b4 = 0.55000 * b4 + white * 0.5329522;
+                    b5 = -0.7616 * b5 - white * 0.0168980;
+                    data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                    data[i] *= 0.11;
+                    b6 = white * 0.115926;
+                }
+            }
+            return buffer;
+        }
+
+        function createBrownNoise(duration = 2) {
+            const bufferSize = audioContext.sampleRate * duration;
+            const buffer = audioContext.createBuffer(2, bufferSize, audioContext.sampleRate);
+            for (let channel = 0; channel < 2; channel++) {
+                const data = buffer.getChannelData(channel);
+                let lastOut = 0;
+                for (let i = 0; i < bufferSize; i++) {
+                    const white = Math.random() * 2 - 1;
+                    data[i] = (lastOut + (0.02 * white)) / 1.02;
+                    lastOut = data[i];
+                    data[i] *= 3.5;
+                }
+            }
+            return buffer;
+        }
+
+        // Helper for stereo panning
+        function createStereoPanner(pan) {
+            try {
+                if (audioContext.createStereoPanner) {
+                    const panner = audioContext.createStereoPanner();
+                    panner.pan.value = pan; // -1 (left) to 1 (right)
+                    return panner;
+                } else {
+                    // Fallback for older browsers
+                    const panner = audioContext.createPanner();
+                    panner.panningModel = 'equalpower';
+                    panner.positionX.value = pan;
+                    panner.positionY.value = 0;
+                    panner.positionZ.value = 1 - Math.abs(pan);
+                    return panner;
+                }
+            } catch (error) {
+                console.error('🚫 Error creating panner:', error);
+                // Return a simple gain node as fallback
+                return audioContext.createGain();
+            }
+        }
+
+        // REALISTIC RAIN - Multi-layered with drops, splashes, and varying intensity
+        function startRain() {
+            const sources = [];
+
+            // Layer 1: Heavy rain backdrop
+            const heavyRain = audioContext.createBufferSource();
+            heavyRain.buffer = createPinkNoise(3);
+            heavyRain.loop = true;
+            const filter1 = audioContext.createBiquadFilter();
+            filter1.type = 'bandpass';
+            filter1.frequency.value = 1800;
+            filter1.Q.value = 0.3;
+            const gain1 = audioContext.createGain();
+            gain1.gain.value = 0.4;
+            heavyRain.connect(filter1).connect(gain1);
+            sources.push(heavyRain);
+
+            // Layer 2: Light drizzle (higher frequencies)
+            const drizzle = audioContext.createBufferSource();
+            drizzle.buffer = createWhiteNoise(2);
+            drizzle.loop = true;
+            const filter2 = audioContext.createBiquadFilter();
+            filter2.type = 'highpass';
+            filter2.frequency.value = 3000;
+            const gain2 = audioContext.createGain();
+            gain2.gain.value = 0.15;
+            drizzle.connect(filter2).connect(gain2);
+            sources.push(drizzle);
+
+            // Layer 3: Deep rumble (low frequencies)
+            const rumble = audioContext.createBufferSource();
+            rumble.buffer = createBrownNoise(4);
+            rumble.loop = true;
+            const filter3 = audioContext.createBiquadFilter();
+            filter3.type = 'lowpass';
+            filter3.frequency.value = 300;
+            const gain3 = audioContext.createGain();
+            gain3.gain.value = 0.2;
+            rumble.connect(filter3).connect(gain3);
+            sources.push(rumble);
+
+            // Combine all layers
+            const masterGain = audioContext.createGain();
+            soundGains.rain = masterGain;
+            updateSoundVolume('rain');
+
+            // Add subtle LFO for natural variation
+            const lfo = audioContext.createOscillator();
+            lfo.frequency.value = 0.1;
+            const lfoGain = audioContext.createGain();
+            lfoGain.gain.value = 0.02;
+            lfo.connect(lfoGain).connect(masterGain.gain);
+            lfo.start();
+
+            gain1.connect(masterGain);
+            gain2.connect(masterGain);
+            gain3.connect(masterGain);
+            masterGain.connect(masterGainNode);
+
+            sources.forEach(s => s.start());
+            activeSounds.rain = { sources, lfo };
+
+            // Add occasional raindrop splashes
+            const splashInterval = setInterval(() => {
+                if (!activeSounds.rain) {
+                    clearInterval(splashInterval);
+                    return;
+                }
+
+                const osc = audioContext.createOscillator();
+                osc.frequency.value = 800 + Math.random() * 1200;
+                osc.type = 'sine';
+
+                const splashGain = audioContext.createGain();
+                const pan = createStereoPanner((Math.random() - 0.5) * 1.5);
+
+                splashGain.gain.setValueAtTime(0, audioContext.currentTime);
+                splashGain.gain.linearRampToValueAtTime(0.03, audioContext.currentTime + 0.01);
+                splashGain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.08);
+
+                osc.connect(splashGain).connect(pan).connect(masterGain);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.08);
+            }, 80 + Math.random() * 120);
+
+            soundIntervals.rainSplash = splashInterval;
+        }
+
+        // REALISTIC THUNDER - Distance variation, rumble, crack
+        function startThunder() {
+            soundIntervals.thunder = setInterval(() => {
+                if (!activeSounds.thunder) return;
+
+                const distance = Math.random(); // 0 = close, 1 = far
+                const duration = 2 + (distance * 4); // Longer for distant thunder
+                const now = audioContext.currentTime;
+
+                // Thunder crack (close thunder has sharp attack)
+                if (distance < 0.4) {
+                    const crack = audioContext.createBufferSource();
+                    crack.buffer = createWhiteNoise(0.1);
+                    const crackFilter = audioContext.createBiquadFilter();
+                    crackFilter.type = 'bandpass';
+                    crackFilter.frequency.value = 2000 - (distance * 1500);
+                    const crackGain = audioContext.createGain();
+                    crackGain.gain.setValueAtTime(0, now);
+                    crackGain.gain.linearRampToValueAtTime(soundGains.thunder.gain.value * 0.4 * (1 - distance), now + 0.01);
+                    crackGain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                    crack.connect(crackFilter).connect(crackGain).connect(masterGainNode);
+                    crack.start();
+                }
+
+                // Deep rumble (multiple oscillators for richness)
+                const freqs = [35, 40, 45, 50, 60];
+                freqs.forEach((freq, i) => {
+                    const osc = audioContext.createOscillator();
+                    osc.frequency.value = freq + (Math.random() * 5);
+                    osc.type = i % 2 === 0 ? 'sawtooth' : 'triangle';
+
+                    const gain = audioContext.createGain();
+                    const delay = distance * 0.3; // Distant thunder arrives later
+                    const peak = soundGains.thunder.gain.value * 0.15 * (1 - distance * 0.6);
+
+                    gain.gain.setValueAtTime(0, now + delay);
+                    gain.gain.linearRampToValueAtTime(peak / (i + 1), now + delay + 0.3);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + delay + duration);
+
+                    osc.connect(gain).connect(masterGainNode);
+                    osc.start(now + delay);
+                    osc.stop(now + delay + duration);
+                });
+
+                // Noise layer for realism
+                const noise = audioContext.createBufferSource();
+                noise.buffer = createPinkNoise(duration);
+                const noiseFilter = audioContext.createBiquadFilter();
+                noiseFilter.type = 'lowpass';
+                noiseFilter.frequency.value = 150 + (distance * 100);
+                const noiseGain = audioContext.createGain();
+                noiseGain.gain.setValueAtTime(0, now);
+                noiseGain.gain.linearRampToValueAtTime(soundGains.thunder.gain.value * 0.2 * (1 - distance * 0.5), now + 0.2);
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+                noise.connect(noiseFilter).connect(noiseGain).connect(masterGainNode);
+                noise.start();
+
+            }, 25000 + Math.random() * 45000); // Every 25-70 seconds
+
+            soundGains.thunder = audioContext.createGain();
+            activeSounds.thunder = {};
+        }
+
+        // REALISTIC CRICKETS - Multiple species, spatial chorus
+        function startCrickets() {
+            soundGains.crickets = audioContext.createGain();
+            updateSoundVolume('crickets');
+
+            // Create cricket chorus (multiple crickets at different positions)
+            const cricketPositions = [];
+            for (let i = 0; i < 8; i++) {
+                cricketPositions.push({
+                    pan: (Math.random() - 0.5) * 2,
+                    baseFreq: 3600 + Math.random() * 800,
+                    pattern: Math.random() > 0.5 ? 'double' : 'triple',
+                    interval: 150 + Math.random() * 250
+                });
+            }
+
+            const chirpCricket = (cricket) => {
+                if (!activeSounds.crickets) return;
+
+                const now = audioContext.currentTime;
+                const chirps = cricket.pattern === 'double' ? 2 : 3;
+
+                for (let i = 0; i < chirps; i++) {
+                    const osc = audioContext.createOscillator();
+                    osc.frequency.value = cricket.baseFreq + (Math.random() * 100);
+                    osc.type = 'sine';
+
+                    const gain = audioContext.createGain();
+                    const pan = createStereoPanner(cricket.pan);
+                    const startTime = now + (i * 0.08);
+
+                    gain.gain.setValueAtTime(0, startTime);
+                    gain.gain.linearRampToValueAtTime(soundGains.crickets.gain.value * 0.15, startTime + 0.01);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.06);
+
+                    osc.connect(gain).connect(pan).connect(masterGainNode);
+                    osc.start(startTime);
+                    osc.stop(startTime + 0.06);
+                }
+
+                setTimeout(() => chirpCricket(cricket), cricket.interval + Math.random() * 200);
+            };
+
+            // Start all crickets
+            cricketPositions.forEach(cricket => {
+                setTimeout(() => chirpCricket(cricket), Math.random() * 1000);
+            });
+
+            activeSounds.crickets = { cricketPositions };
+        }
+
+        // ULTRA-REALISTIC BIRDS - Multiple species with frequency sweeps and vibrato
+        function startBirds() {
+            soundGains.birds = audioContext.createGain();
+            updateSoundVolume('birds');
+
+            // Enhanced bird species with realistic frequency sweeps
+            const birdTypes = [
+                {
+                    name: 'robin',
+                    calls: [
+                        { startFreq: 2000, endFreq: 3200, duration: 0.15, vibrato: 8 },
+                        { startFreq: 3200, endFreq: 2600, duration: 0.12, vibrato: 6 },
+                        { startFreq: 2800, endFreq: 3000, duration: 0.14, vibrato: 7 }
+                    ],
+                    pattern: [0, 0.18, 0.35]
+                },
+                {
+                    name: 'sparrow',
+                    calls: [
+                        { startFreq: 3500, endFreq: 2800, duration: 0.08, vibrato: 12 },
+                        { startFreq: 3800, endFreq: 3200, duration: 0.07, vibrato: 10 },
+                        { startFreq: 4000, endFreq: 3500, duration: 0.08, vibrato: 11 }
+                    ],
+                    pattern: [0, 0.09, 0.18]
+                },
+                {
+                    name: 'cardinal',
+                    calls: [
+                        { startFreq: 2200, endFreq: 4500, duration: 0.2, vibrato: 5 },
+                        { startFreq: 3000, endFreq: 4200, duration: 0.18, vibrato: 6 },
+                        { startFreq: 2800, endFreq: 3800, duration: 0.16, vibrato: 5 }
+                    ],
+                    pattern: [0, 0.25, 0.48]
+                },
+                {
+                    name: 'chickadee',
+                    calls: [
+                        { startFreq: 4500, endFreq: 3800, duration: 0.12, vibrato: 15 },
+                        { startFreq: 3800, endFreq: 3200, duration: 0.12, vibrato: 12 }
+                    ],
+                    pattern: [0, 0.15]
+                },
+                {
+                    name: 'dove',
+                    calls: [
+                        { startFreq: 400, endFreq: 350, duration: 0.25, vibrato: 4 },
+                        { startFreq: 420, endFreq: 360, duration: 0.28, vibrato: 4 }
+                    ],
+                    pattern: [0, 0.4]
+                }
+            ];
+
+            const callBird = () => {
+                if (!activeSounds.birds) return;
+
+                const bird = birdTypes[Math.floor(Math.random() * birdTypes.length)];
+                const now = audioContext.currentTime;
+                const pan = (Math.random() - 0.5) * 1.8;
+
+                bird.calls.forEach((call, i) => {
+                    const startTime = now + bird.pattern[i];
+
+                    // Main oscillator with frequency sweep
+                    const osc = audioContext.createOscillator();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(call.startFreq, startTime);
+                    osc.frequency.exponentialRampToValueAtTime(
+                        call.endFreq,
+                        startTime + call.duration * 0.8
+                    );
+
+                    // Add vibrato LFO for realism
+                    const vibrato = audioContext.createOscillator();
+                    vibrato.frequency.setValueAtTime(call.vibrato, startTime);
+                    const vibratoGain = audioContext.createGain();
+                    vibratoGain.gain.setValueAtTime(call.startFreq * 0.01, startTime); // 1% vibrato
+
+                    vibrato.connect(vibratoGain);
+                    vibratoGain.connect(osc.frequency);
+
+                    // Natural envelope (quick attack, smooth decay)
+                    const gain = audioContext.createGain();
+                    gain.gain.setValueAtTime(0, startTime);
+                    gain.gain.linearRampToValueAtTime(soundGains.birds.gain.value * 0.22, startTime + 0.01);
+                    gain.gain.exponentialRampToValueAtTime(soundGains.birds.gain.value * 0.15, startTime + call.duration * 0.5);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + call.duration);
+
+                    // Bandpass filter for natural bird tone
+                    const filter = audioContext.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.setValueAtTime((call.startFreq + call.endFreq) / 2, startTime);
+                    filter.Q.setValueAtTime(2.5, startTime);
+
+                    const panner = createStereoPanner(pan);
+
+                    osc.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(panner);
+                    panner.connect(masterGainNode);
+
+                    osc.start(startTime);
+                    vibrato.start(startTime);
+                    osc.stop(startTime + call.duration + 0.1);
+                    vibrato.stop(startTime + call.duration + 0.1);
+                });
+            };
+
+            soundIntervals.birds = setInterval(callBird, 3000 + Math.random() * 6000);
+            activeSounds.birds = {};
+        }
+
+        // REALISTIC FIRE - Layered crackling, popping, base rumble
+        function startFire() {
+            const sources = [];
+
+            // Layer 1: Low crackling (warm embers)
+            const crackle = audioContext.createBufferSource();
+            crackle.buffer = createPinkNoise(3);
+            crackle.loop = true;
+            crackle.playbackRate.value = 0.5; // Slower for deeper sound
+            const crackleFilter = audioContext.createBiquadFilter();
+            crackleFilter.type = 'bandpass';
+            crackleFilter.frequency.value = 600; // Lower frequency for warmth
+            crackleFilter.Q.value = 1.5;
+            const crackleGain = audioContext.createGain();
+            crackleGain.gain.value = 0.25;
+            crackle.connect(crackleFilter).connect(crackleGain);
+            sources.push(crackle);
+
+            // Layer 2: Mid crackling (active flames)
+            const midCrackle = audioContext.createBufferSource();
+            midCrackle.buffer = createPinkNoise(2);
+            midCrackle.loop = true;
+            midCrackle.playbackRate.value = 0.8;
+            const midFilter = audioContext.createBiquadFilter();
+            midFilter.type = 'bandpass';
+            midFilter.frequency.value = 1800;
+            midFilter.Q.value = 1.2;
+            const midGain = audioContext.createGain();
+            midGain.gain.value = 0.15;
+            midCrackle.connect(midFilter).connect(midGain);
+            sources.push(midCrackle);
+
+            // Layer 3: Low rumble (deep fire base)
+            const rumble = audioContext.createBufferSource();
+            rumble.buffer = createBrownNoise(4);
+            rumble.loop = true;
+            const rumbleFilter = audioContext.createBiquadFilter();
+            rumbleFilter.type = 'lowpass';
+            rumbleFilter.frequency.value = 180;
+            const rumbleGain = audioContext.createGain();
+            rumbleGain.gain.value = 0.2;
+            rumble.connect(rumbleFilter).connect(rumbleGain);
+            sources.push(rumble);
+
+            // Master gain with gentle LFO (flickering)
+            const masterGain = audioContext.createGain();
+            soundGains.fire = masterGain;
+            updateSoundVolume('fire');
+
+            const lfo = audioContext.createOscillator();
+            lfo.frequency.value = 1.5; // Slower flicker
+            const lfoGain = audioContext.createGain();
+            lfoGain.gain.value = 0.04;
+            lfo.connect(lfoGain).connect(masterGain.gain);
+            lfo.start();
+
+            crackleGain.connect(masterGain);
+            midGain.connect(masterGain);
+            rumbleGain.connect(masterGain);
+            masterGain.connect(masterGainNode);
+
+            sources.forEach(s => s.start());
+
+            // Add gentle pops and snaps (like wood splitting)
+            const popInterval = setInterval(() => {
+                if (!activeSounds.fire) {
+                    clearInterval(popInterval);
+                    return;
+                }
+
+                const now = audioContext.currentTime;
+
+                // Gentle wood snap using filtered noise burst
+                const snapNoise = audioContext.createBufferSource();
+                snapNoise.buffer = createPinkNoise(0.1);
+
+                const snapFilter = audioContext.createBiquadFilter();
+                snapFilter.type = 'bandpass';
+                snapFilter.frequency.setValueAtTime(300 + Math.random() * 400, now);
+                snapFilter.Q.value = 2;
+
+                const snapGain = audioContext.createGain();
+                snapGain.gain.setValueAtTime(0, now);
+                snapGain.gain.linearRampToValueAtTime(0.06, now + 0.002);
+                snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+                // Add tonal component for realistic wood snap
+                const snapTone = audioContext.createOscillator();
+                snapTone.frequency.setValueAtTime(200 + Math.random() * 150, now);
+                snapTone.type = 'sine';
+
+                const toneGain = audioContext.createGain();
+                toneGain.gain.setValueAtTime(0, now);
+                toneGain.gain.linearRampToValueAtTime(0.03, now + 0.002);
+                toneGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+                snapNoise.connect(snapFilter).connect(snapGain).connect(masterGain);
+                snapTone.connect(toneGain).connect(masterGain);
+
+                snapNoise.start(now);
+                snapTone.start(now);
+                snapNoise.stop(now + 0.1);
+                snapTone.stop(now + 0.06);
+            }, 400 + Math.random() * 800); // Less frequent, more natural
+
+            activeSounds.fire = { sources, lfo, popInterval };
+        }
+
+        // REALISTIC OCEAN - Wave patterns, foam, tide
+        function startOcean() {
+            const sources = [];
+
+            // Layer 1: Deep ocean rumble
+            const deep = audioContext.createBufferSource();
+            deep.buffer = createBrownNoise(5);
+            deep.loop = true;
+            const deepFilter = audioContext.createBiquadFilter();
+            deepFilter.type = 'lowpass';
+            deepFilter.frequency.value = 250;
+            const deepGain = audioContext.createGain();
+            deepGain.gain.value = 0.35;
+            deep.connect(deepFilter).connect(deepGain);
+            sources.push(deep);
+
+            // Layer 2: Wave crash (mid frequencies)
+            const waves = audioContext.createBufferSource();
+            waves.buffer = createWhiteNoise(3);
+            waves.loop = true;
+            const wavesFilter = audioContext.createBiquadFilter();
+            wavesFilter.type = 'bandpass';
+            wavesFilter.frequency.value = 800;
+            wavesFilter.Q.value = 0.5;
+            const wavesGain = audioContext.createGain();
+            wavesGain.gain.value = 0.25;
+            waves.connect(wavesFilter).connect(wavesGain);
+            sources.push(waves);
+
+            // Layer 3: Foam/hiss (high frequencies)
+            const foam = audioContext.createBufferSource();
+            foam.buffer = createWhiteNoise(2);
+            foam.loop = true;
+            const foamFilter = audioContext.createBiquadFilter();
+            foamFilter.type = 'highpass';
+            foamFilter.frequency.value = 2000;
+            const foamGain = audioContext.createGain();
+            foamGain.gain.value = 0.15;
+            foam.connect(foamFilter).connect(foamGain);
+            sources.push(foam);
+
+            // Master gain
+            const masterGain = audioContext.createGain();
+            soundGains.ocean = masterGain;
+            updateSoundVolume('ocean');
+
+            // Slow wave motion LFO
+            const waveLFO = audioContext.createOscillator();
+            waveLFO.frequency.value = 0.15;
+            const waveLFOGain = audioContext.createGain();
+            waveLFOGain.gain.value = 0.08;
+            waveLFO.connect(waveLFOGain).connect(masterGain.gain);
+            waveLFO.start();
+
+            // Tide LFO (very slow)
+            const tideLFO = audioContext.createOscillator();
+            tideLFO.frequency.value = 0.03;
+            const tideLFOGain = audioContext.createGain();
+            tideLFOGain.gain.value = 0.04;
+            tideLFO.connect(tideLFOGain).connect(deepFilter.frequency);
+            tideLFO.start();
+
+            deepGain.connect(masterGain);
+            wavesGain.connect(masterGain);
+            foamGain.connect(masterGain);
+            masterGain.connect(masterGainNode);
+
+            sources.forEach(s => s.start());
+            activeSounds.ocean = { sources, waveLFO, tideLFO };
+        }
+
+        // Keep existing chimes and bowl functions
+        function startChimes() {
+            try {
+                soundGains.chimes = audioContext.createGain();
+                updateSoundVolume('chimes');
+
+                const playChime = () => {
+                    if (!activeSounds.chimes) return;
+
+                    try {
+                        const frequencies = [523, 659, 784, 988]; // C, E, G, B
+                        const freq = frequencies[Math.floor(Math.random() * frequencies.length)];
+                        const now = audioContext.currentTime;
+
+                        // Add harmonics for realistic chime sound
+                        [1, 2.76, 5.4, 8.9].forEach((harmonic, i) => {
+                            const osc = audioContext.createOscillator();
+                            osc.frequency.value = freq * harmonic;
+                            osc.type = 'sine';
+
+                            const gain = audioContext.createGain();
+                            const pan = createStereoPanner((Math.random() - 0.5) * 0.6);
+
+                            gain.gain.setValueAtTime(0, now);
+                            gain.gain.linearRampToValueAtTime(soundGains.chimes.gain.value * 0.3 / (i + 1), now + 0.05);
+                            gain.gain.exponentialRampToValueAtTime(0.001, now + (2 - i * 0.3));
+
+                            osc.connect(gain).connect(pan).connect(masterGainNode);
+                            osc.start();
+                            osc.stop(now + (2 - i * 0.3));
+                        });
+                    } catch (error) {
+                        console.error('🚫 Error playing chime:', error);
+                    }
+                };
+
+                soundIntervals.chimes = setInterval(playChime, 8000 + Math.random() * 12000);
+                activeSounds.chimes = {};
+                console.log('🎵 Chimes started successfully');
+            } catch (error) {
+                console.error('🚫 Error starting chimes:', error);
+            }
+        }
+
+        function startBowl() {
+            soundGains.bowl = audioContext.createGain();
+            updateSoundVolume('bowl');
+
+            soundIntervals.bowl = setInterval(() => {
+                if (!activeSounds.bowl) return;
+
+                const now = audioContext.currentTime;
+                const fundamentals = [216, 324, 432]; // Sacred frequencies
+
+                fundamentals.forEach((freq, i) => {
+                    // Add multiple harmonics for richness
+                    [1, 2, 3, 4, 5].forEach((harmonic, h) => {
+                        const osc = audioContext.createOscillator();
+                        osc.frequency.value = freq * harmonic + (Math.random() * 2);
+                        osc.type = 'sine';
+
+                        const gain = audioContext.createGain();
+                        gain.gain.setValueAtTime(0, now);
+                        gain.gain.linearRampToValueAtTime(soundGains.bowl.gain.value * 0.1 / (i + 1) / (h + 1), now + 0.1);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + (8 - h * 0.5));
+
+                        osc.connect(gain).connect(masterGainNode);
+                        osc.start();
+                        osc.stop(now + (8 - h * 0.5));
+                    });
+                });
+            }, 45000 + Math.random() * 30000);
+            activeSounds.bowl = {};
+        }
+
+        function startBrown() {
+            const noise = audioContext.createBufferSource();
+            noise.buffer = createBrownNoise();
+            noise.loop = true;
+
+            const gain = audioContext.createGain();
+            soundGains.brown = gain;
+            updateSoundVolume('brown');
+
+            noise.connect(gain).connect(masterGainNode);
+            noise.start();
+            activeSounds.brown = { source: noise };
+        }
+
+        // ULTRA-REALISTIC WIND - Gentle breeze with natural movement
+        function startWind() {
+            const sources = [];
+
+            // Layer 1: Deep rumble (low frequency wind)
+            const deepWind = audioContext.createBufferSource();
+            deepWind.buffer = createBrownNoise(5);
+            deepWind.loop = true;
+            const deepFilter = audioContext.createBiquadFilter();
+            deepFilter.type = 'lowpass';
+            deepFilter.frequency.value = 250;
+            deepFilter.Q.value = 0.5;
+            const deepGain = audioContext.createGain();
+            deepGain.gain.value = 0.2;
+            deepWind.connect(deepFilter).connect(deepGain);
+            sources.push(deepWind);
+
+            // Layer 2: Mid-range whoosh (main breeze)
+            const midWind = audioContext.createBufferSource();
+            midWind.buffer = createBrownNoise(4);
+            midWind.loop = true;
+            midWind.playbackRate.value = 0.8; // Slower for deeper tone
+            const midFilter = audioContext.createBiquadFilter();
+            midFilter.type = 'bandpass';
+            midFilter.frequency.value = 400;
+            midFilter.Q.value = 0.4;
+            const midGain = audioContext.createGain();
+            midGain.gain.value = 0.25;
+            midWind.connect(midFilter).connect(midGain);
+            sources.push(midWind);
+
+            // Layer 3: High breeze (rustling air)
+            const highWind = audioContext.createBufferSource();
+            highWind.buffer = createPinkNoise(3);
+            highWind.loop = true;
+            const highFilter = audioContext.createBiquadFilter();
+            highFilter.type = 'bandpass';
+            highFilter.frequency.value = 900;
+            highFilter.Q.value = 0.6;
+            const highGain = audioContext.createGain();
+            highGain.gain.value = 0.15;
+            highWind.connect(highFilter).connect(highGain);
+            sources.push(highWind);
+
+            // Layer 4: Very subtle high shimmer
+            const shimmer = audioContext.createBufferSource();
+            shimmer.buffer = createWhiteNoise(2);
+            shimmer.loop = true;
+            const shimmerFilter = audioContext.createBiquadFilter();
+            shimmerFilter.type = 'highpass';
+            shimmerFilter.frequency.value = 2000;
+            const shimmerGain = audioContext.createGain();
+            shimmerGain.gain.value = 0.08;
+            shimmer.connect(shimmerFilter).connect(shimmerGain);
+            sources.push(shimmer);
+
+            // Master gain
+            const masterGain = audioContext.createGain();
+            soundGains.wind = masterGain;
+            updateSoundVolume('wind');
+
+            // Slow, gentle LFO for natural gusts
+            const gustLFO = audioContext.createOscillator();
+            gustLFO.frequency.value = 0.12; // Slower, more natural
+            const gustLFOGain = audioContext.createGain();
+            gustLFOGain.gain.value = 0.1;
+            gustLFO.connect(gustLFOGain).connect(masterGain.gain);
+
+            // Very slow LFO for gentle breathing
+            const breathLFO = audioContext.createOscillator();
+            breathLFO.frequency.value = 0.05; // Very slow
+            const breathLFOGain = audioContext.createGain();
+            breathLFOGain.gain.value = 0.06;
+            breathLFO.connect(breathLFOGain).connect(masterGain.gain);
+
+            gustLFO.start();
+            breathLFO.start();
+
+            deepGain.connect(masterGain);
+            midGain.connect(masterGain);
+            highGain.connect(masterGain);
+            shimmerGain.connect(masterGain);
+            masterGain.connect(masterGainNode);
+
+            sources.forEach(s => s.start());
+            activeSounds.wind = { sources, lfo: gustLFO, breathLFO };
+        }
+
+        // STREAM - Flowing water
+        function startStream() {
+            const sources = [];
+
+            // Main water flow
+            const flow = audioContext.createBufferSource();
+            flow.buffer = createWhiteNoise(3);
+            flow.loop = true;
+            const flowFilter = audioContext.createBiquadFilter();
+            flowFilter.type = 'bandpass';
+            flowFilter.frequency.value = 2000;
+            flowFilter.Q.value = 0.8;
+            const flowGain = audioContext.createGain();
+            flowGain.gain.value = 0.4;
+            flow.connect(flowFilter).connect(flowGain);
+            sources.push(flow);
+
+            // Bubbles (high frequency)
+            const bubbles = audioContext.createBufferSource();
+            bubbles.buffer = createWhiteNoise(2);
+            bubbles.loop = true;
+            const bubbleFilter = audioContext.createBiquadFilter();
+            bubbleFilter.type = 'highpass';
+            bubbleFilter.frequency.value = 3500;
+            const bubbleGain = audioContext.createGain();
+            bubbleGain.gain.value = 0.2;
+            bubbles.connect(bubbleFilter).connect(bubbleGain);
+            sources.push(bubbles);
+
+            // Master gain
+            const masterGain = audioContext.createGain();
+            soundGains.stream = masterGain;
+            updateSoundVolume('stream');
+
+            // Natural flow variation
+            const lfo = audioContext.createOscillator();
+            lfo.frequency.value = 0.5;
+            const lfoGain = audioContext.createGain();
+            lfoGain.gain.value = 0.05;
+            lfo.connect(lfoGain).connect(masterGain.gain);
+            lfo.start();
+
+            flowGain.connect(masterGain);
+            bubbleGain.connect(masterGain);
+            masterGain.connect(masterGainNode);
+
+            sources.forEach(s => s.start());
+            activeSounds.stream = { sources, lfo };
+        }
+
+        // OWL - Realistic hooting
+        function startOwl() {
+            soundGains.owl = audioContext.createGain();
+            updateSoundVolume('owl');
+
+            soundIntervals.owl = setInterval(() => {
+                if (!activeSounds.owl) return;
+
+                const now = audioContext.currentTime;
+                const pan = (Math.random() - 0.5) * 1.5;
+
+                // "Hoo-hoo-hoo-hooooo" pattern
+                const pattern = [
+                    { freq: 400, dur: 0.15, delay: 0 },
+                    { freq: 390, dur: 0.15, delay: 0.25 },
+                    { freq: 385, dur: 0.15, delay: 0.5 },
+                    { freq: 380, dur: 0.4, delay: 0.75 }
+                ];
+
+                pattern.forEach(note => {
+                    const osc = audioContext.createOscillator();
+                    osc.frequency.value = note.freq + (Math.random() * 10);
+                    osc.type = 'sine';
+
+                    const gain = audioContext.createGain();
+                    const panner = createStereoPanner(pan);
+                    const startTime = now + note.delay;
+
+                    gain.gain.setValueAtTime(0, startTime);
+                    gain.gain.linearRampToValueAtTime(soundGains.owl.gain.value * 0.3, startTime + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + note.dur);
+
+                    osc.connect(gain).connect(panner).connect(masterGainNode);
+                    osc.start(startTime);
+                    osc.stop(startTime + note.dur);
+                });
+            }, 15000 + Math.random() * 25000); // Every 15-40 seconds
+
+            activeSounds.owl = {};
+        }
+
+        // FROGS - Croaking chorus
+        function startFrogs() {
+            soundGains.frogs = audioContext.createGain();
+            updateSoundVolume('frogs');
+
+            // Multiple frogs croaking
+            for (let i = 0; i < 5; i++) {
+                const frogPosition = {
+                    pan: (Math.random() - 0.5) * 2,
+                    baseFreq: 150 + Math.random() * 100,
+                    interval: 800 + Math.random() * 1200
+                };
+
+                const croakFrog = () => {
+                    if (!activeSounds.frogs) return;
+
+                    const now = audioContext.currentTime;
+                    const osc = audioContext.createOscillator();
+                    osc.frequency.value = frogPosition.baseFreq + (Math.random() * 30);
+                    osc.type = 'sawtooth';
+
+                    const gain = audioContext.createGain();
+                    const pan = createStereoPanner(frogPosition.pan);
+
+                    gain.gain.setValueAtTime(0, now);
+                    gain.gain.linearRampToValueAtTime(soundGains.frogs.gain.value * 0.25, now + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+
+                    osc.connect(gain).connect(pan).connect(masterGainNode);
+                    osc.start();
+                    osc.stop(now + 0.2);
+
+                    setTimeout(croakFrog, frogPosition.interval + Math.random() * 500);
+                };
+
+                setTimeout(() => croakFrog(), Math.random() * 2000);
+            }
+
+            activeSounds.frogs = {};
+        }
+
+        // CICADAS - Droning buzz
+        function startCicadas() {
+            const sources = [];
+
+            // Create multiple cicada drones at different frequencies
+            for (let i = 0; i < 4; i++) {
+                const osc = audioContext.createOscillator();
+                osc.frequency.value = 6000 + (i * 300) + Math.random() * 200;
+                osc.type = 'sawtooth';
+
+                const gain = audioContext.createGain();
+                gain.gain.value = 0.08 / (i + 1);
+
+                // Pulsing effect
+                const lfo = audioContext.createOscillator();
+                lfo.frequency.value = 8 + (i * 2);
+                const lfoGain = audioContext.createGain();
+                lfoGain.gain.value = 0.04;
+                lfo.connect(lfoGain).connect(gain.gain);
+                lfo.start();
+
+                osc.connect(gain);
+                osc.start();
+                sources.push(osc);
+                sources.push(lfo);
+            }
+
+            // Master gain
+            const masterGain = audioContext.createGain();
+            soundGains.cicadas = masterGain;
+            updateSoundVolume('cicadas');
+
+            sources.forEach((s, i) => {
+                if (i % 2 === 0) s.connect(masterGain);
+            });
+            masterGain.connect(masterGainNode);
+
+            activeSounds.cicadas = { sources };
+        }
+
+        // LEAVES - Rustling
+        function startLeaves() {
+            const noise = audioContext.createBufferSource();
+            noise.buffer = createWhiteNoise(2);
+            noise.loop = true;
+
+            const filter = audioContext.createBiquadFilter();
+            filter.type = 'highpass';
+            filter.frequency.value = 4000;
+
+            const gain = audioContext.createGain();
+            soundGains.leaves = gain;
+            updateSoundVolume('leaves');
+
+            // Gentle rustling variation
+            const lfo = audioContext.createOscillator();
+            lfo.frequency.value = 0.8;
+            const lfoGain = audioContext.createGain();
+            lfoGain.gain.value = 0.015;
+            lfo.connect(lfoGain).connect(gain.gain);
+            lfo.start();
+
+            noise.connect(filter).connect(gain).connect(masterGainNode);
+            noise.start();
+
+            activeSounds.leaves = { source: noise, lfo };
+        }
+
+        // ULTRA-REALISTIC WOLF - Distant, haunting howl with harmonics
+        function startWolf() {
+            try {
+                soundGains.wolf = audioContext.createGain();
+                updateSoundVolume('wolf');
+
+                const howl = () => {
+                    if (!activeSounds.wolf) return;
+
+                    try {
+                        const now = audioContext.currentTime;
+                        const pan = (Math.random() - 0.5) * 2;
+
+                        // Fundamental howl (main voice)
+                        const fundamental = audioContext.createOscillator();
+                        fundamental.type = 'sine'; // Smoother, more natural
+                        fundamental.frequency.setValueAtTime(150, now);
+                        fundamental.frequency.exponentialRampToValueAtTime(280, now + 0.6);
+                        fundamental.frequency.exponentialRampToValueAtTime(320, now + 1.2);
+                        fundamental.frequency.exponentialRampToValueAtTime(260, now + 2.2);
+
+                        // Add slight frequency wobble for organic feel
+                        const wobble = audioContext.createOscillator();
+                        wobble.frequency.setValueAtTime(5, now); // 5 Hz wobble
+                        const wobbleGain = audioContext.createGain();
+                        wobbleGain.gain.setValueAtTime(8, now); // +/- 8 Hz
+
+                        wobble.connect(wobbleGain);
+                        wobbleGain.connect(fundamental.frequency);
+
+                        // Harmonic overtone for depth
+                        const harmonic = audioContext.createOscillator();
+                        harmonic.type = 'sine';
+                        harmonic.frequency.setValueAtTime(300, now);
+                        harmonic.frequency.exponentialRampToValueAtTime(560, now + 0.6);
+                        harmonic.frequency.exponentialRampToValueAtTime(640, now + 1.2);
+                        harmonic.frequency.exponentialRampToValueAtTime(520, now + 2.2);
+
+                        // Sub-harmonic for richness
+                        const subHarmonic = audioContext.createOscillator();
+                        subHarmonic.type = 'sine';
+                        subHarmonic.frequency.setValueAtTime(75, now);
+                        subHarmonic.frequency.exponentialRampToValueAtTime(140, now + 0.6);
+                        subHarmonic.frequency.exponentialRampToValueAtTime(160, now + 1.2);
+                        subHarmonic.frequency.exponentialRampToValueAtTime(130, now + 2.2);
+
+                        // Gain envelopes (natural wolf howl shape)
+                        const fundamentalGain = audioContext.createGain();
+                        fundamentalGain.gain.setValueAtTime(0, now);
+                        fundamentalGain.gain.linearRampToValueAtTime(soundGains.wolf.gain.value * 0.14, now + 0.4);
+                        fundamentalGain.gain.linearRampToValueAtTime(soundGains.wolf.gain.value * 0.16, now + 1.3);
+                        fundamentalGain.gain.exponentialRampToValueAtTime(0.001, now + 2.5);
+
+                        const harmonicGain = audioContext.createGain();
+                        harmonicGain.gain.setValueAtTime(0, now);
+                        harmonicGain.gain.linearRampToValueAtTime(soundGains.wolf.gain.value * 0.06, now + 0.4);
+                        harmonicGain.gain.exponentialRampToValueAtTime(0.001, now + 2.2);
+
+                        const subHarmonicGain = audioContext.createGain();
+                        subHarmonicGain.gain.setValueAtTime(0, now);
+                        subHarmonicGain.gain.linearRampToValueAtTime(soundGains.wolf.gain.value * 0.08, now + 0.5);
+                        subHarmonicGain.gain.exponentialRampToValueAtTime(0.001, now + 2.3);
+
+                        // Low-pass filter for distance/realism
+                        const filter = audioContext.createBiquadFilter();
+                        filter.type = 'lowpass';
+                        filter.frequency.setValueAtTime(1800, now);
+                        filter.Q.setValueAtTime(0.7, now);
+
+                        const panner = createStereoPanner(pan);
+
+                        // Connect audio graph
+                        fundamental.connect(fundamentalGain);
+                        harmonic.connect(harmonicGain);
+                        subHarmonic.connect(subHarmonicGain);
+
+                        fundamentalGain.connect(filter);
+                        harmonicGain.connect(filter);
+                        subHarmonicGain.connect(filter);
+
+                        filter.connect(panner);
+                        panner.connect(masterGainNode);
+
+                        // Start all oscillators
+                        fundamental.start(now);
+                        harmonic.start(now);
+                        subHarmonic.start(now);
+                        wobble.start(now);
+
+                        // Stop all oscillators
+                        fundamental.stop(now + 2.6);
+                        harmonic.stop(now + 2.3);
+                        subHarmonic.stop(now + 2.4);
+                        wobble.stop(now + 2.6);
+                    } catch (error) {
+                        console.error('🚫 Error playing wolf howl:', error);
+                    }
+                };
+
+                soundIntervals.wolf = setInterval(howl, 60000 + Math.random() * 120000); // Every 1-3 minutes
+                activeSounds.wolf = {};
+                console.log('🎵 Wolf sounds started successfully');
+            } catch (error) {
+                console.error('🚫 Error starting wolf sounds:', error);
+            }
+        }
+
+        // Sound control functions
+        function startSound(soundName) {
+            if (activeSounds[soundName]) return;
+            
+            try {
+                initAudioContext();
+                
+                // Ensure AudioContext is running
+                if (audioContext && audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+
+                const starters = {
+                    rain: startRain,
+                    thunder: startThunder,
+                    crickets: startCrickets,
+                    birds: startBirds,
+                    fire: startFire,
+                    chimes: startChimes,
+                    ocean: startOcean,
+                    bowl: startBowl,
+                    brown: startBrown,
+                    wind: startWind,
+                    stream: startStream,
+                    owl: startOwl,
+                    frogs: startFrogs,
+                    cicadas: startCicadas,
+                    leaves: startLeaves,
+                    wolf: startWolf
+                };
+
+                if (starters[soundName]) {
+                    console.log(`🎵 Starting ${soundName} sound...`);
+                    starters[soundName]();
+                    updateTriggerIcon();
+                } else {
+                    console.warn(`🚫 No starter function found for sound: ${soundName}`);
+                }
+            } catch (error) {
+                console.error(`🚫 Error starting ${soundName}:`, error);
+            }
+        }
+
+        function stopSound(soundName) {
+            if (!activeSounds[soundName]) return;
+
+            // Stop single source
+            if (activeSounds[soundName].source) {
+                try { activeSounds[soundName].source.stop(); } catch(e) {}
+            }
+
+            // Stop multiple sources (for layered sounds like rain, fire, ocean)
+            if (activeSounds[soundName].sources) {
+                activeSounds[soundName].sources.forEach(source => {
+                    try { source.stop(); } catch(e) {}
+                });
+            }
+
+            // Stop LFOs
+            if (activeSounds[soundName].lfo) {
+                try { activeSounds[soundName].lfo.stop(); } catch(e) {}
+            }
+            if (activeSounds[soundName].waveLFO) {
+                try { activeSounds[soundName].waveLFO.stop(); } catch(e) {}
+            }
+            if (activeSounds[soundName].tideLFO) {
+                try { activeSounds[soundName].tideLFO.stop(); } catch(e) {}
+            }
+            if (activeSounds[soundName].breathLFO) {
+                try { activeSounds[soundName].breathLFO.stop(); } catch(e) {}
+            }
+
+            // Stop pop interval (for fire)
+            if (activeSounds[soundName].popInterval) {
+                clearInterval(activeSounds[soundName].popInterval);
+            }
+
+            // Clear main interval
+            if (soundIntervals[soundName]) {
+                clearInterval(soundIntervals[soundName]);
+                delete soundIntervals[soundName];
+            }
+
+            // Clear splash interval (for rain)
+            if (soundIntervals[soundName + 'Splash']) {
+                clearInterval(soundIntervals[soundName + 'Splash']);
+                delete soundIntervals[soundName + 'Splash'];
+            }
+
+            delete activeSounds[soundName];
+            delete soundGains[soundName];
+            updateTriggerIcon();
+        }
+
+        function toggleSound(soundName, enabled) {
+            if (enabled) {
+                startSound(soundName);
+            } else {
+                stopSound(soundName);
+            }
+            saveSoundPreferences();
+        }
+
+        function updateSoundVolume(soundName) {
+            if (soundGains[soundName]) {
+                const slider = document.getElementById(`volume-${soundName}`);
+                const value = slider.value;
+                soundGains[soundName].gain.value = value / 100;
+            }
+        }
+
+        function setVolume(soundName, value) {
+            document.getElementById(`value-${soundName}`).textContent = value + '%';
+            updateSoundVolume(soundName);
+            saveSoundPreferences();
+        }
+
+        function setMasterVolume(value) {
+            document.getElementById('masterVolumeValue').textContent = value + '%';
+            if (masterGainNode) {
+                masterGainNode.gain.value = value / 100;
+            }
+            localStorage.setItem('masterVolume', value);
+        }
+
+        // Debug function to test individual sounds
+        function testSound(soundName) {
+            console.log(`🔧 Testing ${soundName} sound...`);
+            if (activeSounds[soundName]) {
+                console.log(`⚠️ ${soundName} is already active, stopping first...`);
+                stopSound(soundName);
+                setTimeout(() => startSound(soundName), 500);
+            } else {
+                startSound(soundName);
+            }
+        }
+
+        function updateTriggerIcon() {
+            const anyActive = Object.keys(activeSounds).length > 0;
+            document.getElementById('soundTriggerIcon').textContent = anyActive ? '🎵' : '🔇';
+        }
+
+        // Preset functions
+        function applyPreset(presetName) {
+            // Turn everything off first
+            ['rain', 'thunder', 'crickets', 'birds', 'fire', 'chimes', 'ocean', 'bowl', 'brown', 'wind', 'stream', 'owl', 'frogs', 'cicadas', 'leaves', 'wolf'].forEach(sound => {
+                document.getElementById(`toggle-${sound}`).checked = false;
+                stopSound(sound);
+            });
+
+            const presets = {
+                silent: {},
+                forest: { crickets: true, birds: true, leaves: true, wind: true },
+                rain: { rain: true, thunder: true, wind: true },
+                night: { crickets: true, owl: true, frogs: true, wind: true },
+                stream: { stream: true, birds: true, leaves: true },
+                temple: { bowl: true, chimes: true, brown: true },
+                ocean: { ocean: true, birds: true, wind: true },
+                summer: { birds: true, cicadas: true, wind: true, leaves: true }
+            };
+
+            const preset = presets[presetName] || {};
+            Object.keys(preset).forEach(sound => {
+                document.getElementById(`toggle-${sound}`).checked = true;
+                startSound(sound);
+            });
+
+            saveSoundPreferences();
+        }
+
+        // ==================== DAILY SPIRITUAL QUOTES ====================
+        const spiritualQuotes = [
+            { text: "The soul always knows what to do to heal itself. The challenge is to silence the mind.", author: "Caroline Myss" },
+            { text: "You are not a drop in the ocean. You are the entire ocean in a drop.", author: "Rumi" },
+            { text: "The privilege of a lifetime is to become who you truly are.", author: "Carl Jung" },
+            { text: "Your task is not to seek for love, but merely to seek and find all the barriers within yourself that you have built against it.", author: "Rumi" },
+            { text: "The wound is the place where the Light enters you.", author: "Rumi" },
+            { text: "Be empty of worrying. Think of who created thought.", author: "Rumi" },
+            { text: "Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself.", author: "Rumi" },
+            { text: "The universe is not outside of you. Look inside yourself; everything that you want, you already are.", author: "Rumi" },
+            { text: "What you seek is seeking you.", author: "Rumi" },
+            { text: "In the depth of winter, I finally learned that within me there lay an invincible summer.", author: "Albert Camus" },
+            { text: "The only way out is through.", author: "Robert Frost" },
+            { text: "Your vision will become clear only when you can look into your own heart.", author: "Carl Jung" },
+            { text: "Everything that irritates us about others can lead us to an understanding of ourselves.", author: "Carl Jung" },
+            { text: "I am not what happened to me, I am what I choose to become.", author: "Carl Jung" },
+            { text: "The meeting of two personalities is like the contact of two chemical substances: if there is any reaction, both are transformed.", author: "Carl Jung" },
+            { text: "Knowing your own darkness is the best method for dealing with the darknesses of other people.", author: "Carl Jung" },
+            { text: "Until you make the unconscious conscious, it will direct your life and you will call it fate.", author: "Carl Jung" },
+            { text: "The most terrifying thing is to accept oneself completely.", author: "Carl Jung" },
+            { text: "We cannot live the afternoon of life according to the program of life's morning.", author: "Carl Jung" },
+            { text: "The greatest discovery of my generation is that a human being can alter his life by altering his attitudes.", author: "William James" }
+        ];
+
+        function setDailyQuote() {
+            // Use date to ensure same quote all day
+            const today = new Date().toDateString();
+            const hash = today.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+            const quoteIndex = hash % spiritualQuotes.length;
+            const quote = spiritualQuotes[quoteIndex];
+
+            document.getElementById('dailyQuote').textContent = quote.text;
+            document.getElementById('quoteAuthor').textContent = `— ${quote.author}`;
+        }
+
+        // ==================== USER STATS ====================
+        function updateUserStats() {
+            // Get stats from calendar iframe or localStorage
+            const calendarIframe = document.getElementById('calendar-iframe');
+
+            // Track oracle cards drawn
+            let oracleCount = parseInt(localStorage.getItem('oracleCardsDrawn') || '0');
+            document.getElementById('statOracleCards').textContent = oracleCount;
+
+            // Try to get calendar stats (will be populated when calendar loads)
+            // For now, show 0 or localStorage cached values
+            const cachedJournals = parseInt(localStorage.getItem('cachedJournalCount') || '0');
+            const cachedStreak = parseInt(localStorage.getItem('cachedStreakCount') || '0');
+
+            document.getElementById('statJournals').textContent = cachedJournals;
+            document.getElementById('statStreak').textContent = cachedStreak;
+
+            // Calculate days active (simplified - based on first login)
+            const firstLogin = localStorage.getItem('firstLoginDate');
+            if (firstLogin) {
+                const daysActive = Math.floor((new Date() - new Date(firstLogin)) / (1000 * 60 * 60 * 24)) + 1;
+                document.getElementById('statDaysActive').textContent = daysActive;
+            } else {
+                localStorage.setItem('firstLoginDate', new Date().toISOString());
+                document.getElementById('statDaysActive').textContent = '1';
+            }
+        }
+
+        // ==================== HELPER FUNCTIONS ====================
+        function openCalendarNewJournal() {
+            const calendarIframe = document.getElementById('calendar-iframe');
+            if (calendarIframe) {
+                // Scroll to calendar
+                calendarIframe.scrollIntoView({ behavior: 'smooth' });
+                // Open calendar in new tab with journal tab active
+                window.open('sections/calendar.html?tab=journal', '_blank');
+            }
+        }
+
+        function scrollToCalendar() {
+            const calendarSection = document.querySelector('.calendar-frame');
+            if (calendarSection) {
+                calendarSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Update oracle card count when drawn
+        const originalDrawOracleCard = drawOracleCard;
+        drawOracleCard = function() {
+            originalDrawOracleCard();
+            let count = parseInt(localStorage.getItem('oracleCardsDrawn') || '0');
+            count++;
+            localStorage.setItem('oracleCardsDrawn', count);
+            document.getElementById('statOracleCards').textContent = count;
+        };
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            setDailyQuote();
+            updateUserStats();
+
+            // Listen for stats updates from calendar iframe
+            window.addEventListener('message', (event) => {
+                if (event.data.type === 'calendarStats') {
+                    document.getElementById('statJournals').textContent = event.data.journals || 0;
+                    document.getElementById('statStreak').textContent = event.data.streak || 0;
+                    // Cache for next page load
+                    localStorage.setItem('cachedJournalCount', event.data.journals || 0);
+                    localStorage.setItem('cachedStreakCount', event.data.streak || 0);
+                }
+            });
+        });
+
+        // Calendar iframe initialization and error handling
+        document.addEventListener('DOMContentLoaded', () => {
+            const calendarIframe = document.getElementById('calendar-iframe');
+
+            if (calendarIframe) {
+                // Add load event listener
+                calendarIframe.addEventListener('load', function() {
+                    console.log('✅ Calendar iframe loaded successfully');
+                });
+
+                // Add error event listener
+                calendarIframe.addEventListener('error', function() {
+                    console.error('❌ Calendar iframe failed to load');
+                    // Show fallback message
+                    const calendarSection = calendarIframe.parentElement;
+                    const errorMsg = document.createElement('div');
+                    errorMsg.style.cssText = 'background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 1rem; border-radius: 12px; margin: 1rem 0; text-align: center;';
+                    errorMsg.innerHTML = '⚠️ Calendar could not load in preview. <a href="sections/calendar.html" target="_blank" style="color: #fca5a5; text-decoration: underline;">Click here to open it in a new tab</a>';
+                    calendarSection.insertBefore(errorMsg, calendarIframe);
+                });
+
+                // Set a timeout to check if iframe is responsive
+                setTimeout(() => {
+                    try {
+                        // Try to access iframe content to see if it loaded
+                        const iframeDoc = calendarIframe.contentDocument || calendarIframe.contentWindow.document;
+                        if (iframeDoc.readyState === 'complete') {
+                            console.log('✅ Calendar iframe content loaded and ready');
+                        }
+                    } catch (e) {
+                        console.log('ℹ️ Calendar iframe is loading (cross-origin or still loading)');
+                    }
+                }, 2000);
+            }
+        });
+
+        // Chapter 1 Audio Player Enhancements
+        document.addEventListener('DOMContentLoaded', function() {
+            const audioPlayer = document.querySelector('#chapter1-audio');
+            const statusDiv = document.querySelector('#audio-status');
+
+            if (audioPlayer && statusDiv) {
+                // Show loading status
+                statusDiv.innerHTML = '🔄 Loading audio preview...';
+
+                audioPlayer.addEventListener('loadstart', function() {
+                    console.log('🎧 Loading Chapter 1 preview...');
+                    statusDiv.innerHTML = '🔄 Loading audio preview...';
+                });
+
+                audioPlayer.addEventListener('loadedmetadata', function() {
+                    console.log('📊 Audio metadata loaded');
+                    const duration = Math.floor(audioPlayer.duration / 60);
+                    statusDiv.innerHTML = `✅ Audio ready to play (${duration} minutes)`;
+                });
+
+                audioPlayer.addEventListener('canplay', function() {
+                    console.log('✅ Audio ready to play');
+                    statusDiv.innerHTML = '✅ Audio ready to play - Click play button above';
+                });
+
+                audioPlayer.addEventListener('play', function() {
+                    console.log('▶️ Playing Chapter 1 preview');
+                    statusDiv.innerHTML = '▶️ Playing Chapter 1 preview';
+                });
+
+                audioPlayer.addEventListener('pause', function() {
+                    statusDiv.innerHTML = '⏸️ Audio paused - Click play to continue';
+                });
+
+                audioPlayer.addEventListener('ended', function() {
+                    console.log('🎯 Chapter 1 preview completed');
+                    statusDiv.innerHTML = '🎯 Chapter 1 preview completed! Enjoyed it? Get the full audiobook below.';
+                    // Highlight CTA button after listening
+                    setTimeout(() => {
+                        const ctaButton = document.querySelector('a[href*="iBLVYLEQ"]');
+                        if (ctaButton) {
+                            ctaButton.style.animation = 'pulse 1s ease-in-out 3';
+                            ctaButton.style.boxShadow = '0 12px 35px rgba(212, 175, 55, 0.8)';
+                        }
+                    }, 1000);
+                });
+
+                // Enhanced error handling
+                audioPlayer.addEventListener('error', function(e) {
+                    console.error('Audio playback error:', e);
+                    let errorMessage = '⚠️ Audio preview temporarily unavailable. ';
+
+                    if (e.target.error) {
+                        switch(e.target.error.code) {
+                            case e.target.error.MEDIA_ERR_ABORTED:
+                                errorMessage += 'Playback was aborted.';
+                                break;
+                            case e.target.error.MEDIA_ERR_NETWORK:
+                                errorMessage += 'Network error occurred.';
+                                break;
+                            case e.target.error.MEDIA_ERR_DECODE:
+                                errorMessage += 'Audio file corrupted.';
+                                break;
+                            case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                                errorMessage += 'Audio format not supported.';
+                                break;
+                            default:
+                                errorMessage += 'Unknown error.';
+                        }
+                    }
+
+                    statusDiv.innerHTML = errorMessage + ` <a href="https://github.com/nazarite777/divine-temple/raw/main/audio/chapter-1-preview.mp3" style="color: var(--primary-gold);" target="_blank">Try direct download</a>`;
+                });
+
+                // Add timeout for loading
+                setTimeout(() => {
+                    if (audioPlayer.readyState === 0) {
+                        statusDiv.innerHTML = '⏳ Taking longer than expected... <a href="https://github.com/nazarite777/divine-temple/raw/main/audio/chapter-1-preview.mp3" style="color: var(--primary-gold);" target="_blank">Try direct download</a>';
+                    }
+                }, 10000);
+            }
+        });
+    </script>
+</body>
+</html>

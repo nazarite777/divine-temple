@@ -1,0 +1,3621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sacred Arts & Sound - Divine Temple</title>
+    
+    <!-- Performance optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Critical CSS -->
+    <link rel="preload" href="../css/critical.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../css/critical.min.css"></noscript>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    
+    <style>
+        :root {
+            --primary-bg: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            --accent-purple: #8b5fbf;
+            --accent-gold: #d4af37;
+            --accent-orange: #ff9800;
+            --accent-cyan: #00e5ff;
+            --accent-rose: #f8bbd9;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .arts-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .arts-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .arts-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: var(--text-shadow);
+        }
+
+        .arts-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        /* Sacred Arts Main Interface */
+        .sacred-arts-main-interface {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .creative-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Panel Styles */
+        .sacred-geometry-panel,
+        .mandala-creation-panel,
+        .visual-meditation-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .panel-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Sacred Geometry Viewer */
+        .geometry-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        #geometry-selector {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .geometry-options {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
+            border: none;
+            border-radius: 15px;
+            padding: 0.6rem 1.2rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.4);
+        }
+
+        .geometry-canvas-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        #geometry-canvas {
+            border: 2px solid var(--accent-orange);
+            border-radius: 15px;
+            background: radial-gradient(circle, rgba(255, 152, 0, 0.1), transparent);
+            max-width: 100%;
+            height: auto;
+        }
+
+        .geometry-info {
+            background: rgba(255, 152, 0, 0.1);
+            border: 1px solid var(--accent-orange);
+            border-radius: 15px;
+            padding: 1.5rem;
+        }
+
+        .geometry-info h4 {
+            color: var(--accent-orange);
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Mandala Creation Studio */
+        .mandala-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-selector {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tool-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .tool-btn.active,
+        .tool-btn:hover {
+            background: rgba(0, 229, 255, 0.2);
+            border-color: var(--accent-cyan);
+            transform: translateY(-2px);
+        }
+
+        .mandala-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .mandala-options label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        .mandala-options input[type="range"] {
+            width: 100%;
+            margin-left: 0.5rem;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .color-option:hover {
+            transform: scale(1.2);
+            border-color: white;
+        }
+
+        .mandala-canvas-container {
+            text-align: center;
+        }
+
+        #mandala-canvas {
+            border: 3px solid var(--accent-cyan);
+            border-radius: 20px;
+            background: radial-gradient(circle, rgba(0, 229, 255, 0.1), transparent);
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        .mandala-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 0.8rem 1.5rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Visual Meditation Aids */
+        .meditation-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .meditation-card {
+            background: linear-gradient(135deg, rgba(248, 187, 217, 0.1), rgba(139, 95, 191, 0.1));
+            border: 2px solid rgba(248, 187, 217, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .meditation-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-rose);
+            box-shadow: 0 15px 30px rgba(248, 187, 217, 0.4);
+        }
+
+        .meditation-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .meditation-card h4 {
+            color: var(--accent-rose);
+            margin-bottom: 0.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .visual-meditation-area {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+        }
+
+        #meditation-canvas {
+            border: 2px solid var(--accent-rose);
+            border-radius: 15px;
+            background: radial-gradient(circle, rgba(248, 187, 217, 0.1), transparent);
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        .meditation-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Sacred Arts Sidebar */
+        .sacred-arts-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-title {
+            color: var(--accent-gold);
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .quick-arts-tools {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .tool-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-category h4 {
+            color: var(--accent-orange);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .tool-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 0.8rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+            width: 100%;
+            text-align: left;
+        }
+
+        .tool-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-cyan);
+            transform: translateX(5px);
+        }
+
+        .tool-icon {
+            font-size: 1.2rem;
+        }
+
+        .tool-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Sacred Gallery */
+        .sacred-gallery {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .sacred-gallery h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .gallery-item {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item.placeholder {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--accent-gold);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .gallery-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .gallery-item p {
+            font-size: 0.8rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .gallery-btn {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+            border: none;
+            border-radius: 12px;
+            padding: 0.8rem 1.5rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .gallery-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Creative Insights */
+        .creative-insights {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .creative-insights h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .insight-card {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--accent-gold);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .insight-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .insight-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.85rem;
+            line-height: 1.4;
+            font-style: italic;
+        }
+
+        /* Creation Stats */
+        .creation-stats {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .creation-stats h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: var(--accent-cyan);
+            font-size: 0.9rem;
+        }
+
+        .trending-up {
+            color: var(--accent-orange);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .sacred-arts-main-interface {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .sacred-arts-sidebar {
+                order: -1;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+
+            .geometry-canvas-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .meditation-types {
+                grid-template-columns: 1fr;
+            }
+            
+            .mandala-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .sacred-arts-main-interface {
+                padding: 1rem;
+            }
+            
+            .geometry-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        /* Animation Styles */
+        @keyframes sacredPulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: scale(1.05);
+                opacity: 1;
+            }
+        }
+
+        @keyframes geometryRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes colorShift {
+            0%, 100% { filter: hue-rotate(0deg); }
+            25% { filter: hue-rotate(90deg); }
+            50% { filter: hue-rotate(180deg); }
+            75% { filter: hue-rotate(270deg); }
+        }
+
+        .animated-geometry {
+            animation: geometryRotate 20s linear infinite;
+        }
+
+        .color-shifting {
+            animation: colorShift 10s ease-in-out infinite;
+        }
+
+        .pulsing {
+            animation: sacredPulse 3s ease-in-out infinite;
+        }
+
+        .arts-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: creativeFlow 10s ease-in-out infinite;
+        }
+
+        .arts-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(255, 152, 0, 0.4), 0 0 40px rgba(0, 229, 255, 0.3);
+            border-color: var(--accent-orange);
+            animation-play-state: paused;
+        }
+
+        .arts-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-cyan));
+            animation: artisticFlow 8s ease-in-out infinite;
+        }
+
+        .arts-card::after {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: conic-gradient(
+                from 0deg,
+                transparent,
+                rgba(255, 152, 0, 0.1),
+                transparent,
+                rgba(0, 229, 255, 0.1),
+                transparent,
+                rgba(248, 187, 217, 0.1),
+                transparent
+            );
+            animation: creativeSpiral 15s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes creativeFlow {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 10px 20px rgba(255, 152, 0, 0.2);
+            }
+            33% { 
+                transform: scale(1.005);
+                box-shadow: 0 12px 25px rgba(0, 229, 255, 0.25);
+            }
+            66% { 
+                transform: scale(1.01);
+                box-shadow: 0 15px 30px rgba(248, 187, 217, 0.3);
+            }
+        }
+
+        @keyframes artisticFlow {
+            0%, 100% { 
+                background: linear-gradient(90deg, var(--accent-orange), var(--accent-cyan));
+            }
+            25% { 
+                background: linear-gradient(90deg, var(--accent-cyan), var(--accent-rose));
+            }
+            50% { 
+                background: linear-gradient(90deg, var(--accent-rose), var(--accent-purple));
+            }
+            75% { 
+                background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold));
+            }
+        }
+
+        @keyframes creativeSpiral {
+            0% { 
+                transform: rotate(0deg) scale(1);
+                opacity: 0.3;
+            }
+            50% { 
+                opacity: 0.6;
+            }
+            100% { 
+                transform: rotate(360deg) scale(1.1);
+                opacity: 0.3;
+            }
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            text-align: center;
+            animation: artisticIconFloat 6s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(255, 152, 0, 0.6));
+            transition: all 0.3s ease;
+        }
+
+        .arts-card:hover .card-icon {
+            animation: artisticIconDance 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 25px rgba(0, 229, 255, 0.8));
+            transform: scale(1.15) rotate(10deg);
+        }
+
+        @keyframes artisticIconFloat {
+            0%, 100% { 
+                transform: translateY(0) rotate(0deg) scale(1);
+                filter: drop-shadow(0 0 15px rgba(255, 152, 0, 0.6));
+            }
+            33% { 
+                transform: translateY(-5px) rotate(2deg) scale(1.05);
+                filter: drop-shadow(0 0 20px rgba(0, 229, 255, 0.7));
+            }
+            66% { 
+                transform: translateY(3px) rotate(-1deg) scale(1.02);
+                filter: drop-shadow(0 0 18px rgba(248, 187, 217, 0.8));
+            }
+        }
+
+        @keyframes artisticIconDance {
+            0%, 100% { 
+                transform: scale(1.15) rotate(10deg);
+                filter: drop-shadow(0 0 25px rgba(0, 229, 255, 0.8));
+            }
+            25% { 
+                transform: scale(1.2) rotate(-5deg);
+                filter: drop-shadow(0 0 30px rgba(248, 187, 217, 1));
+            }
+            50% { 
+                transform: scale(1.18) rotate(15deg);
+                filter: drop-shadow(0 0 35px rgba(255, 152, 0, 1));
+            }
+            75% { 
+                transform: scale(1.22) rotate(0deg);
+                filter: drop-shadow(0 0 32px rgba(139, 95, 191, 1));
+            }
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--accent-orange);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .card-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .card-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .card-features li {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .card-features li::before {
+            content: '🎨';
+            position: absolute;
+            left: 0;
+            color: var(--accent-cyan);
+        }
+
+        .arts-btn {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .arts-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 152, 0, 0.4);
+        }
+
+        .featured-tool {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.2), rgba(0, 229, 255, 0.2));
+            border: 2px solid var(--accent-cyan);
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent-cyan);
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Modal Styles */
+        .session-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .session-modal {
+            background: var(--primary-bg);
+            border-radius: 25px;
+            padding: 0;
+            max-width: 1200px;
+            max-height: 800px;
+            width: 100%;
+            height: 90vh;
+            position: relative;
+            border: 2px solid var(--accent-orange);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .session-header {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .session-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            text-shadow: var(--text-shadow);
+        }
+
+        .session-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .session-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .session-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        /* Premium Sound Bath Visualization */
+        .sound-bath-visualization {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, 
+                rgba(255, 152, 0, 0.1) 0%,
+                rgba(0, 229, 255, 0.1) 50%,
+                rgba(139, 95, 191, 0.1) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sound-wave-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            margin-bottom: 2rem;
+        }
+
+        .sound-wave-display {
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            height: 200px;
+            gap: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .sound-bar {
+            width: 12px;
+            background: linear-gradient(to top, var(--accent-orange), var(--accent-cyan));
+            border-radius: 6px 6px 0 0;
+            height: 20px;
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+
+        .sound-bar.sound-active {
+            animation: soundWave 1.5s ease-in-out infinite;
+            opacity: 1;
+        }
+
+        .frequency-rings {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+        }
+
+        .frequency-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        .frequency-ring.ring-active {
+            animation: frequencyRipple 4s ease-out infinite;
+        }
+
+        .ring-1 { width: 100px; height: 100px; }
+        .ring-2 { width: 200px; height: 200px; }
+        .ring-3 { width: 300px; height: 300px; }
+        .ring-4 { width: 400px; height: 400px; }
+
+        .sound-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .sound-btn, .frequency-btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .sound-btn {
+            background: linear-gradient(45deg, var(--accent-orange), var(--accent-cyan));
+            font-size: 1.1rem;
+        }
+
+        .frequency-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .frequency-btn.active-frequency {
+            background: linear-gradient(45deg, var(--accent-gold), var(--accent-purple));
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .sound-btn:hover, .frequency-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .sound-info {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .current-frequency {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* Frequency-specific styles */
+        .frequency-432hz {
+            background: linear-gradient(135deg, 
+                rgba(255, 152, 0, 0.15) 0%,
+                rgba(255, 193, 7, 0.1) 100%);
+        }
+
+        .frequency-432hz .sound-bar {
+            background: linear-gradient(to top, #ff9800, #ffc107);
+        }
+
+        .frequency-528hz {
+            background: linear-gradient(135deg, 
+                rgba(76, 175, 80, 0.15) 0%,
+                rgba(139, 195, 74, 0.1) 100%);
+        }
+
+        .frequency-528hz .sound-bar {
+            background: linear-gradient(to top, #4caf50, #8bc34a);
+        }
+
+        .frequency-741hz {
+            background: linear-gradient(135deg, 
+                rgba(103, 58, 183, 0.15) 0%,
+                rgba(156, 39, 176, 0.1) 100%);
+        }
+
+        .frequency-741hz .sound-bar {
+            background: linear-gradient(to top, #673ab7, #9c27b0);
+        }
+
+        @keyframes soundWave {
+            0%, 100% { 
+                height: 20px;
+                opacity: 0.6;
+            }
+            50% { 
+                height: 120px;
+                opacity: 1;
+            }
+        }
+
+        .sound-bar:nth-child(even) {
+            animation-delay: 0.1s;
+        }
+
+        .sound-bar:nth-child(3n) {
+            animation-delay: 0.2s;
+        }
+
+        .sound-bar:nth-child(5n) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes frequencyRipple {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(0.1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* Sacred Geometry Studio */
+        .sacred-geometry-studio {
+            padding: 2rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, 
+                rgba(139, 95, 191, 0.1) 0%,
+                rgba(212, 175, 55, 0.1) 50%,
+                rgba(255, 152, 0, 0.1) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .geometry-canvas-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .sacred-canvas {
+            border: 3px solid var(--accent-gold);
+            border-radius: 15px;
+            background: rgba(26, 26, 46, 0.9);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .sacred-canvas:hover {
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.3);
+        }
+
+        .geometry-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sacred-pattern {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .sacred-pattern:hover {
+            background: rgba(212, 175, 55, 0.3);
+            border-color: var(--accent-gold);
+            transform: translateX(5px);
+        }
+
+        .pattern-preview {
+            font-size: 1.2rem;
+            filter: drop-shadow(0 0 5px currentColor);
+        }
+
+        .creative-tools {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .color-orb {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .color-orb[data-color="#d4af37"] { background: #d4af37; }
+        .color-orb[data-color="#8b5fbf"] { background: #8b5fbf; }
+        .color-orb[data-color="#ff9800"] { background: #ff9800; }
+        .color-orb[data-color="#00e5ff"] { background: #00e5ff; }
+        .color-orb[data-color="#f8bbd9"] { background: #f8bbd9; }
+        .color-orb[data-color="#4caf50"] { background: #4caf50; }
+
+        .color-orb:hover {
+            transform: scale(1.2);
+            border-color: white;
+            box-shadow: 0 0 20px currentColor;
+        }
+
+        .color-orb.color-active {
+            transform: scale(1.15);
+            border-color: white;
+            box-shadow: 0 0 25px currentColor;
+        }
+
+        .color-orb.color-active::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .creation-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .create-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .create-btn:hover {
+            background: linear-gradient(45deg, var(--accent-gold), var(--accent-purple));
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .creative-inspiration {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .inspiration-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            font-style: italic;
+            animation: inspireText 4s ease-in-out infinite;
+        }
+
+        @keyframes inspireText {
+            0%, 100% { 
+                opacity: 0.8;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 1;
+                transform: scale(1.02);
+            }
+        }
+
+        /* Sacred Canvas Styles */
+        .sacred-canvas {
+            border: 2px solid var(--accent-gold);
+            border-radius: 15px;
+            background: white;
+            cursor: crosshair;
+            margin: 1rem auto;
+            display: block;
+            max-width: 100%;
+        }
+
+        .canvas-tools {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .canvas-tools input,
+        .canvas-tools button {
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+        }
+
+        .canvas-tools button:hover {
+            background: var(--accent-orange);
+        }
+
+        /* Sound Interface Styles */
+        .sound-interface {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .sound-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sound-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .sound-card.playing {
+            border-color: var(--accent-orange);
+            background: rgba(255, 152, 0, 0.1);
+        }
+
+        .sound-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .sound-name {
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .frequency-display {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Audio Controls */
+        .audio-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .control-btn.active {
+            background: var(--accent-orange);
+        }
+
+        /* Pattern Gallery */
+        .pattern-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .pattern-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 1rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pattern-btn:hover {
+            background: var(--accent-orange);
+        }
+
+        /* Inspiration Display */
+        .inspiration-display {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1rem 0;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            font-style: italic;
+            color: var(--accent-gold);
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .arts-container {
+                padding: 1rem;
+            }
+
+            .arts-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .featured-tool {
+                grid-column: 1;
+            }
+
+            .session-modal {
+                margin: 1rem;
+                height: calc(100vh - 2rem);
+            }
+
+            .sound-interface {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .canvas-tools {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .sacred-canvas {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+
+        @keyframes soundWave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(1.2); }
+        }
+
+        .sound-wave {
+            animation: soundWave 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="arts-container">
+        <button class="back-btn" onclick="window.parent.postMessage('back', '*')">
+            ← Back to Temple
+        </button>
+
+        <div class="arts-header">
+            <div class="card-icon">🎨</div>
+            <h1 class="arts-title">Sacred Arts & Sound</h1>
+        <!-- Divine Progress Widget -->
+        <div id="divine-progress-widget"></div>
+            <p class="arts-subtitle">Express your soul through divine creativity and healing vibrations</p>
+        </div>
+
+        <div class="sacred-arts-main-interface">
+            <!-- Creative Dashboard -->
+            <div class="creative-content">
+                <!-- Sacred Geometry Viewer -->
+                <div class="sacred-geometry-panel">
+                    <h3 class="panel-title">🔯 Sacred Geometry Viewer</h3>
+                    <div class="geometry-controls">
+                        <select id="geometry-selector" onchange="sacredArtsSystem.renderGeometry(this.value)">
+                            <option value="flower-of-life">Flower of Life</option>
+                            <option value="metatrons-cube">Metatron's Cube</option>
+                            <option value="sri-yantra">Sri Yantra</option>
+                            <option value="vesica-piscis">Vesica Piscis</option>
+                            <option value="golden-ratio">Golden Ratio Spiral</option>
+                            <option value="platonic-solids">Platonic Solids</option>
+                            <option value="tree-of-life">Tree of Life</option>
+                        </select>
+                        <div class="geometry-options">
+                            <button class="control-btn" onclick="sacredArtsSystem.animateGeometry()">Animate</button>
+                            <button class="control-btn" onclick="sacredArtsSystem.meditate()">Meditate</button>
+                            <button class="control-btn" onclick="sacredArtsSystem.saveGeometry()">Save</button>
+                        </div>
+                    </div>
+                    <div class="geometry-canvas-container">
+                        <canvas id="geometry-canvas" width="400" height="400"></canvas>
+                        <div class="geometry-info" id="geometry-info">
+                            <h4>Flower of Life</h4>
+                            <p>The fundamental pattern of creation, containing all geometric forms and representing the interconnectedness of all life.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mandala Creation Studio -->
+                <div class="mandala-creation-panel">
+                    <h3 class="panel-title">🌸 Mandala Creation Studio</h3>
+                    <div class="mandala-controls">
+                        <div class="tool-selector">
+                            <button class="tool-btn active" data-tool="brush" onclick="sacredArtsSystem.selectTool('brush')">🖌️ Brush</button>
+                            <button class="tool-btn" data-tool="symmetry" onclick="sacredArtsSystem.selectTool('symmetry')">⚡ Symmetry</button>
+                            <button class="tool-btn" data-tool="pattern" onclick="sacredArtsSystem.selectTool('pattern')">🌀 Pattern</button>
+                            <button class="tool-btn" data-tool="erase" onclick="sacredArtsSystem.selectTool('erase')">🧽 Erase</button>
+                        </div>
+                        <div class="mandala-options">
+                            <label>Symmetry: <input type="range" id="symmetry-slider" min="4" max="16" value="8" onchange="sacredArtsSystem.setSymmetry(this.value)"></label>
+                            <label>Size: <input type="range" id="brush-size" min="2" max="20" value="8" onchange="sacredArtsSystem.setBrushSize(this.value)"></label>
+                            <div class="color-palette">
+                                <div class="color-option" style="background: #ff6b9d" onclick="sacredArtsSystem.selectColor('#ff6b9d')"></div>
+                                <div class="color-option" style="background: #4ecdc4" onclick="sacredArtsSystem.selectColor('#4ecdc4')"></div>
+                                <div class="color-option" style="background: #d4af37" onclick="sacredArtsSystem.selectColor('#d4af37')"></div>
+                                <div class="color-option" style="background: #8b5fbf" onclick="sacredArtsSystem.selectColor('#8b5fbf')"></div>
+                                <div class="color-option" style="background: #66bb6a" onclick="sacredArtsSystem.selectColor('#66bb6a')"></div>
+                                <div class="color-option" style="background: #ff9800" onclick="sacredArtsSystem.selectColor('#ff9800')"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mandala-canvas-container">
+                        <canvas id="mandala-canvas" width="500" height="500"></canvas>
+                        <div class="mandala-actions">
+                            <button class="action-btn" onclick="sacredArtsSystem.clearMandala()">Clear</button>
+                            <button class="action-btn" onclick="sacredArtsSystem.saveMandala()">Save</button>
+                            <button class="action-btn" onclick="sacredArtsSystem.shareMandala()">Share</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Meditation Aids -->
+                <div class="visual-meditation-panel">
+                    <h3 class="panel-title">👁️ Visual Meditation Aids</h3>
+                    <div class="meditation-types">
+                        <div class="meditation-card" onclick="sacredArtsSystem.startVisualMeditation('breathe')">
+                            <div class="meditation-icon">🫁</div>
+                            <h4>Breathing Circle</h4>
+                            <p>Visual breathing guide with expanding circle</p>
+                        </div>
+                        <div class="meditation-card" onclick="sacredArtsSystem.startVisualMeditation('flame')">
+                            <div class="meditation-icon">🕯️</div>
+                            <h4>Candle Flame</h4>
+                            <p>Flickering flame for concentration</p>
+                        </div>
+                        <div class="meditation-card" onclick="sacredArtsSystem.startVisualMeditation('fractals')">
+                            <div class="meditation-icon">🌀</div>
+                            <h4>Sacred Fractals</h4>
+                            <p>Infinite geometric patterns</p>
+                        </div>
+                        <div class="meditation-card" onclick="sacredArtsSystem.startVisualMeditation('colors')">
+                            <div class="meditation-icon">🌈</div>
+                            <h4>Color Therapy</h4>
+                            <p>Healing color transitions</p>
+                        </div>
+                    </div>
+                    <div class="visual-meditation-area" id="visual-meditation-area">
+                        <canvas id="meditation-canvas" width="600" height="400"></canvas>
+                        <div class="meditation-controls" id="meditation-controls" style="display: none;">
+                            <button class="control-btn" onclick="sacredArtsSystem.pauseMeditation()">Pause</button>
+                            <button class="control-btn" onclick="sacredArtsSystem.stopMeditation()">Stop</button>
+                            <label>Speed: <input type="range" id="meditation-speed" min="1" max="10" value="5" onchange="sacredArtsSystem.setMeditationSpeed(this.value)"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sacred Arts Sidebar -->
+            <div class="sacred-arts-sidebar">
+                <h3 class="sidebar-title">🎨 Sacred Arts Tools</h3>
+                
+                <!-- Quick Tools -->
+                <div class="quick-arts-tools">
+                    <div class="tool-category">
+                        <h4>Sacred Music</h4>
+                        <button class="tool-btn" onclick="sacredArtsSystem.playAmbientMusic()">
+                            <span class="tool-icon">🎵</span>
+                            <span class="tool-label">Ambient Music</span>
+                        </button>
+                        <button class="tool-btn" onclick="sacredArtsSystem.playSingingBowls()">
+                            <span class="tool-icon">🔔</span>
+                            <span class="tool-label">Singing Bowls</span>
+                        </button>
+                        <button class="tool-btn" onclick="sacredArtsSystem.playNatureSounds()">
+                            <span class="tool-icon">🌲</span>
+                            <span class="tool-label">Nature Sounds</span>
+                        </button>
+                    </div>
+                    
+                    <div class="tool-category">
+                        <h4>Chanting Guides</h4>
+                        <button class="tool-btn" onclick="sacredArtsSystem.openMantraLibrary()">
+                            <span class="tool-icon">🕉️</span>
+                            <span class="tool-label">Mantra Library</span>
+                        </button>
+                        <button class="tool-btn" onclick="sacredArtsSystem.startChakraChants()">
+                            <span class="tool-icon">💎</span>
+                            <span class="tool-label">Chakra Chants</span>
+                        </button>
+                        <button class="tool-btn" onclick="sacredArtsSystem.guidedChanting()">
+                            <span class="tool-icon">🎤</span>
+                            <span class="tool-label">Guided Practice</span>
+                        </button>
+                    </div>
+                    
+                    <div class="tool-category">
+                        <h4>Creative Flow</h4>
+                        <button class="tool-btn" onclick="sacredArtsSystem.inspirationGenerator()">
+                            <span class="tool-icon">💡</span>
+                            <span class="tool-label">Inspiration</span>
+                        </button>
+                        <button class="tool-btn" onclick="sacredArtsSystem.colorTherapy()">
+                            <span class="tool-icon">🎨</span>
+                            <span class="tool-label">Color Therapy</span>
+                        </button>
+                        <button class="tool-btn" onclick="sacredArtsSystem.creativeMeditation()">
+                            <span class="tool-icon">✨</span>
+                            <span class="tool-label">Creative Flow</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sacred Arts Gallery -->
+                <div class="sacred-gallery">
+                    <h4>Your Sacred Gallery</h4>
+                    <div class="gallery-grid" id="sacred-gallery">
+                        <div class="gallery-item placeholder">
+                            <div class="gallery-icon">🖼️</div>
+                            <p>Create your first sacred art</p>
+                        </div>
+                    </div>
+                    <button class="gallery-btn" onclick="sacredArtsSystem.viewFullGallery()">View Full Gallery</button>
+                </div>
+
+                <!-- Creative Insights -->
+                <div class="creative-insights">
+                    <h4>Today's Creative Insight</h4>
+                    <div class="insight-card">
+                        <span class="insight-icon">🌟</span>
+                        <div class="insight-text">
+                            "Sacred geometry reflects the fundamental patterns of existence. When you create, you participate in the cosmic dance of creation."
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Creation Stats -->
+                <div class="creation-stats">
+                    <h4>Your Creative Journey</h4>
+                    <div class="stat-item">
+                        <span class="stat-label">Mandalas Created</span>
+                        <span class="stat-value" id="mandalas-created">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Meditation Time</span>
+                        <span class="stat-value" id="visual-meditation-time">0 min</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Chants Practiced</span>
+                        <span class="stat-value" id="chants-completed">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Sacred Art Views</span>
+                        <span class="stat-value trending-up" id="geometry-views">12 ↗</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Modal -->
+    <div id="session-modal" class="session-modal-overlay">
+        <div class="session-modal">
+            <div class="session-header">
+                <h2 class="session-title" id="session-title">Sacred Arts Session</h2>
+                <button class="session-close" onclick="closeSession()">×</button>
+            </div>
+            <div class="session-content" id="session-content">
+                <!-- Session content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Scripts -->
+    <script src="../js/performance.js" defer></script>
+    <script src="../js/image-optimizer.js" defer></script>
+
+    <script>
+        // Sacred Arts System - Comprehensive Creative Spiritual Platform
+        class SacredArtsSystem {
+            constructor() {
+                this.geometryData = this.initializeGeometryData();
+                this.mandalaTool = {
+                    symmetry: 8,
+                    brushSize: 8,
+                    currentColor: '#ff6b9d',
+                    isDrawing: false,
+                    tool: 'brush'
+                };
+                this.visualMeditation = {
+                    type: null,
+                    isActive: false,
+                    animationId: null,
+                    speed: 5
+                };
+                this.audioSystem = {
+                    context: null,
+                    oscillators: [],
+                    sources: []
+                };
+                this.creativeStats = this.loadCreativeStats();
+                this.sacredGallery = this.loadGallery();
+                this.init();
+            }
+
+            init() {
+                this.setupGeometryCanvas();
+                this.setupMandalaCanvas();
+                this.setupMeditationCanvas();
+                this.setupAudioContext();
+                this.updateStats();
+                this.loadDailyInsight();
+            }
+
+            // Sacred Geometry System
+            initializeGeometryData() {
+                return {
+                    'flower-of-life': {
+                        name: 'Flower of Life',
+                        description: 'The fundamental pattern of creation, containing all geometric forms and representing the interconnectedness of all life.',
+                        symbolism: 'Unity, Sacred Geometry, Divine Proportion',
+                        meditation: 'Focus on the center and allow your awareness to expand through each circle, feeling the connection to all life.'
+                    },
+                    'metatrons-cube': {
+                        name: "Metatron's Cube",
+                        description: 'Contains all five Platonic solids and represents the archangel Metatron\'s role as the scribe of God.',
+                        symbolism: 'Divine Protection, Sacred Knowledge, Geometric Perfection',
+                        meditation: 'Visualize yourself within the cube, protected and aligned with divine wisdom and cosmic order.'
+                    },
+                    'sri-yantra': {
+                        name: 'Sri Yantra',
+                        description: 'The most powerful yantra, representing the cosmic creation and the union of Shiva and Shakti.',
+                        symbolism: 'Cosmic Creation, Divine Union, Manifestation',
+                        meditation: 'Start from the outer square and move inward, focusing on each layer as a step toward divine realization.'
+                    },
+                    'vesica-piscis': {
+                        name: 'Vesica Piscis',
+                        description: 'The intersection of two circles, symbolizing the bridge between dimensions and divine birth.',
+                        symbolism: 'Divine Birth, Portal Between Worlds, Sacred Union',
+                        meditation: 'Focus on the intersection point as a doorway to higher consciousness and divine insight.'
+                    },
+                    'golden-ratio': {
+                        name: 'Golden Ratio Spiral',
+                        description: 'The divine proportion found throughout nature, representing perfect harmony and growth.',
+                        symbolism: 'Natural Harmony, Divine Proportion, Infinite Growth',
+                        meditation: 'Follow the spiral inward to your center, then outward to embrace infinite expansion.'
+                    },
+                    'platonic-solids': {
+                        name: 'Platonic Solids',
+                        description: 'The five perfect geometric forms representing the elements and cosmic structure.',
+                        symbolism: 'Elemental Balance, Cosmic Structure, Perfect Form',
+                        meditation: 'Visualize each solid within your energy field, balancing the elemental forces within.'
+                    },
+                    'tree-of-life': {
+                        name: 'Tree of Life',
+                        description: 'The Kabbalistic diagram representing the path of divine emanation and spiritual ascent.',
+                        symbolism: 'Spiritual Path, Divine Emanation, Cosmic Map',
+                        meditation: 'Journey through each sphere, ascending the tree toward divine union and understanding.'
+                    }
+                };
+            }
+
+            setupGeometryCanvas() {
+                const canvas = document.getElementById('geometry-canvas');
+                if (canvas) {
+                    this.geometryCanvas = canvas;
+                    this.geometryCtx = canvas.getContext('2d');
+                    this.renderGeometry('flower-of-life');
+                }
+            }
+
+            renderGeometry(type) {
+                const canvas = this.geometryCanvas;
+                const ctx = this.geometryCtx;
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const data = this.geometryData[type];
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Set styles
+                ctx.strokeStyle = '#ff9800';
+                ctx.lineWidth = 2;
+                ctx.fillStyle = 'rgba(255, 152, 0, 0.1)';
+                
+                switch(type) {
+                    case 'flower-of-life':
+                        this.drawFlowerOfLife(ctx, centerX, centerY);
+                        break;
+                    case 'metatrons-cube':
+                        this.drawMetatronsCube(ctx, centerX, centerY);
+                        break;
+                    case 'sri-yantra':
+                        this.drawSriYantra(ctx, centerX, centerY);
+                        break;
+                    case 'vesica-piscis':
+                        this.drawVesicaPiscis(ctx, centerX, centerY);
+                        break;
+                    case 'golden-ratio':
+                        this.drawGoldenSpiral(ctx, centerX, centerY);
+                        break;
+                    case 'platonic-solids':
+                        this.drawPlatonicSolids(ctx, centerX, centerY);
+                        break;
+                    case 'tree-of-life':
+                        this.drawTreeOfLife(ctx, centerX, centerY);
+                        break;
+                }
+                
+                // Update info
+                this.updateGeometryInfo(data);
+            }
+
+            drawFlowerOfLife(ctx, centerX, centerY) {
+                const radius = 60;
+                const circles = [
+                    {x: 0, y: 0},
+                    {x: radius, y: 0},
+                    {x: -radius, y: 0},
+                    {x: radius/2, y: radius * Math.sin(Math.PI/3)},
+                    {x: radius/2, y: -radius * Math.sin(Math.PI/3)},
+                    {x: -radius/2, y: radius * Math.sin(Math.PI/3)},
+                    {x: -radius/2, y: -radius * Math.sin(Math.PI/3)}
+                ];
+                
+                circles.forEach(circle => {
+                    ctx.beginPath();
+                    ctx.arc(centerX + circle.x, centerY + circle.y, radius, 0, 2 * Math.PI);
+                    ctx.stroke();
+                });
+            }
+
+            drawMetatronsCube(ctx, centerX, centerY) {
+                const radius = 80;
+                const vertices = [];
+                
+                // Create vertices for hexagon
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i * Math.PI) / 3;
+                    vertices.push({
+                        x: centerX + radius * Math.cos(angle),
+                        y: centerY + radius * Math.sin(angle)
+                    });
+                }
+                
+                // Add center vertex
+                vertices.push({x: centerX, y: centerY});
+                
+                // Draw all connections
+                for (let i = 0; i < vertices.length; i++) {
+                    for (let j = i + 1; j < vertices.length; j++) {
+                        ctx.beginPath();
+                        ctx.moveTo(vertices[i].x, vertices[i].y);
+                        ctx.lineTo(vertices[j].x, vertices[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            drawSriYantra(ctx, centerX, centerY) {
+                const size = 100;
+                
+                // Draw triangles pointing up
+                for (let i = 0; i < 4; i++) {
+                    const scale = 1 - (i * 0.2);
+                    const height = size * scale * Math.sin(Math.PI/3);
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY - height/2);
+                    ctx.lineTo(centerX - size * scale/2, centerY + height/2);
+                    ctx.lineTo(centerX + size * scale/2, centerY + height/2);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+                
+                // Draw triangles pointing down
+                for (let i = 0; i < 5; i++) {
+                    const scale = 1 - (i * 0.15);
+                    const height = size * scale * Math.sin(Math.PI/3);
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY + height/2);
+                    ctx.lineTo(centerX - size * scale/2, centerY - height/2);
+                    ctx.lineTo(centerX + size * scale/2, centerY - height/2);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+            }
+
+            drawVesicaPiscis(ctx, centerX, centerY) {
+                const radius = 100;
+                const offset = radius * 0.6;
+                
+                ctx.beginPath();
+                ctx.arc(centerX - offset, centerY, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.arc(centerX + offset, centerY, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Highlight intersection
+                ctx.fillStyle = 'rgba(255, 152, 0, 0.3)';
+                const intersectionPoints = this.calculateCircleIntersection(
+                    centerX - offset, centerY, radius,
+                    centerX + offset, centerY, radius
+                );
+                if (intersectionPoints.length === 2) {
+                    ctx.beginPath();
+                    ctx.arc(centerX - offset, centerY, radius, 
+                        Math.atan2(intersectionPoints[0].y - centerY, intersectionPoints[0].x - (centerX - offset)),
+                        Math.atan2(intersectionPoints[1].y - centerY, intersectionPoints[1].x - (centerX - offset))
+                    );
+                    ctx.arc(centerX + offset, centerY, radius,
+                        Math.atan2(intersectionPoints[1].y - centerY, intersectionPoints[1].x - (centerX + offset)),
+                        Math.atan2(intersectionPoints[0].y - centerY, intersectionPoints[0].x - (centerX + offset))
+                    );
+                    ctx.fill();
+                }
+            }
+
+            calculateCircleIntersection(x1, y1, r1, x2, y2, r2) {
+                const d = Math.sqrt((x2-x1)**2 + (y2-y1)**2);
+                if (d > r1 + r2 || d < Math.abs(r1-r2) || d === 0) return [];
+                
+                const a = (r1**2 - r2**2 + d**2) / (2*d);
+                const h = Math.sqrt(r1**2 - a**2);
+                
+                const px = x1 + a * (x2-x1) / d;
+                const py = y1 + a * (y2-y1) / d;
+                
+                return [
+                    {x: px + h * (y2-y1) / d, y: py - h * (x2-x1) / d},
+                    {x: px - h * (y2-y1) / d, y: py + h * (x2-x1) / d}
+                ];
+            }
+
+            drawGoldenSpiral(ctx, centerX, centerY) {
+                const phi = (1 + Math.sqrt(5)) / 2;
+                let size = 5;
+                let x = centerX;
+                let y = centerY;
+                let angle = 0;
+                
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                
+                for (let i = 0; i < 50; i++) {
+                    const nextSize = size * phi;
+                    const nextX = x + Math.cos(angle) * size;
+                    const nextY = y + Math.sin(angle) * size;
+                    
+                    ctx.quadraticCurveTo(
+                        x + Math.cos(angle + Math.PI/2) * size/2,
+                        y + Math.sin(angle + Math.PI/2) * size/2,
+                        nextX, nextY
+                    );
+                    
+                    x = nextX;
+                    y = nextY;
+                    size = nextSize * 0.1;
+                    angle += Math.PI/2;
+                    
+                    if (size > 200) break;
+                }
+                
+                ctx.stroke();
+            }
+
+            drawPlatonicSolids(ctx, centerX, centerY) {
+                // Draw tetrahedron (simplified 2D representation)
+                const size = 40;
+                const spacing = 120;
+                
+                // Tetrahedron
+                ctx.beginPath();
+                ctx.moveTo(centerX - spacing, centerY - size);
+                ctx.lineTo(centerX - spacing - size, centerY + size);
+                ctx.lineTo(centerX - spacing + size, centerY + size);
+                ctx.closePath();
+                ctx.stroke();
+                
+                // Cube
+                ctx.strokeRect(centerX - size/2, centerY - size, size, size);
+                
+                // Octahedron
+                ctx.beginPath();
+                ctx.moveTo(centerX + spacing, centerY);
+                ctx.lineTo(centerX + spacing - size, centerY - size);
+                ctx.lineTo(centerX + spacing, centerY - size*2);
+                ctx.lineTo(centerX + spacing + size, centerY - size);
+                ctx.closePath();
+                ctx.stroke();
+            }
+
+            drawTreeOfLife(ctx, centerX, centerY) {
+                const sephirot = [
+                    {x: 0, y: -120, name: 'Kether'},
+                    {x: -60, y: -60, name: 'Binah'},
+                    {x: 60, y: -60, name: 'Chokmah'},
+                    {x: -60, y: 0, name: 'Geburah'},
+                    {x: 60, y: 0, name: 'Chesed'},
+                    {x: 0, y: 0, name: 'Tiphereth'},
+                    {x: -60, y: 60, name: 'Hod'},
+                    {x: 60, y: 60, name: 'Netzach'},
+                    {x: 0, y: 80, name: 'Yesod'},
+                    {x: 0, y: 140, name: 'Malkuth'}
+                ];
+                
+                // Draw paths
+                const paths = [
+                    [0,1], [0,2], [1,2], [1,3], [2,4], [3,4], [3,5], [4,5],
+                    [1,5], [2,5], [3,6], [4,7], [5,6], [5,7], [6,7], [6,8],
+                    [7,8], [5,8], [8,9]
+                ];
+                
+                paths.forEach(path => {
+                    const start = sephirot[path[0]];
+                    const end = sephirot[path[1]];
+                    ctx.beginPath();
+                    ctx.moveTo(centerX + start.x, centerY + start.y);
+                    ctx.lineTo(centerX + end.x, centerY + end.y);
+                    ctx.stroke();
+                });
+                
+                // Draw sephirot
+                sephirot.forEach(seph => {
+                    ctx.beginPath();
+                    ctx.arc(centerX + seph.x, centerY + seph.y, 15, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.stroke();
+                });
+            }
+
+            updateGeometryInfo(data) {
+                const infoDiv = document.getElementById('geometry-info');
+                if (infoDiv) {
+                    infoDiv.innerHTML = `
+                        <h4>${data.name}</h4>
+                        <p><strong>Meaning:</strong> ${data.description}</p>
+                        <p><strong>Symbolism:</strong> ${data.symbolism}</p>
+                        <p><strong>Meditation:</strong> ${data.meditation}</p>
+                    `;
+                }
+            }
+
+            animateGeometry() {
+                const canvas = this.geometryCanvas;
+                if (canvas) {
+                    canvas.classList.add('animated-geometry');
+                    setTimeout(() => canvas.classList.remove('animated-geometry'), 20000);
+                }
+            }
+
+            meditate() {
+                // Start a meditation timer and update stats
+                this.creativeStats.visualMeditationTime += 10;
+                this.saveStats();
+                this.updateStats();
+                
+                // Add visual feedback
+                const canvas = this.geometryCanvas;
+                canvas.classList.add('pulsing');
+                setTimeout(() => canvas.classList.remove('pulsing'), 10000);
+                
+                // Show meditation guidance
+                this.showMeditationGuidance();
+            }
+
+            saveGeometry() {
+                const canvas = this.geometryCanvas;
+                const dataURL = canvas.toDataURL();
+                this.addToGallery({
+                    type: 'geometry',
+                    data: dataURL,
+                    timestamp: new Date().toISOString()
+                });
+
+                // 🎯 AWARD XP FOR SACRED GEOMETRY CREATION
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(30, 'Sacred geometry created', 'sacred-arts-sound');
+                    window.progressSystem.logActivity('geometry_creation', 'sacred-arts-sound', {
+                        type: 'sacred_geometry'
+                    });
+                }
+
+                // Visual feedback
+                this.showNotification('Sacred geometry saved to gallery! ✨');
+            }
+
+            // Mandala Creation System
+            setupMandalaCanvas() {
+                const canvas = document.getElementById('mandala-canvas');
+                if (canvas) {
+                    this.mandalaCanvas = canvas;
+                    this.mandalaCtx = canvas.getContext('2d');
+                    this.setupMandalaEvents();
+                }
+            }
+
+            setupMandalaEvents() {
+                const canvas = this.mandalaCanvas;
+                
+                canvas.addEventListener('mousedown', (e) => this.startMandalaDrawing(e));
+                canvas.addEventListener('mousemove', (e) => this.drawMandala(e));
+                canvas.addEventListener('mouseup', () => this.stopMandalaDrawing());
+                canvas.addEventListener('mouseout', () => this.stopMandalaDrawing());
+                
+                // Touch events for mobile
+                canvas.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.startMandalaDrawing(e.touches[0]);
+                });
+                canvas.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    this.drawMandala(e.touches[0]);
+                });
+                canvas.addEventListener('touchend', () => this.stopMandalaDrawing());
+            }
+
+            startMandalaDrawing(e) {
+                this.mandalaTool.isDrawing = true;
+                const rect = this.mandalaCanvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                this.drawSymmetricalPoint(x, y);
+            }
+
+            drawMandala(e) {
+                if (!this.mandalaTool.isDrawing) return;
+                
+                const rect = this.mandalaCanvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                this.drawSymmetricalPoint(x, y);
+            }
+
+            stopMandalaDrawing() {
+                this.mandalaTool.isDrawing = false;
+            }
+
+            drawSymmetricalPoint(x, y) {
+                const ctx = this.mandalaCtx;
+                const centerX = this.mandalaCanvas.width / 2;
+                const centerY = this.mandalaCanvas.height / 2;
+                const symmetry = this.mandalaTool.symmetry;
+                
+                ctx.fillStyle = this.mandalaTool.currentColor;
+                ctx.strokeStyle = this.mandalaTool.currentColor;
+                ctx.lineWidth = this.mandalaTool.brushSize;
+                
+                for (let i = 0; i < symmetry; i++) {
+                    const angle = (2 * Math.PI * i) / symmetry;
+                    const cos = Math.cos(angle);
+                    const sin = Math.sin(angle);
+                    
+                    // Transform coordinates relative to center
+                    const relX = x - centerX;
+                    const relY = y - centerY;
+                    
+                    // Rotate point
+                    const rotX = relX * cos - relY * sin + centerX;
+                    const rotY = relX * sin + relY * cos + centerY;
+                    
+                    // Draw point
+                    ctx.beginPath();
+                    ctx.arc(rotX, rotY, this.mandalaTool.brushSize / 2, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+            }
+
+            selectTool(tool) {
+                this.mandalaTool.tool = tool;
+                
+                // Update UI
+                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`[data-tool="${tool}"]`).classList.add('active');
+            }
+
+            setSymmetry(value) {
+                this.mandalaTool.symmetry = parseInt(value);
+            }
+
+            setBrushSize(value) {
+                this.mandalaTool.brushSize = parseInt(value);
+            }
+
+            selectColor(color) {
+                this.mandalaTool.currentColor = color;
+            }
+
+            clearMandala() {
+                this.mandalaCtx.clearRect(0, 0, this.mandalaCanvas.width, this.mandalaCanvas.height);
+            }
+
+            saveMandala() {
+                const dataURL = this.mandalaCanvas.toDataURL();
+                this.addToGallery({
+                    type: 'mandala',
+                    data: dataURL,
+                    timestamp: new Date().toISOString()
+                });
+
+                this.creativeStats.mandalasCreated++;
+                this.saveStats();
+                this.updateStats();
+
+                // 🎯 AWARD XP FOR MANDALA CREATION
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(35, 'Mandala artwork created', 'sacred-arts-sound');
+                    window.progressSystem.logActivity('mandala_creation', 'sacred-arts-sound', {
+                        symmetry: this.mandalaTool.symmetry
+                    });
+                }
+
+                this.showNotification('Mandala saved to sacred gallery! 🌸');
+            }
+
+            shareMandala() {
+                // Implementation for sharing mandala
+                this.showNotification('Mandala shared with the divine community! ✨');
+            }
+
+            // Visual Meditation System
+            setupMeditationCanvas() {
+                const canvas = document.getElementById('meditation-canvas');
+                if (canvas) {
+                    this.meditationCanvas = canvas;
+                    this.meditationCtx = canvas.getContext('2d');
+                }
+            }
+
+            startVisualMeditation(type) {
+                this.visualMeditation.type = type;
+                this.visualMeditation.isActive = true;
+                
+                // Show controls
+                document.getElementById('meditation-controls').style.display = 'flex';
+                
+                // Start animation
+                this.animateVisualMeditation();
+                
+                // Update stats
+                this.creativeStats.visualMeditationTime += 1;
+                this.saveStats();
+            }
+
+            animateVisualMeditation() {
+                if (!this.visualMeditation.isActive) return;
+                
+                const ctx = this.meditationCtx;
+                const canvas = this.meditationCanvas;
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const time = Date.now() * 0.001 * this.visualMeditation.speed;
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                switch(this.visualMeditation.type) {
+                    case 'breathe':
+                        this.drawBreathingCircle(ctx, centerX, centerY, time);
+                        break;
+                    case 'flame':
+                        this.drawCandleFlame(ctx, centerX, centerY, time);
+                        break;
+                    case 'fractals':
+                        this.drawFractals(ctx, centerX, centerY, time);
+                        break;
+                    case 'colors':
+                        this.drawColorTherapy(ctx, centerX, centerY, time);
+                        break;
+                }
+                
+                this.visualMeditation.animationId = requestAnimationFrame(() => this.animateVisualMeditation());
+            }
+
+            drawBreathingCircle(ctx, centerX, centerY, time) {
+                const breathCycle = Math.sin(time * 0.5) * 0.5 + 0.5;
+                const radius = 50 + breathCycle * 100;
+                
+                const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+                gradient.addColorStop(0, `rgba(0, 229, 255, ${0.8 - breathCycle * 0.4})`);
+                gradient.addColorStop(1, `rgba(0, 229, 255, 0)`);
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Breathing guidance text
+                ctx.fillStyle = 'white';
+                ctx.font = '24px Inter';
+                ctx.textAlign = 'center';
+                const phase = breathCycle > 0.5 ? 'Exhale' : 'Inhale';
+                ctx.fillText(phase, centerX, centerY + 200);
+            }
+
+            drawCandleFlame(ctx, centerX, centerY, time) {
+                // Flame body
+                const flameHeight = 80 + Math.sin(time * 3) * 10;
+                const flameWidth = 30 + Math.sin(time * 2) * 5;
+                
+                const gradient = ctx.createLinearGradient(centerX, centerY + 50, centerX, centerY - flameHeight);
+                gradient.addColorStop(0, '#ff6b00');
+                gradient.addColorStop(0.5, '#ff9800');
+                gradient.addColorStop(1, '#ffeb3b');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.ellipse(centerX, centerY, flameWidth, flameHeight, 0, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Candle
+                ctx.fillStyle = '#8d6e63';
+                ctx.fillRect(centerX - 15, centerY, 30, 100);
+                
+                // Wax drips
+                ctx.fillStyle = '#ffffff';
+                for (let i = 0; i < 3; i++) {
+                    const x = centerX + (i - 1) * 20;
+                    const drip = Math.sin(time + i) * 10;
+                    ctx.fillRect(x, centerY + 50 + drip, 3, 20);
+                }
+            }
+
+            drawFractals(ctx, centerX, centerY, time) {
+                ctx.strokeStyle = `hsl(${time * 50 % 360}, 70%, 60%)`;
+                ctx.lineWidth = 2;
+                
+                this.drawFractalBranch(ctx, centerX, centerY, 100, 0, 8, time);
+            }
+
+            drawFractalBranch(ctx, x, y, length, angle, depth, time) {
+                if (depth === 0) return;
+                
+                const endX = x + Math.cos(angle) * length;
+                const endY = y + Math.sin(angle) * length;
+                
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(endX, endY);
+                ctx.stroke();
+                
+                const newLength = length * 0.7;
+                const angleChange = Math.PI / 4 + Math.sin(time + depth) * 0.2;
+                
+                this.drawFractalBranch(ctx, endX, endY, newLength, angle + angleChange, depth - 1, time);
+                this.drawFractalBranch(ctx, endX, endY, newLength, angle - angleChange, depth - 1, time);
+            }
+
+            drawColorTherapy(ctx, centerX, centerY, time) {
+                const colors = ['#ff0000', '#ff8000', '#ffff00', '#00ff00', '#0080ff', '#8000ff', '#ff00ff'];
+                
+                for (let i = 0; i < colors.length; i++) {
+                    const angle = (i / colors.length) * 2 * Math.PI + time;
+                    const radius = 100 + Math.sin(time + i) * 30;
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    
+                    const gradient = ctx.createRadialGradient(x, y, 0, x, y, 50);
+                    gradient.addColorStop(0, colors[i]);
+                    gradient.addColorStop(1, 'transparent');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 50, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+            }
+
+            pauseMeditation() {
+                this.visualMeditation.isActive = !this.visualMeditation.isActive;
+                if (this.visualMeditation.isActive) {
+                    this.animateVisualMeditation();
+                } else {
+                    cancelAnimationFrame(this.visualMeditation.animationId);
+                }
+            }
+
+            stopMeditation() {
+                this.visualMeditation.isActive = false;
+                cancelAnimationFrame(this.visualMeditation.animationId);
+                document.getElementById('meditation-controls').style.display = 'none';
+                this.meditationCtx.clearRect(0, 0, this.meditationCanvas.width, this.meditationCanvas.height);
+
+                // 🎯 AWARD XP FOR VISUAL MEDITATION
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(25, 'Visual meditation session completed', 'sacred-arts-sound');
+                    window.progressSystem.logActivity('visual_meditation', 'sacred-arts-sound', {
+                        type: this.visualMeditation.type
+                    });
+                }
+
+                this.showNotification('Visual meditation session complete! 🧘✨');
+            }
+
+            setMeditationSpeed(value) {
+                this.visualMeditation.speed = parseInt(value);
+            }
+
+            // Audio System
+            setupAudioContext() {
+                if (typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined') {
+                    this.audioSystem.context = new (AudioContext || webkitAudioContext)();
+                }
+            }
+
+            playAmbientMusic() {
+                if (!this.audioSystem.context) return;
+                
+                // Create ambient drone
+                const oscillator = this.audioSystem.context.createOscillator();
+                const gainNode = this.audioSystem.context.createGain();
+                
+                oscillator.frequency.setValueAtTime(136.1, this.audioSystem.context.currentTime); // Om frequency
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0, this.audioSystem.context.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.1, this.audioSystem.context.currentTime + 2);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioSystem.context.destination);
+                
+                oscillator.start();
+                
+                // Store reference for cleanup
+                this.audioSystem.oscillators.push(oscillator);
+
+                // 🎯 AWARD XP FOR SOUND HEALING
+                if (window.progressSystem) {
+                    window.progressSystem.awardXP(20, 'Sound healing session started', 'sacred-arts-sound');
+                    window.progressSystem.logActivity('sound_healing', 'sacred-arts-sound', {
+                        type: 'ambient_music'
+                    });
+                }
+
+                this.showNotification('Ambient sacred music started 🎵');
+            }
+
+            playSingingBowls() {
+                if (!this.audioSystem.context) return;
+                
+                const frequencies = [396, 417, 528, 639, 741, 852, 963]; // Solfeggio frequencies
+                
+                frequencies.forEach((freq, index) => {
+                    setTimeout(() => {
+                        const oscillator = this.audioSystem.context.createOscillator();
+                        const gainNode = this.audioSystem.context.createGain();
+                        
+                        oscillator.frequency.setValueAtTime(freq, this.audioSystem.context.currentTime);
+                        oscillator.type = 'sine';
+                        
+                        gainNode.gain.setValueAtTime(0, this.audioSystem.context.currentTime);
+                        gainNode.gain.linearRampToValueAtTime(0.3, this.audioSystem.context.currentTime + 1);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioSystem.context.currentTime + 5);
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(this.audioSystem.context.destination);
+                        
+                        oscillator.start();
+                        oscillator.stop(this.audioSystem.context.currentTime + 5);
+                        
+                        this.audioSystem.oscillators.push(oscillator);
+                    }, index * 2000);
+                });
+                
+                this.showNotification('Singing bowls meditation started 🔔');
+            }
+
+            playNatureSounds() {
+                // Simulate nature sounds with oscillators
+                if (!this.audioSystem.context) return;
+                
+                // Wind sound
+                const windNoise = this.audioSystem.context.createOscillator();
+                const windGain = this.audioSystem.context.createGain();
+                const windFilter = this.audioSystem.context.createBiquadFilter();
+                
+                windNoise.type = 'sawtooth';
+                windNoise.frequency.setValueAtTime(100, this.audioSystem.context.currentTime);
+                windFilter.type = 'lowpass';
+                windFilter.frequency.setValueAtTime(500, this.audioSystem.context.currentTime);
+                windGain.gain.setValueAtTime(0.05, this.audioSystem.context.currentTime);
+                
+                windNoise.connect(windFilter);
+                windFilter.connect(windGain);
+                windGain.connect(this.audioSystem.context.destination);
+                
+                windNoise.start();
+                this.audioSystem.oscillators.push(windNoise);
+                
+                this.showNotification('Nature sounds meditation started 🌲');
+            }
+
+            // Quick Tools
+            openMantraLibrary() {
+                this.showMantraModal();
+            }
+
+            startChakraChants() {
+                const chakraFrequencies = [396, 417, 528, 639, 741, 852, 963];
+                let currentChakra = 0;
+                
+                const playChakraFreq = () => {
+                    if (currentChakra >= chakraFrequencies.length) return;
+                    
+                    if (this.audioSystem.context) {
+                        const oscillator = this.audioSystem.context.createOscillator();
+                        const gainNode = this.audioSystem.context.createGain();
+                        
+                        oscillator.frequency.setValueAtTime(chakraFrequencies[currentChakra], this.audioSystem.context.currentTime);
+                        oscillator.type = 'sine';
+                        
+                        gainNode.gain.setValueAtTime(0, this.audioSystem.context.currentTime);
+                        gainNode.gain.linearRampToValueAtTime(0.2, this.audioSystem.context.currentTime + 2);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioSystem.context.currentTime + 10);
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(this.audioSystem.context.destination);
+                        
+                        oscillator.start();
+                        oscillator.stop(this.audioSystem.context.currentTime + 10);
+                        
+                        this.audioSystem.oscillators.push(oscillator);
+                    }
+                    
+                    currentChakra++;
+                    setTimeout(playChakraFreq, 12000);
+                };
+                
+                playChakraFreq();
+                this.creativeStats.chantsCompleted++;
+                this.saveStats();
+                this.updateStats();
+                
+                this.showNotification('Chakra chanting sequence started 💎');
+            }
+
+            guidedChanting() {
+                this.showNotification('Guided chanting practice activated 🎤');
+            }
+
+            inspirationGenerator() {
+                const inspirations = [
+                    "Sacred geometry reflects the divine order in your creative expression",
+                    "Every stroke of your brush carries the essence of divine love",
+                    "Create from the heart space where infinite wisdom flows",
+                    "Your art is a prayer, your creativity a sacred offering",
+                    "Draw the patterns that exist in the quantum field of possibility",
+                    "Let your hands be instruments of divine creativity",
+                    "Sacred symbols carry the power to transform consciousness",
+                    "Art is the bridge between the seen and unseen realms"
+                ];
+                
+                const inspiration = inspirations[Math.floor(Math.random() * inspirations.length)];
+                this.showInspirationModal(inspiration);
+            }
+
+            colorTherapy() {
+                const colorMeanings = {
+                    red: "Grounding, vitality, root chakra energy",
+                    orange: "Creativity, passion, sacral chakra flow", 
+                    yellow: "Personal power, solar plexus activation",
+                    green: "Heart healing, love, emotional balance",
+                    blue: "Communication, throat chakra expression",
+                    indigo: "Intuition, third eye awakening",
+                    violet: "Spiritual connection, crown chakra opening"
+                };
+                
+                this.showColorTherapyModal(colorMeanings);
+            }
+
+            creativeMeditation() {
+                this.startVisualMeditation('colors');
+            }
+
+            // Gallery and Stats
+            addToGallery(item) {
+                this.sacredGallery.push(item);
+                this.saveGallery();
+                this.updateGalleryDisplay();
+            }
+
+            updateGalleryDisplay() {
+                const gallery = document.getElementById('sacred-gallery');
+                if (gallery && this.sacredGallery.length > 0) {
+                    const recent = this.sacredGallery.slice(-4);
+                    gallery.innerHTML = recent.map(item => `
+                        <div class="gallery-item" onclick="sacredArtsSystem.viewGalleryItem('${item.timestamp}')">
+                            <img src="${item.data}" alt="${item.type}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">
+                        </div>
+                    `).join('');
+                }
+            }
+
+            viewFullGallery() {
+                this.showGalleryModal();
+            }
+
+            loadCreativeStats() {
+                const saved = localStorage.getItem('divineTemple_creativeStats');
+                return saved ? JSON.parse(saved) : {
+                    mandalasCreated: 0,
+                    visualMeditationTime: 0,
+                    chantsCompleted: 0,
+                    geometryViews: 12
+                };
+            }
+
+            saveStats() {
+                localStorage.setItem('divineTemple_creativeStats', JSON.stringify(this.creativeStats));
+            }
+
+            updateStats() {
+                const statElements = {
+                    'mandalas-created': this.creativeStats.mandalasCreated,
+                    'visual-meditation-time': Math.round(this.creativeStats.visualMeditationTime) + ' min',
+                    'chants-completed': this.creativeStats.chantsCompleted,
+                    'geometry-views': this.creativeStats.geometryViews
+                };
+                
+                Object.entries(statElements).forEach(([id, value]) => {
+                    const element = document.getElementById(id);
+                    if (element) element.textContent = value;
+                });
+            }
+
+            loadGallery() {
+                const saved = localStorage.getItem('divineTemple_sacredGallery');
+                return saved ? JSON.parse(saved) : [];
+            }
+
+            saveGallery() {
+                localStorage.setItem('divineTemple_sacredGallery', JSON.stringify(this.sacredGallery));
+            }
+
+            loadDailyInsight() {
+                const insights = [
+                    "Sacred geometry reflects the fundamental patterns of existence. When you create, you participate in the cosmic dance of creation.",
+                    "Every mandala you create is a mirror of your soul's journey toward wholeness and divine unity.",
+                    "Color carries frequency and vibration. Choose colors that resonate with your current spiritual needs.",
+                    "Visual meditation opens the third eye and connects you to higher dimensional awareness.",
+                    "Sacred art is a form of prayer that transcends words and speaks directly to the divine.",
+                    "The act of creation aligns you with the creative force of the universe itself.",
+                    "Symmetry in art reflects the perfect balance inherent in cosmic law and divine order."
+                ];
+                
+                const todayInsight = insights[new Date().getDay()];
+                const insightCard = document.querySelector('.insight-text');
+                if (insightCard) {
+                    insightCard.textContent = todayInsight;
+                }
+            }
+
+            // Utility functions
+            showNotification(message) {
+                // Create temporary notification
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #d4af37, #ff9800);
+                    color: white;
+                    padding: 1rem 2rem;
+                    border-radius: 15px;
+                    z-index: 10000;
+                    animation: slideIn 0.5s ease;
+                `;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 3000);
+            }
+
+            showMeditationGuidance() {
+                const guidance = `
+                    Focus on the sacred geometry before you.
+                    Breathe deeply and allow your consciousness to expand.
+                    Feel the divine patterns awakening within your being.
+                    You are connected to the infinite creative source.
+                `;
+                
+                this.showNotification(guidance);
+            }
+
+            showMantraModal() {
+                // Implementation for mantra library modal
+                this.showNotification('Mantra library opened 🕉️');
+            }
+
+            showInspirationModal(inspiration) {
+                this.showNotification(`✨ ${inspiration}`);
+            }
+
+            showColorTherapyModal(colors) {
+                this.showNotification('🎨 Color therapy guidance activated');
+            }
+
+            showGalleryModal() {
+                this.showNotification('🖼️ Sacred gallery opened');
+            }
+        }
+
+        // Initialize Sacred Arts System
+        let sacredArtsSystem;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            sacredArtsSystem = new SacredArtsSystem();
+        });
+
+        // Legacy compatibility functions
+        function openMysticArts() {
+            if (sacredArtsSystem) sacredArtsSystem.showNotification('🖌️ Mystic Arts Studio activated');
+        }
+
+        function openSacredSound() {
+            if (sacredArtsSystem) sacredArtsSystem.playSingingBowls();
+        }
+
+        function openMantraChanting() {
+            if (sacredArtsSystem) sacredArtsSystem.startChakraChants();
+        }
+
+        function openSoundBath() {
+            if (sacredArtsSystem) sacredArtsSystem.playNatureSounds();
+        }
+
+        function openMusicMeditation() {
+            if (sacredArtsSystem) sacredArtsSystem.playAmbientMusic();
+        }
+
+        function openCreativeExpression() {
+            if (sacredArtsSystem) sacredArtsSystem.inspirationGenerator();
+        }
+    </script>
+
+        function openSacredSound() {
+            showSessionModal('Sacred Sound Healing');
+            loadSacredSoundContent();
+        }
+
+        function openMantraChanting() {
+            showSessionModal('Mantra & Chanting');
+            loadMantraContent();
+        }
+
+        function openSoundBath() {
+            showSessionModal('Sound Bath Journey');
+            loadSoundBathContent();
+            initializeSoundWaveVisualization();
+        }
+
+        function initializeSoundWaveVisualization() {
+            const modalContent = document.querySelector('.session-content');
+            
+            // Add sound wave visualization
+            const soundContainer = document.createElement('div');
+            soundContainer.className = 'sound-bath-visualization';
+            soundContainer.innerHTML = `
+                <div class="sound-wave-container">
+                    <div class="sound-wave-display">
+                        ${Array.from({length: 20}, (_, i) => 
+                            `<div class="sound-bar sound-bar-${i + 1}"></div>`
+                        ).join('')}
+                    </div>
+                    <div class="frequency-rings">
+                        <div class="frequency-ring ring-1"></div>
+                        <div class="frequency-ring ring-2"></div>
+                        <div class="frequency-ring ring-3"></div>
+                        <div class="frequency-ring ring-4"></div>
+                    </div>
+                </div>
+                <div class="sound-controls">
+                    <button class="sound-btn" onclick="startSoundBath()">Start Sound Bath</button>
+                    <button class="frequency-btn" onclick="changeFrequency('432hz')">432 Hz</button>
+                    <button class="frequency-btn" onclick="changeFrequency('528hz')">528 Hz</button>
+                    <button class="frequency-btn" onclick="changeFrequency('741hz')">741 Hz</button>
+                </div>
+                <div class="sound-info">
+                    <p class="current-frequency">Select a healing frequency to begin</p>
+                </div>
+            `;
+            
+            modalContent.insertBefore(soundContainer, modalContent.firstChild);
+        }
+
+        let soundBathActive = false;
+        let currentFrequency = null;
+
+        function startSoundBath() {
+            soundBathActive = !soundBathActive;
+            const btn = document.querySelector('.sound-btn');
+            const soundBars = document.querySelectorAll('.sound-bar');
+            const rings = document.querySelectorAll('.frequency-ring');
+            
+            if (soundBathActive) {
+                btn.textContent = 'Stop Sound Bath';
+                btn.style.background = 'linear-gradient(45deg, #ff9800, #f44336)';
+                
+                // Activate sound visualization
+                soundBars.forEach((bar, index) => {
+                    bar.style.animationDelay = `${index * 0.1}s`;
+                    bar.classList.add('sound-active');
+                });
+                
+                rings.forEach((ring, index) => {
+                    ring.style.animationDelay = `${index * 0.3}s`;
+                    ring.classList.add('ring-active');
+                });
+                
+                document.querySelector('.current-frequency').textContent = 
+                    `Sound bath active ${currentFrequency ? `at ${currentFrequency.toUpperCase()}` : ''}`;
+            } else {
+                btn.textContent = 'Start Sound Bath';
+                btn.style.background = 'linear-gradient(45deg, var(--accent-orange), var(--accent-cyan))';
+                
+                soundBars.forEach(bar => bar.classList.remove('sound-active'));
+                rings.forEach(ring => ring.classList.remove('ring-active'));
+                
+                document.querySelector('.current-frequency').textContent = 
+                    `Sound bath stopped ${currentFrequency ? `- ${currentFrequency.toUpperCase()} ready` : ''}`;
+            }
+        }
+
+        function changeFrequency(frequency) {
+            currentFrequency = frequency;
+            const info = document.querySelector('.current-frequency');
+            
+            // Update frequency display
+            info.textContent = `Frequency set to ${frequency.toUpperCase()} - ${getFrequencyInfo(frequency)}`;
+            
+            // Update visualization colors based on frequency
+            const container = document.querySelector('.sound-bath-visualization');
+            container.className = `sound-bath-visualization frequency-${frequency}`;
+            
+            // Reset frequency buttons
+            document.querySelectorAll('.frequency-btn').forEach(btn => {
+                btn.classList.remove('active-frequency');
+            });
+            
+            // Activate selected frequency button
+            event.target.classList.add('active-frequency');
+        }
+
+        function getFrequencyInfo(frequency) {
+            const frequencies = {
+                '432hz': 'Natural harmonic resonance',
+                '528hz': 'Love frequency, DNA repair',
+                '741hz': 'Consciousness expansion'
+            };
+            return frequencies[frequency] || 'Healing vibration';
+        }
+
+        function openMusicMeditation() {
+            showSessionModal('Music Meditation');
+            loadMusicMeditationContent();
+        }
+
+        function openCreativeExpression() {
+            showSessionModal('Creative Expression');
+            loadCreativeExpressionContent();
+            initializeSacredGeometry();
+        }
+
+        function initializeSacredGeometry() {
+            const modalContent = document.querySelector('.session-content');
+            
+            // Add sacred geometry creation interface
+            const geometryContainer = document.createElement('div');
+            geometryContainer.className = 'sacred-geometry-studio';
+            geometryContainer.innerHTML = `
+                <div class="geometry-canvas-container">
+                    <canvas id="sacred-canvas" class="sacred-canvas" width="600" height="400"></canvas>
+                    <div class="geometry-overlay">
+                        <div class="sacred-pattern flower-of-life" onclick="drawPattern('flower-of-life')">
+                            <div class="pattern-preview">🌸</div>
+                            <span>Flower of Life</span>
+                        </div>
+                        <div class="sacred-pattern merkaba" onclick="drawPattern('merkaba')">
+                            <div class="pattern-preview">🔯</div>
+                            <span>Merkaba</span>
+                        </div>
+                        <div class="sacred-pattern sri-yantra" onclick="drawPattern('sri-yantra')">
+                            <div class="pattern-preview">🕎</div>
+                            <span>Sri Yantra</span>
+                        </div>
+                        <div class="sacred-pattern spiral" onclick="drawPattern('golden-spiral')">
+                            <div class="pattern-preview">🌀</div>
+                            <span>Golden Spiral</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="creative-tools">
+                    <div class="color-palette">
+                        <div class="color-orb" data-color="#d4af37" onclick="selectColor(this)"></div>
+                        <div class="color-orb" data-color="#8b5fbf" onclick="selectColor(this)"></div>
+                        <div class="color-orb" data-color="#ff9800" onclick="selectColor(this)"></div>
+                        <div class="color-orb" data-color="#00e5ff" onclick="selectColor(this)"></div>
+                        <div class="color-orb" data-color="#f8bbd9" onclick="selectColor(this)"></div>
+                        <div class="color-orb" data-color="#4caf50" onclick="selectColor(this)"></div>
+                    </div>
+                    <div class="creation-controls">
+                        <button class="create-btn" onclick="clearCanvas()">Clear Canvas</button>
+                        <button class="create-btn" onclick="animateGeometry()">Animate</button>
+                        <button class="create-btn" onclick="saveCreation()">Save Art</button>
+                    </div>
+                </div>
+                <div class="creative-inspiration">
+                    <p class="inspiration-text">Let sacred geometry guide your creative expression</p>
+                </div>
+            `;
+            
+            modalContent.insertBefore(geometryContainer, modalContent.firstChild);
+            
+            // Initialize canvas
+            initializeCanvas();
+        }
+
+        let canvas, ctx, selectedColor = '#d4af37';
+
+        function initializeCanvas() {
+            canvas = document.getElementById('sacred-canvas');
+            ctx = canvas.getContext('2d');
+            
+            // Set canvas background
+            ctx.fillStyle = 'rgba(26, 26, 46, 0.9)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function selectColor(colorElement) {
+            // Remove active state from all colors
+            document.querySelectorAll('.color-orb').forEach(orb => {
+                orb.classList.remove('color-active');
+            });
+            
+            // Activate selected color
+            colorElement.classList.add('color-active');
+            selectedColor = colorElement.dataset.color;
+        }
+
+        function drawPattern(patternType) {
+            if (!ctx) return;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            ctx.strokeStyle = selectedColor;
+            ctx.lineWidth = 2;
+            ctx.shadowColor = selectedColor;
+            ctx.shadowBlur = 10;
+            
+            switch(patternType) {
+                case 'flower-of-life':
+                    drawFlowerOfLife(centerX, centerY);
+                    break;
+                case 'merkaba':
+                    drawMerkaba(centerX, centerY);
+                    break;
+                case 'sri-yantra':
+                    drawSriYantra(centerX, centerY);
+                    break;
+                case 'golden-spiral':
+                    drawGoldenSpiral(centerX, centerY);
+                    break;
+            }
+        }
+
+        function drawFlowerOfLife(x, y) {
+            const radius = 50;
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                const circleX = x + Math.cos(angle) * radius;
+                const circleY = y + Math.sin(angle) * radius;
+                
+                ctx.beginPath();
+                ctx.arc(circleX, circleY, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+            
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
+
+        function drawMerkaba(x, y) {
+            const size = 80;
+            
+            // Draw upward triangle
+            ctx.beginPath();
+            ctx.moveTo(x, y - size);
+            ctx.lineTo(x - size, y + size/2);
+            ctx.lineTo(x + size, y + size/2);
+            ctx.closePath();
+            ctx.stroke();
+            
+            // Draw downward triangle
+            ctx.beginPath();
+            ctx.moveTo(x, y + size);
+            ctx.lineTo(x - size, y - size/2);
+            ctx.lineTo(x + size, y - size/2);
+            ctx.closePath();
+            ctx.stroke();
+        }
+
+        function drawSriYantra(x, y) {
+            const size = 60;
+            
+            // Draw outer triangles
+            for (let i = 0; i < 4; i++) {
+                const angle = (i * Math.PI) / 2;
+                const triangleSize = size - (i * 10);
+                
+                ctx.beginPath();
+                ctx.moveTo(x, y - triangleSize);
+                ctx.lineTo(x - triangleSize, y + triangleSize/2);
+                ctx.lineTo(x + triangleSize, y + triangleSize/2);
+                ctx.closePath();
+                ctx.stroke();
+            }
+        }
+
+        function drawGoldenSpiral(x, y) {
+            const a = 5;
+            const b = 0.2;
+            
+            ctx.beginPath();
+            for (let angle = 0; angle < 4 * Math.PI; angle += 0.1) {
+                const radius = a * Math.exp(b * angle);
+                const spiralX = x + radius * Math.cos(angle);
+                const spiralY = y + radius * Math.sin(angle);
+                
+                if (angle === 0) {
+                    ctx.moveTo(spiralX, spiralY);
+                } else {
+                    ctx.lineTo(spiralX, spiralY);
+                }
+            }
+            ctx.stroke();
+        }
+
+        function clearCanvas() {
+            if (!ctx) return;
+            ctx.fillStyle = 'rgba(26, 26, 46, 0.9)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function animateGeometry() {
+            // Add animation effect to existing patterns
+            if (!ctx) return;
+            
+            ctx.shadowBlur = 20;
+            ctx.globalCompositeOperation = 'screen';
+            
+            setTimeout(() => {
+                ctx.shadowBlur = 10;
+                ctx.globalCompositeOperation = 'source-over';
+            }, 2000);
+        }
+
+        function saveCreation() {
+            if (!canvas) return;
+            
+            const link = document.createElement('a');
+            link.download = 'sacred-geometry-art.png';
+            link.href = canvas.toDataURL();
+            link.click();
+            
+            // Show feedback
+            const inspiration = document.querySelector('.inspiration-text');
+            const originalText = inspiration.textContent;
+            inspiration.textContent = 'Sacred geometry art saved! ✨';
+            
+            setTimeout(() => {
+                inspiration.textContent = originalText;
+            }, 3000);
+        }
+
+        function showSessionModal(title) {
+            document.getElementById('session-title').textContent = title;
+            document.getElementById('session-modal').style.display = 'flex';
+        }
+
+        function closeSession() {
+            // Stop any playing sounds
+            if (currentSession.currentSounds.length > 0) {
+                currentSession.currentSounds.forEach(sound => {
+                    if (sound.pause) sound.pause();
+                });
+                currentSession.currentSounds = [];
+            }
+            
+            document.getElementById('session-modal').style.display = 'none';
+            currentSession.isActive = false;
+        }
+
+        function loadMysticArtsContent() {
+            const content = document.getElementById('session-content');
+            content.innerHTML = `
+                <div class="mystic-arts-session">
+                    <div class="tool-section">
+                        <h3>🌟 Sacred Canvas</h3>
+                        <canvas id="sacred-canvas" class="sacred-canvas" width="600" height="400"></canvas>
+                        <div class="canvas-tools">
+                            <input type="color" id="brush-color" value="#d4af37" title="Brush Color">
+                            <input type="range" id="brush-size" min="1" max="20" value="5" title="Brush Size">
+                            <button onclick="clearCanvas()">Clear Canvas</button>
+                            <button onclick="saveArt()">Save Art</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-section">
+                        <h3>💫 Divine Inspiration</h3>
+                        <button onclick="generateInspiration()" class="arts-btn" style="width: auto; padding: 1rem 2rem;">
+                            Get Divine Inspiration
+                        </button>
+                        <div id="inspiration-text" class="inspiration-display">
+                            Click above to receive divine creative guidance...
+                        </div>
+                    </div>
+                    
+                    <div class="tool-section">
+                        <h3>🖌️ Sacred Patterns</h3>
+                        <div class="pattern-gallery">
+                            <button onclick="drawMandala()" class="pattern-btn">Draw Mandala</button>
+                            <button onclick="drawSacredGeometry()" class="pattern-btn">Sacred Geometry</button>
+                            <button onclick="drawFlowerOfLife()" class="pattern-btn">Flower of Life</button>
+                            <button onclick="drawSriYantra()" class="pattern-btn">Sri Yantra</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            setupCanvas();
+        }
+
+        function loadSacredSoundContent() {
+            const content = document.getElementById('session-content');
+            const soundElements = sacredSounds.map((sound, index) => 
+                `<div class="sound-card" onclick="playSound(${index})" data-sound="${index}">
+                    <div class="sound-icon">${sound.icon}</div>
+                    <div class="sound-name">${sound.name}</div>
+                    <div class="frequency-display">${sound.frequency}</div>
+                </div>`
+            ).join('');
+            
+            content.innerHTML = `
+                <div class="sacred-sound-session">
+                    <h3>Choose Your Sacred Sounds</h3>
+                    <div class="sound-interface">${soundElements}</div>
+                    <div class="audio-controls">
+                        <button class="control-btn" onclick="stopAllSounds()">Stop All</button>
+                        <button class="control-btn" onclick="startSoundMeditation()">Begin Meditation</button>
+                    </div>
+                    <div id="sound-guidance" class="inspiration-display">
+                        Select sounds above to create your personalized healing environment
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadMantraContent() {
+            const content = document.getElementById('session-content');
+            const mantraElements = mantras.map((mantra, index) => 
+                `<div class="sound-card" onclick="playMantra(${index})" data-mantra="${index}">
+                    <div class="sound-icon">🕉️</div>
+                    <div class="sound-name">${mantra.text}</div>
+                    <div class="frequency-display">${mantra.meaning}</div>
+                </div>`
+            ).join('');
+            
+            content.innerHTML = `
+                <div class="mantra-session">
+                    <h3>Sacred Mantras & Chanting</h3>
+                    <div class="sound-interface">${mantraElements}</div>
+                    <div class="audio-controls">
+                        <button class="control-btn" onclick="startChantingSession()">Begin Chanting</button>
+                        <button class="control-btn" onclick="guidedMantraSession()">Guided Session</button>
+                    </div>
+                    <div id="mantra-guidance" class="inspiration-display">
+                        Choose a mantra to begin your chanting practice
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadSoundBathContent() {
+            const content = document.getElementById('session-content');
+            content.innerHTML = `
+                <div class="soundbath-session">
+                    <h3>Immersive Sound Bath Experience</h3>
+                    <div class="audio-controls">
+                        <button class="control-btn" onclick="startSoundBath('gentle')">Gentle Journey</button>
+                        <button class="control-btn" onclick="startSoundBath('deep')">Deep Healing</button>
+                        <button class="control-btn" onclick="startSoundBath('chakra')">Chakra Cleansing</button>
+                    </div>
+                    <div id="soundbath-display" class="inspiration-display">
+                        Choose your sound bath journey above to begin deep healing
+                    </div>
+                    <div class="session-timer" id="session-timer" style="text-align: center; font-size: 2rem; margin: 2rem 0;">
+                        --:--
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadMusicMeditationContent() {
+            const content = document.getElementById('session-content');
+            content.innerHTML = `
+                <div class="music-meditation-session">
+                    <h3>Meditative Music Experience</h3>
+                    <div class="audio-controls">
+                        <button class="control-btn" onclick="playMeditationTrack('ambient')">Ambient Meditation</button>
+                        <button class="control-btn" onclick="playMeditationTrack('flute')">Sacred Flute</button>
+                        <button class="control-btn" onclick="playMeditationTrack('strings')">Healing Strings</button>
+                        <button class="control-btn" onclick="playMeditationTrack('frequency')">Pure Frequencies</button>
+                    </div>
+                    <div id="music-display" class="inspiration-display">
+                        Select a meditation track to enhance your spiritual practice
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadCreativeExpressionContent() {
+            const content = document.getElementById('session-content');
+            content.innerHTML = `
+                <div class="creative-expression-session">
+                    <h3>Guided Creative Expression</h3>
+                    <div class="audio-controls">
+                        <button class="control-btn" onclick="startIntuitiveArt()">Intuitive Art</button>
+                        <button class="control-btn" onclick="startSoundDrawing()">Sound-Guided Drawing</button>
+                        <button class="control-btn" onclick="startColorTherapy()">Color Therapy</button>
+                        <button class="control-btn" onclick="startCreativeFlow()">Creative Flow State</button>
+                    </div>
+                    <div id="creative-guidance" class="inspiration-display">
+                        Choose a creative practice to express your soul's truth
+                    </div>
+                </div>
+            `;
+        }
+
+        // Canvas Functions
+        function setupCanvas() {
+            const canvas = document.getElementById('sacred-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            currentSession.canvas = canvas;
+            currentSession.context = ctx;
+            
+            // Set white background
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            let isDrawing = false;
+            
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                draw(e);
+            });
+            
+            canvas.addEventListener('mousemove', (e) => {
+                if (isDrawing) draw(e);
+            });
+            
+            canvas.addEventListener('mouseup', () => {
+                isDrawing = false;
+                ctx.beginPath();
+            });
+            
+            function draw(e) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const color = document.getElementById('brush-color').value;
+                const size = document.getElementById('brush-size').value;
+                
+                ctx.lineWidth = size;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = color;
+                
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+            }
+        }
+
+        function clearCanvas() {
+            const canvas = currentSession.canvas;
+            const ctx = currentSession.context;
+            if (!canvas || !ctx) return;
+            
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function saveArt() {
+            const canvas = currentSession.canvas;
+            if (!canvas) return;
+            
+            const link = document.createElement('a');
+            link.download = 'sacred-art-' + Date.now() + '.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function generateInspiration() {
+            const randomInspiration = inspirations[Math.floor(Math.random() * inspirations.length)];
+            document.getElementById('inspiration-text').innerHTML = `<p>"${randomInspiration}"</p>`;
+        }
+
+        // Sacred Pattern Functions
+        function drawMandala() {
+            const canvas = currentSession.canvas;
+            const ctx = currentSession.context;
+            if (!canvas || !ctx) return;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            ctx.strokeStyle = '#d4af37';
+            ctx.lineWidth = 2;
+            
+            // Draw concentric circles
+            for (let r = 20; r < 150; r += 30) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Draw radial lines
+                for (let i = 0; i < 12; i++) {
+                    const angle = (i * Math.PI) / 6;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(centerX + Math.cos(angle) * r, centerY + Math.sin(angle) * r);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function drawSacredGeometry() {
+            const canvas = currentSession.canvas;
+            const ctx = currentSession.context;
+            if (!canvas || !ctx) return;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            ctx.strokeStyle = '#8b5cf6';
+            ctx.lineWidth = 2;
+            
+            // Draw hexagon
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                const x = centerX + Math.cos(angle) * 100;
+                const y = centerY + Math.sin(angle) * 100;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+            
+            // Draw inner triangles
+            for (let i = 0; i < 6; i++) {
+                const angle1 = (i * Math.PI) / 3;
+                const angle2 = ((i + 2) * Math.PI) / 3;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(centerX + Math.cos(angle1) * 100, centerY + Math.sin(angle1) * 100);
+                ctx.lineTo(centerX + Math.cos(angle2) * 100, centerY + Math.sin(angle2) * 100);
+                ctx.closePath();
+                ctx.stroke();
+            }
+        }
+
+        function drawFlowerOfLife() {
+            const canvas = currentSession.canvas;
+            const ctx = currentSession.context;
+            if (!canvas || !ctx) return;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 40;
+            
+            ctx.strokeStyle = '#00e5ff';
+            ctx.lineWidth = 2;
+            
+            // Center circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Surrounding circles
+            for (let i = 0; i < 6; i++) {
+                const angle = (i * Math.PI) / 3;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+        }
+
+        function drawSriYantra() {
+            const canvas = currentSession.canvas;
+            const ctx = currentSession.context;
+            if (!canvas || !ctx) return;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            ctx.strokeStyle = '#ff9800';
+            ctx.lineWidth = 2;
+            
+            // Draw Sri Yantra triangles
+            const size = 80;
+            
+            // Upward triangles
+            for (let i = 0; i < 4; i++) {
+                const offset = i * 20;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY - size + offset);
+                ctx.lineTo(centerX - size + offset, centerY + size - offset);
+                ctx.lineTo(centerX + size - offset, centerY + size - offset);
+                ctx.closePath();
+                ctx.stroke();
+            }
+            
+            // Downward triangles
+            for (let i = 0; i < 5; i++) {
+                const offset = i * 15;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY + size - offset);
+                ctx.lineTo(centerX - size + offset, centerY - size + offset);
+                ctx.lineTo(centerX + size - offset, centerY - size + offset);
+                ctx.closePath();
+                ctx.stroke();
+            }
+        }
+
+        // Sound Functions
+        function playSound(index) {
+            const sound = sacredSounds[index];
+            const soundCard = document.querySelector(`[data-sound="${index}"]`);
+            
+            // Toggle playing state
+            if (soundCard.classList.contains('playing')) {
+                soundCard.classList.remove('playing');
+                // Stop sound logic here
+            } else {
+                soundCard.classList.add('playing');
+                // Play sound logic here
+                showSoundGuidance(sound);
+            }
+        }
+
+        function showSoundGuidance(sound) {
+            const guidance = document.getElementById('sound-guidance');
+            if (guidance) {
+                guidance.innerHTML = `
+                    <h4>Now Playing: ${sound.name}</h4>
+                    <p>Frequency: ${sound.frequency}</p>
+                    <p>Allow the sacred vibrations to flow through your being and restore harmony to your energy field.</p>
+                `;
+            }
+        }
+
+        function stopAllSounds() {
+            const soundCards = document.querySelectorAll('.sound-card');
+            soundCards.forEach(card => card.classList.remove('playing'));
+            
+            const guidance = document.getElementById('sound-guidance');
+            if (guidance) {
+                guidance.innerHTML = 'All sounds stopped. Choose new sounds for your healing session.';
+            }
+        }
+
+        function playMantra(index) {
+            const mantra = mantras[index];
+            const guidance = document.getElementById('mantra-guidance');
+            if (guidance) {
+                guidance.innerHTML = `
+                    <h4>${mantra.text}</h4>
+                    <p><strong>Meaning:</strong> ${mantra.meaning}</p>
+                    <p>Repeat this sacred mantra with intention and devotion.</p>
+                `;
+            }
+        }
+
+        function startSoundBath(type) {
+            const display = document.getElementById('soundbath-display');
+            const timer = document.getElementById('session-timer');
+            
+            if (display) {
+                const descriptions = {
+                    'gentle': 'Gentle healing frequencies wash over you like warm light...',
+                    'deep': 'Deep transformational sounds penetrate your cellular structure...',
+                    'chakra': 'Sacred chakra frequencies align your energy centers...'
+                };
+                
+                display.innerHTML = descriptions[type];
+            }
+            
+            // Start 20-minute timer
+            let minutes = 20;
+            let seconds = 0;
+            
+            const timerInterval = setInterval(() => {
+                timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (seconds === 0) {
+                    if (minutes === 0) {
+                        clearInterval(timerInterval);
+                        alert('🔔 Sound bath complete! How do you feel? ✨');
+                        return;
+                    }
+                    minutes--;
+                    seconds = 59;
+                } else {
+                    seconds--;
+                }
+            }, 1000);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('session-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSession();
+            }
+        });
+
+        // Handle escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSession();
+            }
+        });
+
+        // Performance tracking
+        window.addEventListener('load', () => {
+            console.log('🎨 Sacred Arts & Sound loaded successfully');
+            
+            // Sacred Arts & Sound Function Validation
+            const requiredFunctions = [
+                'startSession', 'closeSession', 'setActiveTab', 'loadTabContent',
+                'playSound', 'pauseSound', 'generateFrequency', 'loadSacredGeometry'
+            ];
+            
+            if (window.DivineTemplateUtils) {
+                window.DivineTemplateUtils.validateSectionFunctions('Sacred Arts & Sound', requiredFunctions);
+                window.DivineTemplateUtils.initializeSectionListeners('Sacred Arts & Sound');
+                window.DivineTemplateUtils.trackSectionPerformance('Sacred Arts & Sound');
+            } else {
+                console.log('🎨 Sacred Arts & Sound validation script not found');
+            }
+        });
+    </script>
+
+    <!-- Load universal validation script -->
+    <script src="../js/section-validation.js" defer></script>
+</body>
+</html>

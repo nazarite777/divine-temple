@@ -1,0 +1,2152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meditation & Mindfulness - Divine Temple</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Divine Temple Systems -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/premium-access-control.js"></script>
+    <script src="../js/divine-audio-engine.js"></script>
+    <script src="../js/universal-progress-system.js"></script>
+    <script src="../js/divine-progress-widget.js"></script>
+
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #4fc3f7;
+            --accent-green: #66bb6a;
+            --accent-rose: #F43F5E;
+            --dark-bg: #0F0F23;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-muted: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a1e 0%, #1a1a2e 50%, #0f3460 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(79, 195, 247, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(102, 187, 106, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Container */
+        .meditation-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        /* Header */
+        .meditation-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+        }
+
+        .header-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: breathe 4s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .meditation-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .meditation-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Progress Stats */
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 10px 30px rgba(79, 195, 247, 0.3);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Practice Grid */
+        .practices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .practice-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .practice-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .practice-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 20px 40px rgba(79, 195, 247, 0.3);
+        }
+
+        .practice-card:hover::before {
+            opacity: 1;
+        }
+
+        .practice-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .practice-card:hover .practice-icon {
+            transform: scale(1.1);
+        }
+
+        .practice-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+        }
+
+        .practice-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .practice-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .practice-features li {
+            color: var(--text-muted);
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .practice-features li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+        }
+
+        .practice-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .practice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 195, 247, 0.4);
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent-green);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 1rem;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: linear-gradient(135deg, #0a0a1e, #1a1a2e);
+            border: 2px solid var(--accent-blue);
+            border-radius: 25px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-content {
+            padding: 2rem;
+        }
+
+        /* Session Interface */
+        .session-interface {
+            text-align: center;
+        }
+
+        .session-timer {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin: 2rem 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .session-phase {
+            font-size: 1.5rem;
+            color: var(--accent-green);
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .session-guide {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        /* Breathing Circle */
+        .breathing-circle {
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+            border-radius: 50%;
+            border: 3px solid var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 4s ease-in-out;
+            background: radial-gradient(circle, rgba(79, 195, 247, 0.1), transparent);
+        }
+
+        .breathing-circle.inhale {
+            transform: scale(1.3);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 40px rgba(79, 195, 247, 0.6);
+        }
+
+        .breathing-circle.hold {
+            transform: scale(1.3);
+            border-color: var(--accent-green);
+            box-shadow: 0 0 40px rgba(102, 187, 106, 0.6);
+        }
+
+        .breathing-circle.exhale {
+            transform: scale(0.7);
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
+        }
+
+        .breath-count {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* Chakra Wheel */
+        .chakra-wheel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .chakra-item {
+            aspect-ratio: 1;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .chakra-item:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px currentColor;
+        }
+
+        .chakra-item.active {
+            transform: scale(1.15);
+            box-shadow: 0 0 40px currentColor;
+            border-color: white;
+            animation: chakraPulse 2s infinite;
+        }
+
+        @keyframes chakraPulse {
+            0%, 100% { box-shadow: 0 0 20px currentColor; }
+            50% { box-shadow: 0 0 40px currentColor; }
+        }
+
+        .chakra-symbol {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .chakra-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .chakra-frequency {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Session Controls */
+        .session-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .control-btn {
+            padding: 1rem 2rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-blue);
+        }
+
+        .control-btn.primary {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+            border: none;
+        }
+
+        .control-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 195, 247, 0.4);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 10001;
+            animation: slideIn 0.3s ease;
+            max-width: 350px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .toast.achievement {
+            border-left: 4px solid var(--primary-gold);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(139, 92, 246, 0.2));
+        }
+
+        /* Technique Selection */
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .technique-card {
+            background: var(--glass-bg);
+            border: 2px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .technique-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(79, 195, 247, 0.3);
+        }
+
+        .technique-card.active {
+            border-color: var(--accent-green);
+            background: rgba(102, 187, 106, 0.1);
+        }
+
+        .technique-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .technique-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--accent-blue);
+        }
+
+        .technique-description {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Affirmations */
+        .affirmation-display {
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 4px solid var(--accent-green);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 0 15px 15px 0;
+            font-style: italic;
+            font-size: 1.1rem;
+            text-align: center;
+            color: var(--text-secondary);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Meditation Track Cards */
+        .meditation-track {
+            transition: all 0.3s ease;
+        }
+
+        .meditation-track:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(79, 195, 247, 0.25);
+            border-color: rgba(79, 195, 247, 0.4) !important;
+        }
+
+        .meditation-track audio {
+            filter: brightness(1.1);
+        }
+
+        .meditation-track audio::-webkit-media-controls-panel {
+            background: linear-gradient(135deg, rgba(79, 195, 247, 0.2), rgba(102, 187, 106, 0.2));
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .meditation-container {
+                padding: 1rem;
+            }
+
+            .practices-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .session-timer {
+                font-size: 3rem;
+            }
+
+            .chakra-wheel {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+            }
+
+            .modal {
+                max-height: 95vh;
+            }
+
+            .modal-content {
+                padding: 1rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(79, 195, 247, 0.3);
+            border-top: 4px solid var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(79, 195, 247, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(79, 195, 247, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="meditation-container">
+        <button class="back-btn" onclick="goBack()">
+            ← Back to Temple
+        </button>
+
+        <div class="meditation-header">
+            <div class="header-icon">🧘</div>
+            <h1 class="meditation-title">Meditation & Mindfulness</h1>
+            <p class="meditation-subtitle">Find peace, balance, and inner wisdom through guided practices</p>
+        </div>
+
+        <!-- Divine Progress Widget -->
+        <div id="divine-progress-widget"></div>
+
+        <!-- Progress Stats -->
+        <div class="progress-stats" id="progress-stats">
+            <div class="stat-card">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-value" id="total-minutes">0</div>
+                <div class="stat-label">Total Minutes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-value" id="current-streak">0</div>
+                <div class="stat-label">Day Streak</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-value" id="achievements-count">0</div>
+                <div class="stat-label">Achievements</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-value" id="sessions-count">0</div>
+                <div class="stat-label">Sessions</div>
+            </div>
+        </div>
+
+        <!-- Guided Meditation Library -->
+        <div class="meditation-library" style="margin-bottom: 3rem;">
+            <h2 style="font-family: 'Playfair Display', serif; text-align: center; color: var(--accent-blue); margin-bottom: 1rem; font-size: 2.5rem;">
+                🎧 Guided Meditation Library
+            </h2>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 3rem; max-width: 700px; margin-left: auto; margin-right: auto;">
+                Professionally guided meditations to deepen your practice and accelerate your spiritual journey
+            </p>
+
+            <div class="meditation-tracks" style="display: grid; gap: 1.5rem; margin-bottom: 3rem;">
+                <!-- Return to Eden Meditation -->
+                <div class="meditation-track" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; transition: all 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="color: var(--accent-blue); font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; font-size: 1.5rem;">
+                                🌟 Return to Eden
+                            </h3>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                                A transformative meditation to help you experience your original divine state. Reconnect with your true nature and remember who you really are.
+                            </p>
+                        </div>
+                        <div style="color: var(--accent-blue); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">25:00</div>
+                    </div>
+
+                    <audio controls style="width: 100%; margin-bottom: 1rem; border-radius: 10px;" preload="metadata" onplay="meditationApp.trackPlay('Return to Eden', 25)">
+                        <source src="../audio/meditations/return-to-eden-meditation.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <span style="background: rgba(79, 195, 247, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-blue); font-weight: 600;">Consciousness</span>
+                        <span style="background: rgba(79, 195, 247, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-blue); font-weight: 600;">Divine Nature</span>
+                        <span style="background: rgba(79, 195, 247, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-blue); font-weight: 600;">Awakening</span>
+                    </div>
+                </div>
+
+                <!-- Chakra Awakening Meditation -->
+                <div class="meditation-track" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; transition: all 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="color: var(--accent-green); font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; font-size: 1.5rem;">
+                                🌈 7 Chakras Awakening
+                            </h3>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                                Activate and balance all seven chakras for complete energetic alignment. Experience deep healing and energy flow throughout your entire being.
+                            </p>
+                        </div>
+                        <div style="color: var(--accent-green); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">35:00</div>
+                    </div>
+
+                    <audio controls style="width: 100%; margin-bottom: 1rem; border-radius: 10px;" preload="metadata" onplay="meditationApp.trackPlay('Chakra Awakening', 35)">
+                        <source src="../audio/meditations/chakra-awakening-meditation.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <span style="background: rgba(102, 187, 106, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-green); font-weight: 600;">Chakras</span>
+                        <span style="background: rgba(102, 187, 106, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-green); font-weight: 600;">Energy Healing</span>
+                        <span style="background: rgba(102, 187, 106, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-green); font-weight: 600;">Balance</span>
+                    </div>
+                </div>
+
+                <!-- Breathing Exercise -->
+                <div class="meditation-track" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; transition: all 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="color: var(--accent-purple); font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; font-size: 1.5rem;">
+                                🌬️ 4-7-8 Breathing Guided Practice
+                            </h3>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                                Calm your nervous system with this powerful breathing technique. Perfect for stress relief, better sleep, and instant relaxation.
+                            </p>
+                        </div>
+                        <div style="color: var(--accent-purple); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">10:00</div>
+                    </div>
+
+                    <audio controls style="width: 100%; margin-bottom: 1rem; border-radius: 10px;" preload="metadata" onplay="meditationApp.trackPlay('Breathing Practice', 10)">
+                        <source src="../audio/meditations/breathing-guided-4-7-8.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <span style="background: rgba(139, 92, 246, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-purple); font-weight: 600;">Breathwork</span>
+                        <span style="background: rgba(139, 92, 246, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-purple); font-weight: 600;">Relaxation</span>
+                        <span style="background: rgba(139, 92, 246, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-purple); font-weight: 600;">Stress Relief</span>
+                    </div>
+                </div>
+
+                <!-- Divine Identity Meditation -->
+                <div class="meditation-track" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; transition: all 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="color: var(--primary-gold); font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; font-size: 1.5rem;">
+                                ✨ Divine Identity Meditation
+                            </h3>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                                Discover and embody your true divine identity. Release false beliefs and step into the fullness of who you were created to be.
+                            </p>
+                        </div>
+                        <div style="color: var(--primary-gold); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">20:00</div>
+                    </div>
+
+                    <audio controls style="width: 100%; margin-bottom: 1rem; border-radius: 10px;" preload="metadata" onplay="meditationApp.trackPlay('Divine Identity', 20)">
+                        <source src="../audio/meditations/divine-identity-meditation.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <span style="background: rgba(212, 175, 55, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--primary-gold); font-weight: 600;">Identity</span>
+                        <span style="background: rgba(212, 175, 55, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--primary-gold); font-weight: 600;">Self-Discovery</span>
+                        <span style="background: rgba(212, 175, 55, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--primary-gold); font-weight: 600;">Transformation</span>
+                    </div>
+                </div>
+
+                <!-- Morning Eden Meditation -->
+                <div class="meditation-track" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; transition: all 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="color: var(--accent-rose); font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; font-size: 1.5rem;">
+                                🌅 Morning Eden Meditation
+                            </h3>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                                Start your day from Eden consciousness. Set your intention, align with divine truth, and move through your day with grace and power.
+                            </p>
+                        </div>
+                        <div style="color: var(--accent-rose); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">15:00</div>
+                    </div>
+
+                    <audio controls style="width: 100%; margin-bottom: 1rem; border-radius: 10px;" preload="metadata" onplay="meditationApp.trackPlay('Morning Eden', 15)">
+                        <source src="../audio/meditations/morning-eden-meditation.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <span style="background: rgba(244, 63, 94, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-rose); font-weight: 600;">Morning Practice</span>
+                        <span style="background: rgba(244, 63, 94, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-rose); font-weight: 600;">Intention Setting</span>
+                        <span style="background: rgba(244, 63, 94, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-rose); font-weight: 600;">Alignment</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Practice Tools -->
+        <h2 style="font-family: 'Playfair Display', serif; text-align: center; color: var(--accent-blue); margin-bottom: 1rem; font-size: 2rem;">
+            🧘 Interactive Practice Tools
+        </h2>
+        <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+            Customizable meditation timers and breathing exercises for your personal practice
+        </p>
+
+        <!-- Practices Grid -->
+        <div class="practices-grid">
+            <!-- Guided Meditation -->
+            <div class="practice-card" onclick="meditationApp.openPractice('guided')">
+                <span class="featured-badge">Most Popular</span>
+                <span class="practice-icon">🎧</span>
+                <h3 class="practice-title">Guided Meditation</h3>
+                <p class="practice-description">
+                    Follow soothing guided meditations for relaxation, healing, and spiritual connection.
+                </p>
+                <ul class="practice-features">
+                    <li>Multiple meditation tracks</li>
+                    <li>5-30 minute sessions</li>
+                    <li>Healing frequencies</li>
+                    <li>Progress tracking</li>
+                </ul>
+                <button class="practice-btn">Start Guided Session</button>
+            </div>
+
+            <!-- Breathing Exercises -->
+            <div class="practice-card" onclick="meditationApp.openPractice('breathing')">
+                <span class="practice-icon">🌬️</span>
+                <h3 class="practice-title">Breathing Exercises</h3>
+                <p class="practice-description">
+                    Master your breath with guided techniques for calm, focus, and energy.
+                </p>
+                <ul class="practice-features">
+                    <li>Box breathing (4-4-4-4)</li>
+                    <li>4-7-8 relaxation</li>
+                    <li>Energizing breath</li>
+                    <li>Visual breathing guide</li>
+                </ul>
+                <button class="practice-btn">Begin Breathing</button>
+            </div>
+
+            <!-- Chakra Balancing -->
+            <div class="practice-card" onclick="meditationApp.openPractice('chakra')">
+                <span class="practice-icon">💎</span>
+                <h3 class="practice-title">Chakra Balancing</h3>
+                <p class="practice-description">
+                    Align your energy centers with targeted chakra meditations and healing tones.
+                </p>
+                <ul class="practice-features">
+                    <li>All 7 chakras</li>
+                    <li>Healing frequencies</li>
+                    <li>Energy visualization</li>
+                    <li>Full body alignment</li>
+                </ul>
+                <button class="practice-btn">Balance Chakras</button>
+            </div>
+
+            <!-- Mindfulness Practice -->
+            <div class="practice-card" onclick="meditationApp.openPractice('mindfulness')">
+                <span class="practice-icon">🌱</span>
+                <h3 class="practice-title">Mindfulness Practice</h3>
+                <p class="practice-description">
+                    Cultivate present-moment awareness with mindfulness exercises.
+                </p>
+                <ul class="practice-features">
+                    <li>Body scan meditation</li>
+                    <li>Mindful observation</li>
+                    <li>Present moment focus</li>
+                    <li>Daily practices</li>
+                </ul>
+                <button class="practice-btn">Practice Mindfulness</button>
+            </div>
+
+            <!-- Loving-Kindness -->
+            <div class="practice-card" onclick="meditationApp.openPractice('lovingkindness')">
+                <span class="practice-icon">💝</span>
+                <h3 class="practice-title">Loving-Kindness</h3>
+                <p class="practice-description">
+                    Open your heart with compassion meditations and loving-kindness practices.
+                </p>
+                <ul class="practice-features">
+                    <li>Self-compassion</li>
+                    <li>Forgiveness practice</li>
+                    <li>Heart opening</li>
+                    <li>Universal love</li>
+                </ul>
+                <button class="practice-btn">Cultivate Love</button>
+            </div>
+
+            <!-- Silent Meditation -->
+            <div class="practice-card" onclick="meditationApp.openPractice('silent')">
+                <span class="practice-icon">🤫</span>
+                <h3 class="practice-title">Silent Meditation</h3>
+                <p class="practice-description">
+                    Practice traditional silent meditation with customizable timers.
+                </p>
+                <ul class="practice-features">
+                    <li>Flexible duration</li>
+                    <li>Interval bells</li>
+                    <li>Simple & pure</li>
+                    <li>Session stats</li>
+                </ul>
+                <button class="practice-btn">Sit in Silence</button>
+            </div>
+        </div>
+
+        <!-- Gaia Meditation Videos -->
+        <div style="background: linear-gradient(135deg, rgba(79, 195, 247, 0.15), rgba(102, 187, 106, 0.15)); backdrop-filter: blur(20px); border: 2px solid var(--glass-border); border-radius: 25px; padding: 3rem 2rem; margin: 4rem 0; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🎬</div>
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent-gold); margin-bottom: 1rem;">1,000+ Guided Meditations on Gaia</h2>
+            <p style="font-size: 1.05rem; line-height: 1.7; color: var(--text-secondary); max-width: 700px; margin: 0 auto 2rem;">
+                Access expert-led meditation videos from renowned teachers including <strong>Deepak Chopra</strong>, <strong>Ram Dass</strong>, <strong>Eckhart Tolle</strong>, and more. From beginner breathwork to advanced transcendental meditation.
+            </p>
+
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-bottom: 2rem;">
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 0.75rem 1.5rem; border-radius: 20px;">
+                    ✨ Daily Meditation Series
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 0.75rem 1.5rem; border-radius: 20px;">
+                    🧘 Chakra Meditations
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 0.75rem 1.5rem; border-radius: 20px;">
+                    🌙 Sleep & Relaxation
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 0.75rem 1.5rem; border-radius: 20px;">
+                    🌟 Kundalini Awakening
+                </div>
+            </div>
+
+            <a href="https://www.gaia.com/meditation/YOUR_GAIA_AFFILIATE_CODE" target="_blank" rel="nofollow noopener" onclick="trackGaiaMeditationClick()" style="display: inline-block; background: linear-gradient(135deg, var(--accent-blue), var(--accent-green)); color: white; padding: 1.1rem 2.5rem; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 1.05rem; transition: all 0.3s ease; box-shadow: 0 8px 25px rgba(79, 195, 247, 0.4);">
+                🧘 Explore Gaia Meditations
+            </a>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem;">
+                <em>Free trial available • 8,000+ videos • Cancel anytime</em>
+            </p>
+            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 0.75rem;">
+                <em>Divine Temple earns from Gaia subscriptions at no cost to you.</em>
+            </p>
+        </div>
+
+        <!-- Recommended Meditation Products -->
+        <div class="section-divider" style="margin: 4rem 0; text-align: center;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent-gold); margin-bottom: 1rem;">🧘 Enhance Your Practice</h2>
+            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 2rem;">Deepen your meditation journey with these recommended tools</p>
+        </div>
+
+        <div class="affiliate-products-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 2rem 0 4rem;">
+
+            <!-- Product 1: Meditation Cushion -->
+            <div class="product-card glass-panel" style="text-align: center; padding: 2rem; border-radius: 20px;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🪷</div>
+                <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem; font-size: 1.2rem;">Meditation Cushion Set</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Premium zafu & zabuton set for comfortable meditation</p>
+                <a href="https://www.amazon.com/dp/B08R3KQMZV?tag=edenconscious-20" target="_blank" rel="nofollow noopener" class="btn" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold)); color: white; padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; display: inline-block; font-weight: 600;">
+                    View on Amazon →
+                </a>
+            </div>
+
+            <!-- Product 2: Tibetan Singing Bowl -->
+            <div class="product-card glass-panel" style="text-align: center; padding: 2rem; border-radius: 20px;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🎵</div>
+                <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem; font-size: 1.2rem;">Tibetan Singing Bowl</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Handcrafted bowl for sound healing & meditation</p>
+                <a href="https://www.amazon.com/dp/B00X5KDY1O?tag=edenconscious-20" target="_blank" rel="nofollow noopener" class="btn" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold)); color: white; padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; display: inline-block; font-weight: 600;">
+                    View on Amazon →
+                </a>
+            </div>
+
+            <!-- Product 3: Meditation Timer -->
+            <div class="product-card glass-panel" style="text-align: center; padding: 2rem; border-radius: 20px;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">⏱️</div>
+                <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem; font-size: 1.2rem;">Zen Meditation Timer</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Beautiful timer with gentle chime for mindful sessions</p>
+                <a href="https://www.amazon.com/dp/B000OQEO72?tag=edenconscious-20" target="_blank" rel="nofollow noopener" class="btn" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold)); color: white; padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; display: inline-block; font-weight: 600;">
+                    View on Amazon →
+                </a>
+            </div>
+
+            <!-- Product 4: Meditation Guide Book -->
+            <div class="product-card glass-panel" style="text-align: center; padding: 2rem; border-radius: 20px;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
+                <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem; font-size: 1.2rem;">Mindfulness in Plain English</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Classic meditation guide for beginners & experienced practitioners</p>
+                <a href="https://www.amazon.com/dp/0861719069?tag=edenconscious-20" target="_blank" rel="nofollow noopener" class="btn" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold)); color: white; padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; display: inline-block; font-weight: 600;">
+                    View on Amazon →
+                </a>
+            </div>
+
+        </div>
+
+        <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 3rem;">
+            <em>As an Amazon Associate, Divine Temple earns from qualifying purchases.</em>
+        </p>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="meditation-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Meditation</h2>
+                <button class="modal-close" onclick="meditationApp.closeModal()">×</button>
+            </div>
+            <div class="modal-content" id="modal-content">
+                <!-- Dynamic content loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== FIREBASE CONFIGURATION ====================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOyZPb4gfYE5q_RwmYaKG6cpTvrE-3LxI",
+            authDomain: "sacred-community.firebaseapp.com",
+            projectId: "sacred-community",
+            storageBucket: "sacred-community.firebasestorage.app",
+            messagingSenderId: "582271923489",
+            appId: "1:582271923489:web:aa46a8bb5ac0859fe83a60",
+            measurementId: "G-83D6SSJKMH"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // ==================== MEDITATION APP CLASS ====================
+        class MeditationApp {
+            constructor() {
+                this.currentUser = null;
+                this.audioContext = null;
+                this.audioNodes = [];
+                this.currentSession = null;
+                this.sessionTimer = null;
+                this.breathingTimer = null;
+                
+                this.progress = {
+                    totalMinutes: 0,
+                    streak: 0,
+                    lastSession: null,
+                    achievements: [],
+                    sessions: 0,
+                    sessionHistory: []
+                };
+
+                this.breathingTechniques = {
+                    box: {
+                        name: 'Box Breathing',
+                        phases: [
+                            { name: 'Inhale', duration: 4, instruction: 'Breathe in slowly through your nose' },
+                            { name: 'Hold', duration: 4, instruction: 'Hold your breath gently' },
+                            { name: 'Exhale', duration: 4, instruction: 'Breathe out slowly through your mouth' },
+                            { name: 'Hold', duration: 4, instruction: 'Rest before the next breath' }
+                        ],
+                        description: 'Navy SEAL technique for calm and focus'
+                    },
+                    '478': {
+                        name: '4-7-8 Breathing',
+                        phases: [
+                            { name: 'Inhale', duration: 4, instruction: 'Breathe in through your nose' },
+                            { name: 'Hold', duration: 7, instruction: 'Hold your breath' },
+                            { name: 'Exhale', duration: 8, instruction: 'Exhale completely through your mouth' }
+                        ],
+                        description: 'Dr. Andrew Weil\'s relaxation technique'
+                    },
+                    energizing: {
+                        name: 'Energizing Breath',
+                        phases: [
+                            { name: 'Inhale', duration: 2, instruction: 'Quick, powerful inhale' },
+                            { name: 'Exhale', duration: 2, instruction: 'Quick, powerful exhale' }
+                        ],
+                        description: 'Boost energy and mental clarity'
+                    }
+                };
+
+                this.chakras = [
+                    { name: 'Root', color: '#ff0000', frequency: 396, symbol: '🔴', mantra: 'LAM', element: 'Earth' },
+                    { name: 'Sacral', color: '#ff8c00', frequency: 417, symbol: '🟠', mantra: 'VAM', element: 'Water' },
+                    { name: 'Solar Plexus', color: '#ffd700', frequency: 528, symbol: '🟡', mantra: 'RAM', element: 'Fire' },
+                    { name: 'Heart', color: '#00ff00', frequency: 639, symbol: '💚', mantra: 'YAM', element: 'Air' },
+                    { name: 'Throat', color: '#00bfff', frequency: 741, symbol: '🔵', mantra: 'HAM', element: 'Sound' },
+                    { name: 'Third Eye', color: '#4b0082', frequency: 852, symbol: '🟣', mantra: 'OM', element: 'Light' },
+                    { name: 'Crown', color: '#9400d3', frequency: 963, symbol: '⚪', mantra: 'AUM', element: 'Consciousness' }
+                ];
+
+                this.affirmations = [
+                    "I am at peace with myself and the world",
+                    "I breathe in calm and breathe out tension",
+                    "My mind is clear and focused",
+                    "I am grounded in the present moment",
+                    "Divine light flows through every cell",
+                    "I release all that no longer serves me",
+                    "I am connected to infinite wisdom",
+                    "Each breath brings me deeper peace",
+                    "I trust the process of life",
+                    "I am worthy of love and happiness"
+                ];
+
+                this.init();
+            }
+
+            async init() {
+                console.log('🧘 Initializing Meditation App...');
+                
+                auth.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        this.currentUser = user;
+                        await this.loadProgress();
+                        this.updateProgressDisplay();
+                    } else {
+                        this.loadLocalProgress();
+                        this.updateProgressDisplay();
+                    }
+                });
+
+                // Initialize audio context on first user interaction
+                document.addEventListener('click', () => this.initAudio(), { once: true });
+
+                console.log('✅ Meditation App ready');
+            }
+
+            initAudio() {
+                if (!this.audioContext) {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+
+            // ==================== PROGRESS MANAGEMENT ====================
+            async loadProgress() {
+                try {
+                    const doc = await db.collection('meditationProgress').doc(this.currentUser.uid).get();
+                    if (doc.exists) {
+                        this.progress = { ...this.progress, ...doc.data() };
+                    }
+                } catch (error) {
+                    console.error('Error loading progress:', error);
+                    this.loadLocalProgress();
+                }
+            }
+
+            loadLocalProgress() {
+                const saved = localStorage.getItem('meditationProgress');
+                if (saved) {
+                    this.progress = { ...this.progress, ...JSON.parse(saved) };
+                }
+            }
+
+            async saveProgress() {
+                if (this.currentUser) {
+                    try {
+                        await db.collection('meditationProgress').doc(this.currentUser.uid).set(this.progress);
+                    } catch (error) {
+                        console.error('Error saving progress:', error);
+                    }
+                }
+                
+                localStorage.setItem('meditationProgress', JSON.stringify(this.progress));
+                this.updateProgressDisplay();
+            }
+
+            updateProgressDisplay() {
+                document.getElementById('total-minutes').textContent = this.progress.totalMinutes;
+                document.getElementById('current-streak').textContent = this.progress.streak;
+                document.getElementById('achievements-count').textContent = this.progress.achievements.length;
+                document.getElementById('sessions-count').textContent = this.progress.sessions;
+            }
+
+            async completeSession(minutes) {
+                this.progress.totalMinutes += minutes;
+                this.progress.sessions++;
+                this.updateStreak();
+                this.checkAchievements(minutes);
+
+                this.progress.sessionHistory.unshift({
+                    type: this.currentSession?.type || 'unknown',
+                    duration: minutes,
+                    date: new Date().toISOString()
+                });
+
+                if (this.progress.sessionHistory.length > 50) {
+                    this.progress.sessionHistory = this.progress.sessionHistory.slice(0, 50);
+                }
+
+                await this.saveProgress();
+
+                // 🎯 AWARD XP IN UNIVERSAL PROGRESS SYSTEM
+                const xp = minutes * 10; // 10 XP per minute of meditation
+                if (window.progressSystem) {
+                    await window.progressSystem.awardXP(xp, `${minutes}-minute meditation session`, 'meditation-mindfulness');
+                    await window.progressSystem.logActivity('meditation', 'meditation-mindfulness', {
+                        duration: minutes,
+                        type: this.currentSession?.type || 'unknown'
+                    });
+                }
+
+                this.showCompletionNotification(minutes);
+            }
+
+            updateStreak() {
+                const today = new Date().toDateString();
+                const last = this.progress.lastSession ? new Date(this.progress.lastSession).toDateString() : null;
+                
+                if (last === today) {
+                    return;
+                } else if (last === new Date(Date.now() - 86400000).toDateString()) {
+                    this.progress.streak++;
+                } else {
+                    this.progress.streak = 1;
+                }
+                
+                this.progress.lastSession = new Date().toISOString();
+            }
+
+            checkAchievements(sessionMinutes) {
+                const newAchievements = [];
+
+                // First session
+                if (this.progress.sessions === 1) {
+                    newAchievements.push({
+                        id: 'first_session',
+                        icon: '🌱',
+                        title: 'First Steps',
+                        description: 'Completed your first meditation'
+                    });
+                }
+
+                // Time milestones
+                if (this.progress.totalMinutes >= 60 && !this.hasAchievement('hour_master')) {
+                    newAchievements.push({
+                        id: 'hour_master',
+                        icon: '⏰',
+                        title: 'Hour of Peace',
+                        description: 'Meditated for 1 hour total'
+                    });
+                }
+
+                if (this.progress.totalMinutes >= 600 && !this.hasAchievement('zen_master')) {
+                    newAchievements.push({
+                        id: 'zen_master',
+                        icon: '🧘',
+                        title: 'Zen Master',
+                        description: 'Achieved 10 hours of meditation'
+                    });
+                }
+
+                // Streak achievements
+                if (this.progress.streak >= 7 && !this.hasAchievement('week_warrior')) {
+                    newAchievements.push({
+                        id: 'week_warrior',
+                        icon: '🔥',
+                        title: 'Week Warrior',
+                        description: '7-day meditation streak'
+                    });
+                }
+
+                if (this.progress.streak >= 30 && !this.hasAchievement('month_master')) {
+                    newAchievements.push({
+                        id: 'month_master',
+                        icon: '👑',
+                        title: 'Month Master',
+                        description: '30-day meditation streak'
+                    });
+                }
+
+                // Show new achievements
+                newAchievements.forEach(achievement => {
+                    this.progress.achievements.push(achievement);
+                    this.showAchievementNotification(achievement);
+                });
+            }
+
+            hasAchievement(id) {
+                return this.progress.achievements.some(a => a.id === id);
+            }
+
+            // ==================== PRACTICE SESSIONS ====================
+            openPractice(type) {
+                this.currentSession = { type, startTime: Date.now() };
+                document.getElementById('modal-title').textContent = this.getPracticeTitle(type);
+                
+                const content = this.getPracticeContent(type);
+                document.getElementById('modal-content').innerHTML = content;
+                document.getElementById('meditation-modal').classList.add('open');
+
+                // Initialize practice-specific features
+                if (type === 'breathing') {
+                    this.initBreathingInterface();
+                } else if (type === 'chakra') {
+                    this.initChakraInterface();
+                }
+            }
+
+            getPracticeTitle(type) {
+                const titles = {
+                    guided: 'Guided Meditation',
+                    breathing: 'Breathing Exercises',
+                    chakra: 'Chakra Balancing',
+                    mindfulness: 'Mindfulness Practice',
+                    lovingkindness: 'Loving-Kindness Meditation',
+                    silent: 'Silent Meditation'
+                };
+                return titles[type] || 'Meditation';
+            }
+
+            getPracticeContent(type) {
+                switch (type) {
+                    case 'guided':
+                        return this.getGuidedContent();
+                    case 'breathing':
+                        return this.getBreathingContent();
+                    case 'chakra':
+                        return this.getChakraContent();
+                    case 'mindfulness':
+                        return this.getMindfulnessContent();
+                    case 'lovingkindness':
+                        return this.getLovingKindnessContent();
+                    case 'silent':
+                        return this.getSilentContent();
+                    default:
+                        return '<div class="loading">Loading...</div>';
+                }
+            }
+
+            // ==================== GUIDED MEDITATION ====================
+            getGuidedContent() {
+                return `
+                    <div class="session-interface">
+                        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                            Choose your meditation duration:
+                        </p>
+                        
+                        <div class="technique-grid">
+                            <div class="technique-card" onclick="meditationApp.startGuided(5)">
+                                <div class="technique-icon">⏱️</div>
+                                <div class="technique-name">5 Minutes</div>
+                                <div class="technique-description">Quick relaxation</div>
+                            </div>
+                            <div class="technique-card" onclick="meditationApp.startGuided(10)">
+                                <div class="technique-icon">🧘</div>
+                                <div class="technique-name">10 Minutes</div>
+                                <div class="technique-description">Deep calm</div>
+                            </div>
+                            <div class="technique-card" onclick="meditationApp.startGuided(15)">
+                                <div class="technique-icon">🌟</div>
+                                <div class="technique-name">15 Minutes</div>
+                                <div class="technique-description">Full practice</div>
+                            </div>
+                            <div class="technique-card" onclick="meditationApp.startGuided(20)">
+                                <div class="technique-icon">✨</div>
+                                <div class="technique-name">20 Minutes</div>
+                                <div class="technique-description">Complete journey</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            startGuided(minutes) {
+                const seconds = minutes * 60;
+                const content = `
+                    <div class="session-interface">
+                        <div class="session-timer" id="session-timer">${this.formatTime(seconds)}</div>
+                        <div class="session-phase" id="session-phase">Preparing your space...</div>
+                        
+                        <div class="session-guide" id="session-guide">
+                            Find a comfortable position. Close your eyes gently...
+                        </div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-bar" id="progress-bar"></div>
+                        </div>
+                        
+                        <div class="affirmation-display" id="affirmation-display">
+                            ${this.affirmations[0]}
+                        </div>
+                        
+                        <div class="session-controls">
+                            <button class="control-btn" onclick="meditationApp.pauseSession()" id="pause-btn">Pause</button>
+                            <button class="control-btn" onclick="meditationApp.stopSession()">End Session</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('modal-content').innerHTML = content;
+                this.startSessionTimer(seconds);
+                this.startAffirmationCycle();
+                this.startGuidedScript(minutes);
+            }
+
+            startGuidedScript(minutes) {
+                const script = [
+                    { time: 0, text: "Welcome to your meditation. Let's begin by settling in..." },
+                    { time: 30, text: "Take three deep breaths. Feel your body relaxing..." },
+                    { time: 60, text: "Release any tension in your shoulders and jaw..." },
+                    { time: 120, text: "Notice your breathing. No need to change it, just observe..." },
+                    { time: 180, text: "If thoughts arise, gently let them pass like clouds..." },
+                    { time: Math.floor(minutes * 60 * 0.5), text: "You're doing beautifully. Stay present..." },
+                    { time: Math.floor(minutes * 60 * 0.75), text: "Begin to deepen your breath..." },
+                    { time: Math.floor(minutes * 60 * 0.9), text: "Slowly bring your awareness back..." },
+                    { time: minutes * 60 - 30, text: "When you're ready, gently open your eyes..." }
+                ];
+
+                script.forEach(step => {
+                    setTimeout(() => {
+                        const guide = document.getElementById('session-guide');
+                        if (guide && this.sessionTimer) {
+                            guide.textContent = step.text;
+                        }
+                    }, step.time * 1000);
+                });
+            }
+
+            // ==================== BREATHING EXERCISES ====================
+            getBreathingContent() {
+                return `
+                    <div class="session-interface">
+                        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                            Select a breathing technique:
+                        </p>
+                        
+                        <div class="technique-grid">
+                            <div class="technique-card" onclick="meditationApp.selectBreathing('box')">
+                                <div class="technique-icon">⬜</div>
+                                <div class="technique-name">Box Breathing</div>
+                                <div class="technique-description">4-4-4-4 pattern</div>
+                            </div>
+                            <div class="technique-card" onclick="meditationApp.selectBreathing('478')">
+                                <div class="technique-icon">🌙</div>
+                                <div class="technique-name">4-7-8 Breathing</div>
+                                <div class="technique-description">Deep relaxation</div>
+                            </div>
+                            <div class="technique-card" onclick="meditationApp.selectBreathing('energizing')">
+                                <div class="technique-icon">⚡</div>
+                                <div class="technique-name">Energizing Breath</div>
+                                <div class="technique-description">Quick energy</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            selectBreathing(technique) {
+                const tech = this.breathingTechniques[technique];
+                const content = `
+                    <div class="session-interface">
+                        <h3 style="color: var(--accent-blue); margin-bottom: 1rem;">${tech.name}</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 2rem;">${tech.description}</p>
+                        
+                        <div class="breathing-circle" id="breathing-circle">
+                            <div class="breath-count" id="breath-count">4</div>
+                        </div>
+                        
+                        <div class="session-phase" id="breath-phase">Inhale</div>
+                        <div class="session-guide" id="breath-instruction">Breathe in slowly...</div>
+                        
+                        <div style="text-align: center; margin: 2rem 0; color: var(--text-muted);">
+                            Cycles: <span id="breath-cycles" style="color: var(--accent-blue); font-weight: 600;">0</span>
+                        </div>
+                        
+                        <div class="session-controls">
+                            <button class="control-btn primary" onclick="meditationApp.toggleBreathing()" id="breath-toggle">Start</button>
+                            <button class="control-btn" onclick="meditationApp.stopBreathing()">Stop</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('modal-content').innerHTML = content;
+                this.currentSession.breathingTechnique = technique;
+                this.currentSession.breathingCycles = 0;
+            }
+
+            initBreathingInterface() {
+                // Interface is ready
+            }
+
+            toggleBreathing() {
+                const btn = document.getElementById('breath-toggle');
+                
+                if (this.breathingTimer) {
+                    this.pauseBreathing();
+                    btn.textContent = 'Resume';
+                } else {
+                    this.startBreathing();
+                    btn.textContent = 'Pause';
+                }
+            }
+
+            startBreathing() {
+                const technique = this.breathingTechniques[this.currentSession.breathingTechnique];
+                let phaseIndex = 0;
+                let countdown = technique.phases[0].duration;
+                
+                const circle = document.getElementById('breathing-circle');
+                const phase = document.getElementById('breath-phase');
+                const instruction = document.getElementById('breath-instruction');
+                const count = document.getElementById('breath-count');
+                
+                this.breathingTimer = setInterval(() => {
+                    countdown--;
+                    count.textContent = countdown;
+                    
+                    if (countdown === 0) {
+                        phaseIndex++;
+                        
+                        if (phaseIndex >= technique.phases.length) {
+                            phaseIndex = 0;
+                            this.currentSession.breathingCycles++;
+                            document.getElementById('breath-cycles').textContent = this.currentSession.breathingCycles;
+                        }
+                        
+                        const currentPhase = technique.phases[phaseIndex];
+                        countdown = currentPhase.duration;
+                        phase.textContent = currentPhase.name;
+                        instruction.textContent = currentPhase.instruction;
+                        
+                        // Animate circle
+                        circle.className = 'breathing-circle';
+                        if (currentPhase.name === 'Inhale') {
+                            circle.classList.add('inhale');
+                        } else if (currentPhase.name === 'Exhale') {
+                            circle.classList.add('exhale');
+                        } else if (currentPhase.name === 'Hold') {
+                            circle.classList.add('hold');
+                        }
+                    }
+                }, 1000);
+            }
+
+            pauseBreathing() {
+                if (this.breathingTimer) {
+                    clearInterval(this.breathingTimer);
+                    this.breathingTimer = null;
+                }
+            }
+
+            stopBreathing() {
+                this.pauseBreathing();
+                if (this.currentSession.breathingCycles > 0) {
+                    const minutes = Math.floor(this.currentSession.breathingCycles * 0.5);
+                    this.completeSession(Math.max(1, minutes));
+                }
+                this.closeModal();
+            }
+
+            // ==================== CHAKRA BALANCING ====================
+            getChakraContent() {
+                const chakraHtml = this.chakras.map((chakra, index) => `
+                    <div class="chakra-item" style="background: ${chakra.color}" 
+                         onclick="meditationApp.selectChakra(${index})"
+                         data-chakra="${index}">
+                        <div class="chakra-symbol">${chakra.symbol}</div>
+                        <div class="chakra-name">${chakra.name}</div>
+                        <div class="chakra-frequency">${chakra.frequency}Hz</div>
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="session-interface">
+                        <p style="color: var(--text-secondary); margin-bottom: 2rem; text-align: center;">
+                            Select a chakra to balance, or start a full 7-chakra journey
+                        </p>
+                        
+                        <div class="chakra-wheel">
+                            ${chakraHtml}
+                        </div>
+                        
+                        <div id="chakra-session" style="display: none;">
+                            <div class="session-timer" id="chakra-timer">05:00</div>
+                            <div class="session-phase" id="chakra-phase"></div>
+                            <div class="session-guide" id="chakra-guide"></div>
+                            
+                            <div class="progress-container">
+                                <div class="progress-bar" id="chakra-progress"></div>
+                            </div>
+                            
+                            <div class="affirmation-display" id="chakra-affirmation"></div>
+                            
+                            <div class="session-controls">
+                                <button class="control-btn" onclick="meditationApp.stopChakra()">Stop</button>
+                            </div>
+                        </div>
+                        
+                        <div class="session-controls">
+                            <button class="control-btn primary" onclick="meditationApp.startFullChakra()">
+                                Full Chakra Journey (21 min)
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            initChakraInterface() {
+                // Interface ready
+            }
+
+            selectChakra(index) {
+                document.querySelectorAll('.chakra-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector(`[data-chakra="${index}"]`).classList.add('active');
+                
+                const chakra = this.chakras[index];
+                this.startChakraSession(chakra);
+            }
+
+            startChakraSession(chakra) {
+                document.getElementById('chakra-session').style.display = 'block';
+                
+                const phase = document.getElementById('chakra-phase');
+                const guide = document.getElementById('chakra-guide');
+                const affirmation = document.getElementById('chakra-affirmation');
+                
+                phase.textContent = `${chakra.symbol} ${chakra.name} Chakra`;
+                guide.textContent = `Focus on your ${chakra.name.toLowerCase()} chakra. Visualize ${chakra.color} healing light.`;
+                affirmation.textContent = this.getChakraAffirmation(chakra.name);
+                
+                this.playHealingTone(chakra.frequency);
+                this.startSessionTimer(300); // 5 minutes
+            }
+
+            startFullChakra() {
+                this.currentSession.chakraIndex = 0;
+                this.startNextChakra();
+            }
+
+            startNextChakra() {
+                if (this.currentSession.chakraIndex >= this.chakras.length) {
+                    this.completeSession(21);
+                    this.closeModal();
+                    return;
+                }
+                
+                const chakra = this.chakras[this.currentSession.chakraIndex];
+                this.selectChakra(this.currentSession.chakraIndex);
+                
+                setTimeout(() => {
+                    this.currentSession.chakraIndex++;
+                    this.startNextChakra();
+                }, 180000); // 3 minutes per chakra
+            }
+
+            stopChakra() {
+                this.stopSession();
+                this.closeModal();
+            }
+
+            getChakraAffirmation(chakraName) {
+                const affirmations = {
+                    'Root': 'I am grounded, safe, and secure',
+                    'Sacral': 'I embrace creativity and flow',
+                    'Solar Plexus': 'I am confident in my power',
+                    'Heart': 'I give and receive love freely',
+                    'Throat': 'I speak my truth clearly',
+                    'Third Eye': 'I trust my intuition',
+                    'Crown': 'I am connected to divine wisdom'
+                };
+                return affirmations[chakraName] || 'I am balanced';
+            }
+
+            // ==================== OTHER PRACTICES ====================
+            getMindfulnessContent() {
+                return `
+                    <div class="session-interface">
+                        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                            Mindfulness practices for present-moment awareness:
+                        </p>
+                        
+                        <div class="technique-grid">
+                            <div class="technique-card" onclick="meditationApp.startTimed('Body Scan', 10)">
+                                <div class="technique-icon">🧍</div>
+                                <div class="technique-name">Body Scan</div>
+                                <div class="technique-description">10 minutes</div>
+                            </div>
+                            <div class="technique-card" onclick="meditationApp.startTimed('Mindful Breathing', 5)">
+                                <div class="technique-icon">🌬️</div>
+                                <div class="technique-name">Mindful Breathing</div>
+                                <div class="technique-description">5 minutes</div>
+                            </div>
+                            <div class="technique-card" onclick="meditationApp.startTimed('Present Moment', 15)">
+                                <div class="technique-icon">⏰</div>
+                                <div class="technique-name">Present Moment</div>
+                                <div class="technique-description">15 minutes</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            getLovingKindnessContent() {
+                return `
+                    <div class="session-interface">
+                        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                            Cultivate compassion and loving-kindness:
+                        </p>
+                        
+                        <div class="technique-grid">
+                            <div class="technique-card" onclick="meditationApp.startTimed('Self-Compassion', 10)">
+                                <div class="technique-icon">💖</div>
+                                <div class="technique-name">Self-Compassion</div>
+                                <div class="technique-description">10 minutes</div>
+                            </div>
+                            <div class="technique-card" onclick="meditationApp.startTimed('Universal Love', 15)">
+                                <div class="technique-icon">🌍</div>
+                                <div class="technique-name">Universal Love</div>
+                                <div class="technique-description">15 minutes</div>
+                            </div>
+                            <div class="technique-card" onclick="meditationApp.startTimed('Heart Opening', 20)">
+                                <div class="technique-icon">💝</div>
+                                <div class="technique-name">Heart Opening</div>
+                                <div class="technique-description">20 minutes</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            getSilentContent() {
+                return `
+                    <div class="session-interface">
+                        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                            Silent meditation with interval bells:
+                        </p>
+                        
+                        <div class="technique-grid">
+                            <div class="technique-card" onclick="meditationApp.startSilent(5)">
+                                <div class="technique-icon">⏱️</div>
+                                <div class="technique-name">5 Minutes</div>
+                                <div class="technique-description">Quick session</div>
+                            </div>
+                            <div class="technique-card" onclick="meditationApp.startSilent(15)">
+                                <div class="technique-icon">🕐</div>
+                                <div class="technique-name">15 Minutes</div>
+                                <div class="technique-description">Standard session</div>
+                            </div>
+                            <div class="technique-card" onclick="meditationApp.startSilent(30)">
+                                <div class="technique-icon">🕰️</div>
+                                <div class="technique-name">30 Minutes</div>
+                                <div class="technique-description">Deep practice</div>
+                            </div>
+                            <div class="technique-card" onclick="meditationApp.startSilent(60)">
+                                <div class="technique-icon">⏳</div>
+                                <div class="technique-name">60 Minutes</div>
+                                <div class="technique-description">Extended sit</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            startTimed(name, minutes) {
+                this.startGuided(minutes);
+                document.getElementById('session-phase').textContent = name;
+            }
+
+            startSilent(minutes) {
+                const seconds = minutes * 60;
+                const content = `
+                    <div class="session-interface">
+                        <div class="session-timer" id="session-timer">${this.formatTime(seconds)}</div>
+                        <div class="session-phase">Silent Meditation</div>
+                        
+                        <div style="font-size: 3rem; margin: 3rem 0;">🤫</div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-bar" id="progress-bar"></div>
+                        </div>
+                        
+                        <div class="session-controls">
+                            <button class="control-btn" onclick="meditationApp.pauseSession()" id="pause-btn">Pause</button>
+                            <button class="control-btn" onclick="meditationApp.stopSession()">End Session</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('modal-content').innerHTML = content;
+                this.startSessionTimer(seconds);
+                
+                // Play bell at start
+                this.playBell();
+                
+                // Play interval bells
+                const intervalTime = Math.floor(seconds / 3);
+                setTimeout(() => this.playBell(), intervalTime * 1000);
+                setTimeout(() => this.playBell(), intervalTime * 2000);
+            }
+
+            // ==================== SESSION CONTROL ====================
+            startSessionTimer(seconds) {
+                this.currentSession.totalSeconds = seconds;
+                this.currentSession.remainingSeconds = seconds;
+                this.currentSession.isPaused = false;
+                
+                const updateTimer = () => {
+                    if (this.currentSession.isPaused) return;
+                    
+                    this.currentSession.remainingSeconds--;
+                    
+                    const timer = document.getElementById('session-timer') || document.getElementById('chakra-timer');
+                    if (timer) {
+                        timer.textContent = this.formatTime(this.currentSession.remainingSeconds);
+                    }
+                    
+                    const progressBar = document.getElementById('progress-bar') || document.getElementById('chakra-progress');
+                    if (progressBar) {
+                        const progress = ((this.currentSession.totalSeconds - this.currentSession.remainingSeconds) / this.currentSession.totalSeconds) * 100;
+                        progressBar.style.width = progress + '%';
+                    }
+                    
+                    if (this.currentSession.remainingSeconds <= 0) {
+                        const minutes = Math.ceil(this.currentSession.totalSeconds / 60);
+                        this.completeSession(minutes);
+                        this.closeModal();
+                    }
+                };
+                
+                this.sessionTimer = setInterval(updateTimer, 1000);
+            }
+
+            pauseSession() {
+                const btn = document.getElementById('pause-btn');
+                this.currentSession.isPaused = !this.currentSession.isPaused;
+                btn.textContent = this.currentSession.isPaused ? 'Resume' : 'Pause';
+            }
+
+            stopSession() {
+                this.cleanup();
+                
+                if (this.currentSession && this.currentSession.startTime) {
+                    const elapsed = Date.now() - this.currentSession.startTime;
+                    const minutes = Math.floor(elapsed / 60000);
+                    if (minutes >= 1) {
+                        this.completeSession(minutes);
+                    }
+                }
+            }
+
+            startAffirmationCycle() {
+                let index = 0;
+                const cycleAffirmations = () => {
+                    const display = document.getElementById('affirmation-display');
+                    if (display) {
+                        display.textContent = this.affirmations[index];
+                        index = (index + 1) % this.affirmations.length;
+                    }
+                };
+                
+                cycleAffirmations();
+                this.currentSession.affirmationInterval = setInterval(cycleAffirmations, 15000);
+            }
+
+            // ==================== AUDIO ====================
+            playHealingTone(frequency) {
+                if (!this.audioContext) return;
+                
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                
+                oscillator.frequency.value = frequency;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.05, this.audioContext.currentTime + 1);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 10);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                oscillator.start();
+                oscillator.stop(this.audioContext.currentTime + 10);
+                
+                this.audioNodes.push({ oscillator, gainNode });
+            }
+
+            playBell() {
+                if (!this.audioContext) return;
+                
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                
+                oscillator.frequency.value = 528; // Healing frequency
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 3);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                oscillator.start();
+                oscillator.stop(this.audioContext.currentTime + 3);
+            }
+
+            // ==================== NOTIFICATIONS ====================
+            showCompletionNotification(minutes) {
+                this.showToast(`
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🧘</div>
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">Session Complete!</div>
+                        <div style="font-size: 0.9rem; opacity: 0.9;">${minutes} minutes • Total: ${this.progress.totalMinutes} min • Streak: ${this.progress.streak} days</div>
+                    </div>
+                `, 'success');
+            }
+
+            showAchievementNotification(achievement) {
+                this.showToast(`
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">${achievement.icon}</div>
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">🏆 ${achievement.title}</div>
+                        <div style="font-size: 0.9rem; opacity: 0.9;">${achievement.description}</div>
+                    </div>
+                `, 'achievement');
+            }
+
+            showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.innerHTML = message;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => toast.remove(), 4000);
+            }
+
+            // ==================== CLEANUP ====================
+            cleanup() {
+                if (this.sessionTimer) {
+                    clearInterval(this.sessionTimer);
+                    this.sessionTimer = null;
+                }
+                
+                if (this.breathingTimer) {
+                    clearInterval(this.breathingTimer);
+                    this.breathingTimer = null;
+                }
+                
+                if (this.currentSession?.affirmationInterval) {
+                    clearInterval(this.currentSession.affirmationInterval);
+                }
+                
+                this.audioNodes.forEach(node => {
+                    try {
+                        node.oscillator.stop();
+                    } catch (e) {
+                        // Already stopped
+                    }
+                });
+                this.audioNodes = [];
+            }
+
+            closeModal() {
+                this.cleanup();
+                document.getElementById('meditation-modal').classList.remove('open');
+                this.currentSession = null;
+            }
+
+            // ==================== AUDIO TRACK PLAY TRACKING ====================
+            trackPlay(trackName, minutes) {
+                console.log(`▶️ Playing: ${trackName}`);
+
+                // Award XP for listening to meditation audio
+                if (window.progressSystem) {
+                    const xp = minutes * 10; // 10 XP per minute
+                    window.progressSystem.awardXP(xp, `Listened to ${trackName}`, 'meditation-mindfulness');
+                    window.progressSystem.logActivity('meditation_audio_play', 'meditation-mindfulness', {
+                        track: trackName,
+                        duration: minutes
+                    });
+                }
+
+                // Show toast notification
+                this.showToast(`
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">▶️</div>
+                        <div style="font-weight: 600;">Playing: ${trackName}</div>
+                        <div style="font-size: 0.85rem; opacity: 0.9; margin-top: 0.25rem;">${minutes} minutes • +${minutes * 10} XP</div>
+                    </div>
+                `, 'success');
+            }
+
+            // ==================== UTILITIES ====================
+            formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // ==================== INITIALIZE ====================
+        let meditationApp;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            meditationApp = new MeditationApp();
+            console.log('🧘 Meditation & Mindfulness ready');
+        });
+
+        function goBack() {
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage('back', '*');
+            } else {
+                window.history.back();
+            }
+        }
+
+        // Close modal on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && meditationApp) {
+                meditationApp.closeModal();
+            }
+        });
+
+        // Close modal on outside click
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                meditationApp.closeModal();
+            }
+        });
+
+        // Gaia meditation click tracking
+        function trackGaiaMeditationClick() {
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(5, 'Explored Gaia meditation videos', 'meditation-mindfulness');
+                window.progressSystem.logActivity('gaia_affiliate_click', 'meditation-mindfulness', {
+                    source: 'meditation-section'
+                });
+            }
+            console.log('🧘 Gaia meditation affiliate link clicked');
+        }
+
+        console.log('✨ Meditation & Mindfulness loaded successfully');
+    </script>
+</body>
+</html>

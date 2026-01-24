@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Spiritual Resources | Eden Consciousness</title>
+    <meta name="description" content="Access free spiritual tools and resources from Eden Consciousness. Download free chapter, use Enoch calendar calculator, get daily oracle cards, manifestation templates, and guided meditations.">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Free Spiritual Resources | Eden Consciousness">
+    <meta property="og:description" content="Transform your spiritual journey with our free tools and resources.">
+    <meta property="og:image" content="https://i.imgur.com/LYVHJr5.jpeg">
+    <meta property="og:url" content="https://nazarite777.github.io/divine-temple/resources.html">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- jQuery for form handling -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-primary: #0A0E27;
+            --accent-gold: #F59E0B;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #3B82F6;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A1A1AA;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --background-dark: #0A0E27;
+            --background-gradient: #1a1f3a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0A0E27 0%, #1a1f3a 50%, #0A0E27 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
+            border-color: var(--accent-gold);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header & Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-nav {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .cta-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.6);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 0 4rem;
+            background: linear-gradient(135deg, #0A0E27 0%, #1a1f3a 50%, #0A0E27 100%);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="stars" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23F59E0B" opacity="0.3"/><circle cx="75" cy="75" r="0.5" fill="%23A78BFA" opacity="0.4"/></pattern></defs><rect width="100%" height="100%" fill="url(%23stars)"/></svg>') repeat;
+            opacity: 0.1;
+            animation: starfield 20s linear infinite;
+        }
+
+        @keyframes starfield {
+            from { transform: translateY(0); }
+            to { transform: translateY(-100px); }
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Resources Grid */
+        .resources-section {
+            padding: 6rem 0;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .resource-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resource-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.1), transparent);
+            transition: all 0.8s ease;
+        }
+
+        .resource-card:hover::before {
+            left: 100%;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
+            border-color: var(--accent-gold);
+        }
+
+        .resource-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .resource-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--accent-gold);
+            text-align: center;
+        }
+
+        .resource-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        /* Form Styles */
+        .email-form {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .email-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .email-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-gold), #FBBF24);
+            color: var(--background-dark);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6);
+        }
+
+        /* Input button specific styles */
+        input.btn-primary {
+            border: none;
+            background: linear-gradient(135deg, var(--accent-gold), #FBBF24);
+            color: var(--background-dark);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        input.btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: var(--glass-bg);
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        /* Calculator Styles */
+        .calculator {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .calc-input {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .calc-result {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Oracle Card Styles */
+        .oracle-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(245, 158, 11, 0.2));
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 1rem;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .oracle-card h4 {
+            color: var(--accent-gold);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .oracle-message {
+            font-style: italic;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        /* Audio Player Styles */
+        .audio-player {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .audio-player audio {
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-primary);
+            padding: 4rem 0 2rem;
+            border-top: 1px solid var(--glass-border);
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent-gold);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .email-form {
+                flex-direction: column;
+            }
+
+            .email-input {
+                min-width: 100%;
+            }
+        }
+
+        /* Mailchimp Form Styling */
+        .mailchimp-container {
+            margin-top: 1.5rem;
+        }
+        
+        .mailchimp-container form {
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            width: 100% !important;
+            font-family: inherit !important;
+        }
+        
+        .mailchimp-container .mc-field-group {
+            display: none;
+        }
+        
+        .mailchimp-container input[type="email"] {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid var(--glass-border) !important;
+            color: white !important;
+            font-family: inherit !important;
+            border-radius: 25px !important;
+            padding: 0.75rem 1rem !important;
+        }
+        
+        .mailchimp-container input[type="email"]:focus {
+            border-color: var(--accent-gold) !important;
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2) !important;
+        }
+        
+        .mailchimp-container input[type="email"]::placeholder {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        
+        .response {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        #mce-error-response {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #FCA5A5;
+        }
+        
+        #mce-success-response {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86EFAC;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="https://github.com/nazarite777/divine-temple/blob/main/logoyogabg.png?raw=true" alt="Eden Consciousness Logo">
+                <span class="logo-text">Eden Consciousness</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#book">Book</a></li>
+                <li><a href="audiobook.html">Audiobook</a></li>
+                <li><a href="index.html#temple">Temple</a></li>
+                <li><a href="members-new.html">Member Portal</a></li>
+                <li><a href="testimonials.html">Testimonials</a></li>
+                <li><a href="resources.html">Resources</a></li>
+            </ul>
+            <a href="https://square.link/u/xuKzAPeA" class="cta-nav">Join Temple</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Free Spiritual Resources</h1>
+            <p>Access powerful tools and resources to accelerate your spiritual journey. Each resource includes instant access and ongoing support through our community.</p>
+            
+            <!-- Member Portal Access -->
+            <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(245, 158, 11, 0.2)); border-radius: 20px; padding: 2rem; margin: 2rem auto; max-width: 600px; text-align: center; border: 1px solid var(--glass-border);">
+                <h3 style="color: var(--accent-gold); margin-bottom: 1rem; font-size: 1.3rem;">🏛️ Ready for the Full Experience?</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Access 18+ premium spiritual tools, advanced practices, and exclusive content in the Divine Temple Member Portal.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="members-new.html" style="background: linear-gradient(135deg, var(--accent-gold), #FBBF24); color: var(--bg-primary); padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        ✨ Member Portal
+                    </a>
+                    <a href="https://square.link/u/xuKzAPeA" style="background: transparent; color: var(--accent-gold); border: 2px solid var(--accent-gold); padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;">
+                        Join Temple
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section class="resources-section">
+        <div class="container">
+            <div class="resources-grid">
+                
+                <!-- Free Chapter Download -->
+                <div class="resource-card">
+                    <div class="resource-icon">📖</div>
+                    <h3>Free Chapter Download</h3>
+                    <p>Get the first chapter of "Ya Heard Me" and begin your journey back to divine consciousness. Instant delivery to your inbox.</p>
+                    
+                    <!-- Begin Mailchimp Signup Form -->
+                    <div id="mc_embed_shell_1">
+                        <link href="//cdn-images.mailchimp.com/embedcode/classic-061523.css" rel="stylesheet" type="text/css">
+                        <style type="text/css">
+                            #mc_embed_signup_1{
+                                background: var(--glass-bg) !important; 
+                                backdrop-filter: blur(20px);
+                                border: 1px solid var(--glass-border) !important;
+                                border-radius: 15px !important;
+                                clear:left; 
+                                font:14px Inter,Arial,sans-serif !important; 
+                                width: 100% !important;
+                                max-width: 100% !important;
+                                padding: 1rem !important;
+                                margin-top: 1.5rem;
+                            }
+                            #mc_embed_signup_1 h2 {
+                                color: var(--accent-gold) !important;
+                                font-family: 'Playfair Display', serif !important;
+                                font-size: 1.2rem !important;
+                                margin-bottom: 1rem !important;
+                            }
+                            #mc_embed_signup_1 input[type="email"] {
+                                background: rgba(255, 255, 255, 0.1) !important;
+                                border: 1px solid var(--glass-border) !important;
+                                border-radius: 25px !important;
+                                color: white !important;
+                                padding: 0.75rem 1rem !important;
+                                width: 100% !important;
+                                margin: 0.5rem 0 !important;
+                            }
+                            #mc_embed_signup_1 input[type="email"]::placeholder {
+                                color: rgba(255, 255, 255, 0.7) !important;
+                            }
+                            #mc_embed_signup_1 input[type="submit"] {
+                                background: linear-gradient(135deg, var(--accent-gold), #FBBF24) !important;
+                                border: none !important;
+                                border-radius: 25px !important;
+                                color: var(--bg-primary) !important;
+                                padding: 0.75rem 1.5rem !important;
+                                font-weight: 600 !important;
+                                cursor: pointer !important;
+                                transition: all 0.3s ease !important;
+                            }
+                            #mc_embed_signup_1 input[type="submit"]:hover {
+                                transform: translateY(-2px) !important;
+                                box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6) !important;
+                            }
+                            #mc_embed_signup_1 label {
+                                color: var(--text-secondary) !important;
+                                font-weight: 500 !important;
+                            }
+                            #mc_embed_signup_1 .indicates-required {
+                                color: var(--text-secondary) !important;
+                                font-size: 0.8rem !important;
+                            }
+                            #mc_embed_signup_1 .response {
+                                margin-top: 1rem !important;
+                                padding: 0.75rem !important;
+                                border-radius: 8px !important;
+                                font-weight: 500 !important;
+                            }
+                            #mc_embed_signup_1 #mce-error-response {
+                                background: rgba(239, 68, 68, 0.2) !important;
+                                border: 1px solid rgba(239, 68, 68, 0.3) !important;
+                                color: #FCA5A5 !important;
+                            }
+                            #mc_embed_signup_1 #mce-success-response {
+                                background: rgba(34, 197, 94, 0.2) !important;
+                                border: 1px solid rgba(34, 197, 94, 0.3) !important;
+                                color: #86EFAC !important;
+                            }
+                        </style>
+                        <div id="mc_embed_signup_1">
+                            <form action="https://gmail.us9.list-manage.com/subscribe/post?u=53f0baf84fb1bc8c515e6f731&amp;id=0005a32626" method="post" id="mc-embedded-subscribe-form-1" name="mc-embedded-subscribe-form" class="validate">
+                                <div id="mc_embed_signup_scroll_1">
+                                    <h2>Get Free Chapter</h2>
+                                    <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+                                    <div class="mc-field-group">
+                                        <label for="mce-EMAIL-1">Email Address <span class="asterisk">*</span></label>
+                                        <input type="email" name="EMAIL" class="required email" id="mce-EMAIL-1" required="" value="" placeholder="Enter your email address">
+                                    </div>
+                                    <input type="hidden" name="tags" value="free-chapter">
+                                    <div id="mce-responses-1" class="clear">
+                                        <div class="response" id="mce-error-response-1" style="display: none;"></div>
+                                        <div class="response" id="mce-success-response-1" style="display: none;"></div>
+                                    </div>
+                                    <div aria-hidden="true" style="position: absolute; left: -5000px;">
+                                        <input type="text" name="b_53f0baf84fb1bc8c515e6f731_0005a32626" tabindex="-1" value="">
+                                    </div>
+                                    <div class="clear">
+                                        <input type="submit" name="subscribe" id="mc-embedded-subscribe-1" class="button" value="Get Free Chapter">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <script type="text/javascript">
+                            (function($) {
+                                window.fnames = new Array(); 
+                                window.ftypes = new Array();
+                                fnames[0]='EMAIL';ftypes[0]='email';
+                                fnames[1]='FNAME';ftypes[1]='text';
+                                fnames[2]='LNAME';ftypes[2]='text';
+                                fnames[3]='ADDRESS';ftypes[3]='address';
+                                fnames[4]='PHONE';ftypes[4]='phone';
+                                fnames[5]='BIRTHDAY';ftypes[5]='birthday';
+                                fnames[6]='COMPANY';ftypes[6]='text';
+                            }(jQuery));
+                            var $mcj = jQuery.noConflict(true);
+                        </script>
+                    </div>
+                    <!-- End Mailchimp Signup Form -->
+                </div>
+
+                <!-- Enoch Calendar Calculator -->
+                <div class="resource-card">
+                    <div class="resource-icon">📅</div>
+                    <h3>Enoch Calendar Calculator</h3>
+                    <p>Calculate sacred dates and align with divine timing using the ancient Enoch calendar system.</p>
+                    
+                    <div class="calculator">
+                        <input type="date" class="calc-input" id="gregorianDate" placeholder="Select Gregorian Date">
+                        <button type="button" class="btn btn-secondary" onclick="calculateEnochDate()">Calculate Enoch Date</button>
+                        <div id="enochResult" class="calc-result" style="display: none;">
+                            <strong>Enoch Date:</strong> <span id="enochDateDisplay"></span><br>
+                            <strong>Sacred Season:</strong> <span id="seasonDisplay"></span>
+                        </div>
+                    </div>
+
+                    <div id="mc_embed_shell_2">
+                        <style type="text/css">
+                            #mc_embed_signup_2{
+                                background: var(--glass-bg) !important; 
+                                backdrop-filter: blur(20px);
+                                border: 1px solid var(--glass-border) !important;
+                                border-radius: 15px !important;
+                                clear:left; 
+                                font:14px Inter,Arial,sans-serif !important; 
+                                width: 100% !important;
+                                max-width: 100% !important;
+                                padding: 1rem !important;
+                                margin-top: 1.5rem;
+                            }
+                            #mc_embed_signup_2 h2 {
+                                color: var(--accent-gold) !important;
+                                font-family: 'Playfair Display', serif !important;
+                                font-size: 1.2rem !important;
+                                margin-bottom: 1rem !important;
+                            }
+                            #mc_embed_signup_2 input[type="email"] {
+                                background: rgba(255, 255, 255, 0.1) !important;
+                                border: 1px solid var(--glass-border) !important;
+                                border-radius: 25px !important;
+                                color: white !important;
+                                padding: 0.75rem 1rem !important;
+                                width: 100% !important;
+                                margin: 0.5rem 0 !important;
+                            }
+                            #mc_embed_signup_2 input[type="submit"] {
+                                background: linear-gradient(135deg, var(--accent-gold), #FBBF24) !important;
+                                border: none !important;
+                                border-radius: 25px !important;
+                                color: var(--bg-primary) !important;
+                                padding: 0.75rem 1.5rem !important;
+                                font-weight: 600 !important;
+                                cursor: pointer !important;
+                            }
+                            #mc_embed_signup_2 label {
+                                color: var(--text-secondary) !important;
+                                font-weight: 500 !important;
+                            }
+                            #mc_embed_signup_2 .indicates-required {
+                                color: var(--text-secondary) !important;
+                                font-size: 0.8rem !important;
+                            }
+                        </style>
+                        <div id="mc_embed_signup_2">
+                            <form action="https://gmail.us9.list-manage.com/subscribe/post?u=53f0baf84fb1bc8c515e6f731&amp;id=0005a32626" method="post" id="mc-embedded-subscribe-form-2" name="mc-embedded-subscribe-form" class="validate">
+                                <div id="mc_embed_signup_scroll_2">
+                                    <h2>Get Calendar Guide</h2>
+                                    <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+                                    <div class="mc-field-group">
+                                        <label for="mce-EMAIL-2">Email Address <span class="asterisk">*</span></label>
+                                        <input type="email" name="EMAIL" class="required email" id="mce-EMAIL-2" required="" value="" placeholder="Get advanced calendar insights">
+                                    </div>
+                                    <input type="hidden" name="tags" value="enoch-calendar">
+                                    <div id="mce-responses-2" class="clear">
+                                        <div class="response" id="mce-error-response-2" style="display: none;"></div>
+                                        <div class="response" id="mce-success-response-2" style="display: none;"></div>
+                                    </div>
+                                    <div aria-hidden="true" style="position: absolute; left: -5000px;">
+                                        <input type="text" name="b_53f0baf84fb1bc8c515e6f731_0005a32626" tabindex="-1" value="">
+                                    </div>
+                                    <div class="clear">
+                                        <input type="submit" name="subscribe" id="mc-embedded-subscribe-2" class="button" value="Get Calendar Guide">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Oracle Cards -->
+                <div class="resource-card">
+                    <div class="resource-icon">🔮</div>
+                    <h3>Daily Oracle Cards</h3>
+                    <p>Receive divine guidance through our sacred oracle card system. New insights delivered daily.</p>
+                    
+                    <div class="oracle-card" id="oracleCard">
+                        <h4 id="cardTitle">Divine Guidance</h4>
+                        <p class="oracle-message" id="cardMessage">Click "Draw Card" to receive your daily message from the divine realm.</p>
+                        <button type="button" class="btn btn-secondary" onclick="drawOracleCard()">Draw Daily Card</button>
+                    </div>
+
+                    <div id="mc_embed_shell_3">
+                        <style type="text/css">
+                            #mc_embed_signup_3{background: var(--glass-bg) !important; backdrop-filter: blur(20px); border: 1px solid var(--glass-border) !important; border-radius: 15px !important; clear:left; font:14px Inter,Arial,sans-serif !important; width: 100% !important; max-width: 100% !important; padding: 1rem !important; margin-top: 1.5rem;}
+                            #mc_embed_signup_3 h2 {color: var(--accent-gold) !important; font-family: 'Playfair Display', serif !important; font-size: 1.2rem !important; margin-bottom: 1rem !important;}
+                            #mc_embed_signup_3 input[type="email"] {background: rgba(255, 255, 255, 0.1) !important; border: 1px solid var(--glass-border) !important; border-radius: 25px !important; color: white !important; padding: 0.75rem 1rem !important; width: 100% !important; margin: 0.5rem 0 !important;}
+                            #mc_embed_signup_3 input[type="submit"] {background: linear-gradient(135deg, var(--accent-gold), #FBBF24) !important; border: none !important; border-radius: 25px !important; color: var(--bg-primary) !important; padding: 0.75rem 1.5rem !important; font-weight: 600 !important; cursor: pointer !important;}
+                            #mc_embed_signup_3 label {color: var(--text-secondary) !important; font-weight: 500 !important;}
+                            #mc_embed_signup_3 .indicates-required {color: var(--text-secondary) !important; font-size: 0.8rem !important;}
+                        </style>
+                        <div id="mc_embed_signup_3">
+                            <form action="https://gmail.us9.list-manage.com/subscribe/post?u=53f0baf84fb1bc8c515e6f731&amp;id=0005a32626" method="post" id="mc-embedded-subscribe-form-3" name="mc-embedded-subscribe-form" class="validate">
+                                <div id="mc_embed_signup_scroll_3">
+                                    <h2>Daily Oracle Delivery</h2>
+                                    <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+                                    <div class="mc-field-group">
+                                        <label for="mce-EMAIL-3">Email Address <span class="asterisk">*</span></label>
+                                        <input type="email" name="EMAIL" class="required email" id="mce-EMAIL-3" required="" value="" placeholder="Get daily oracle cards delivered">
+                                    </div>
+                                    <input type="hidden" name="tags" value="oracle-cards">
+                                    <div id="mce-responses-3" class="clear">
+                                        <div class="response" id="mce-error-response-3" style="display: none;"></div>
+                                        <div class="response" id="mce-success-response-3" style="display: none;"></div>
+                                    </div>
+                                    <div aria-hidden="true" style="position: absolute; left: -5000px;">
+                                        <input type="text" name="b_53f0baf84fb1bc8c515e6f731_0005a32626" tabindex="-1" value="">
+                                    </div>
+                                    <div class="clear">
+                                        <input type="submit" name="subscribe" id="mc-embedded-subscribe-3" class="button" value="Daily Oracle Delivery">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manifestation Template -->
+                <div class="resource-card">
+                    <div class="resource-icon">✨</div>
+                    <h3>Manifestation Template</h3>
+                    <p>Powerful manifestation framework used by thousands to create their desired reality. Download includes step-by-step guide.</p>
+                    
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        <h4 style="color: var(--accent-gold); margin-bottom: 1rem;">Template Includes:</h4>
+                        <ul style="list-style: none; color: var(--text-secondary);">
+                            <li>✦ 7-Step Manifestation Process</li>
+                            <li>✦ Sacred Timing Guidelines</li>
+                            <li>✦ Energy Alignment Techniques</li>
+                            <li>✦ Visualization Scripts</li>
+                        </ul>
+                    </div>
+
+                    <div id="mc_embed_shell_4">
+                        <style type="text/css">
+                            #mc_embed_signup_4{background: var(--glass-bg) !important; backdrop-filter: blur(20px); border: 1px solid var(--glass-border) !important; border-radius: 15px !important; clear:left; font:14px Inter,Arial,sans-serif !important; width: 100% !important; max-width: 100% !important; padding: 1rem !important; margin-top: 1.5rem;}
+                            #mc_embed_signup_4 h2 {color: var(--accent-gold) !important; font-family: 'Playfair Display', serif !important; font-size: 1.2rem !important; margin-bottom: 1rem !important;}
+                            #mc_embed_signup_4 input[type="email"] {background: rgba(255, 255, 255, 0.1) !important; border: 1px solid var(--glass-border) !important; border-radius: 25px !important; color: white !important; padding: 0.75rem 1rem !important; width: 100% !important; margin: 0.5rem 0 !important;}
+                            #mc_embed_signup_4 input[type="submit"] {background: linear-gradient(135deg, var(--accent-gold), #FBBF24) !important; border: none !important; border-radius: 25px !important; color: var(--bg-primary) !important; padding: 0.75rem 1.5rem !important; font-weight: 600 !important; cursor: pointer !important;}
+                            #mc_embed_signup_4 label {color: var(--text-secondary) !important; font-weight: 500 !important;}
+                            #mc_embed_signup_4 .indicates-required {color: var(--text-secondary) !important; font-size: 0.8rem !important;}
+                        </style>
+                        <div id="mc_embed_signup_4">
+                            <form action="https://gmail.us9.list-manage.com/subscribe/post?u=53f0baf84fb1bc8c515e6f731&amp;id=0005a32626" method="post" id="mc-embedded-subscribe-form-4" name="mc-embedded-subscribe-form" class="validate">
+                                <div id="mc_embed_signup_scroll_4">
+                                    <h2>Download Template</h2>
+                                    <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+                                    <div class="mc-field-group">
+                                        <label for="mce-EMAIL-4">Email Address <span class="asterisk">*</span></label>
+                                        <input type="email" name="EMAIL" class="required email" id="mce-EMAIL-4" required="" value="" placeholder="Enter email to download template">
+                                    </div>
+                                    <input type="hidden" name="tags" value="manifestation-template">
+                                    <div id="mce-responses-4" class="clear">
+                                        <div class="response" id="mce-error-response-4" style="display: none;"></div>
+                                        <div class="response" id="mce-success-response-4" style="display: none;"></div>
+                                    </div>
+                                    <div aria-hidden="true" style="position: absolute; left: -5000px;">
+                                        <input type="text" name="b_53f0baf84fb1bc8c515e6f731_0005a32626" tabindex="-1" value="">
+                                    </div>
+                                    <div class="clear">
+                                        <input type="submit" name="subscribe" id="mc-embedded-subscribe-4" class="button" value="Download Template">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guided Meditation Sample -->
+                <div class="resource-card">
+                    <div class="resource-icon">🧘</div>
+                    <h3>Guided Meditation Sample</h3>
+                    <p>Experience Nazir's powerful meditation guidance with this sample from our premium meditation library.</p>
+                    
+                    <div class="audio-player">
+                        <h4 style="color: var(--accent-gold); margin-bottom: 1rem;">Divine Connection Meditation</h4>
+                        <audio controls>
+                            <source src="divine-connection-sample.mp3" type="audio/mpeg">
+                            <p>Your browser does not support the audio element.</p>
+                        </audio>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">7-minute sample from our 30-minute full meditation</p>
+                    </div>
+
+                    <div id="mc_embed_shell_5">
+                        <style type="text/css">
+                            #mc_embed_signup_5{background: var(--glass-bg) !important; backdrop-filter: blur(20px); border: 1px solid var(--glass-border) !important; border-radius: 15px !important; clear:left; font:14px Inter,Arial,sans-serif !important; width: 100% !important; max-width: 100% !important; padding: 1rem !important; margin-top: 1.5rem;}
+                            #mc_embed_signup_5 h2 {color: var(--accent-gold) !important; font-family: 'Playfair Display', serif !important; font-size: 1.2rem !important; margin-bottom: 1rem !important;}
+                            #mc_embed_signup_5 input[type="email"] {background: rgba(255, 255, 255, 0.1) !important; border: 1px solid var(--glass-border) !important; border-radius: 25px !important; color: white !important; padding: 0.75rem 1rem !important; width: 100% !important; margin: 0.5rem 0 !important;}
+                            #mc_embed_signup_5 input[type="submit"] {background: linear-gradient(135deg, var(--accent-gold), #FBBF24) !important; border: none !important; border-radius: 25px !important; color: var(--bg-primary) !important; padding: 0.75rem 1.5rem !important; font-weight: 600 !important; cursor: pointer !important;}
+                            #mc_embed_signup_5 label {color: var(--text-secondary) !important; font-weight: 500 !important;}
+                            #mc_embed_signup_5 .indicates-required {color: var(--text-secondary) !important; font-size: 0.8rem !important;}
+                        </style>
+                        <div id="mc_embed_signup_5">
+                            <form action="https://gmail.us9.list-manage.com/subscribe/post?u=53f0baf84fb1bc8c515e6f731&amp;id=0005a32626" method="post" id="mc-embedded-subscribe-form-5" name="mc-embedded-subscribe-form" class="validate">
+                                <div id="mc_embed_signup_scroll_5">
+                                    <h2>Get Full Library</h2>
+                                    <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+                                    <div class="mc-field-group">
+                                        <label for="mce-EMAIL-5">Email Address <span class="asterisk">*</span></label>
+                                        <input type="email" name="EMAIL" class="required email" id="mce-EMAIL-5" required="" value="" placeholder="Access full meditation library">
+                                    </div>
+                                    <input type="hidden" name="tags" value="meditation-library">
+                                    <div id="mce-responses-5" class="clear">
+                                        <div class="response" id="mce-error-response-5" style="display: none;"></div>
+                                        <div class="response" id="mce-success-response-5" style="display: none;"></div>
+                                    </div>
+                                    <div aria-hidden="true" style="position: absolute; left: -5000px;">
+                                        <input type="text" name="b_53f0baf84fb1bc8c515e6f731_0005a32626" tabindex="-1" value="">
+                                    </div>
+                                    <div class="clear">
+                                        <input type="submit" name="subscribe" id="mc-embedded-subscribe-5" class="button" value="Get Full Library">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Consciousness Expansion PDF -->
+                <div class="resource-card">
+                    <div class="resource-icon">🌟</div>
+                    <h3>Consciousness Expansion Guide</h3>
+                    <p>Comprehensive guide to expanding your awareness and accessing higher states of consciousness. Perfect for beginners and advanced practitioners.</p>
+                    
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        <h4 style="color: var(--accent-gold); margin-bottom: 1rem;">Guide Contents:</h4>
+                        <ul style="list-style: none; color: var(--text-secondary);">
+                            <li>✦ 12 Consciousness Levels Explained</li>
+                            <li>✦ Daily Practice Routines</li>
+                            <li>✦ Awareness Expansion Exercises</li>
+                            <li>✦ Integration Techniques</li>
+                        </ul>
+                    </div>
+
+                    <div id="mc_embed_shell_6">
+                        <style type="text/css">
+                            #mc_embed_signup_6{background: var(--glass-bg) !important; backdrop-filter: blur(20px); border: 1px solid var(--glass-border) !important; border-radius: 15px !important; clear:left; font:14px Inter,Arial,sans-serif !important; width: 100% !important; max-width: 100% !important; padding: 1rem !important; margin-top: 1.5rem;}
+                            #mc_embed_signup_6 h2 {color: var(--accent-gold) !important; font-family: 'Playfair Display', serif !important; font-size: 1.2rem !important; margin-bottom: 1rem !important;}
+                            #mc_embed_signup_6 input[type="email"] {background: rgba(255, 255, 255, 0.1) !important; border: 1px solid var(--glass-border) !important; border-radius: 25px !important; color: white !important; padding: 0.75rem 1rem !important; width: 100% !important; margin: 0.5rem 0 !important;}
+                            #mc_embed_signup_6 input[type="submit"] {background: linear-gradient(135deg, var(--accent-gold), #FBBF24) !important; border: none !important; border-radius: 25px !important; color: var(--bg-primary) !important; padding: 0.75rem 1.5rem !important; font-weight: 600 !important; cursor: pointer !important;}
+                            #mc_embed_signup_6 label {color: var(--text-secondary) !important; font-weight: 500 !important;}
+                            #mc_embed_signup_6 .indicates-required {color: var(--text-secondary) !important; font-size: 0.8rem !important;}
+                        </style>
+                        <div id="mc_embed_signup_6">
+                            <form action="https://gmail.us9.list-manage.com/subscribe/post?u=53f0baf84fb1bc8c515e6f731&amp;id=0005a32626" method="post" id="mc-embedded-subscribe-form-6" name="mc-embedded-subscribe-form" class="validate">
+                                <div id="mc_embed_signup_scroll_6">
+                                    <h2>Download Guide</h2>
+                                    <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+                                    <div class="mc-field-group">
+                                        <label for="mce-EMAIL-6">Email Address <span class="asterisk">*</span></label>
+                                        <input type="email" name="EMAIL" class="required email" id="mce-EMAIL-6" required="" value="" placeholder="Download consciousness guide">
+                                    </div>
+                                    <input type="hidden" name="tags" value="consciousness-guide">
+                                    <div id="mce-responses-6" class="clear">
+                                        <div class="response" id="mce-error-response-6" style="display: none;"></div>
+                                        <div class="response" id="mce-success-response-6" style="display: none;"></div>
+                                    </div>
+                                    <div aria-hidden="true" style="position: absolute; left: -5000px;">
+                                        <input type="text" name="b_53f0baf84fb1bc8c515e6f731_0005a32626" tabindex="-1" value="">
+                                    </div>
+                                    <div class="clear">
+                                        <input type="submit" name="subscribe" id="mc-embedded-subscribe-6" class="button" value="Download Guide">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Products</h3>
+                    <a href="https://buy.stripe.com/9B65kEf27f3r2VoaOBfjG01">Digital Book ($4.99)</a>
+                    <a href="https://buy.stripe.com/9B6fZif278F37bEaOBfjG03">Paperback ($25)</a>
+                    <a href="https://buy.stripe.com/dRmfZig6b1cB67A2i5fjG02">Hardback ($54)</a>
+                    <a href="https://buy.stripe.com/aFa4gA3jp5sRgMe9KxfjG04">Audiobook ($17)</a>
+                    <a href="https://buy.stripe.com/6oUbJ27zF4oN2Vo1e1fjG05">A.S.K Guide 1: Foundation ($24)</a>
+                    <a href="https://buy.stripe.com/7sY7sMdY3dZneE6g8VfjG06">A.S.K Guide 2: Meditation ($37)</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Temple Access</h3>
+                    <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00">Monthly Membership</a>
+                    <a href="https://square.link/u/qodANI9O">Student Access</a>
+                    <a href="https://square.link/u/xuKzAPeA">Founding Members</a>
+                    <a href="members-new.html">Member Login</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Community</h3>
+                    <a href="testimonials.html">Testimonials</a>
+                    <a href="book-reviews.html">Book Reviews</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="events.html">Live Events</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <a href="contact.html">Contact Us</a>
+                    <a href="resources.html">Free Resources</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Eden Consciousness. All rights reserved. You Never Left Eden.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Firebase Analytics Integration
+        window.addEventListener('load', () => {
+            if (window.FirebaseConfig) {
+                // Track page view
+                FirebaseConfig.analytics.trackPageView('resources', 'Free Spiritual Resources - Eden Consciousness');
+                
+                // Track resource downloads/usage
+                document.querySelectorAll('.resource-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const resourceTitle = card.querySelector('h3')?.textContent || 'Unknown Resource';
+                        FirebaseConfig.analytics.trackEvent('resource_interaction', {
+                            resource_name: resourceTitle,
+                            interaction_type: 'card_click'
+                        });
+                    });
+                });
+                
+                // Track email form submissions
+                document.querySelectorAll('form').forEach(form => {
+                    form.addEventListener('submit', () => {
+                        const formType = form.closest('.resource-card')?.querySelector('h3')?.textContent || 'Email Form';
+                        FirebaseConfig.analytics.trackEvent('email_signup', {
+                            source: 'resources_page',
+                            form_type: formType
+                        });
+                    });
+                });
+                
+                // Track tool usage (calendar, oracle cards, etc.)
+                document.querySelectorAll('button, .btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const buttonText = btn.textContent.trim();
+                        if (buttonText.includes('Calculate') || buttonText.includes('Generate') || buttonText.includes('Download')) {
+                            FirebaseConfig.analytics.trackEvent('tool_usage', {
+                                tool_name: buttonText,
+                                page_location: window.location.href
+                            });
+                        }
+                    });
+                });
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Header background on scroll
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(10, 14, 39, 0.98)';
+            } else {
+                header.style.background = 'rgba(10, 14, 39, 0.95)';
+            }
+        });
+
+        // Enoch Calendar Calculator
+        function calculateEnochDate() {
+            const gregorianInput = document.getElementById('gregorianDate');
+            const resultDiv = document.getElementById('enochResult');
+            const dateDisplay = document.getElementById('enochDateDisplay');
+            const seasonDisplay = document.getElementById('seasonDisplay');
+            
+            if (!gregorianInput.value) {
+                alert('Please select a date first');
+                return;
+            }
+            
+            const selectedDate = new Date(gregorianInput.value);
+            
+            // Simplified Enoch calendar calculation (364-day year)
+            const startOfYear = new Date(selectedDate.getFullYear(), 0, 1);
+            const dayOfYear = Math.floor((selectedDate - startOfYear) / (24 * 60 * 60 * 1000)) + 1;
+            
+            // Enoch calendar has 4 seasons of 91 days each
+            const enochDay = ((dayOfYear - 1) % 364) + 1;
+            const season = Math.ceil(enochDay / 91);
+            const dayInSeason = ((enochDay - 1) % 91) + 1;
+            const week = Math.ceil(dayInSeason / 7);
+            const dayInWeek = ((dayInSeason - 1) % 7) + 1;
+            
+            const seasons = ['Spring Equinox', 'Summer Solstice', 'Autumn Equinox', 'Winter Solstice'];
+            const seasonName = seasons[season - 1];
+            
+            dateDisplay.textContent = `Season ${season}, Week ${week}, Day ${dayInWeek}`;
+            seasonDisplay.textContent = seasonName;
+            
+            resultDiv.style.display = 'block';
+        }
+
+        // Oracle Cards
+        const oracleCards = [
+            {
+                title: "Divine Remembrance",
+                message: "You are being called to remember who you truly are. The veil of forgetfulness is lifting, revealing your eternal divine nature."
+            },
+            {
+                title: "Sacred Alignment",
+                message: "Align your actions with your highest truth today. Every choice is an opportunity to express your divine essence."
+            },
+            {
+                title: "Infinite Love",
+                message: "You are surrounded by infinite love. Open your heart to receive the abundance that flows from Source."
+            },
+            {
+                title: "Eden Consciousness",
+                message: "You never left Eden. This moment is your opportunity to recognize the paradise that exists within your awareness."
+            },
+            {
+                title: "Divine Timing",
+                message: "Everything is unfolding in perfect divine timing. Trust the process and flow with the natural rhythm of creation."
+            },
+            {
+                title: "Soul Purpose",
+                message: "Your soul has a unique purpose in this lifetime. Listen to the whispers of your heart for guidance."
+            },
+            {
+                title: "Awakening Light",
+                message: "A new level of consciousness is awakening within you. Embrace this expansion with gratitude and wonder."
+            },
+            {
+                title: "Unity Consciousness",
+                message: "Separation is an illusion. Today, see the divine presence in everyone and everything around you."
+            }
+        ];
+
+        function drawOracleCard() {
+            const randomCard = oracleCards[Math.floor(Math.random() * oracleCards.length)];
+            const cardTitle = document.getElementById('cardTitle');
+            const cardMessage = document.getElementById('cardMessage');
+            
+            // Add animation effect
+            const oracleCard = document.getElementById('oracleCard');
+            oracleCard.style.opacity = '0.5';
+            oracleCard.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                cardTitle.textContent = randomCard.title;
+                cardMessage.textContent = randomCard.message;
+                oracleCard.style.opacity = '1';
+                oracleCard.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        // Resource card animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.resource-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+
+        // Form submission handlers with improved feedback
+        document.querySelectorAll('.email-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const emailInput = this.querySelector('input[name="EMAIL"]');
+                const submitButton = this.querySelector('input[type="submit"]');
+                
+                // Track the resource request
+                const resourceName = this.closest('.resource-card').querySelector('h3').textContent;
+                console.log('Resource requested:', resourceName);
+                
+                // Visual feedback
+                submitButton.style.opacity = '0.7';
+                submitButton.style.transform = 'scale(0.95)';
+                
+                // Reset button after delay
+                setTimeout(() => {
+                    submitButton.style.opacity = '1';
+                    submitButton.style.transform = 'scale(1)';
+                }, 2000);
+            });
+        });
+    </script>
+
+    <!-- Mailchimp Validation Script -->
+    <script type="text/javascript" src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script>
+    <script type="text/javascript">
+        (function($) {
+            window.fnames = new Array(); 
+            window.ftypes = new Array();
+            fnames[0]='EMAIL';ftypes[0]='email';
+            fnames[1]='FNAME';ftypes[1]='text';
+            fnames[2]='LNAME';ftypes[2]='text';
+            fnames[3]='ADDRESS';ftypes[3]='address';
+            fnames[4]='PHONE';ftypes[4]='phone';
+            fnames[5]='BIRTHDAY';ftypes[5]='birthday';
+            fnames[6]='COMPANY';ftypes[6]='text';
+        }(jQuery));
+        var $mcj = jQuery.noConflict(true);
+        
+        // Simple Mailchimp form handling without AJAX - just prevent redirect
+        $(document).ready(function() {
+            // Handle all Mailchimp forms with direct submission but show thank you message
+            $('form[id^="mc-embedded-subscribe-form"]').each(function() {
+                const form = $(this);
+                const formId = form.attr('id');
+                const formNumber = formId.split('-').pop();
+                
+                form.on('submit', function(e) {
+                    const email = form.find('input[name="EMAIL"]').val();
+                    const submitBtn = form.find('input[type="submit"]');
+                    const originalBtnText = submitBtn.val();
+                    
+                    // Basic email validation
+                    if (!email || !isValidEmail(email)) {
+                        e.preventDefault();
+                        showMessage(formNumber, 'error', 'Please enter a valid email address.');
+                        return false;
+                    }
+                    
+                    // Show loading state immediately
+                    submitBtn.val('Subscribing...').prop('disabled', true);
+                    
+                    // Show success message immediately (optimistic UI)
+                    setTimeout(() => {
+                        showMessage(formNumber, 'success', 'Thank you! Check your email for your download link.');
+                        form.find('input[name="EMAIL"]').val('');
+                        submitBtn.val('✅ Subscribed!');
+                        
+                        // Reset button after 3 seconds
+                        setTimeout(() => {
+                            submitBtn.val(originalBtnText).prop('disabled', false);
+                        }, 3000);
+                    }, 1000);
+                    
+                    // Let the form submit normally to Mailchimp in background
+                    // We'll create a hidden iframe to handle the submission
+                    const iframe = $('<iframe name="mailchimp-frame-' + formNumber + '" style="display:none;"></iframe>');
+                    $('body').append(iframe);
+                    form.attr('target', 'mailchimp-frame-' + formNumber);
+                    
+                    return true; // Allow normal form submission
+                });
+            });
+            
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+            
+            function showMessage(formNumber, type, message) {
+                const errorDiv = $(`#mce-error-response-${formNumber}`);
+                const successDiv = $(`#mce-success-response-${formNumber}`);
+                
+                // Hide both divs first
+                errorDiv.hide();
+                successDiv.hide();
+                
+                if (type === 'success') {
+                    successDiv.html(message).show();
+                    setTimeout(() => {
+                        successDiv.fadeOut();
+                    }, 5000);
+                } else {
+                    errorDiv.html(message).show();
+                    setTimeout(() => {
+                        errorDiv.fadeOut();
+                    }, 5000);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

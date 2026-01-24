@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singing Bowl Harmony Garden - Divine Temple</title>
+    <style>
+        .singing-bowl-section {
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(16, 185, 129, 0.1));
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            min-height: 100vh;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #D4AF37;
+            margin-bottom: 1rem;
+        }
+
+        .section-description {
+            font-size: 1.2rem;
+            color: #A1A1AA;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .instructions {
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid #8B5CF6;
+        }
+
+        .instructions h4 {
+            color: #8B5CF6;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .instructions ul {
+            color: #E5E7EB;
+            line-height: 1.8;
+        }
+
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid #8B5CF6;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-button:hover {
+            background: rgba(139, 92, 246, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .singing-bowl-section {
+                padding: 1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .section-description {
+                font-size: 1rem;
+            }
+            
+            .back-button {
+                position: static;
+                display: block;
+                width: fit-content;
+                margin: 0 auto 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to Temple Button -->
+    <a href="#" class="back-button" onclick="window.parent.showSection('home')">&larr; Back to Temple</a>
+
+    <div class="singing-bowl-section">
+        <div class="section-header">
+            <h2 class="section-title">🥣 Singing Bowl Harmony Garden</h2>
+            <p class="section-description">
+                Experience the healing power of chakra-tuned singing bowls combined with meditative zen garden creation. 
+                This immersive sound healing experience features authentic bowl acoustics, interactive zen elements, 
+                and a complete spiritual journey system with achievements and progress tracking.
+            </p>
+        </div>
+
+        <div class="instructions">
+            <h4>🌸 How to Experience the Harmony Garden</h4>
+            <ul>
+                <li><strong>🥣 Singing Bowls:</strong> Click or hold bowls to play chakra-tuned frequencies. Hold Shift for sustained tones.</li>
+                <li><strong>🌿 Zen Garden:</strong> Use tools to create your personal meditation space - rake sand, place stones, plant bamboo, add lotus flowers and water.</li>
+                <li><strong>🧘‍♀️ Meditation Timer:</strong> Track your practice time and build your spiritual discipline.</li>
+                <li><strong>🎵 Audio Controls:</strong> Toggle ambient sounds, spatial audio, and interactive feedback sounds.</li>
+                <li><strong>🏆 Achievements:</strong> Unlock spiritual milestones and track your growth journey.</li>
+                <li><strong>🎧 Best Experience:</strong> Use headphones for the full immersive sound healing experience.</li>
+            </ul>
+        </div>
+
+        <div class="game-container">
+            <!-- Singing Bowl Harmony Garden will be loaded here -->
+            <div id="singingBowlContainer">
+                <div style="text-align: center; padding: 3rem; color: #A1A1AA;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎵</div>
+                    <p>Loading Singing Bowl Harmony Garden...</p>
+                    <p style="font-size: 0.9rem; margin-top: 1rem;">Preparing your sound healing experience...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load the Singing Bowl Harmony Garden -->
+    <script src="../js/singing-bowl-garden.js"></script>
+
+    <script>
+        // Initialize when the section loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🥣 Singing Bowl Harmony Garden section loaded');
+            
+            // Ensure proper initialization
+            if (window.singingBowlHarmonyGarden) {
+                console.log('✅ Game already initialized');
+            } else {
+                console.log('🔄 Initializing game...');
+            }
+            
+            // Handle section visibility changes
+            window.addEventListener('focus', function() {
+                if (window.singingBowlHarmonyGarden && window.singingBowlHarmonyGarden.audioContext) {
+                    // Resume audio context if needed
+                    if (window.singingBowlHarmonyGarden.audioContext.state === 'suspended') {
+                        window.singingBowlHarmonyGarden.audioContext.resume();
+                    }
+                }
+            });
+        });
+
+        // Handle when leaving the section
+        window.addEventListener('beforeunload', function() {
+            if (window.singingBowlHarmonyGarden) {
+                window.singingBowlHarmonyGarden.destroy();
+            }
+        });
+
+        // Mobile optimization
+        if (window.innerWidth <= 768) {
+            document.addEventListener('DOMContentLoaded', function() {
+                // Adjust for mobile view
+                const container = document.getElementById('singingBowlContainer');
+                if (container) {
+                    container.style.padding = '1rem';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+</html>
