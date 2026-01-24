@@ -1498,10 +1498,10 @@
                     </button>
                 </div>
 
-                <div class="feature-card" style="background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(139,92,246,0.1)); border-color: rgba(212,175,55,0.3); cursor: pointer;" onclick="window.location.href='sections/daily-trivia.html'">
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(139,92,246,0.1)); border-color: rgba(212,175,55,0.3); cursor: pointer;" onclick="window.location.href='sections/daily-trivia-FREE.html'">
                     <div class="feature-icon">🎯</div>
                     <h3>Daily Spiritual Trivia</h3>
-                    <p>Test your spiritual knowledge with 3 daily questions. Earn XP, build streaks, and expand your consciousness!</p>
+                    <p>Test your spiritual knowledge with 3 daily questions from our FREE collection of 30 questions. Premium members get 100+!</p>
                     <button class="upgrade-btn" style="background: linear-gradient(135deg, #D4AF37, #8B5CF6); margin-top: 1rem; padding: 0.75rem 1.5rem; border: none; color: white; border-radius: 25px; font-weight: 600; cursor: pointer; width: 100%;">
                         Play Today's Trivia →
                     </button>
@@ -1745,36 +1745,9 @@
                 return;
             }
 
-            // FAST PATH: Check if we have recent localStorage data (just logged in)
-            const localEmail = localStorage.getItem('userEmail');
-            const localMembership = localStorage.getItem('membershipLevel');
-            const localUserId = localStorage.getItem('userId');
-
-            if (localEmail && localMembership && localUserId) {
-                console.log('📱 Found recent login data in localStorage');
-                console.log('   Email:', localEmail);
-                console.log('   Membership:', localMembership);
-
-                // If membership is free/basic, show dashboard immediately
-                if (localMembership === 'free' || localMembership === 'basic') {
-                    console.log('⚡ FAST PATH: Showing dashboard immediately from localStorage');
-
-                    // Update UI if element exists
-                    const userEmailEl = document.getElementById('userEmail');
-                    if (userEmailEl) {
-                        userEmailEl.textContent = localEmail;
-                    }
-
-                    // Hide loading screen immediately
-                    const authLoading = document.getElementById('authLoading');
-                    if (authLoading) {
-                        authLoading.classList.add('hidden');
-                        console.log('✅ Dashboard shown via fast path');
-                    }
-
-                    // Firebase will still verify in background, but user sees dashboard immediately
-                }
-            }
+            // Show loading state - don't trust localStorage for membership
+            // localStorage could be stale if user just upgraded to premium
+            console.log('📱 Checking authentication and membership status...');
 
             // Wait for Firebase to load
             const firebaseLoaded = await waitForFirebase();
@@ -1844,20 +1817,40 @@
 
             try {
                 console.log('📊 Checking membership level...');
-                const userDoc = await firebase.firestore()
-                    .collection('users')
-                    .doc(user.uid)
-                    .get();
 
-                if (userDoc.exists) {
-                    membershipLevel = userDoc.data().membershipLevel || 'free';
-                    console.log('   Found membership level:', membershipLevel);
-                } else {
-                    console.log('   No user doc found, defaulting to free');
-                    membershipLevel = 'free';
+                // FIRST: Check hardcoded whitelist (for authorized premium users)
+                if (typeof FirebaseConfig !== 'undefined' &&
+                    typeof FirebaseConfig.auth !== 'undefined' &&
+                    FirebaseConfig.auth.isAuthorizedPremiumUser) {
+
+                    if (FirebaseConfig.auth.isAuthorizedPremiumUser(user.email, user.displayName)) {
+                        membershipLevel = 'premium';
+                        console.log('👑 User is in authorized premium whitelist:', user.email);
+                    }
                 }
 
+                // SECOND: Check Firestore if not already premium from whitelist
+                if (membershipLevel === 'free') {
+                    const userDoc = await firebase.firestore()
+                        .collection('users')
+                        .doc(user.uid)
+                        .get();
+
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        membershipLevel = userData.membership || userData.membershipLevel || 'free';
+                        console.log('   Found membership level in Firestore:', membershipLevel);
+                    } else {
+                        console.log('   No user doc found, defaulting to free');
+                        membershipLevel = 'free';
+                    }
+                }
+
+                // Store fresh membership data
                 localStorage.setItem('membershipLevel', membershipLevel);
+                localStorage.setItem('membership', membershipLevel);
+
+                console.log('📊 Final membership level:', membershipLevel);
 
                 // Redirect premium users
                 if (membershipLevel !== 'free' && membershipLevel !== 'basic') {
