@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crystal Wisdom - Divine Temple</title>
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#d4af37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Divine Temple">
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/premium-access-control.js"></script>
+
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --accent-purple: #8B5CF6;
+            --deep-purple: #4C1D95;
+            --dark-bg: #0F0F23;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A1A1AA;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--deep-purple) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 1rem; }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            text-decoration: none;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            background: linear-gradient(135deg, var(--accent-purple), var(--primary-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .draw-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 2rem auto;
+            display: block;
+        }
+
+        .crystal-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
+            border: 3px solid var(--primary-gold);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 2rem auto;
+            color: #1a1a2e;
+            text-align: center;
+            animation: crystalReveal 0.8s ease-out;
+        }
+
+        .properties {
+            background: rgba(139, 95, 191, 0.1);
+            border-left: 4px solid var(--accent-purple);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            text-align: left;
+            border-radius: 0 10px 10px 0;
+        }
+
+        @keyframes crystalReveal {
+            from { opacity: 0; transform: scale(0.9) rotateY(180deg); }
+            to { opacity: 1; transform: scale(1) rotateY(0deg); }
+        }
+        
+        /* PWA Install Button - Sidebar Style */
+        .pwa-install-btn {
+            position: fixed;
+            top: 50%;
+            right: -60px;
+            z-index: 10000;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-purple));
+            border: none;
+            color: white;
+            padding: 1rem 0.75rem;
+            border-radius: 15px 0 0 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: -5px 0 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.4s ease;
+            transform: translateY(-50%) rotate(-90deg);
+            transform-origin: center;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            width: 120px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pwa-install-btn:hover {
+            right: -20px;
+            box-shadow: -8px 0 25px rgba(212, 175, 55, 0.5);
+            background: linear-gradient(135deg, #f4c430, #9d6bfc);
+        }
+
+        .pwa-install-btn.show {
+            right: -20px;
+            opacity: 1;
+        }
+
+        .pwa-install-btn.hidden {
+            right: -120px;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 768px) {
+            .pwa-install-btn {
+                top: 60%;
+                right: -70px;
+                width: 100px;
+                height: 35px;
+                font-size: 0.75rem;
+                padding: 0.75rem 0.5rem;
+            }
+            
+            .pwa-install-btn:hover,
+            .pwa-install-btn.show {
+                right: -30px;
+            }
+        }
+    </style>
+    
+    <!-- Enhanced PWA Installer -->
+    <script src="../js/enhanced-pwa-installer.js"></script>
+</head>
+<body>
+    <!-- PWA Install Button -->
+    <button id="pwaInstallBtn" class="pwa-install-btn" onclick="window.enhancedPWAInstaller ? window.enhancedPWAInstaller.install() : installPWA()" title="Install Divine Temple App">
+        🏛️ Install App
+    </button>
+    
+    <div class="container">
+        <a href="oracle-divination.html" class="back-btn">← Back to Oracle Hub</a>
+
+        <div class="header">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">💎</div>
+            <h1 class="title">Crystal Wisdom</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">10 Sacred Crystals • Earth's Healing Energy</p>
+        </div>
+
+        <div style="text-align: center;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--primary-gold); margin-bottom: 1rem;">Choose Your Crystal</h2>
+            <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 2rem;">Let Earth's crystalline wisdom guide you. Each crystal carries unique healing properties.</p>
+            <button class="draw-btn" onclick="drawCrystal()">💎 Draw Crystal</button>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const crystals = [
+            { name: "Amethyst", icon: "💜", message: "Spiritual awakening and psychic enhancement await you.", properties: "Intuition • Spiritual Growth • Protection • Peace" },
+            { name: "Rose Quartz", icon: "🌸", message: "Open your heart to love and compassion for yourself and others.", properties: "Love • Emotional Healing • Self-Care • Compassion" },
+            { name: "Clear Quartz", icon: "💎", message: "Clarity and amplification of your intentions are needed now.", properties: "Clarity • Amplification • Healing • Energy" },
+            { name: "Citrine", icon: "🟡", message: "Abundance and manifestation energies are flowing your way.", properties: "Abundance • Creativity • Confidence • Manifestation" },
+            { name: "Black Tourmaline", icon: "⚫", message: "Protection and grounding will help you feel secure.", properties: "Protection • Grounding • Cleansing • Security" },
+            { name: "Selenite", icon: "🤍", message: "Divine connection and purification bring peace to your soul.", properties: "Purification • Divine Connection • Peace • Clarity" },
+            { name: "Labradorite", icon: "🌈", message: "Magic and transformation are awakening within you.", properties: "Magic • Transformation • Psychic Abilities • Protection" },
+            { name: "Carnelian", icon: "🧡", message: "Courage and motivation will help you take bold action.", properties: "Courage • Motivation • Creativity • Vitality" },
+            { name: "Moonstone", icon: "🌙", message: "Divine feminine energy and intuition guide your path.", properties: "Intuition • Feminine Energy • Cycles • New Beginnings" },
+            { name: "Fluorite", icon: "💚", message: "Mental clarity and focus will illuminate your next steps.", properties: "Mental Clarity • Focus • Learning • Decision Making" }
+        ];
+
+        function drawCrystal() {
+            const crystal = crystals[Math.floor(Math.random() * crystals.length)];
+
+            // Award XP for crystal oracle reading
+            if (window.progressSystem) {
+                window.progressSystem.awardXP(15, `Crystal oracle: ${crystal.name}`, 'crystal-oracle');
+                window.progressSystem.logActivity('crystal_reading', 'crystal-oracle', {crystal: crystal.name});
+            }
+
+            document.getElementById('result').innerHTML = `
+                <div class="crystal-card">
+                    <div style="font-size: 5rem; margin-bottom: 1rem;">${crystal.icon}</div>
+                    <h3 style="color: var(--accent-purple); font-size: 2rem; margin-bottom: 1rem;">${crystal.name}</h3>
+                    <p style="line-height: 1.8; font-size: 1.1rem; margin-bottom: 1.5rem; font-style: italic;">"${crystal.message}"</p>
+                    <div class="properties">
+                        <strong style="color: var(--accent-purple); display: block; margin-bottom: 0.5rem;">Healing Properties:</strong>
+                        ${crystal.properties}
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="draw-btn" style="background: rgba(255, 255, 255, 0.1);" onclick="drawCrystal()">🔄 Draw Another</button>
+                </div>
+            `;
+        }
+
+        console.log('💎 Crystal Wisdom loaded - 10 crystals ready');
+    </script>
+</body>
+</html>

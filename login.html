@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Divine Temple</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+
+    <!-- Auth Helper for Admin Auto-Grant -->
+    <script src="js/auth-helper.js"></script>
+
+    <style>
+        :root {
+            --primary-gold: #d4af37;
+            --deep-purple: #8b5cf6;
+            --soft-blue: #3b82f6;
+            --dark-bg: #0f0f1e;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-glow: rgba(212, 175, 55, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-container {
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-gold), var(--deep-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-gold), var(--deep-purple));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .register-link a {
+            color: var(--primary-gold);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #6ee7b7;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .tier-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tier-option {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .tier-option:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+
+        .tier-option.active {
+            border-color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .tier-option .tier-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tier-option .tier-name {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .tier-option .tier-desc {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 0.5rem;
+        }
+
+        .forgot-password a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password a:hover {
+            color: var(--primary-gold);
+        }
+
+        @media (max-width: 768px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .logo {
+                font-size: 2rem;
+            }
+
+            .tier-selector {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo">⚡ Divine Temple</div>
+            <p class="subtitle">Enter the Sacred Portal</p>
+
+            <div class="error-message" id="error-message"></div>
+            <div class="success-message" id="success-message"></div>
+
+            <!-- Tier Selector -->
+            <div class="tier-selector">
+                <div class="tier-option active" id="free-tier" onclick="selectTier('free')">
+                    <div class="tier-icon">✨</div>
+                    <div class="tier-name">Free Access</div>
+                    <div class="tier-desc">Enochian Calendar</div>
+                </div>
+                <div class="tier-option" id="premium-tier" onclick="selectTier('premium')">
+                    <div class="tier-icon">💎</div>
+                    <div class="tier-name">Premium</div>
+                    <div class="tier-desc">Full Access</div>
+                </div>
+            </div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input
+                        type="text"
+                        id="email"
+                        name="email"
+                        placeholder="your@email.com"
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required
+                        autocomplete="current-password"
+                    >
+                    <div class="forgot-password">
+                        <a href="#" onclick="resetPassword(); return false;">Forgot password?</a>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-btn" id="login-btn">
+                    🌟 Enter Divine Temple
+                </button>
+            </form>
+
+            <div class="register-link">
+                New to Divine Temple?
+                <a href="register.html">Create Sacred Account</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedTier = 'free'; // Default to free tier
+        let isManualLogin = false; // Flag to prevent auto-redirect loop
+
+        // ============================================
+        // SESSION PERSISTENCE CONFIGURATION
+        // ============================================
+        // Set Firebase auth persistence to LOCAL (survives browser restart)
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+                .then(() => {
+                    console.log('✅ Firebase session persistence set to LOCAL');
+                })
+                .catch((error) => {
+                    console.error('❌ Error setting persistence:', error);
+                });
+        }
+
+        // ============================================
+        // COMPREHENSIVE LOGGING HELPER
+        // ============================================
+        function logAuth(emoji, message, data = null) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `${emoji} [${timestamp}] ${message}`;
+            console.log(logMessage);
+            if (data) {
+                console.log('   Data:', data);
+            }
+        }
+
+        function selectTier(tier) {
+            selectedTier = tier;
+
+            // Update UI
+            document.getElementById('free-tier').classList.remove('active');
+            document.getElementById('premium-tier').classList.remove('active');
+            document.getElementById(`${tier}-tier`).classList.add('active');
+
+            // Update button text
+            const btn = document.getElementById('login-btn');
+            if (tier === 'free') {
+                btn.textContent = '✨ Enter Free Access';
+            } else {
+                btn.textContent = '💎 Enter Premium Access';
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+
+        // Handle form submission
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            logAuth('🔐', 'LOGIN ATTEMPT STARTED');
+
+            // Set flag to indicate manual login in progress
+            isManualLogin = true;
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('login-btn');
+
+            logAuth('📧', `Login attempt for: ${email}`);
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Signing in...';
+
+            // ⭐ ADMIN BYPASS - Check for Creator Nazir credentials
+            if (email === 'nazir23' && password === 'nazir777') {
+                logAuth('🔱', 'ADMIN LOGIN DETECTED - Creator Nazir El');
+
+                // Create admin session data
+                const adminData = {
+                    username: 'nazir23',
+                    displayName: 'Creator Nazir El',
+                    email: 'nazir@edenconsciousness.com',
+                    uid: 'admin_nazir_creator',
+                    isAdmin: true,
+                    membershipLevel: 'admin',
+                    loginTime: new Date().toISOString()
+                };
+
+                // Store admin authentication
+                sessionStorage.setItem('divineAuth', 'true');
+                sessionStorage.setItem('adminAuth', 'true');
+                sessionStorage.setItem('memberData', JSON.stringify(adminData));
+
+                // Also store in localStorage for persistence
+                localStorage.setItem('adminAuth', 'true');
+                localStorage.setItem('currentUser', JSON.stringify(adminData));
+                localStorage.setItem('membershipLevel', 'admin');
+                localStorage.setItem('userEmail', 'nazir@edenconsciousness.com');
+                localStorage.setItem('userId', 'admin_nazir_creator');
+
+                console.log('✅ Admin session established');
+                showSuccess('🔱 Welcome back, Creator Nazir! Redirecting to Divine Temple...');
+
+                // Redirect to members area
+                setTimeout(() => {
+                    window.location.href = 'members-new.html';
+                }, 1000);
+
+                return; // Skip Firebase authentication
+            }
+
+            try {
+                logAuth('🔄', 'Attempting Firebase authentication...');
+
+                // Sign in with Firebase (for regular users)
+                const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                logAuth('✅', 'Firebase authentication successful', { uid: user.uid, email: user.email });
+
+                // Get user's actual membership level from Firestore with timeout
+                let actualMembershipLevel = 'free'; // Default
+                let firestoreSuccess = false;
+
+                // FIRST: Check hardcoded whitelist in firebase-config.js (highest priority)
+                if (typeof FirebaseConfig !== 'undefined' &&
+                    FirebaseConfig.auth &&
+                    typeof FirebaseConfig.auth.isAuthorizedPremiumUser === 'function') {
+
+                    if (FirebaseConfig.auth.isAuthorizedPremiumUser(user.email, user.displayName)) {
+                        actualMembershipLevel = 'premium';
+                        logAuth('👑', 'User in premium whitelist:', user.email);
+                    }
+                }
+
+                // SECOND: Check Firestore if not already premium from whitelist
+                if (actualMembershipLevel === 'free') {
+                    try {
+                        logAuth('📊', 'Fetching user data from Firestore...');
+
+                        // Add timeout wrapper for Firestore operations
+                        const firestoreTimeout = new Promise((_, reject) =>
+                            setTimeout(() => reject(new Error('Firestore timeout')), 3000)
+                        );
+
+                        const firestoreOperation = async () => {
+                            const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+                            if (userDoc.exists) {
+                                const userData = userDoc.data();
+                                logAuth('✅', 'User document found in Firestore', {
+                                    email: userData.email,
+                                    membershipLevel: userData.membershipLevel,
+                                    membership: userData.membership,
+                                    premium: userData.premium,
+                                    role: userData.role
+                                });
+                                actualMembershipLevel = userData.membership || userData.membershipLevel || 'free';
+
+                            // Update last login (don't await - fire and forget)
+                            firebase.firestore().collection('users').doc(user.uid).update({
+                                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                            }).catch(err => console.warn('Failed to update lastLogin:', err));
+                        } else {
+                            // User document doesn't exist - create it now
+                            logAuth('⚠️', 'User document missing, creating now...');
+                            await firebase.firestore().collection('users').doc(user.uid).set({
+                                email: user.email,
+                                displayName: user.displayName || email.split('@')[0],
+                                membershipLevel: 'free',
+                                premium: false,
+                                premium_status: 'free',
+                                role: 'user',
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                                preferences: {
+                                    theme: 'sacred',
+                                    notifications: true
+                                },
+                                progress: {
+                                    sectionsVisited: [],
+                                    completedActions: [],
+                                    lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                                }
+                            });
+                            logAuth('✅', 'User document created successfully');
+                            actualMembershipLevel = 'free';
+                        }
+                        return true;
+                    };
+
+                        // Race between Firestore operation and timeout
+                        firestoreSuccess = await Promise.race([firestoreOperation(), firestoreTimeout]);
+                    } catch (firestoreError) {
+                        logAuth('⚠️', 'Firestore query failed or timed out, using default membership level', {
+                            error: firestoreError.message
+                        });
+                        // Continue with default 'free' membership level
+                    }
+                }
+
+                // Store actual membership level (not the selected tier)
+                localStorage.setItem('membershipLevel', actualMembershipLevel);
+                localStorage.setItem('membership', actualMembershipLevel);
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userId', user.uid);
+
+                logAuth('💾', 'Session data stored in localStorage', {
+                    membershipLevel: actualMembershipLevel,
+                    email: email,
+                    uid: user.uid
+                });
+
+                // Track login event (fire and forget - don't block on analytics)
+                if (window.FirebaseConfig && window.FirebaseConfig.analytics) {
+                    try {
+                        window.FirebaseConfig.analytics.trackEvent('login', {
+                            method: 'email',
+                            user_id: user.uid,
+                            membership_level: actualMembershipLevel
+                        });
+                    } catch (analyticsError) {
+                        console.warn('Analytics tracking failed:', analyticsError);
+                    }
+                }
+
+                logAuth('✅', 'Login successful', { email, membership: actualMembershipLevel });
+
+                showSuccess('Welcome back! Redirecting...');
+
+                // Redirect immediately - don't wait
+                // The destination page will verify auth state
+                const redirectUrl = (actualMembershipLevel === 'free' || actualMembershipLevel === 'basic')
+                    ? 'free-dashboard.html'
+                    : 'members-new.html';
+
+                logAuth('🎯', `Redirecting to: ${redirectUrl}`);
+
+                // Use replace() to prevent back button issues
+                setTimeout(() => {
+                    window.location.replace(redirectUrl);
+                }, 500); // Reduced delay from 1000ms to 500ms
+
+            } catch (error) {
+                console.error('Login error:', error);
+
+                // Reset flag on error
+                isManualLogin = false;
+
+                let errorMessage = 'Login failed. Please try again.';
+
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'No account found with this email. Please sign up first.';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = 'Incorrect password. Please try again.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Invalid email address format.';
+                        break;
+                    case 'auth/user-disabled':
+                        errorMessage = 'This account has been disabled.';
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = 'Too many failed attempts. Please try again later.';
+                        break;
+                    case 'auth/invalid-credential':
+                        errorMessage = 'Invalid email or password. Please check and try again.';
+                        break;
+                }
+
+                showError(errorMessage);
+
+                btn.disabled = false;
+                selectTier(selectedTier); // Reset button text
+            }
+        });
+
+        async function resetPassword() {
+            const email = document.getElementById('email').value.trim();
+
+            if (!email) {
+                showError('Please enter your email address first.');
+                return;
+            }
+
+            try {
+                await firebase.auth().sendPasswordResetEmail(email);
+                showSuccess('Password reset email sent! Check your inbox.');
+            } catch (error) {
+                console.error('Password reset error:', error);
+                showError('Failed to send reset email. Please check your email address.');
+            }
+        }
+
+        // Check URL parameters for pre-filled email and returning user
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const emailParam = urlParams.get('email');
+            const returningUser = urlParams.get('returning');
+
+            if (emailParam) {
+                // Pre-fill email field
+                document.getElementById('email').value = decodeURIComponent(emailParam);
+
+                if (returningUser === 'true') {
+                    // Show welcome back message
+                    showSuccess('✨ Welcome back! Please enter your password to continue.');
+
+                    // Focus on password field for convenience
+                    setTimeout(() => {
+                        document.getElementById('password').focus();
+                    }, 500);
+                }
+            }
+        });
+
+        // Check if user is already logged in (but DON'T auto-redirect during manual login)
+        firebase.auth().onAuthStateChanged(async (user) => {
+            logAuth('🔍', 'AUTH STATE CHANGED', {
+                user: user ? user.email : 'null',
+                isManualLogin: isManualLogin
+            });
+
+            // Only auto-redirect if NOT in the middle of a manual login
+            if (user && !isManualLogin) {
+                logAuth('🔄', 'Auto-login detected - checking membership level', { email: user.email });
+
+                // User is already signed in, check their actual membership level
+                try {
+                    let membershipLevel = 'free';
+
+                    // FIRST: Check hardcoded whitelist
+                    if (typeof FirebaseConfig !== 'undefined' &&
+                        FirebaseConfig.auth &&
+                        typeof FirebaseConfig.auth.isAuthorizedPremiumUser === 'function') {
+
+                        if (FirebaseConfig.auth.isAuthorizedPremiumUser(user.email, user.displayName)) {
+                            membershipLevel = 'premium';
+                            logAuth('👑', 'User in premium whitelist (auto-login):', user.email);
+                        }
+                    }
+
+                    // SECOND: Check Firestore if not already premium from whitelist
+                    if (membershipLevel === 'free') {
+                        const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            membershipLevel = userData.membership || userData.membershipLevel || 'free';
+                            logAuth('📊', 'User data loaded from Firestore', {
+                                membershipLevel,
+                                premium: userData.premium,
+                                role: userData.role
+                            });
+                        } else {
+                            logAuth('⚠️', 'User document not found - will use free tier');
+                        }
+                    }
+
+                    // Store ALL required auth data
+                    localStorage.setItem('membershipLevel', membershipLevel);
+                    localStorage.setItem('membership', membershipLevel);
+                    localStorage.setItem('userEmail', user.email);
+                    localStorage.setItem('userId', user.uid);
+
+                    // Redirect based on actual membership level
+                    const redirectUrl = (membershipLevel === 'free' || membershipLevel === 'basic')
+                        ? 'free-dashboard.html'
+                        : 'members-new.html';
+
+                    logAuth('🎯', `Auto-redirecting to: ${redirectUrl}`);
+                    window.location.href = redirectUrl;
+                } catch (error) {
+                    logAuth('❌', 'Error checking membership - defaulting to free', { error: error.message });
+                    window.location.href = 'free-dashboard.html';
+                }
+            } else if (user && isManualLogin) {
+                logAuth('✅', 'Manual login in progress - form handler will redirect');
+            } else {
+                logAuth('👤', 'No user logged in - showing login form');
+            }
+        });
+    </script>
+</body>
+</html>

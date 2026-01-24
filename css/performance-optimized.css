@@ -1,0 +1,453 @@
+/**
+ * Divine Temple Performance CSS
+ * Optimized animations and transitions for smooth performance
+ */
+
+:root {
+    /* Performance-optimized animation durations */
+    --animation-duration: 0.3s;
+    --transition-duration: 0.2s;
+    --animation-complexity: normal;
+    
+    /* Hardware acceleration triggers */
+    --transform-3d: translateZ(0);
+    --backface-visibility: hidden;
+    
+    /* Performance timing functions */
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-quick: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Low power mode optimizations */
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --animation-duration: 0.01s;
+        --transition-duration: 0.01s;
+        --animation-complexity: minimal;
+    }
+    
+    *, *::before, *::after {
+        animation-duration: 0.01s !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01s !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Hardware acceleration base classes */
+.hw-accelerated {
+    transform: var(--transform-3d);
+    backface-visibility: var(--backface-visibility);
+    perspective: 1000px;
+}
+
+.will-change-transform {
+    will-change: transform;
+}
+
+.will-change-opacity {
+    will-change: opacity;
+}
+
+.will-change-auto {
+    will-change: auto;
+}
+
+/* Performance-optimized transitions */
+.smooth-transition {
+    transition: all var(--transition-duration) var(--ease-smooth);
+}
+
+.smooth-transform {
+    transition: transform var(--transition-duration) var(--ease-smooth);
+}
+
+.smooth-opacity {
+    transition: opacity var(--transition-duration) var(--ease-smooth);
+}
+
+/* Optimized hover effects */
+.optimized-hover {
+    transform: var(--transform-3d);
+    transition: transform var(--transition-duration) var(--ease-smooth);
+}
+
+.optimized-hover:hover {
+    transform: translateY(-2px) var(--transform-3d);
+}
+
+/* GPU-accelerated animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) var(--transform-3d);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) var(--transform-3d);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9) var(--transform-3d);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) var(--transform-3d);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px) var(--transform-3d);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) var(--transform-3d);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px) var(--transform-3d);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) var(--transform-3d);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1) var(--transform-3d);
+    }
+    50% {
+        transform: scale(1.05) var(--transform-3d);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg) var(--transform-3d);
+    }
+    to {
+        transform: rotate(360deg) var(--transform-3d);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Animation classes */
+.animate-fade-in-up {
+    animation: fadeInUp var(--animation-duration) var(--ease-smooth) forwards;
+}
+
+.animate-fade-in-scale {
+    animation: fadeInScale var(--animation-duration) var(--ease-smooth) forwards;
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft var(--animation-duration) var(--ease-smooth) forwards;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight var(--animation-duration) var(--ease-smooth) forwards;
+}
+
+.animate-pulse {
+    animation: pulse 2s var(--ease-smooth) infinite;
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+.animate-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+/* Lazy loading states */
+.lazy-loading {
+    opacity: 0;
+    transform: translateY(20px) var(--transform-3d);
+    transition: all var(--transition-duration) var(--ease-smooth);
+}
+
+.lazy-loading.loaded {
+    opacity: 1;
+    transform: translateY(0) var(--transform-3d);
+}
+
+/* Image loading optimization */
+.lazy-image {
+    opacity: 0;
+    transition: opacity var(--transition-duration) var(--ease-smooth);
+    background: linear-gradient(90deg, #f0f0f0, #e0e0e0, #f0f0f0);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.lazy-image.loaded {
+    opacity: 1;
+    animation: none;
+    background: none;
+}
+
+.lazy-image.error {
+    opacity: 0.5;
+    background: #f5f5f5;
+    animation: none;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    :root {
+        --animation-duration: 0.2s;
+        --transition-duration: 0.15s;
+    }
+    
+    .mobile-optimized {
+        /* Reduce animation complexity on mobile */
+        animation-duration: var(--animation-duration);
+    }
+    
+    .mobile-optimized .animate-pulse {
+        animation: none; /* Disable pulse on mobile */
+    }
+    
+    .mobile-optimized .complex-animation {
+        animation: none; /* Disable complex animations */
+    }
+}
+
+/* Low power mode styles */
+.low-power-mode * {
+    animation-duration: 0.01s !important;
+    transition-duration: 0.01s !important;
+}
+
+.low-power-mode .decorative-animation {
+    display: none; /* Hide decorative animations */
+}
+
+/* Performance classes for different complexity levels */
+.animation-complexity-minimal {
+    --animation-duration: 0.1s;
+    --transition-duration: 0.1s;
+}
+
+.animation-complexity-minimal .decorative,
+.animation-complexity-minimal .background-animation {
+    animation: none !important;
+}
+
+.animation-complexity-simple {
+    --animation-duration: 0.2s;
+    --transition-duration: 0.15s;
+}
+
+.animation-complexity-normal {
+    --animation-duration: 0.3s;
+    --transition-duration: 0.2s;
+}
+
+.animation-complexity-rich {
+    --animation-duration: 0.5s;
+    --transition-duration: 0.3s;
+}
+
+/* Scroll optimization */
+.scroll-optimized {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .scroll-optimized {
+        scroll-behavior: auto;
+    }
+}
+
+/* Grid performance optimization */
+.optimized-grid {
+    display: grid;
+    contain: layout style paint;
+}
+
+.optimized-flex {
+    display: flex;
+    contain: layout style;
+}
+
+/* Container queries for responsive performance */
+@container (max-width: 768px) {
+    .container-optimized {
+        --animation-duration: 0.2s;
+    }
+}
+
+/* Loading states */
+.loading-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-left-color: #8B5CF6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Optimized button transitions */
+.btn-optimized {
+    transform: var(--transform-3d);
+    transition: transform var(--transition-duration) var(--ease-smooth),
+                box-shadow var(--transition-duration) var(--ease-smooth);
+}
+
+.btn-optimized:hover {
+    transform: translateY(-2px) var(--transform-3d);
+}
+
+.btn-optimized:active {
+    transform: translateY(0) var(--transform-3d);
+    transition-duration: 0.1s;
+}
+
+/* Card hover optimizations */
+.card-optimized {
+    transform: var(--transform-3d);
+    transition: transform var(--transition-duration) var(--ease-smooth),
+                box-shadow var(--transition-duration) var(--ease-smooth);
+}
+
+.card-optimized:hover {
+    transform: translateY(-5px) var(--transform-3d);
+}
+
+/* Progressive enhancement for animations */
+@supports (animation-timeline: scroll()) {
+    .scroll-driven-animation {
+        animation-timeline: scroll();
+        animation-range: entry 25% cover 50%;
+    }
+}
+
+/* Intersection observer optimizations */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px) var(--transform-3d);
+    transition: all var(--animation-duration) var(--ease-smooth);
+}
+
+.animate-on-scroll.in-view {
+    opacity: 1;
+    transform: translateY(0) var(--transform-3d);
+}
+
+/* Memory efficient animations */
+.memory-efficient {
+    contain: layout style paint;
+}
+
+.memory-efficient * {
+    contain: style paint;
+}
+
+/* Smooth scrolling optimization */
+.smooth-scroll {
+    scroll-behavior: smooth;
+    scroll-padding-top: 2rem;
+}
+
+/* Focus optimizations */
+.focus-optimized:focus {
+    outline: 2px solid #8B5CF6;
+    outline-offset: 2px;
+    transition: outline-offset var(--transition-duration) var(--ease-smooth);
+}
+
+/* Performance monitoring helpers */
+.perf-monitor::before {
+    content: attr(data-perf-time) "ms";
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 2px 6px;
+    font-size: 10px;
+    border-radius: 3px;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* Utility classes for performance */
+.gpu-accelerated {
+    transform: var(--transform-3d);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+.cpu-light {
+    /* Use only CPU-friendly properties */
+    transition-property: opacity;
+}
+
+.reduced-motion * {
+    animation-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01s !important;
+}
+
+/* Error boundaries for animation performance */
+@media (prefers-reduced-motion: no-preference) {
+    .performance-boundary {
+        animation-duration: var(--animation-duration);
+    }
+}
+
+/* Print optimizations */
+@media print {
+    * {
+        animation: none !important;
+        transition: none !important;
+        background: white !important;
+        color: black !important;
+    }
+}
+
+/* High contrast mode optimizations */
+@media (prefers-contrast: high) {
+    .animate-shimmer {
+        animation: none;
+        background: #000;
+    }
+}
+
+/* Forced colors mode */
+@media (forced-colors: active) {
+    * {
+        animation: none !important;
+        transition: opacity var(--transition-duration) !important;
+    }
+}

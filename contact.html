@@ -16,6 +16,15 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
+    <!-- Firebase SDKs (v10.7.1 compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    
+    <!-- Firebase Config -->
+    <script src="js/firebase-config.js"></script>
+    
     <style>
         :root {
             --bg-primary: #0A0E27;
@@ -467,8 +476,63 @@
                 
                 <div class="contact-card">
                     <div class="contact-icon">📧</div>
-                    <h2>Get In Touch</h2>
-                    <p>Whether you have questions about our books, need spiritual guidance, or want to join our temple community, we're here to help. Send us an email and we'll respond with love and light.</p>
+                    <h2>Get Sacred Support</h2>
+                    <p>Whether you have questions about our books, need spiritual guidance, or want to join our temple community, we're here to help. Submit a support request below or send us an email for immediate connection.</p>
+                    
+                    <!-- Firebase Contact Form -->
+                    <div class="firebase-contact-form" style="background: rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 2rem; margin: 2rem 0; border: 1px solid var(--glass-border);">
+                        <h3 style="font-family: 'Playfair Display', serif; color: var(--accent-gold); margin-bottom: 1.5rem; text-align: center;">🔥 Sacred Support Request</h3>
+                        
+                        <form id="contact-form" style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div class="form-group">
+                                <label for="contact-name" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-weight: 500;">Your Name</label>
+                                <input type="text" id="contact-name" name="name" placeholder="Enter your spiritual name" required style="width: 100%; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-primary); font-family: inherit;">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact-email" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-weight: 500;">Email Address</label>
+                                <input type="email" id="contact-email" name="email" placeholder="your@email.com" required style="width: 100%; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-primary); font-family: inherit;">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact-category" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-weight: 500;">Support Category</label>
+                                <select id="contact-category" name="category" required style="width: 100%; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-primary); font-family: inherit;">
+                                    <option value="">Select your sacred request type</option>
+                                    <option value="spiritual-guidance">💫 Spiritual Guidance</option>
+                                    <option value="book-questions">📖 Book Questions</option>
+                                    <option value="temple-membership">🏛️ Temple Membership</option>
+                                    <option value="technical-support">🛠️ Technical Support</option>
+                                    <option value="general-inquiry">❓ General Inquiry</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact-priority" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-weight: 500;">Priority Level</label>
+                                <select id="contact-priority" name="priority" required style="width: 100%; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-primary); font-family: inherit;">
+                                    <option value="">Select urgency</option>
+                                    <option value="low">🟢 Low - General questions</option>
+                                    <option value="medium">🟡 Medium - Need guidance</option>
+                                    <option value="high">🔴 High - Urgent spiritual matter</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact-message" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-weight: 500;">Your Sacred Message</label>
+                                <textarea id="contact-message" name="message" placeholder="Share your question, concern, or how we can support your spiritual journey..." required rows="5" style="width: 100%; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-primary); font-family: inherit; resize: vertical; min-height: 120px;"></textarea>
+                            </div>
+                            
+                            <button type="submit" style="background: linear-gradient(135deg, var(--accent-gold), #FBBF24); color: var(--bg-primary); border: none; padding: 1rem 2rem; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; margin-top: 1rem;">
+                                🔥 Submit Sacred Request
+                            </button>
+                        </form>
+                        
+                        <div id="contact-success" style="display: none; text-align: center; padding: 2rem;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--accent-gold);">🙏</div>
+                            <h4 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Sacred Request Received!</h4>
+                            <p style="color: var(--text-secondary);">Your support request has been submitted. We'll respond with love and light within 24 hours.</p>
+                            <div id="ticket-number" style="background: rgba(245, 158, 11, 0.1); border: 1px solid var(--accent-gold); border-radius: 8px; padding: 1rem; margin-top: 1rem; font-weight: 600; color: var(--accent-gold);"></div>
+                        </div>
+                    </div>
                     
                     <div class="email-display">
                         <div class="email-address">edenconsciousnesssdt@gmail.com</div>
@@ -520,14 +584,16 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>Products</h3>
-                    <a href="https://square.link/u/A953t7Hr">Digital Book</a>
-                    <a href="https://square.link/u/iBLVYLEQ">Audiobook</a>
-                    <a href="https://square.link/u/7K4TPYQt">Complete Bundle</a>
-                    <a href="https://square.link/u/7wKyFAHg">Workbook</a>
+                    <a href="https://buy.stripe.com/9B65kEf27f3r2VoaOBfjG01">Digital Book ($4.99)</a>
+                    <a href="https://buy.stripe.com/9B6fZif278F37bEaOBfjG03">Paperback ($25)</a>
+                    <a href="https://buy.stripe.com/dRmfZig6b1cB67A2i5fjG02">Hardback ($54)</a>
+                    <a href="https://buy.stripe.com/aFa4gA3jp5sRgMe9KxfjG04">Audiobook ($17)</a>
+                    <a href="https://buy.stripe.com/6oUbJ27zF4oN2Vo1e1fjG05">A.S.K Guide 1: Foundation ($24)</a>
+                    <a href="https://buy.stripe.com/7sY7sMdY3dZneE6g8VfjG06">A.S.K Guide 2: Meditation ($37)</a>
                 </div>
                 <div class="footer-section">
                     <h3>Temple Access</h3>
-                    <a href="https://square.link/u/g8CFT019">Monthly Membership</a>
+                    <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00">Monthly Membership</a>
                     <a href="https://square.link/u/qodANI9O">Student Access</a>
                     <a href="https://square.link/u/xuKzAPeA">Founding Members</a>
                     <a href="members-new.html">Member Login</a>
@@ -618,6 +684,103 @@
                 // Fallback for older browsers
                 console.log('Copy not supported');
             });
+        }
+
+        // Firebase Contact Form Initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeContactForm();
+        });
+
+        // Initialize Firebase contact form
+        function initializeContactForm() {
+            const form = document.getElementById('contact-form');
+            if (form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await submitContactRequest(e);
+                });
+            }
+        }
+
+        // Submit contact request to Firebase
+        async function submitContactRequest(event) {
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                submitBtn.textContent = '🔥 Submitting Sacred Request...';
+                submitBtn.disabled = true;
+
+                const formData = new FormData(event.target);
+                const contactData = {
+                    name: formData.get('name')?.trim() || '',
+                    email: formData.get('email')?.trim() || '',
+                    category: formData.get('category') || '',
+                    priority: formData.get('priority') || '',
+                    message: formData.get('message')?.trim() || '',
+                    source: 'contact_page'
+                };
+
+                // Validate required fields
+                if (!contactData.name || !contactData.email || !contactData.message) {
+                    throw new Error('Please fill in all required fields');
+                }
+
+                if (!contactData.category || !contactData.priority) {
+                    throw new Error('Please select a category and priority level');
+                }
+
+                if (contactData.message.length < 10) {
+                    throw new Error('Please provide a more detailed message (at least 10 characters)');
+                }
+
+                if (!window.FirebaseConfig) {
+                    throw new Error('Sacred support services not available. Please try again later or use the email link above.');
+                }
+
+                // Save support ticket to Firebase
+                const result = await FirebaseConfig.data.saveSupportTicket(contactData);
+                
+                if (result.success) {
+                    // Track successful submission
+                    FirebaseConfig.analytics.trackEvent('support_ticket_submitted', {
+                        category: contactData.category,
+                        priority: contactData.priority,
+                        has_account: !!FirebaseConfig.auth.getCurrentUser()
+                    });
+
+                    // Show success message with ticket number
+                    document.getElementById('contact-form').style.display = 'none';
+                    document.getElementById('contact-success').style.display = 'block';
+                    document.getElementById('ticket-number').textContent = `🎫 Ticket #${result.ticketId}`;
+                    
+                    console.log('✅ Support ticket submitted successfully:', result.ticketId);
+                    
+                    // Reset form after delay
+                    setTimeout(() => {
+                        event.target.reset();
+                        document.getElementById('contact-form').style.display = 'block';
+                        document.getElementById('contact-success').style.display = 'none';
+                    }, 8000);
+                    
+                } else {
+                    throw new Error(result.error || 'Failed to submit support request');
+                }
+
+            } catch (error) {
+                console.error('Error submitting contact request:', error);
+                alert(`❌ ${error.message}`);
+                
+                // Track failed submission
+                if (window.FirebaseConfig) {
+                    FirebaseConfig.analytics.trackEvent('support_ticket_failed', {
+                        error: error.message
+                    });
+                }
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
         }
     </script>
 </body>

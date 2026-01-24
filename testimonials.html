@@ -13,6 +13,13 @@
     <meta property="og:image" content="https://i.imgur.com/LYVHJr5.jpeg">
     <meta property="og:url" content="https://nazarite777.github.io/divine-temple/testimonials.html">
     
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -740,8 +747,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="testimonial">Your Testimonial</label>
-                    <textarea id="testimonial" name="testimonial" placeholder="Share your transformation story, breakthrough experiences, or how Eden Consciousness has impacted your spiritual journey..." required></textarea>
+                    <label for="testimonial">Your Sacred Story</label>
+                    <textarea id="testimonial" name="testimonial" placeholder="Share your transformation story, breakthrough experiences, or how Eden Consciousness has impacted your spiritual journey..." required minlength="10"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -771,8 +778,8 @@
             </p>
             
             <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center;">
-                <a href="https://square.link/u/A953t7Hr" class="cta-button">Get The Book ($17)</a>
-                <a href="https://square.link/u/g8CFT019" class="cta-button" style="background: linear-gradient(135deg, var(--accent-purple), #8B5CF6);">Enter The Temple ($27/month)</a>
+                <a href="https://buy.stripe.com/9B65kEf27f3r2VoaOBfjG01" class="cta-button">Get The Book ($4.99)</a>
+                <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00" class="cta-button" style="background: linear-gradient(135deg, var(--accent-purple), #8B5CF6);">Enter The Temple ($9.99/month)</a>
                 <a href="https://square.link/u/xuKzAPeA" class="cta-button" style="background: linear-gradient(135deg, #10B981, #059669);">Founding Member ($347)</a>
             </div>
         </div>
@@ -784,14 +791,16 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>Products</h3>
-                    <a href="https://square.link/u/A953t7Hr">Digital Book ($17)</a>
-                    <a href="https://square.link/u/iBLVYLEQ">Audiobook ($17)</a>
-                    <a href="https://square.link/u/7K4TPYQt">Complete Bundle ($47)</a>
-                    <a href="https://square.link/u/7wKyFAHg">Workbook ($37)</a>
+                    <a href="https://buy.stripe.com/9B65kEf27f3r2VoaOBfjG01">Digital Book ($4.99)</a>
+                    <a href="https://buy.stripe.com/9B6fZif278F37bEaOBfjG03">Paperback ($25)</a>
+                    <a href="https://buy.stripe.com/dRmfZig6b1cB67A2i5fjG02">Hardback ($54)</a>
+                    <a href="https://buy.stripe.com/aFa4gA3jp5sRgMe9KxfjG04">Audiobook ($17)</a>
+                    <a href="https://buy.stripe.com/6oUbJ27zF4oN2Vo1e1fjG05">A.S.K Guide 1: Foundation ($24)</a>
+                    <a href="https://buy.stripe.com/7sY7sMdY3dZneE6g8VfjG06">A.S.K Guide 2: Meditation ($37)</a>
                 </div>
                 <div class="footer-section">
                     <h3>Temple Access</h3>
-                    <a href="https://square.link/u/g8CFT019">Monthly Membership ($27)</a>
+                    <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00">Monthly Membership ($9.99)</a>
                     <a href="https://square.link/u/qodANI9O">Student Access ($47)</a>
                     <a href="https://square.link/u/xuKzAPeA">Founding Members ($347)</a>
                     <a href="members-new.html">Member Login</a>
@@ -819,8 +828,27 @@
 
     <!-- JavaScript -->
     <script>
+        // Firebase-powered Testimonial System
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🏛️ Testimonials page initializing...');
+            
+            // Initialize Firebase analytics
+            if (window.FirebaseConfig) {
+                FirebaseConfig.analytics.trackPageView('testimonials', 'Testimonials - Eden Consciousness');
+                
+                // Load testimonials from Firebase
+                await loadTestimonials();
+            }
+            
+            // Initialize star rating system
+            initializeStarRating();
+            
+            // Initialize testimonial form
+            initializeTestimonialForm();
+        });
+
         // Star Rating System
-        document.addEventListener('DOMContentLoaded', function() {
+        function initializeStarRating() {
             const stars = document.querySelectorAll('.star');
             const ratingValue = document.getElementById('rating-value');
             
@@ -838,6 +866,14 @@
                             s.textContent = '☆';
                         }
                     });
+                    
+                    // Track rating interaction
+                    if (window.FirebaseConfig) {
+                        FirebaseConfig.analytics.trackEvent('rating_selected', {
+                            rating: parseInt(rating),
+                            page: 'testimonials'
+                        });
+                    }
                 });
                 
                 star.addEventListener('mouseover', function() {
@@ -864,15 +900,241 @@
             });
         });
 
-        // Form Submission
-        document.getElementById('testimonial-form').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Initialize Firebase testimonials system
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize testimonial form and load testimonials
+            initializeTestimonialForm();
+            loadTestimonials();
+        });
+
+        // Initialize testimonial form with Firebase
+        function initializeTestimonialForm() {
+            const form = document.getElementById('testimonial-form');
+            if (form) {
+                // Remove old event listeners and add Firebase handler
+                const newForm = form.cloneNode(true);
+                form.parentNode.replaceChild(newForm, form);
+                
+                newForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await submitTestimonial(e);
+                });
+            }
+        }
+
+        // Load testimonials from Firebase
+        async function loadTestimonials() {
+            try {
+                if (!window.FirebaseConfig) {
+                    console.log('Firebase not available, using static testimonials');
+                    return;
+                }
+
+                console.log('📚 Loading testimonials from Firebase...');
+                const testimonials = await FirebaseConfig.data.getTestimonials(20);
+                
+                if (testimonials.length > 0) {
+                    displayTestimonials(testimonials);
+                    console.log(`✅ Loaded ${testimonials.length} testimonials from Firebase`);
+                }
+            } catch (error) {
+                console.error('Error loading testimonials:', error);
+            }
+        }
+
+        // Display testimonials in the grid
+        function displayTestimonials(testimonials) {
+            const testimonialsSection = document.querySelector('section[style*="padding: 6rem 0;"]');
+            if (!testimonialsSection) return;
+
+            // Create Firebase testimonials section
+            const firebaseTestimonials = testimonials.map(testimonial => {
+                const createdDate = testimonial.createdAt?.toDate?.() || new Date();
+                const stars = '★'.repeat(testimonial.rating || 5) + '☆'.repeat(5 - (testimonial.rating || 5));
+                
+                return `
+                    <div class="testimonial-card" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+                        <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                            <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; margin-right: 1rem; font-size: 1.2rem;">
+                                ${(testimonial.name || 'Anonymous').charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; color: var(--text-primary); font-size: 1.1rem;">${testimonial.name || 'Anonymous'}</div>
+                                <div style="color: var(--accent-gold); font-size: 1.2rem; margin-top: 0.25rem;">${stars}</div>
+                            </div>
+                        </div>
+                        <p style="color: var(--text-secondary); line-height: 1.6; font-style: italic; margin-bottom: 1rem; font-size: 1rem;">
+                            "${testimonial.message}"
+                        </p>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem; opacity: 0.7;">
+                            🕊️ Shared on ${createdDate.toLocaleDateString()}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Insert Firebase testimonials section
+            testimonialsSection.insertAdjacentHTML('afterend', `
+                <section style="padding: 4rem 0; background: rgba(0, 0, 0, 0.2);">
+                    <div class="container">
+                        <h2 style="text-align: center; font-family: 'Playfair Display', serif; color: var(--accent-gold); margin-bottom: 3rem; font-size: 2.5rem;">
+                            💫 Recent Sacred Stories
+                        </h2>
+                        <div style="max-width: 800px; margin: 0 auto;">
+                            ${firebaseTestimonials}
+                        </div>
+                    </div>
+                </section>
+            `);
+        }
+
+        // Submit testimonial to Firebase
+        async function submitTestimonial(event) {
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
             
-            // Simulate form submission
+            try {
+                submitBtn.textContent = '🔥 Submitting Sacred Story...';
+                submitBtn.disabled = true;
+
+                const formData = new FormData(event.target);
+                const testimonialData = {
+                    name: formData.get('name')?.trim() || 'Anonymous',
+                    email: formData.get('email')?.trim() || '',
+                    message: formData.get('testimonial')?.trim() || '',
+                    rating: parseInt(document.getElementById('rating-value').value) || 5,
+                    source: 'testimonials_page'
+                };
+
+                // Validate required fields
+                if (!testimonialData.message) {
+                    throw new Error('Please share your sacred story with us');
+                }
+
+                if (testimonialData.message.length < 10) {
+                    throw new Error('Please share a more detailed story (at least 10 characters)');
+                }
+
+                if (!window.FirebaseConfig) {
+                    throw new Error('Sacred services not available. Please try again later.');
+                }
+
+                // Save to Firebase
+                const result = await FirebaseConfig.data.saveTestimonial(testimonialData);
+                
+                if (result.success) {
+                    // Track successful submission
+                    FirebaseConfig.analytics.trackEvent('testimonial_submitted', {
+                        rating: testimonialData.rating,
+                        has_email: !!testimonialData.email,
+                        message_length: testimonialData.message.length
+                    });
+
+                    // Show success message and hide form
+                    document.getElementById('testimonial-form').style.display = 'none';
+                    document.getElementById('form-success').style.display = 'block';
+                    
+                    // Show floating success message
+                    showFloatingSuccess();
+                    
+                    // Reset form after delay
+                    setTimeout(() => {
+                        event.target.reset();
+                        resetStarRating();
+                        document.getElementById('testimonial-form').style.display = 'block';
+                        document.getElementById('form-success').style.display = 'none';
+                    }, 5000);
+                    
+                    console.log('✅ Testimonial submitted successfully');
+                } else {
+                    throw new Error(result.error || 'Failed to submit testimonial');
+                }
+
+            } catch (error) {
+                console.error('Error submitting testimonial:', error);
+                alert(`❌ ${error.message}`);
+                
+                // Track failed submission
+                if (window.FirebaseConfig) {
+                    FirebaseConfig.analytics.trackEvent('testimonial_failed', {
+                        error: error.message
+                    });
+                }
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Show floating success message
+        function showFloatingSuccess() {
+            const successMessage = document.createElement('div');
+            successMessage.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, var(--accent-gold), #FBBF24);
+                color: var(--bg-primary);
+                padding: 1.5rem 2rem;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+                z-index: 1000;
+                font-weight: 600;
+                font-size: 1rem;
+                animation: slideInRight 0.5s ease-out;
+            `;
+            successMessage.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 1.5rem;">🙏</span>
+                    <span>Sacred Story Received!</span>
+                </div>
+            `;
+
+            // Add animation keyframes
+            if (!document.querySelector('#floating-animation-styles')) {
+                const style = document.createElement('style');
+                style.id = 'floating-animation-styles';
+                style.textContent = `
+                    @keyframes slideInRight {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            document.body.appendChild(successMessage);
+
+            // Remove message after 4 seconds
             setTimeout(() => {
-                document.getElementById('testimonial-form').style.display = 'none';
-                document.getElementById('form-success').style.display = 'block';
-            }, 1000);
+                successMessage.style.animation = 'slideInRight 0.5s ease-out reverse';
+                setTimeout(() => successMessage.remove(), 500);
+            }, 4000);
+        }
+
+        // Reset star rating
+        function resetStarRating() {
+            const stars = document.querySelectorAll('.star');
+            const ratingValue = document.getElementById('rating-value');
+            
+            if (ratingValue) ratingValue.value = '';
+            stars.forEach(star => {
+                star.classList.remove('active');
+                star.textContent = '☆';
+            });
+        }
+
+        // Form Submission (Legacy - replaced by Firebase)
+        // This is kept as fallback but should not be used
+        document.getElementById('testimonial-form').addEventListener('submit', function(e) {
+            if (!window.FirebaseConfig) {
+                e.preventDefault();
+                // Simulate form submission for fallback
+                setTimeout(() => {
+                    document.getElementById('testimonial-form').style.display = 'none';
+                    document.getElementById('form-success').style.display = 'block';
+                }, 1000);
+            }
         });
 
         // Smooth scroll for anchor links

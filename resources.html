@@ -13,6 +13,13 @@
     <meta property="og:image" content="https://i.imgur.com/LYVHJr5.jpeg">
     <meta property="og:url" content="https://nazarite777.github.io/divine-temple/resources.html">
     
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
@@ -1003,14 +1010,16 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>Products</h3>
-                    <a href="https://square.link/u/A953t7Hr">Digital Book</a>
-                    <a href="https://square.link/u/iBLVYLEQ">Audiobook</a>
-                    <a href="https://square.link/u/7K4TPYQt">Complete Bundle</a>
-                    <a href="https://square.link/u/7wKyFAHg">Workbook</a>
+                    <a href="https://buy.stripe.com/9B65kEf27f3r2VoaOBfjG01">Digital Book ($4.99)</a>
+                    <a href="https://buy.stripe.com/9B6fZif278F37bEaOBfjG03">Paperback ($25)</a>
+                    <a href="https://buy.stripe.com/dRmfZig6b1cB67A2i5fjG02">Hardback ($54)</a>
+                    <a href="https://buy.stripe.com/aFa4gA3jp5sRgMe9KxfjG04">Audiobook ($17)</a>
+                    <a href="https://buy.stripe.com/6oUbJ27zF4oN2Vo1e1fjG05">A.S.K Guide 1: Foundation ($24)</a>
+                    <a href="https://buy.stripe.com/7sY7sMdY3dZneE6g8VfjG06">A.S.K Guide 2: Meditation ($37)</a>
                 </div>
                 <div class="footer-section">
                     <h3>Temple Access</h3>
-                    <a href="https://square.link/u/g8CFT019">Monthly Membership</a>
+                    <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00">Monthly Membership</a>
                     <a href="https://square.link/u/qodANI9O">Student Access</a>
                     <a href="https://square.link/u/xuKzAPeA">Founding Members</a>
                     <a href="members-new.html">Member Login</a>
@@ -1037,6 +1046,49 @@
     </footer>
 
     <script>
+        // Firebase Analytics Integration
+        window.addEventListener('load', () => {
+            if (window.FirebaseConfig) {
+                // Track page view
+                FirebaseConfig.analytics.trackPageView('resources', 'Free Spiritual Resources - Eden Consciousness');
+                
+                // Track resource downloads/usage
+                document.querySelectorAll('.resource-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const resourceTitle = card.querySelector('h3')?.textContent || 'Unknown Resource';
+                        FirebaseConfig.analytics.trackEvent('resource_interaction', {
+                            resource_name: resourceTitle,
+                            interaction_type: 'card_click'
+                        });
+                    });
+                });
+                
+                // Track email form submissions
+                document.querySelectorAll('form').forEach(form => {
+                    form.addEventListener('submit', () => {
+                        const formType = form.closest('.resource-card')?.querySelector('h3')?.textContent || 'Email Form';
+                        FirebaseConfig.analytics.trackEvent('email_signup', {
+                            source: 'resources_page',
+                            form_type: formType
+                        });
+                    });
+                });
+                
+                // Track tool usage (calendar, oracle cards, etc.)
+                document.querySelectorAll('button, .btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const buttonText = btn.textContent.trim();
+                        if (buttonText.includes('Calculate') || buttonText.includes('Generate') || buttonText.includes('Download')) {
+                            FirebaseConfig.analytics.trackEvent('tool_usage', {
+                                tool_name: buttonText,
+                                page_location: window.location.href
+                            });
+                        }
+                    });
+                });
+            }
+        });
+
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
