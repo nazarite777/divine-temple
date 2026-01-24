@@ -13,6 +13,7 @@
 
     <!-- Divine Temple Systems -->
     <script src="../js/firebase-config.js"></script>
+    <script src="../js/premium-access-control.js"></script>
     <script src="../js/divine-audio-engine.js"></script>
     <script src="../js/universal-progress-system.js"></script>
     <script src="../js/divine-progress-widget.js"></script>
@@ -644,6 +645,25 @@
             justify-content: center;
         }
 
+        /* Meditation Track Cards */
+        .meditation-track {
+            transition: all 0.3s ease;
+        }
+
+        .meditation-track:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(79, 195, 247, 0.25);
+            border-color: rgba(79, 195, 247, 0.4) !important;
+        }
+
+        .meditation-track audio {
+            filter: brightness(1.1);
+        }
+
+        .meditation-track audio::-webkit-media-controls-panel {
+            background: linear-gradient(135deg, rgba(79, 195, 247, 0.2), rgba(102, 187, 106, 0.2));
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .meditation-container {
@@ -719,14 +739,14 @@
 </head>
 <body>
     <div class="meditation-container">
-        <button class="back-btn" onclick="goBack()">
-            ← Back to Temple
-        </button>
+        <a href="../members-new.html" class="back-btn" style="text-decoration: none; display: inline-flex;">
+            ← Back to Divine Temple Portal
+        </a>
 
         <div class="meditation-header">
             <div class="header-icon">🧘</div>
             <h1 class="meditation-title">Meditation & Mindfulness</h1>
-            <p class="meditation-subtitle">Find peace, balance, and inner wisdom through guided practices</p>
+            <p class="meditation-subtitle">6 foundational meditation practices for spiritual development and inner peace - designed for 3-4x weekly practice</p>
         </div>
 
         <!-- Divine Progress Widget -->
@@ -755,6 +775,156 @@
                 <div class="stat-label">Sessions</div>
             </div>
         </div>
+
+        <!-- Guided Meditation Library -->
+        <div class="meditation-library" style="margin-bottom: 3rem;">
+            <h2 style="font-family: 'Playfair Display', serif; text-align: center; color: var(--accent-blue); margin-bottom: 1rem; font-size: 2.5rem;">
+                🎧 Guided Meditation Library
+            </h2>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 3rem; max-width: 700px; margin-left: auto; margin-right: auto;">
+                Professionally guided meditations to deepen your practice and accelerate your spiritual journey
+            </p>
+
+            <div class="meditation-tracks" style="display: grid; gap: 1.5rem; margin-bottom: 3rem;">
+                <!-- Return to Eden Meditation -->
+                <div class="meditation-track" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; transition: all 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="color: var(--accent-blue); font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; font-size: 1.5rem;">
+                                🌟 Return to Eden
+                            </h3>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                                A transformative meditation to help you experience your original divine state. Reconnect with your true nature and remember who you really are.
+                            </p>
+                        </div>
+                        <div style="color: var(--accent-blue); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">25:00</div>
+                    </div>
+
+                    <audio controls style="width: 100%; margin-bottom: 1rem; border-radius: 10px;" preload="metadata" onplay="meditationApp.trackPlay('Return to Eden', 25)">
+                        <source src="../audio/meditations/return-to-eden-meditation.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <span style="background: rgba(79, 195, 247, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-blue); font-weight: 600;">Consciousness</span>
+                        <span style="background: rgba(79, 195, 247, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-blue); font-weight: 600;">Divine Nature</span>
+                        <span style="background: rgba(79, 195, 247, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-blue); font-weight: 600;">Awakening</span>
+                    </div>
+                </div>
+
+                <!-- Chakra Awakening Meditation -->
+                <div class="meditation-track" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; transition: all 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="color: var(--accent-green); font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; font-size: 1.5rem;">
+                                🌈 7 Chakras Awakening
+                            </h3>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                                Activate and balance all seven chakras for complete energetic alignment. Experience deep healing and energy flow throughout your entire being.
+                            </p>
+                        </div>
+                        <div style="color: var(--accent-green); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">35:00</div>
+                    </div>
+
+                    <audio controls style="width: 100%; margin-bottom: 1rem; border-radius: 10px;" preload="metadata" onplay="meditationApp.trackPlay('Chakra Awakening', 35)">
+                        <source src="../audio/meditations/chakra-awakening-meditation.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <span style="background: rgba(102, 187, 106, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-green); font-weight: 600;">Chakras</span>
+                        <span style="background: rgba(102, 187, 106, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-green); font-weight: 600;">Energy Healing</span>
+                        <span style="background: rgba(102, 187, 106, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-green); font-weight: 600;">Balance</span>
+                    </div>
+                </div>
+
+                <!-- Breathing Exercise -->
+                <div class="meditation-track" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; transition: all 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="color: var(--accent-purple); font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; font-size: 1.5rem;">
+                                🌬️ 4-7-8 Breathing Guided Practice
+                            </h3>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                                Calm your nervous system with this powerful breathing technique. Perfect for stress relief, better sleep, and instant relaxation.
+                            </p>
+                        </div>
+                        <div style="color: var(--accent-purple); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">10:00</div>
+                    </div>
+
+                    <audio controls style="width: 100%; margin-bottom: 1rem; border-radius: 10px;" preload="metadata" onplay="meditationApp.trackPlay('Breathing Practice', 10)">
+                        <source src="../audio/meditations/breathing-guided-4-7-8.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <span style="background: rgba(139, 92, 246, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-purple); font-weight: 600;">Breathwork</span>
+                        <span style="background: rgba(139, 92, 246, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-purple); font-weight: 600;">Relaxation</span>
+                        <span style="background: rgba(139, 92, 246, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-purple); font-weight: 600;">Stress Relief</span>
+                    </div>
+                </div>
+
+                <!-- Divine Identity Meditation -->
+                <div class="meditation-track" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; transition: all 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="color: var(--primary-gold); font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; font-size: 1.5rem;">
+                                ✨ Divine Identity Meditation
+                            </h3>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                                Discover and embody your true divine identity. Release false beliefs and step into the fullness of who you were created to be.
+                            </p>
+                        </div>
+                        <div style="color: var(--primary-gold); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">20:00</div>
+                    </div>
+
+                    <audio controls style="width: 100%; margin-bottom: 1rem; border-radius: 10px;" preload="metadata" onplay="meditationApp.trackPlay('Divine Identity', 20)">
+                        <source src="../audio/meditations/divine-identity-meditation.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <span style="background: rgba(212, 175, 55, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--primary-gold); font-weight: 600;">Identity</span>
+                        <span style="background: rgba(212, 175, 55, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--primary-gold); font-weight: 600;">Self-Discovery</span>
+                        <span style="background: rgba(212, 175, 55, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--primary-gold); font-weight: 600;">Transformation</span>
+                    </div>
+                </div>
+
+                <!-- Morning Eden Meditation -->
+                <div class="meditation-track" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; transition: all 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="color: var(--accent-rose); font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; font-size: 1.5rem;">
+                                🌅 Morning Eden Meditation
+                            </h3>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                                Start your day from Eden consciousness. Set your intention, align with divine truth, and move through your day with grace and power.
+                            </p>
+                        </div>
+                        <div style="color: var(--accent-rose); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">15:00</div>
+                    </div>
+
+                    <audio controls style="width: 100%; margin-bottom: 1rem; border-radius: 10px;" preload="metadata" onplay="meditationApp.trackPlay('Morning Eden', 15)">
+                        <source src="../audio/meditations/morning-eden-meditation.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <span style="background: rgba(244, 63, 94, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-rose); font-weight: 600;">Morning Practice</span>
+                        <span style="background: rgba(244, 63, 94, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-rose); font-weight: 600;">Intention Setting</span>
+                        <span style="background: rgba(244, 63, 94, 0.2); padding: 0.4rem 1rem; border-radius: 15px; font-size: 0.85rem; color: var(--accent-rose); font-weight: 600;">Alignment</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Practice Tools -->
+        <h2 style="font-family: 'Playfair Display', serif; text-align: center; color: var(--accent-blue); margin-bottom: 1rem; font-size: 2rem;">
+            🧘 Interactive Practice Tools
+        </h2>
+        <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+            Customizable meditation timers and breathing exercises for your personal practice
+        </p>
 
         <!-- Practices Grid -->
         <div class="practices-grid">
@@ -1901,6 +2071,30 @@
                 this.cleanup();
                 document.getElementById('meditation-modal').classList.remove('open');
                 this.currentSession = null;
+            }
+
+            // ==================== AUDIO TRACK PLAY TRACKING ====================
+            trackPlay(trackName, minutes) {
+                console.log(`▶️ Playing: ${trackName}`);
+
+                // Award XP for listening to meditation audio
+                if (window.progressSystem) {
+                    const xp = minutes * 10; // 10 XP per minute
+                    window.progressSystem.awardXP(xp, `Listened to ${trackName}`, 'meditation-mindfulness');
+                    window.progressSystem.logActivity('meditation_audio_play', 'meditation-mindfulness', {
+                        track: trackName,
+                        duration: minutes
+                    });
+                }
+
+                // Show toast notification
+                this.showToast(`
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">▶️</div>
+                        <div style="font-weight: 600;">Playing: ${trackName}</div>
+                        <div style="font-size: 0.85rem; opacity: 0.9; margin-top: 0.25rem;">${minutes} minutes • +${minutes * 10} XP</div>
+                    </div>
+                `, 'success');
             }
 
             // ==================== UTILITIES ====================
