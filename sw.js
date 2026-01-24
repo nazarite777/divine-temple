@@ -3,18 +3,44 @@
  * Sacred caching for offline spiritual practice
  */
 
-const CACHE_NAME = 'divine-temple-v8.0';
-const STATIC_CACHE = 'divine-temple-static-v8.0';
-const DYNAMIC_CACHE = 'divine-temple-dynamic-v8.0';
+const CACHE_NAME = 'divine-temple-complete-v9.0';
+const STATIC_CACHE = 'divine-temple-static-v9.0';
+const DYNAMIC_CACHE = 'divine-temple-dynamic-v9.0';
 const OFFLINE_PAGE = '/offline.html';
 
-// Enhanced resources for Phase 8 PWA Excellence
+// Complete Divine Temple Platform Files for PWA
 const STATIC_ASSETS = [
+    // Core platform pages
     '/',
     '/index.html',
+    '/members.html',
     '/members-new.html',
+    '/free-dashboard.html',
     '/register.html',
-    '/verify-email.html',
+    '/login.html',
+    '/offline.html',
+    '/manifest.json',
+    
+    // Consciousness & Trivia System
+    '/sections/daily-trivia-PREMIUM.html',
+    '/sections/daily-trivia-FREE.html',
+    '/js/daily-trivia-PREMIUM.js',
+    '/js/daily-trivia-FREE-VERSION.js',
+    '/js/trivia-audio-system.js',
+    
+    // Singing Bowl Meditation System
+    '/sections/singing-bowl-harmony-garden.html',
+    '/js/singing-bowl-system.js',
+    '/js/singing-bowl-garden.js',
+    '/js/realistic-wind-chimes.js',
+    
+    // Divine Guidance & Oracle System
+    '/sections/divine-guidance-system.html',
+    '/sections/oracle-cards.html',
+    '/js/divine-guidance-system.js',
+    '/js/oracle-cards-system.js',
+    
+    // Existing spiritual sections
     '/sections/oracle-divination.html',
     '/sections/meditation-mindfulness.html',
     '/sections/energy-healing.html',

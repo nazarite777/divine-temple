@@ -1,0 +1,93 @@
+<!-- Icon Generator Helper -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PWA Icon Generator</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        canvas { border: 1px solid #ccc; margin: 10px; }
+        .icon-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    </style>
+</head>
+<body>
+    <h1>PWA Icon Generator</h1>
+    <p>Click "Generate Icons" to create all required PWA icons:</p>
+    <button onclick="generateAllIcons()">Generate Icons</button>
+    <div id="icons" class="icon-grid"></div>
+
+    <script>
+        const iconSizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        
+        function generateIcon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#d4af37');
+            gradient.addColorStop(1, '#8b5cf6');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            
+            // Add rounded corners
+            ctx.globalCompositeOperation = 'destination-in';
+            ctx.beginPath();
+            const radius = size * 0.2;
+            ctx.roundRect(0, 0, size, size, radius);
+            ctx.fill();
+            
+            ctx.globalCompositeOperation = 'source-over';
+            
+            // Add icon symbol (third eye/consciousness symbol)
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${size * 0.4}px serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🧠', size/2, size/2);
+            
+            // Add subtle border
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = size * 0.01;
+            ctx.beginPath();
+            ctx.roundRect(1, 1, size-2, size-2, radius-1);
+            ctx.stroke();
+            
+            return canvas;
+        }
+        
+        function generateAllIcons() {
+            const container = document.getElementById('icons');
+            container.innerHTML = '';
+            
+            iconSizes.forEach(size => {
+                const canvas = generateIcon(size);
+                const wrapper = document.createElement('div');
+                wrapper.style.textAlign = 'center';
+                
+                const label = document.createElement('div');
+                label.textContent = `${size}x${size}`;
+                label.style.marginBottom = '5px';
+                label.style.fontWeight = 'bold';
+                
+                const downloadLink = document.createElement('a');
+                downloadLink.href = canvas.toDataURL();
+                downloadLink.download = `icon-${size}.png`;
+                downloadLink.textContent = 'Download';
+                downloadLink.style.display = 'block';
+                downloadLink.style.marginTop = '5px';
+                
+                wrapper.appendChild(label);
+                wrapper.appendChild(canvas);
+                wrapper.appendChild(downloadLink);
+                container.appendChild(wrapper);
+            });
+        }
+        
+        // Auto-generate on load
+        generateAllIcons();
+    </script>
+</body>
+</html>

@@ -12,6 +12,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="js/firebase-config.js"></script>
 
+    <!-- Realistic Nature Audio System -->
+    <script src="js/realistic-nature-audio-manager.js"></script>
+    <script src="js/soundboard-integration.js"></script>
+
     <style>
         :root {
             --primary-gold: #d4af37;
@@ -1494,6 +1498,24 @@
                     </button>
                 </div>
 
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(139,92,246,0.1)); border-color: rgba(212,175,55,0.3); cursor: pointer;" onclick="window.location.href='sections/daily-trivia.html'">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Daily Spiritual Trivia</h3>
+                    <p>Test your spiritual knowledge with 3 daily questions. Earn XP, build streaks, and expand your consciousness!</p>
+                    <button class="upgrade-btn" style="background: linear-gradient(135deg, #D4AF37, #8B5CF6); margin-top: 1rem; padding: 0.75rem 1.5rem; border: none; color: white; border-radius: 25px; font-weight: 600; cursor: pointer; width: 100%;">
+                        Play Today's Trivia →
+                    </button>
+                </div>
+
+                <div class="feature-card" style="background: linear-gradient(135deg, rgba(72,187,120,0.1), rgba(102,187,106,0.1)); border-color: rgba(72,187,120,0.3); cursor: pointer;" onclick="window.location.href='sections/chakra-memory-match.html'">
+                    <div class="feature-icon">🧘</div>
+                    <h3>Chakra Memory Match</h3>
+                    <p>Match chakra pairs in this beautiful memory game! 3 difficulty levels, earn up to 400 XP per game!</p>
+                    <button class="upgrade-btn" style="background: linear-gradient(135deg, #48BB78, #4299E1); margin-top: 1rem; padding: 0.75rem 1.5rem; border: none; color: white; border-radius: 25px; font-weight: 600; cursor: pointer; width: 100%;">
+                        Play Memory Match →
+                    </button>
+                </div>
+
                 <div class="feature-card" style="background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(124,58,237,0.1)); border-color: rgba(139,92,246,0.3);">
                     <div class="feature-icon">📚</div>
                     <h3>All Free Resources</h3>
@@ -1592,13 +1614,24 @@
         <!-- Upgrade CTA -->
         <div class="upgrade-cta">
             <h2>✨ Unlock Your Full Spiritual Potential</h2>
-            <p>Get access to all 14 powerful spiritual tools, progress tracking, and our supportive community</p>
+            <p>Get full access to all 14 powerful spiritual tools, progress tracking, and our supportive community for just <strong>$9.99/month</strong></p>
             <div class="cta-buttons">
-                <a href="#" id="mediumBlogLink" class="cta-btn" target="_blank">
-                    📚 Read More on Medium
-                </a>
-                <a href="mailto:support@divinetemple.com?subject=Premium Access" class="cta-btn secondary">
-                    💎 Get Premium Access
+                <button onclick="showPremiumUpgradeModal()" class="cta-btn premium-upgrade-btn" style="
+                    background: linear-gradient(135deg, #d4af37, #f59e0b);
+                    color: white;
+                    border: none;
+                    padding: 1rem 2rem;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    💎 Upgrade to Premium - $9.99/month
+                </button>
+                <a href="#" id="mediumBlogLink" class="cta-btn secondary" target="_blank" style="display: inline-block; margin-top: 1rem;">
+                    📚 Learn More
                 </a>
             </div>
         </div>
@@ -1632,6 +1665,9 @@
     <!-- Freemium Config -->
     <script src="js/freemium-config.js"></script>
 
+    <!-- Premium Checkout System -->
+    <script src="js/premium-checkout.js"></script>
+
     <script>
         console.log('🔍 FREE-DASHBOARD: Starting initialization...');
 
@@ -1643,45 +1679,91 @@
         function checkAdminSession() {
             const adminAuth = sessionStorage.getItem('adminAuth') === 'true' || localStorage.getItem('adminAuth') === 'true';
             const memberData = JSON.parse(sessionStorage.getItem('memberData') || localStorage.getItem('currentUser') || '{}');
-            
+
             console.log('🔱 Checking admin session...');
             console.log('   Admin auth:', adminAuth);
             console.log('   Member data:', memberData);
-            
+
             if (adminAuth && memberData.isAdmin) {
                 console.log('🔱 ADMIN SESSION DETECTED - bypassing Firebase auth');
                 console.log('🔱 Admin user:', memberData.displayName);
-                
+
                 // Set up admin session for free dashboard
                 const userEmailElement = document.getElementById('userEmail');
                 if (userEmailElement) {
                     userEmailElement.textContent = memberData.email || 'nazir@edenconsciousness.com';
                 }
-                
+
                 localStorage.setItem('userEmail', memberData.email || 'nazir@edenconsciousness.com');
                 localStorage.setItem('userId', memberData.uid || 'admin_nazir_creator');
                 localStorage.setItem('membershipLevel', 'admin');
-                
+
                 // Hide loading and show dashboard
                 const authLoading = document.getElementById('authLoading');
                 if (authLoading) {
                     authLoading.classList.add('hidden');
                 }
-                
+
                 console.log('✅ Admin dashboard loaded successfully');
                 return true;
             }
-            
+
             console.log('❌ No admin session found');
             return false;
         }
 
-        // Check admin session immediately on page load
-        if (checkAdminSession()) {
-            console.log('🔱 Admin session active - skipping Firebase auth');
-        } else {
-            console.log('🔥 No admin session - proceeding with Firebase auth');
-            
+        // Wait for Firebase to be fully loaded
+        function waitForFirebase() {
+            return new Promise((resolve) => {
+                let attempts = 0;
+                const maxAttempts = 100; // 10 seconds max wait
+
+                const checkFirebase = setInterval(() => {
+                    attempts++;
+                    console.log(`🔍 Checking Firebase... Attempt ${attempts}`);
+
+                    if (typeof firebase !== 'undefined' && firebase.auth) {
+                        console.log('✅ Firebase loaded successfully!');
+                        clearInterval(checkFirebase);
+                        resolve(true);
+                    } else if (attempts >= maxAttempts) {
+                        console.error('❌ Firebase failed to load after 10 seconds');
+                        clearInterval(checkFirebase);
+                        resolve(false);
+                    }
+                }, 100); // Check every 100ms
+            });
+        }
+
+        // Initialize authentication
+        async function initializeAuth() {
+            console.log('🔥 Initializing authentication...');
+
+            // Check admin session first
+            if (checkAdminSession()) {
+                console.log('🔱 Admin session active - skipping Firebase auth');
+                return;
+            }
+
+            // Show loading state - don't trust localStorage for membership
+            // localStorage could be stale if user just upgraded to premium
+            console.log('📱 Checking authentication and membership status...');
+
+            // Wait for Firebase to load
+            const firebaseLoaded = await waitForFirebase();
+
+            if (!firebaseLoaded) {
+                console.error('❌ Firebase failed to load - showing error');
+                document.getElementById('authLoading').innerHTML = `
+                    <div class="spinner"></div>
+                    <p style="color: #EF4444; font-size: 1.1rem;">⚠️ Connection error. Please refresh the page.</p>
+                    <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.75rem 1.5rem; background: var(--primary-gold); border: none; border-radius: 10px; color: #0f0f1e; font-weight: 600; cursor: pointer;">Refresh Page</button>
+                `;
+                return;
+            }
+
+            console.log('🔥 Firebase ready - proceeding with auth');
+
             // Set up ONE auth listener that waits properly
             const unsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
             // Clear any pending redirect timeout
@@ -1716,53 +1798,118 @@
             // USER EXISTS - proceed
             console.log('✅ User authenticated:', user.email);
 
-            // Update UI
-            document.getElementById('userEmail').textContent = user.email;
+            // Update UI safely
+            try {
+                const userEmailEl = document.getElementById('userEmail');
+                if (userEmailEl) {
+                    userEmailEl.textContent = user.email;
+                }
+            } catch (e) {
+                console.warn('Could not update userEmail element:', e);
+            }
+
             localStorage.setItem('userEmail', user.email);
             localStorage.setItem('userId', user.uid);
 
             // Check membership level
-            try {
-                const userDoc = await firebase.firestore()
-                    .collection('users')
-                    .doc(user.uid)
-                    .get();
+            let membershipLevel = 'free';
+            let shouldHideLoading = true;
 
-                let membershipLevel = 'free';
-                
-                if (userDoc.exists) {
-                    membershipLevel = userDoc.data().membershipLevel || 'free';
+            try {
+                console.log('📊 Checking membership level...');
+
+                // FIRST: Check hardcoded whitelist (for authorized premium users)
+                if (typeof FirebaseConfig !== 'undefined' &&
+                    typeof FirebaseConfig.auth !== 'undefined' &&
+                    FirebaseConfig.auth.isAuthorizedPremiumUser) {
+
+                    if (FirebaseConfig.auth.isAuthorizedPremiumUser(user.email, user.displayName)) {
+                        membershipLevel = 'premium';
+                        console.log('👑 User is in authorized premium whitelist:', user.email);
+                    }
                 }
 
+                // SECOND: Check Firestore if not already premium from whitelist
+                if (membershipLevel === 'free') {
+                    const userDoc = await firebase.firestore()
+                        .collection('users')
+                        .doc(user.uid)
+                        .get();
+
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        membershipLevel = userData.membership || userData.membershipLevel || 'free';
+                        console.log('   Found membership level in Firestore:', membershipLevel);
+                    } else {
+                        console.log('   No user doc found, defaulting to free');
+                        membershipLevel = 'free';
+                    }
+                }
+
+                // Store fresh membership data
                 localStorage.setItem('membershipLevel', membershipLevel);
-                console.log('   Membership level:', membershipLevel);
+                localStorage.setItem('membership', membershipLevel);
+
+                console.log('📊 Final membership level:', membershipLevel);
 
                 // Redirect premium users
                 if (membershipLevel !== 'free' && membershipLevel !== 'basic') {
                     console.log('💎 Premium user - redirecting to members-new.html');
                     window.location.href = 'members-new.html';
+                    shouldHideLoading = false; // Don't hide, we're redirecting
                     return;
                 }
 
                 // Free user - show dashboard
                 console.log('✨ Free user - showing dashboard');
-                document.getElementById('authLoading').classList.add('hidden');
 
             } catch (error) {
-                console.error('Error checking membership:', error);
+                console.error('❌ Error checking membership:', error);
+                // Still proceed as free user on error
+                membershipLevel = 'free';
                 localStorage.setItem('membershipLevel', 'free');
-                document.getElementById('authLoading').classList.add('hidden');
+            }
+
+            // ALWAYS hide loading screen for free users
+            if (shouldHideLoading) {
+                console.log('🎯 Hiding loading screen...');
+                const authLoading = document.getElementById('authLoading');
+                if (authLoading) {
+                    authLoading.classList.add('hidden');
+                    console.log('✅ Loading screen hidden successfully');
+                } else {
+                    console.error('❌ Could not find authLoading element!');
+                }
             }
             });
-        } // Close the if/else block for admin vs Firebase auth
 
-        // Failsafe - if no auth state after 8 seconds, redirect to login
-        setTimeout(() => {
-            if (!authReady && !checkAdminSession()) {
-                console.error('⏱️  TIMEOUT: No auth state received in 8 seconds');
-                window.location.href = 'login.html';
-            }
-        }, 8000);
+            // Failsafe #1 - if no auth state after 8 seconds, redirect to login
+            setTimeout(() => {
+                if (!authReady && !checkAdminSession()) {
+                    console.error('⏱️  TIMEOUT: No auth state received in 8 seconds');
+                    window.location.href = 'login.html';
+                }
+            }, 8000);
+
+            // Failsafe #2 - Force hide loading screen after 5 seconds if user is logged in
+            setTimeout(() => {
+                const authLoading = document.getElementById('authLoading');
+                if (authLoading && !authLoading.classList.contains('hidden')) {
+                    const currentUser = firebase.auth().currentUser;
+                    if (currentUser) {
+                        console.warn('⚠️ FORCE HIDING: User authenticated but loading still visible');
+                        authLoading.classList.add('hidden');
+                    }
+                }
+            }, 5000);
+        }
+
+        // Start authentication when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeAuth);
+        } else {
+            // DOM already loaded
+            initializeAuth();
         }
 
         // Logout function
@@ -1792,13 +1939,8 @@
             }
         }
 
-        // Load config and initialize dashboard after Firebase is ready
+        // Load config after DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
-            // Wait a brief moment for firebase-config.js to initialize
-            setTimeout(() => {
-                initializeDashboard();
-            }, 100);
-
             if (window.FREEMIUM_CONFIG) {
                 const mediumLink = document.getElementById('mediumBlogLink');
                 if (mediumLink) {
@@ -1936,21 +2078,42 @@
         // Initialize audio context
         function initAudioContext() {
             if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                masterGainNode = audioContext.createGain();
-                masterGainNode.connect(audioContext.destination);
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    masterGainNode = audioContext.createGain();
+                    masterGainNode.connect(audioContext.destination);
 
-                // Load saved master volume
-                const savedMaster = localStorage.getItem('masterVolume') || 70;
-                masterGainNode.gain.value = savedMaster / 100;
-                document.getElementById('masterVolume').value = savedMaster;
-                document.getElementById('masterVolumeValue').textContent = savedMaster + '%';
+                    // Resume audio context for autoplay policy compliance
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+
+                    // Load saved master volume
+                    const savedMaster = localStorage.getItem('masterVolume') || 70;
+                    masterGainNode.gain.value = savedMaster / 100;
+                    document.getElementById('masterVolume').value = savedMaster;
+                    document.getElementById('masterVolumeValue').textContent = savedMaster + '%';
+                    
+                    console.log('🎵 AudioContext initialized successfully');
+                } catch (error) {
+                    console.error('🚫 Failed to initialize AudioContext:', error);
+                }
             }
         }
 
         // Modal controls
         function openSoundDashboard() {
             initAudioContext();
+            
+            // Ensure AudioContext is resumed (required for autoplay policy)
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    console.log('🎵 AudioContext resumed successfully');
+                }).catch(error => {
+                    console.error('🚫 Failed to resume AudioContext:', error);
+                });
+            }
+            
             document.getElementById('soundDashboard').classList.add('active');
             loadSoundPreferences();
         }
@@ -1959,6 +2122,17 @@
             document.getElementById('soundDashboard').classList.remove('active');
             saveSoundPreferences();
         }
+
+        // Make test function globally available for debugging
+        window.testSound = testSound;
+        window.debugAudio = () => {
+            console.log('🔧 Audio Debug Info:');
+            console.log('AudioContext state:', audioContext ? audioContext.state : 'Not initialized');
+            console.log('Active sounds:', Object.keys(activeSounds));
+            console.log('Master volume:', masterGainNode ? masterGainNode.gain.value : 'Not set');
+            console.log('\n🎮 Test individual sounds with: testSound("soundName")');
+            console.log('Available sounds: rain, thunder, crickets, birds, fire, chimes, ocean, bowl, brown, wind, stream, owl, frogs, cicadas, leaves, wolf');
+        };
 
         // Save/Load preferences
         function saveSoundPreferences() {
@@ -2039,13 +2213,25 @@
 
         // Helper for stereo panning
         function createStereoPanner(pan) {
-            const panner = audioContext.createStereoPanner ?
-                audioContext.createStereoPanner() :
-                audioContext.createPanner();
-            if (panner.pan) {
-                panner.pan.value = pan; // -1 (left) to 1 (right)
+            try {
+                if (audioContext.createStereoPanner) {
+                    const panner = audioContext.createStereoPanner();
+                    panner.pan.value = pan; // -1 (left) to 1 (right)
+                    return panner;
+                } else {
+                    // Fallback for older browsers
+                    const panner = audioContext.createPanner();
+                    panner.panningModel = 'equalpower';
+                    panner.positionX.value = pan;
+                    panner.positionY.value = 0;
+                    panner.positionZ.value = 1 - Math.abs(pan);
+                    return panner;
+                }
+            } catch (error) {
+                console.error('🚫 Error creating panner:', error);
+                // Return a simple gain node as fallback
+                return audioContext.createGain();
             }
-            return panner;
         }
 
         // REALISTIC RAIN - Multi-layered with drops, splashes, and varying intensity
@@ -2250,17 +2436,56 @@
             activeSounds.crickets = { cricketPositions };
         }
 
-        // REALISTIC BIRDS - Multiple species with unique calls
+        // ULTRA-REALISTIC BIRDS - Multiple species with frequency sweeps and vibrato
         function startBirds() {
             soundGains.birds = audioContext.createGain();
             updateSoundVolume('birds');
 
-            // Different bird species with unique call patterns
+            // Enhanced bird species with realistic frequency sweeps
             const birdTypes = [
-                { name: 'robin', freqs: [2800, 3200, 2600], pattern: [0, 0.12, 0.25] },
-                { name: 'sparrow', freqs: [3500, 4000, 4200, 3800], pattern: [0, 0.08, 0.14, 0.22] },
-                { name: 'cardinal', freqs: [2200, 2600, 3000, 2800, 2400], pattern: [0, 0.1, 0.18, 0.28, 0.38] },
-                { name: 'chickadee', freqs: [4500, 3800], pattern: [0, 0.15] },
+                {
+                    name: 'robin',
+                    calls: [
+                        { startFreq: 2000, endFreq: 3200, duration: 0.15, vibrato: 8 },
+                        { startFreq: 3200, endFreq: 2600, duration: 0.12, vibrato: 6 },
+                        { startFreq: 2800, endFreq: 3000, duration: 0.14, vibrato: 7 }
+                    ],
+                    pattern: [0, 0.18, 0.35]
+                },
+                {
+                    name: 'sparrow',
+                    calls: [
+                        { startFreq: 3500, endFreq: 2800, duration: 0.08, vibrato: 12 },
+                        { startFreq: 3800, endFreq: 3200, duration: 0.07, vibrato: 10 },
+                        { startFreq: 4000, endFreq: 3500, duration: 0.08, vibrato: 11 }
+                    ],
+                    pattern: [0, 0.09, 0.18]
+                },
+                {
+                    name: 'cardinal',
+                    calls: [
+                        { startFreq: 2200, endFreq: 4500, duration: 0.2, vibrato: 5 },
+                        { startFreq: 3000, endFreq: 4200, duration: 0.18, vibrato: 6 },
+                        { startFreq: 2800, endFreq: 3800, duration: 0.16, vibrato: 5 }
+                    ],
+                    pattern: [0, 0.25, 0.48]
+                },
+                {
+                    name: 'chickadee',
+                    calls: [
+                        { startFreq: 4500, endFreq: 3800, duration: 0.12, vibrato: 15 },
+                        { startFreq: 3800, endFreq: 3200, duration: 0.12, vibrato: 12 }
+                    ],
+                    pattern: [0, 0.15]
+                },
+                {
+                    name: 'dove',
+                    calls: [
+                        { startFreq: 400, endFreq: 350, duration: 0.25, vibrato: 4 },
+                        { startFreq: 420, endFreq: 360, duration: 0.28, vibrato: 4 }
+                    ],
+                    pattern: [0, 0.4]
+                }
             ];
 
             const callBird = () => {
@@ -2270,26 +2495,55 @@
                 const now = audioContext.currentTime;
                 const pan = (Math.random() - 0.5) * 1.8;
 
-                bird.freqs.forEach((freq, i) => {
-                    const osc = audioContext.createOscillator();
-                    osc.frequency.value = freq + (Math.random() * 150);
-                    osc.type = 'sine';
-
-                    const gain = audioContext.createGain();
-                    const panner = createStereoPanner(pan);
+                bird.calls.forEach((call, i) => {
                     const startTime = now + bird.pattern[i];
 
-                    gain.gain.setValueAtTime(0, startTime);
-                    gain.gain.linearRampToValueAtTime(soundGains.birds.gain.value * 0.2, startTime + 0.02);
-                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.15);
+                    // Main oscillator with frequency sweep
+                    const osc = audioContext.createOscillator();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(call.startFreq, startTime);
+                    osc.frequency.exponentialRampToValueAtTime(
+                        call.endFreq,
+                        startTime + call.duration * 0.8
+                    );
 
-                    osc.connect(gain).connect(panner).connect(masterGainNode);
+                    // Add vibrato LFO for realism
+                    const vibrato = audioContext.createOscillator();
+                    vibrato.frequency.setValueAtTime(call.vibrato, startTime);
+                    const vibratoGain = audioContext.createGain();
+                    vibratoGain.gain.setValueAtTime(call.startFreq * 0.01, startTime); // 1% vibrato
+
+                    vibrato.connect(vibratoGain);
+                    vibratoGain.connect(osc.frequency);
+
+                    // Natural envelope (quick attack, smooth decay)
+                    const gain = audioContext.createGain();
+                    gain.gain.setValueAtTime(0, startTime);
+                    gain.gain.linearRampToValueAtTime(soundGains.birds.gain.value * 0.22, startTime + 0.01);
+                    gain.gain.exponentialRampToValueAtTime(soundGains.birds.gain.value * 0.15, startTime + call.duration * 0.5);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + call.duration);
+
+                    // Bandpass filter for natural bird tone
+                    const filter = audioContext.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.setValueAtTime((call.startFreq + call.endFreq) / 2, startTime);
+                    filter.Q.setValueAtTime(2.5, startTime);
+
+                    const panner = createStereoPanner(pan);
+
+                    osc.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(panner);
+                    panner.connect(masterGainNode);
+
                     osc.start(startTime);
-                    osc.stop(startTime + 0.15);
+                    vibrato.start(startTime);
+                    osc.stop(startTime + call.duration + 0.1);
+                    vibrato.stop(startTime + call.duration + 0.1);
                 });
             };
 
-            soundIntervals.birds = setInterval(callBird, 2500 + Math.random() * 4500);
+            soundIntervals.birds = setInterval(callBird, 3000 + Math.random() * 6000);
             activeSounds.birds = {};
         }
 
@@ -2297,71 +2551,106 @@
         function startFire() {
             const sources = [];
 
-            // Layer 1: Base crackling
+            // Layer 1: Low crackling (warm embers)
             const crackle = audioContext.createBufferSource();
             crackle.buffer = createPinkNoise(3);
             crackle.loop = true;
-            crackle.playbackRate.value = 0.7;
+            crackle.playbackRate.value = 0.5; // Slower for deeper sound
             const crackleFilter = audioContext.createBiquadFilter();
             crackleFilter.type = 'bandpass';
-            crackleFilter.frequency.value = 1200;
-            crackleFilter.Q.value = 2;
+            crackleFilter.frequency.value = 600; // Lower frequency for warmth
+            crackleFilter.Q.value = 1.5;
             const crackleGain = audioContext.createGain();
-            crackleGain.gain.value = 0.3;
+            crackleGain.gain.value = 0.25;
             crackle.connect(crackleFilter).connect(crackleGain);
             sources.push(crackle);
 
-            // Layer 2: Low rumble
+            // Layer 2: Mid crackling (active flames)
+            const midCrackle = audioContext.createBufferSource();
+            midCrackle.buffer = createPinkNoise(2);
+            midCrackle.loop = true;
+            midCrackle.playbackRate.value = 0.8;
+            const midFilter = audioContext.createBiquadFilter();
+            midFilter.type = 'bandpass';
+            midFilter.frequency.value = 1800;
+            midFilter.Q.value = 1.2;
+            const midGain = audioContext.createGain();
+            midGain.gain.value = 0.15;
+            midCrackle.connect(midFilter).connect(midGain);
+            sources.push(midCrackle);
+
+            // Layer 3: Low rumble (deep fire base)
             const rumble = audioContext.createBufferSource();
             rumble.buffer = createBrownNoise(4);
             rumble.loop = true;
             const rumbleFilter = audioContext.createBiquadFilter();
             rumbleFilter.type = 'lowpass';
-            rumbleFilter.frequency.value = 200;
+            rumbleFilter.frequency.value = 180;
             const rumbleGain = audioContext.createGain();
-            rumbleGain.gain.value = 0.25;
+            rumbleGain.gain.value = 0.2;
             rumble.connect(rumbleFilter).connect(rumbleGain);
             sources.push(rumble);
 
-            // Master gain with LFO
+            // Master gain with gentle LFO (flickering)
             const masterGain = audioContext.createGain();
             soundGains.fire = masterGain;
             updateSoundVolume('fire');
 
             const lfo = audioContext.createOscillator();
-            lfo.frequency.value = 2;
+            lfo.frequency.value = 1.5; // Slower flicker
             const lfoGain = audioContext.createGain();
-            lfoGain.gain.value = 0.03;
+            lfoGain.gain.value = 0.04;
             lfo.connect(lfoGain).connect(masterGain.gain);
             lfo.start();
 
             crackleGain.connect(masterGain);
+            midGain.connect(masterGain);
             rumbleGain.connect(masterGain);
             masterGain.connect(masterGainNode);
 
             sources.forEach(s => s.start());
 
-            // Add occasional pops
+            // Add gentle pops and snaps (like wood splitting)
             const popInterval = setInterval(() => {
                 if (!activeSounds.fire) {
                     clearInterval(popInterval);
                     return;
                 }
 
-                const osc = audioContext.createOscillator();
-                osc.frequency.value = 150 + Math.random() * 300;
-                osc.type = 'square';
-
-                const popGain = audioContext.createGain();
                 const now = audioContext.currentTime;
-                popGain.gain.setValueAtTime(0, now);
-                popGain.gain.linearRampToValueAtTime(0.08, now + 0.005);
-                popGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
 
-                osc.connect(popGain).connect(masterGain);
-                osc.start();
-                osc.stop(now + 0.05);
-            }, 300 + Math.random() * 700);
+                // Gentle wood snap using filtered noise burst
+                const snapNoise = audioContext.createBufferSource();
+                snapNoise.buffer = createPinkNoise(0.1);
+
+                const snapFilter = audioContext.createBiquadFilter();
+                snapFilter.type = 'bandpass';
+                snapFilter.frequency.setValueAtTime(300 + Math.random() * 400, now);
+                snapFilter.Q.value = 2;
+
+                const snapGain = audioContext.createGain();
+                snapGain.gain.setValueAtTime(0, now);
+                snapGain.gain.linearRampToValueAtTime(0.06, now + 0.002);
+                snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+                // Add tonal component for realistic wood snap
+                const snapTone = audioContext.createOscillator();
+                snapTone.frequency.setValueAtTime(200 + Math.random() * 150, now);
+                snapTone.type = 'sine';
+
+                const toneGain = audioContext.createGain();
+                toneGain.gain.setValueAtTime(0, now);
+                toneGain.gain.linearRampToValueAtTime(0.03, now + 0.002);
+                toneGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+                snapNoise.connect(snapFilter).connect(snapGain).connect(masterGain);
+                snapTone.connect(toneGain).connect(masterGain);
+
+                snapNoise.start(now);
+                snapTone.start(now);
+                snapNoise.stop(now + 0.1);
+                snapTone.stop(now + 0.06);
+            }, 400 + Math.random() * 800); // Less frequent, more natural
 
             activeSounds.fire = { sources, lfo, popInterval };
         }
@@ -2439,35 +2728,46 @@
 
         // Keep existing chimes and bowl functions
         function startChimes() {
-            soundGains.chimes = audioContext.createGain();
-            updateSoundVolume('chimes');
+            try {
+                soundGains.chimes = audioContext.createGain();
+                updateSoundVolume('chimes');
 
-            soundIntervals.chimes = setInterval(() => {
-                if (!activeSounds.chimes) return;
+                const playChime = () => {
+                    if (!activeSounds.chimes) return;
 
-                const frequencies = [523, 659, 784, 988]; // C, E, G, B
-                const freq = frequencies[Math.floor(Math.random() * frequencies.length)];
-                const now = audioContext.currentTime;
+                    try {
+                        const frequencies = [523, 659, 784, 988]; // C, E, G, B
+                        const freq = frequencies[Math.floor(Math.random() * frequencies.length)];
+                        const now = audioContext.currentTime;
 
-                // Add harmonics for realistic chime sound
-                [1, 2.76, 5.4, 8.9].forEach((harmonic, i) => {
-                    const osc = audioContext.createOscillator();
-                    osc.frequency.value = freq * harmonic;
-                    osc.type = 'sine';
+                        // Add harmonics for realistic chime sound
+                        [1, 2.76, 5.4, 8.9].forEach((harmonic, i) => {
+                            const osc = audioContext.createOscillator();
+                            osc.frequency.value = freq * harmonic;
+                            osc.type = 'sine';
 
-                    const gain = audioContext.createGain();
-                    const pan = createStereoPanner((Math.random() - 0.5) * 0.6);
+                            const gain = audioContext.createGain();
+                            const pan = createStereoPanner((Math.random() - 0.5) * 0.6);
 
-                    gain.gain.setValueAtTime(0, now);
-                    gain.gain.linearRampToValueAtTime(soundGains.chimes.gain.value * 0.3 / (i + 1), now + 0.05);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + (2 - i * 0.3));
+                            gain.gain.setValueAtTime(0, now);
+                            gain.gain.linearRampToValueAtTime(soundGains.chimes.gain.value * 0.3 / (i + 1), now + 0.05);
+                            gain.gain.exponentialRampToValueAtTime(0.001, now + (2 - i * 0.3));
 
-                    osc.connect(gain).connect(pan).connect(masterGainNode);
-                    osc.start();
-                    osc.stop(now + (2 - i * 0.3));
-                });
-            }, 8000 + Math.random() * 12000);
-            activeSounds.chimes = {};
+                            osc.connect(gain).connect(pan).connect(masterGainNode);
+                            osc.start();
+                            osc.stop(now + (2 - i * 0.3));
+                        });
+                    } catch (error) {
+                        console.error('🚫 Error playing chime:', error);
+                    }
+                };
+
+                soundIntervals.chimes = setInterval(playChime, 8000 + Math.random() * 12000);
+                activeSounds.chimes = {};
+                console.log('🎵 Chimes started successfully');
+            } catch (error) {
+                console.error('🚫 Error starting chimes:', error);
+            }
         }
 
         function startBowl() {
@@ -2515,54 +2815,92 @@
             activeSounds.brown = { source: noise };
         }
 
-        // WIND - Multi-layered with gusts
+        // ULTRA-REALISTIC WIND - Gentle breeze with natural movement
         function startWind() {
             const sources = [];
 
-            // Base wind layer
-            const base = audioContext.createBufferSource();
-            base.buffer = createWhiteNoise(4);
-            base.loop = true;
-            const baseFilter = audioContext.createBiquadFilter();
-            baseFilter.type = 'bandpass';
-            baseFilter.frequency.value = 600;
-            baseFilter.Q.value = 0.3;
-            const baseGain = audioContext.createGain();
-            baseGain.gain.value = 0.3;
-            base.connect(baseFilter).connect(baseGain);
-            sources.push(base);
+            // Layer 1: Deep rumble (low frequency wind)
+            const deepWind = audioContext.createBufferSource();
+            deepWind.buffer = createBrownNoise(5);
+            deepWind.loop = true;
+            const deepFilter = audioContext.createBiquadFilter();
+            deepFilter.type = 'lowpass';
+            deepFilter.frequency.value = 250;
+            deepFilter.Q.value = 0.5;
+            const deepGain = audioContext.createGain();
+            deepGain.gain.value = 0.2;
+            deepWind.connect(deepFilter).connect(deepGain);
+            sources.push(deepWind);
 
-            // Gust layer (higher frequency)
-            const gust = audioContext.createBufferSource();
-            gust.buffer = createWhiteNoise(3);
-            gust.loop = true;
-            const gustFilter = audioContext.createBiquadFilter();
-            gustFilter.type = 'highpass';
-            gustFilter.frequency.value = 1200;
-            const gustGain = audioContext.createGain();
-            gustGain.gain.value = 0.15;
-            gust.connect(gustFilter).connect(gustGain);
-            sources.push(gust);
+            // Layer 2: Mid-range whoosh (main breeze)
+            const midWind = audioContext.createBufferSource();
+            midWind.buffer = createBrownNoise(4);
+            midWind.loop = true;
+            midWind.playbackRate.value = 0.8; // Slower for deeper tone
+            const midFilter = audioContext.createBiquadFilter();
+            midFilter.type = 'bandpass';
+            midFilter.frequency.value = 400;
+            midFilter.Q.value = 0.4;
+            const midGain = audioContext.createGain();
+            midGain.gain.value = 0.25;
+            midWind.connect(midFilter).connect(midGain);
+            sources.push(midWind);
+
+            // Layer 3: High breeze (rustling air)
+            const highWind = audioContext.createBufferSource();
+            highWind.buffer = createPinkNoise(3);
+            highWind.loop = true;
+            const highFilter = audioContext.createBiquadFilter();
+            highFilter.type = 'bandpass';
+            highFilter.frequency.value = 900;
+            highFilter.Q.value = 0.6;
+            const highGain = audioContext.createGain();
+            highGain.gain.value = 0.15;
+            highWind.connect(highFilter).connect(highGain);
+            sources.push(highWind);
+
+            // Layer 4: Very subtle high shimmer
+            const shimmer = audioContext.createBufferSource();
+            shimmer.buffer = createWhiteNoise(2);
+            shimmer.loop = true;
+            const shimmerFilter = audioContext.createBiquadFilter();
+            shimmerFilter.type = 'highpass';
+            shimmerFilter.frequency.value = 2000;
+            const shimmerGain = audioContext.createGain();
+            shimmerGain.gain.value = 0.08;
+            shimmer.connect(shimmerFilter).connect(shimmerGain);
+            sources.push(shimmer);
 
             // Master gain
             const masterGain = audioContext.createGain();
             soundGains.wind = masterGain;
             updateSoundVolume('wind');
 
-            // LFO for wind gusts
-            const lfo = audioContext.createOscillator();
-            lfo.frequency.value = 0.3;
-            const lfoGain = audioContext.createGain();
-            lfoGain.gain.value = 0.15;
-            lfo.connect(lfoGain).connect(masterGain.gain);
-            lfo.start();
+            // Slow, gentle LFO for natural gusts
+            const gustLFO = audioContext.createOscillator();
+            gustLFO.frequency.value = 0.12; // Slower, more natural
+            const gustLFOGain = audioContext.createGain();
+            gustLFOGain.gain.value = 0.1;
+            gustLFO.connect(gustLFOGain).connect(masterGain.gain);
 
-            baseGain.connect(masterGain);
-            gustGain.connect(masterGain);
+            // Very slow LFO for gentle breathing
+            const breathLFO = audioContext.createOscillator();
+            breathLFO.frequency.value = 0.05; // Very slow
+            const breathLFOGain = audioContext.createGain();
+            breathLFOGain.gain.value = 0.06;
+            breathLFO.connect(breathLFOGain).connect(masterGain.gain);
+
+            gustLFO.start();
+            breathLFO.start();
+
+            deepGain.connect(masterGain);
+            midGain.connect(masterGain);
+            highGain.connect(masterGain);
+            shimmerGain.connect(masterGain);
             masterGain.connect(masterGainNode);
 
             sources.forEach(s => s.start());
-            activeSounds.wind = { sources, lfo };
+            activeSounds.wind = { sources, lfo: gustLFO, breathLFO };
         }
 
         // STREAM - Flowing water
@@ -2765,70 +3103,153 @@
             activeSounds.leaves = { source: noise, lfo };
         }
 
-        // WOLF - Distant howl
+        // ULTRA-REALISTIC WOLF - Distant, haunting howl with harmonics
         function startWolf() {
-            soundGains.wolf = audioContext.createGain();
-            updateSoundVolume('wolf');
+            try {
+                soundGains.wolf = audioContext.createGain();
+                updateSoundVolume('wolf');
 
-            soundIntervals.wolf = setInterval(() => {
-                if (!activeSounds.wolf) return;
+                const howl = () => {
+                    if (!activeSounds.wolf) return;
 
-                const now = audioContext.currentTime;
-                const pan = (Math.random() - 0.5) * 2;
+                    try {
+                        const now = audioContext.currentTime;
+                        const pan = (Math.random() - 0.5) * 2;
 
-                // Howl sweep from low to high
-                const osc = audioContext.createOscillator();
-                osc.type = 'sawtooth';
+                        // Fundamental howl (main voice)
+                        const fundamental = audioContext.createOscillator();
+                        fundamental.type = 'sine'; // Smoother, more natural
+                        fundamental.frequency.setValueAtTime(150, now);
+                        fundamental.frequency.exponentialRampToValueAtTime(280, now + 0.6);
+                        fundamental.frequency.exponentialRampToValueAtTime(320, now + 1.2);
+                        fundamental.frequency.exponentialRampToValueAtTime(260, now + 2.2);
 
-                const gain = audioContext.createGain();
-                const panner = createStereoPanner(pan);
+                        // Add slight frequency wobble for organic feel
+                        const wobble = audioContext.createOscillator();
+                        wobble.frequency.setValueAtTime(5, now); // 5 Hz wobble
+                        const wobbleGain = audioContext.createGain();
+                        wobbleGain.gain.setValueAtTime(8, now); // +/- 8 Hz
 
-                // Frequency sweep
-                osc.frequency.setValueAtTime(200, now);
-                osc.frequency.linearRampToValueAtTime(400, now + 0.5);
-                osc.frequency.linearRampToValueAtTime(350, now + 1.5);
+                        wobble.connect(wobbleGain);
+                        wobbleGain.connect(fundamental.frequency);
 
-                // Envelope
-                gain.gain.setValueAtTime(0, now);
-                gain.gain.linearRampToValueAtTime(soundGains.wolf.gain.value * 0.15, now + 0.3);
-                gain.gain.linearRampToValueAtTime(soundGains.wolf.gain.value * 0.12, now + 1.2);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 2);
+                        // Harmonic overtone for depth
+                        const harmonic = audioContext.createOscillator();
+                        harmonic.type = 'sine';
+                        harmonic.frequency.setValueAtTime(300, now);
+                        harmonic.frequency.exponentialRampToValueAtTime(560, now + 0.6);
+                        harmonic.frequency.exponentialRampToValueAtTime(640, now + 1.2);
+                        harmonic.frequency.exponentialRampToValueAtTime(520, now + 2.2);
 
-                osc.connect(gain).connect(panner).connect(masterGainNode);
-                osc.start();
-                osc.stop(now + 2);
-            }, 60000 + Math.random() * 120000); // Every 1-3 minutes
+                        // Sub-harmonic for richness
+                        const subHarmonic = audioContext.createOscillator();
+                        subHarmonic.type = 'sine';
+                        subHarmonic.frequency.setValueAtTime(75, now);
+                        subHarmonic.frequency.exponentialRampToValueAtTime(140, now + 0.6);
+                        subHarmonic.frequency.exponentialRampToValueAtTime(160, now + 1.2);
+                        subHarmonic.frequency.exponentialRampToValueAtTime(130, now + 2.2);
 
-            activeSounds.wolf = {};
+                        // Gain envelopes (natural wolf howl shape)
+                        const fundamentalGain = audioContext.createGain();
+                        fundamentalGain.gain.setValueAtTime(0, now);
+                        fundamentalGain.gain.linearRampToValueAtTime(soundGains.wolf.gain.value * 0.14, now + 0.4);
+                        fundamentalGain.gain.linearRampToValueAtTime(soundGains.wolf.gain.value * 0.16, now + 1.3);
+                        fundamentalGain.gain.exponentialRampToValueAtTime(0.001, now + 2.5);
+
+                        const harmonicGain = audioContext.createGain();
+                        harmonicGain.gain.setValueAtTime(0, now);
+                        harmonicGain.gain.linearRampToValueAtTime(soundGains.wolf.gain.value * 0.06, now + 0.4);
+                        harmonicGain.gain.exponentialRampToValueAtTime(0.001, now + 2.2);
+
+                        const subHarmonicGain = audioContext.createGain();
+                        subHarmonicGain.gain.setValueAtTime(0, now);
+                        subHarmonicGain.gain.linearRampToValueAtTime(soundGains.wolf.gain.value * 0.08, now + 0.5);
+                        subHarmonicGain.gain.exponentialRampToValueAtTime(0.001, now + 2.3);
+
+                        // Low-pass filter for distance/realism
+                        const filter = audioContext.createBiquadFilter();
+                        filter.type = 'lowpass';
+                        filter.frequency.setValueAtTime(1800, now);
+                        filter.Q.setValueAtTime(0.7, now);
+
+                        const panner = createStereoPanner(pan);
+
+                        // Connect audio graph
+                        fundamental.connect(fundamentalGain);
+                        harmonic.connect(harmonicGain);
+                        subHarmonic.connect(subHarmonicGain);
+
+                        fundamentalGain.connect(filter);
+                        harmonicGain.connect(filter);
+                        subHarmonicGain.connect(filter);
+
+                        filter.connect(panner);
+                        panner.connect(masterGainNode);
+
+                        // Start all oscillators
+                        fundamental.start(now);
+                        harmonic.start(now);
+                        subHarmonic.start(now);
+                        wobble.start(now);
+
+                        // Stop all oscillators
+                        fundamental.stop(now + 2.6);
+                        harmonic.stop(now + 2.3);
+                        subHarmonic.stop(now + 2.4);
+                        wobble.stop(now + 2.6);
+                    } catch (error) {
+                        console.error('🚫 Error playing wolf howl:', error);
+                    }
+                };
+
+                soundIntervals.wolf = setInterval(howl, 60000 + Math.random() * 120000); // Every 1-3 minutes
+                activeSounds.wolf = {};
+                console.log('🎵 Wolf sounds started successfully');
+            } catch (error) {
+                console.error('🚫 Error starting wolf sounds:', error);
+            }
         }
 
         // Sound control functions
         function startSound(soundName) {
             if (activeSounds[soundName]) return;
-            initAudioContext();
+            
+            try {
+                initAudioContext();
+                
+                // Ensure AudioContext is running
+                if (audioContext && audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
 
-            const starters = {
-                rain: startRain,
-                thunder: startThunder,
-                crickets: startCrickets,
-                birds: startBirds,
-                fire: startFire,
-                chimes: startChimes,
-                ocean: startOcean,
-                bowl: startBowl,
-                brown: startBrown,
-                wind: startWind,
-                stream: startStream,
-                owl: startOwl,
-                frogs: startFrogs,
-                cicadas: startCicadas,
-                leaves: startLeaves,
-                wolf: startWolf
-            };
+                const starters = {
+                    rain: startRain,
+                    thunder: startThunder,
+                    crickets: startCrickets,
+                    birds: startBirds,
+                    fire: startFire,
+                    chimes: startChimes,
+                    ocean: startOcean,
+                    bowl: startBowl,
+                    brown: startBrown,
+                    wind: startWind,
+                    stream: startStream,
+                    owl: startOwl,
+                    frogs: startFrogs,
+                    cicadas: startCicadas,
+                    leaves: startLeaves,
+                    wolf: startWolf
+                };
 
-            if (starters[soundName]) {
-                starters[soundName]();
-                updateTriggerIcon();
+                if (starters[soundName]) {
+                    console.log(`🎵 Starting ${soundName} sound...`);
+                    starters[soundName]();
+                    updateTriggerIcon();
+                } else {
+                    console.warn(`🚫 No starter function found for sound: ${soundName}`);
+                }
+            } catch (error) {
+                console.error(`🚫 Error starting ${soundName}:`, error);
             }
         }
 
@@ -2856,6 +3277,9 @@
             }
             if (activeSounds[soundName].tideLFO) {
                 try { activeSounds[soundName].tideLFO.stop(); } catch(e) {}
+            }
+            if (activeSounds[soundName].breathLFO) {
+                try { activeSounds[soundName].breathLFO.stop(); } catch(e) {}
             }
 
             // Stop pop interval (for fire)
@@ -2909,6 +3333,18 @@
                 masterGainNode.gain.value = value / 100;
             }
             localStorage.setItem('masterVolume', value);
+        }
+
+        // Debug function to test individual sounds
+        function testSound(soundName) {
+            console.log(`🔧 Testing ${soundName} sound...`);
+            if (activeSounds[soundName]) {
+                console.log(`⚠️ ${soundName} is already active, stopping first...`);
+                stopSound(soundName);
+                setTimeout(() => startSound(soundName), 500);
+            } else {
+                startSound(soundName);
+            }
         }
 
         function updateTriggerIcon() {

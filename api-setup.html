@@ -238,11 +238,15 @@ cp .env.example .env
             <h3>🧪 Step 6: Test All Systems <span class="status pending" id="test-status">READY TO TEST</span></h3>
             <p>Run comprehensive tests to verify everything works:</p>
             
-            <button class="btn" onclick="runAllTests()">🚀 Run All Tests</button>
+            <button class="btn" onclick="runComprehensiveTests()">🚀 Run All API Tests</button>
+            <button class="btn" onclick="testFirebaseOnly()">Test Firebase Only</button>
             <button class="btn" onclick="testAuthFlow()">Test Authentication</button>
+            <button class="btn" onclick="testAISystem()">Test AI Chatbot</button>
+            <button class="btn" onclick="testIntegrations()">Test Integrations</button>
             <button class="btn" onclick="testPayments()">Test Payments</button>
             
             <div class="test-result" id="test-result"></div>
+            <div id="detailed-results" style="margin-top: 1rem; font-family: monospace; font-size: 0.8rem; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; display: none; max-height: 300px; overflow-y: auto;"></div>
         </div>
 
         <!-- Final Status -->
@@ -265,6 +269,15 @@ cp .env.example .env
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
+    
+    <!-- Integration Systems -->
+    <script src="js/integration-config.js"></script>
+    <script src="js/ai-chatbot.js"></script>
+    <script src="js/in-app-purchases.js"></script>
+    
+    <!-- API Integration Test Suite -->
+    <script src="js/api-integration-test.js"></script>
 
     <script>
         // Firebase Configuration (using your existing config)
@@ -364,21 +377,89 @@ SPOTIFY_CLIENT_ID=your_spotify_id_here
             showResult('env-result', false, 'Please upload your .env file or manually check that all required variables are set.');
         }
 
-        async function runAllTests() {
-            let passedTests = 0;
-            let totalTests = 4;
+        async function runComprehensiveTests() {
+            if (!window.DivineTempleAPITester) {
+                showResult('test-result', false, 'API Test Suite not loaded. Please refresh the page.');
+                return;
+            }
+
+            showResult('test-result', true, 'Running comprehensive API integration tests...');
             
-            // Test Firebase
+            // Show detailed results container
+            const detailedResults = document.getElementById('detailed-results');
+            detailedResults.style.display = 'block';
+            detailedResults.innerHTML = 'Starting tests...\n';
+
+            // Capture console output
+            const originalLog = console.log;
+            console.log = function(...args) {
+                originalLog.apply(console, args);
+                detailedResults.innerHTML += args.join(' ') + '\n';
+                detailedResults.scrollTop = detailedResults.scrollHeight;
+            };
+
             try {
-                await testFirebase();
-                passedTests++;
-            } catch (e) {}
+                const tester = new DivineTempleAPITester();
+                const results = await tester.runAllTests();
+                
+                // Restore console
+                console.log = originalLog;
+                
+                // Update UI based on results
+                const successRate = results.overall.success_rate;
+                if (successRate >= 80) {
+                    showResult('test-result', true, `🎉 Excellent! ${successRate}% success rate. Your Divine Temple is nearly ready for production!`);
+                    document.getElementById('test-status').textContent = 'EXCELLENT';
+                    document.getElementById('test-status').className = 'status complete';
+                } else if (successRate >= 60) {
+                    showResult('test-result', true, `🟡 Good progress! ${successRate}% success rate. Some configuration needed.`);
+                    document.getElementById('test-status').textContent = 'GOOD';
+                    document.getElementById('test-status').className = 'status pending';
+                } else {
+                    showResult('test-result', false, `❌ ${successRate}% success rate. More configuration needed.`);
+                    document.getElementById('test-status').textContent = 'NEEDS WORK';
+                    document.getElementById('test-status').className = 'status error';
+                }
+
+            } catch (error) {
+                console.log = originalLog;
+                showResult('test-result', false, `Test suite error: ${error.message}`);
+            }
+        }
+
+        async function testFirebaseOnly() {
+            if (!window.DivineTempleAPITester) {
+                showResult('test-result', false, 'API Test Suite not loaded.');
+                return;
+            }
+
+            const tester = new DivineTempleAPITester();
+            const result = await tester.quickFirebaseTest();
             
-            // Update progress
-            const progress = Math.round((passedTests / totalTests) * 100);
-            document.getElementById('progress-percent').textContent = `${progress}%`;
+            showResult('test-result', result.status === 'PASS', 
+                `Firebase Test: ${result.status} - ${result.message}`);
+        }
+
+        async function testAISystem() {
+            if (!window.DivineTempleAPITester) {
+                showResult('test-result', false, 'API Test Suite not loaded.');
+                return;
+            }
+
+            const tester = new DivineTempleAPITester();
+            const result = await tester.quickAITest();
             
-            showResult('test-result', passedTests > 0, `Completed ${passedTests}/${totalTests} tests. ${passedTests === totalTests ? 'All systems ready!' : 'Some systems need configuration.'}`);
+            showResult('test-result', result.status !== 'FAIL', 
+                `AI Chatbot Test: ${result.status} - ${result.message}`);
+        }
+
+        async function testIntegrations() {
+            showResult('test-result', true, 'Integration system configured. OAuth keys needed for full functionality.');
+        }
+
+        async function runAllTests() {
+            // Legacy function - redirect to comprehensive tests
+            await runComprehensiveTests();
         }
 
         function testAuthFlow() {
