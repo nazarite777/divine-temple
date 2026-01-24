@@ -51,6 +51,17 @@ header {
     background: rgba(10, 14, 39, 0.95);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+}
+
+header.sticky {
+    background: rgba(10, 14, 39, 0.98);
+    backdrop-filter: blur(30px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+header.hidden {
+    transform: translateY(-100%);
 }
 
 nav {
@@ -58,6 +69,8 @@ nav {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .logo {
@@ -81,7 +94,12 @@ nav {
 .nav-links {
     display: flex;
     list-style: none;
-    gap: 2rem;
+    gap: 2.5rem;
+    align-items: center;
+}
+
+.nav-links li {
+    position: relative;
 }
 
 .nav-links a {
@@ -90,17 +108,26 @@ nav {
     font-weight: 500;
     transition: all 0.3s ease;
     position: relative;
+    padding: 0.5rem 0;
+    display: inline-block;
 }
 
 .nav-links a:hover {
     color: var(--accent-gold);
-    transform: translateY(-2px);
 }
 
-.nav-links a::after {
+.nav-item.active {
+    color: var(--accent-gold);
+}
+
+.nav-item.active::after {
+    width: 100%;
+}
+
+.nav-item::after {
     content: '';
     position: absolute;
-    bottom: -5px;
+    bottom: 0;
     left: 0;
     width: 0;
     height: 2px;
@@ -108,8 +135,118 @@ nav {
     transition: width 0.3s ease;
 }
 
-.nav-links a:hover::after {
+.nav-item:hover::after {
     width: 100%;
+}
+
+/* Premium Badge */
+.premium-badge {
+    font-size: 0.8em;
+    margin-right: 0.25rem;
+}
+
+.premium-feature {
+    color: var(--accent-gold) !important;
+    font-weight: 600;
+}
+
+/* Dropdown Menus */
+.nav-dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.dropdown-arrow {
+    font-size: 0.7em;
+    transition: transform 0.3s ease;
+}
+
+.nav-dropdown:hover .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 0.5rem;
+    background: rgba(10, 14, 39, 0.98);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 0.75rem 0;
+    min-width: 200px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.dropdown-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu li {
+    list-style: none;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 0.75rem 1.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.dropdown-menu a:hover {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--accent-gold);
+    padding-left: 2rem;
+}
+
+/* Navigation Actions */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.btn-login {
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    background: transparent;
+    border: 1px solid var(--glass-border);
+}
+
+.btn-login:hover {
+    background: var(--glass-bg);
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+}
+
+.btn-login.logged-in {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.user-avatar {
+    font-size: 1.2em;
 }
 
 .cta-nav {
@@ -742,9 +879,62 @@ footer {
         left: 0;
         right: 0;
         background: rgba(10, 14, 39, 0.98);
+        backdrop-filter: blur(30px);
         padding: 2rem;
         gap: 1.5rem;
         border-top: 1px solid var(--glass-border);
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+    }
+
+    .nav-links li {
+        width: 100%;
+    }
+
+    .nav-actions {
+        display: none;
+    }
+
+    .nav-actions.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(10, 14, 39, 0.98);
+        backdrop-filter: blur(30px);
+        padding: 1rem 2rem 2rem;
+        gap: 1rem;
+        border-top: 1px solid var(--glass-border);
+        margin-top: 0;
+    }
+
+    /* Mobile dropdown positioning */
+    .dropdown-menu {
+        position: relative;
+        margin-top: 0.5rem;
+        margin-left: 1rem;
+        width: calc(100% - 1rem);
+    }
+
+    .dropdown-menu.active {
+        position: relative;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .dropdown-arrow {
+        margin-left: auto;
+    }
+
+    .dropdown-toggle {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    nav {
+        padding: 1rem;
     }
 
     .mission-cards {

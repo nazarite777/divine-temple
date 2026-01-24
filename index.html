@@ -140,6 +140,8 @@
 
     <!-- Main Stylesheet -->
     <link rel="stylesheet" href="css/main.min.css">
+    <link rel="stylesheet" href="css/header-styles.css">
+    <link rel="stylesheet" href="css/journey-showcase.css">
 
     <!-- Fonts with optimal loading -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -159,11 +161,15 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
-    <script src="js/firebase-config.min.js" defer></script>
+    <script src="js/firebase-config.js"></script>
     
     <!-- Enhanced PWA Installer -->
     <script src="js/enhanced-pwa-installer.js"></script>
-    
+
+    <!-- Header Navigation -->
+    <script src="js/auth-helper.js" defer></script>
+    <script src="js/header-nav.js" defer></script>
+
     <!-- PWA Button Debug CSS -->
     <link rel="stylesheet" href="css/pwa-button-force-show.css">
 </head>
@@ -190,63 +196,94 @@
     <a href="#main-content" class="skip-link sr-only">Skip to main content</a>
 
     <!-- Header -->
-    <header role="banner">
-        <nav role="navigation" aria-label="Main navigation">
+    <header class="site-header" role="banner">
+        <div class="header-container">
+            <!-- Logo -->
             <div class="logo">
-                <picture>
-                    <source srcset="logoyogabg.webp" type="image/webp">
-                    <img src="logoyogabg.png" alt="Eden Consciousness Logo">
-                </picture>
-                <span class="logo-text">Eden Consciousness</span>
+                <a href="index.html" class="logo-link">
+                    <picture>
+                        <source srcset="logoyogabg.webp" type="image/webp">
+                        <img src="logoyogabg.png" alt="Eden Consciousness Logo" class="logo-image">
+                    </picture>
+                    <span class="logo-text">Eden Consciousness</span>
+                </a>
             </div>
-            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle mobile menu">
-                ☰
+
+            <!-- Desktop Navigation -->
+            <nav class="main-nav" role="navigation" aria-label="Main navigation">
+                <a href="index.html" class="nav-link">Home</a>
+
+                <a href="journey.html" class="nav-link premium-link">
+                    Journey <span class="premium-badge">👑</span>
+                </a>
+
+                <div class="nav-dropdown">
+                    <button class="nav-link dropdown-toggle" aria-expanded="false">
+                        Learn <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="books.html" class="dropdown-item">📚 Books</a>
+                        <a href="audiobook.html" class="dropdown-item">🎧 Audiobook</a>
+                        <a href="resources.html" class="dropdown-item">📖 Resources</a>
+                        <a href="about.html" class="dropdown-item">ℹ️ About</a>
+                    </div>
+                </div>
+
+                <a href="members-new.html" class="nav-link">Practice</a>
+            </nav>
+
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <!-- Login/Upgrade Buttons (shown when logged out) -->
+                <a href="login.html" class="btn-login" id="login-btn">Login</a>
+                <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00" class="upgrade-button" id="upgrade-btn">
+                    Upgrade to Premium
+                </a>
+
+                <!-- User Menu (shown when logged in) -->
+                <div class="user-menu" id="user-menu" style="display: none;">
+                    <div class="user-info">
+                        <span class="user-email" id="header-user-email">User</span>
+                        <span class="user-icon">👤</span>
+                    </div>
+                    <div class="user-dropdown">
+                        <a href="members-new.html" class="account-link">My Account</a>
+                        <button onclick="logout()" class="logout-btn">Logout</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle mobile menu">
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#home">Home</a></li>
-                <li><a href="books.html">Books</a></li>
-                <li><a href="audiobook.html">Audiobook</a></li>
-                <li><a href="#temple">Temple</a></li>
-                <li><a href="login.html">✨ Free Access</a></li>
-                <li><a href="members-new.html">Member Portal</a></li>
-                <li><a href="testimonials.html">Testimonials</a></li>
-                <li><a href="resources.html">Resources</a></li>
-            </ul>
-            <a href="https://square.link/u/xuKzAPeA" class="cta-nav">Join Premium</a>
-        </nav>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobile-menu">
+            <div class="mobile-menu-header">
+                <span class="mobile-menu-title">Menu</span>
+                <button class="close-menu" id="close-menu" aria-label="Close menu">✕</button>
+            </div>
+            <nav class="mobile-nav">
+                <a href="index.html" class="mobile-menu-item">🏠 Home</a>
+                <a href="journey.html" class="mobile-menu-item premium-item">👑 Journey</a>
+                <a href="books.html" class="mobile-menu-item">📚 Books</a>
+                <a href="audiobook.html" class="mobile-menu-item">🎧 Audiobook</a>
+                <a href="resources.html" class="mobile-menu-item">📖 Resources</a>
+                <a href="about.html" class="mobile-menu-item">ℹ️ About</a>
+                <a href="members-new.html" class="mobile-menu-item">🏛️ Practice</a>
+                <div class="mobile-divider"></div>
+                <a href="login.html" class="mobile-menu-item mobile-login">🔐 Login</a>
+                <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00" class="mobile-menu-item mobile-upgrade">✨ Upgrade</a>
+            </nav>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
     </header>
-
-    <script>
-        // Mobile menu toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const navLinks = document.getElementById('navLinks');
-
-            if (mobileMenuToggle && navLinks) {
-                mobileMenuToggle.addEventListener('click', function() {
-                    navLinks.classList.toggle('active');
-                    this.setAttribute('aria-expanded', navLinks.classList.contains('active'));
-                });
-
-                // Close menu when clicking outside
-                document.addEventListener('click', function(event) {
-                    if (!event.target.closest('nav')) {
-                        navLinks.classList.remove('active');
-                        mobileMenuToggle.setAttribute('aria-expanded', 'false');
-                    }
-                });
-
-                // Close menu when clicking on a link
-                const links = navLinks.querySelectorAll('a');
-                links.forEach(link => {
-                    link.addEventListener('click', function() {
-                        navLinks.classList.remove('active');
-                        mobileMenuToggle.setAttribute('aria-expanded', 'false');
-                    });
-                });
-            }
-        });
-    </script>
 
     <!-- Main Content -->
     <main role="main" id="main-content">
@@ -256,11 +293,15 @@
             <div class="hero-content">
                 <div class="hero-text">
                     <h1 id="hero-heading">You Never Left Eden</h1>
-                    <p>Discover the profound truth that has been hidden in plain sight. Eden was never a place you left—it's a state of consciousness you forgot. Join thousands who are remembering their divine nature and transforming their reality.</p>
+                    <p class="hero-subheading" style="font-size: 1.5rem; font-weight: 600; color: var(--accent-gold, #F59E0B); margin: 1rem 0; background: linear-gradient(135deg, #F59E0B, #8B5CF6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Begin Your 4-Phase Transformation Journey</p>
+                    <p style="font-size: 1.1rem; line-height: 1.7; margin-bottom: 2rem;">Experience a complete guided path from awakening to mastery. Journey through Nazir's audiobook "Ya Heard Me," master the 7 Aligned Manifestation principles, practice daily for 365 days, and earn your teaching certification. Your transformation awaits.</p>
                     <div class="hero-cta">
-                        <a href="login.html" class="btn btn-primary">✨ Start Free Access</a>
-                        <a href="books.html" class="btn btn-secondary">Explore Books</a>
+                        <a href="journey.html" class="btn btn-primary btn-large">👑 Begin Your Journey</a>
+                        <a href="login.html" class="btn btn-secondary btn-large" style="margin-left: 1rem;">Start Free Trial</a>
                     </div>
+                    <p style="margin-top: 0.75rem; font-size: 0.9rem; color: var(--text-secondary); text-align: center;">
+                        ✅ Enochian Calendar free forever · ✅ Full Journey access with Premium ($9.99/month)
+                    </p>
 
                     <!-- Subscriber Count Display -->
                     <div id="subscriberCount" style="margin-top: 1.5rem; padding: 1rem; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 15px; display: inline-block;">
@@ -278,7 +319,7 @@
                     </div>
 
                     <p style="margin-top: 1rem; font-size: 0.95rem; color: var(--text-secondary);">
-                        Try the Enochian Calendar free, then unlock premium features
+                        🌟 Start with free tools, unlock your complete transformation journey with Premium
                     </p>
                 </div>
                 <div class="hero-visual">
@@ -384,52 +425,297 @@
             </div>
         </div>
 
-    <!-- Book CTA Section -->
-    <section class="product-showcase" id="products">
+    <!-- Platform Features Section -->
+    <section class="platform-features" id="features">
         <div class="container">
             <div class="section-header">
-                <h2>Ready to Transform Your Reality?</h2>
-                <p>Discover "You Never Left Eden" - the revolutionary book that will awaken your divine consciousness</p>
+                <h2>Your Spiritual Practice Toolkit</h2>
+                <p>Engage with powerful features designed for spiritual growth and consciousness expansion</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 3rem;">
+                <!-- Feature: Enochian Calendar -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
+                    <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Enochian Calendar</h3>
+                    <div style="display: inline-block; background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;">FREE FOREVER</div>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">Track sacred time, sabbaths, holy days, and divine cycles. Your foundation for spiritual practice.</p>
+                </div>
+
+                <!-- Feature: Spiritual Games -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎮</div>
+                    <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Wisdom Games</h3>
+                    <div style="display: inline-block; background: rgba(139, 92, 246, 0.2); color: #8b5cf6; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;">PREMIUM</div>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">Test your knowledge with daily trivia, memory games, and spiritual challenges. Earn XP and level up.</p>
+                </div>
+
+                <!-- Feature: Sacred Journal -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                    <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Sacred Journal</h3>
+                    <div style="display: inline-block; background: rgba(139, 92, 246, 0.2); color: #8b5cf6; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;">PREMIUM</div>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">Document your spiritual journey with 5 journal types: daily reflections, dreams, gratitude, and more.</p>
+                </div>
+
+                <!-- Feature: AI Spiritual Guide -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🤖</div>
+                    <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">AI Spiritual Guide</h3>
+                    <div style="display: inline-block; background: rgba(139, 92, 246, 0.2); color: #8b5cf6; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;">PREMIUM</div>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">Chat with GPT-4 powered spiritual guide. Get personalized insights and wisdom 24/7.</p>
+                </div>
+
+                <!-- Feature: Daily Quests -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">⚔️</div>
+                    <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Daily Quests</h3>
+                    <div style="display: inline-block; background: rgba(139, 92, 246, 0.2); color: #8b5cf6; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;">PREMIUM</div>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">Complete 3 spiritual quests each day. Build streaks, earn achievements, and track your growth.</p>
+                </div>
+
+                <!-- Feature: Meditation Library -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🧘</div>
+                    <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Meditation Library</h3>
+                    <div style="display: inline-block; background: rgba(139, 92, 246, 0.2); color: #8b5cf6; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;">PREMIUM</div>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">Access guided meditations, solfeggio frequencies, and healing audio content.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Journey Showcase Section -->
+    <section class="journey-showcase-section">
+        <div class="journey-showcase-container">
+
+            <!-- Section Header -->
+            <div class="section-header">
+                <h2 class="section-title">Your Path to Aligned Manifestation Mastery</h2>
+                <p class="section-subtitle">
+                    A structured 4-phase transformation from awakening to teaching.
+                    Each phase builds on the last, creating lasting change.
+                </p>
+            </div>
+
+            <!-- Journey Path with 4 Phase Cards -->
+            <div class="journey-path">
+
+                <!-- Phase 1: Awakening -->
+                <div class="journey-phase-card phase-1-card">
+                    <div class="phase-icon-large">🌅</div>
+                    <div class="phase-badge phase-1-badge">Phase 1</div>
+                    <h3 class="phase-title">Awakening</h3>
+                    <p class="phase-description">
+                        Begin with the Ya Heard Me audiobook journey.
+                        12 chapters of revelation and remembering.
+                    </p>
+                    <div class="phase-meta">
+                        <span class="meta-item">📅 90 Days</span>
+                        <span class="meta-item">📖 12 Chapters</span>
+                    </div>
+                    <a href="journey.html#phase1" class="phase-link">Learn More →</a>
+                </div>
+
+                <!-- Arrow -->
+                <div class="journey-arrow">→</div>
+
+                <!-- Phase 2: Understanding -->
+                <div class="journey-phase-card phase-2-card">
+                    <div class="phase-icon-large">🧠</div>
+                    <div class="phase-badge phase-2-badge">Phase 2</div>
+                    <h3 class="phase-title">Understanding</h3>
+                    <p class="phase-description">
+                        Master the 7 Principles of Aligned Manifestation
+                        through video lessons and workbooks.
+                    </p>
+                    <div class="phase-meta">
+                        <span class="meta-item">📅 90 Days</span>
+                        <span class="meta-item">📚 7 Principles</span>
+                    </div>
+                    <a href="journey.html#phase2" class="phase-link">Learn More →</a>
+                </div>
+
+                <!-- Arrow -->
+                <div class="journey-arrow">→</div>
+
+                <!-- Phase 3: Mastery -->
+                <div class="journey-phase-card phase-3-card">
+                    <div class="phase-icon-large">⚡</div>
+                    <div class="phase-badge phase-3-badge">Phase 3</div>
+                    <h3 class="phase-title">Mastery</h3>
+                    <p class="phase-description">
+                        Live the teachings daily through the full
+                        I-N-I Enochian Calendar year.
+                    </p>
+                    <div class="phase-meta">
+                        <span class="meta-item">📅 365 Days</span>
+                        <span class="meta-item">🗓️ Daily Practice</span>
+                    </div>
+                    <a href="journey.html#phase3" class="phase-link">Learn More →</a>
+                </div>
+
+                <!-- Arrow -->
+                <div class="journey-arrow">→</div>
+
+                <!-- Phase 4: Teaching -->
+                <div class="journey-phase-card phase-4-card">
+                    <div class="phase-icon-large">👑</div>
+                    <div class="phase-badge phase-4-badge">Phase 4</div>
+                    <h3 class="phase-title">Teaching</h3>
+                    <p class="phase-description">
+                        Become certified to guide others.
+                        Lead study groups and share the wisdom.
+                    </p>
+                    <div class="phase-meta">
+                        <span class="meta-item">📅 Ongoing</span>
+                        <span class="meta-item">🎓 Certification</span>
+                    </div>
+                    <a href="journey.html#phase4" class="phase-link">Learn More →</a>
+                </div>
+
+            </div>
+
+            <!-- CTA Button -->
+            <div class="journey-cta-container">
+                <a href="journey.html" class="journey-cta-button">
+                    Explore the Full Journey →
+                </a>
+                <p class="journey-cta-note">
+                    Premium members get full access to all 4 phases
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Platform Features Section -->
+    <section class="platform-features" id="features">
+        <div class="container">
+            <!-- Pricing Comparison Table -->
+            <div style="margin-top: 5rem;" id="pricing">
+                <div class="section-header">
+                    <h2>Start Free, Unlock Your Complete Transformation Journey</h2>
+                    <p>Try the Enochian Calendar free forever. Upgrade to access the complete 4-phase Journey + all premium features for $9.99/month.</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem; max-width: 900px; margin-left: auto; margin-right: auto;">
+                    <!-- Free Plan -->
+                    <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 2px solid var(--glass-border); border-radius: 25px; padding: 2.5rem; position: relative;">
+                        <h3 style="font-size: 1.5rem; color: var(--accent-gold); margin-bottom: 1rem;">Free Forever</h3>
+                        <div style="font-size: 3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">$0</div>
+                        <div style="color: var(--text-secondary); margin-bottom: 2rem;">Forever free</div>
+
+                        <ul style="list-style: none; padding: 0; margin-bottom: 2rem;">
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ <strong>Enochian Calendar</strong> (full access)</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Sacred date tracking</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Sabbath & holy day alerts</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Community (read-only)</li>
+                            <li style="padding: 0.5rem 0; color: rgba(255,255,255,0.3);">❌ 4-Phase Transformation Journey</li>
+                            <li style="padding: 0.5rem 0; color: rgba(255,255,255,0.3);">❌ Spiritual games</li>
+                            <li style="padding: 0.5rem 0; color: rgba(255,255,255,0.3);">❌ Daily quests & XP</li>
+                            <li style="padding: 0.5rem 0; color: rgba(255,255,255,0.3);">❌ Sacred journaling</li>
+                            <li style="padding: 0.5rem 0; color: rgba(255,255,255,0.3);">❌ AI spiritual guide</li>
+                        </ul>
+
+                        <a href="login.html" class="btn btn-secondary" style="width: 100%; text-align: center;">Start Free Now</a>
+                    </div>
+
+                    <!-- Premium Plan -->
+                    <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(245, 158, 11, 0.2)); backdrop-filter: blur(20px); border: 2px solid var(--accent-gold); border-radius: 25px; padding: 2.5rem; position: relative; transform: scale(1.05);">
+                        <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--accent-gold); color: #0a0e27; padding: 0.5rem 1.5rem; border-radius: 20px; font-weight: 700; font-size: 0.9rem;">🌟 MOST POPULAR</div>
+
+                        <h3 style="font-size: 1.5rem; color: var(--accent-gold); margin-bottom: 1rem;">Premium</h3>
+                        <div style="font-size: 3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">$9.99</div>
+                        <div style="color: var(--text-secondary); margin-bottom: 2rem;">per month</div>
+
+                        <ul style="list-style: none; padding: 0; margin-bottom: 2rem;">
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);"><strong>Everything in Free, plus:</strong></li>
+                            <li style="padding: 0.5rem 0; color: var(--accent-gold); font-weight: 600;">👑 <strong>Complete 4-Phase Transformation Journey</strong></li>
+                            <li style="padding: 0.75rem 0 0.75rem 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">🌅 Phase 1: Awakening (Ya Heard Me audiobook)</li>
+                            <li style="padding: 0.25rem 0 0.25rem 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">🧠 Phase 2: Understanding (7 Principles)</li>
+                            <li style="padding: 0.25rem 0 0.25rem 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">⚡ Phase 3: Mastery (365-day practice)</li>
+                            <li style="padding: 0.25rem 0 0.75rem 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">👑 Phase 4: Teaching (Certification)</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ All 14 spiritual sections</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Wisdom games & trivia</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Daily quests & XP system</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Sacred journal (5 types)</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ AI spiritual guide (GPT-4)</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Meditation & audio library</li>
+                            <li style="padding: 0.5rem 0; color: var(--text-secondary);">✅ Full community features</li>
+                        </ul>
+
+                        <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00" class="btn btn-primary" style="width: 100%; text-align: center;">Upgrade to Premium</a>
+                        <p style="text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary);">Cancel anytime · 7-day money-back guarantee</p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 3rem;">
+                    <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+                        <strong style="color: var(--accent-gold);">Your complete transformation journey costs less than 2 coffees per month.</strong> Go from awakening to certified teacher with a structured 4-phase path + all premium tools.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section - Social Proof -->
+    <section class="testimonials-featured">
+        <div class="container">
+            <div class="section-header">
+                <h2>What Our Members Are Saying</h2>
+                <p>Real transformations from spiritual practitioners using Eden Consciousness</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem;">
+                <!-- Testimonial 1 -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="color: var(--accent-gold); font-size: 1.2rem; margin-bottom: 1rem;">⭐⭐⭐⭐⭐</div>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.5rem;">
+                        "The Enochian Calendar transformed how I view time. I started with the free version and was hooked within days. Now I'm premium and use the AI guide, journaling, and quests every single day. My consciousness has expanded tremendously."
+                    </p>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #8b5cf6, #d946ef); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">👤</div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary);">Sarah M.</div>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary);">Premium member • Level 23</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="color: var(--accent-gold); font-size: 1.2rem; margin-bottom: 1rem;">⭐⭐⭐⭐⭐</div>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.5rem;">
+                        "I've tried many spiritual apps but Eden Consciousness is different. The gamification keeps me engaged—I actually WANT to complete my daily quests. The trivia games are fun AND educational. Best $10/month I spend."
+                    </p>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">👤</div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary);">Michael R.</div>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary);">Premium member • 45-day streak</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem;">
+                    <div style="color: var(--accent-gold); font-size: 1.2rem; margin-bottom: 1rem;">⭐⭐⭐⭐⭐</div>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.5rem;">
+                        "The free Enochian Calendar alone is worth signing up for. I tracked sacred time for a week and then upgraded to get the AI chatbot and meditation library. The depth of features is incredible for the price."
+                    </p>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">👤</div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary);">Jennifer K.</div>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary);">Free → Premium convert</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div style="text-align: center; margin-top: 3rem;">
-                <div style="display: inline-block; background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 25px; padding: 3rem; max-width: 600px;">
-                    <img src="https://i.imgur.com/LYVHJr5.jpeg" alt="You Never Left Eden Book Cover" loading="lazy" style="max-width: 200px; width: 100%; border-radius: 15px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); margin-bottom: 2rem;">
-                    
-                    <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent-gold); margin-bottom: 1rem;">You Never Left Eden</h3>
-                    
-                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 2rem;">
-                        A transformational journey that reveals the profound truth hidden in plain sight. 
-                        Eden was never a place you left—it's a state of consciousness you forgot.
-                    </p>
-                    
-                    <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
-                        <a href="books.html" class="btn btn-primary">📖 Explore All Books</a>
-                        <a href="#email-capture" class="btn btn-secondary">🎁 Get Free Chapter</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Temple Access -->
-            <div style="text-align: center; margin-top: 4rem;">
-                <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(245, 158, 11, 0.15)); border-radius: 25px; padding: 3rem; border: 1px solid rgba(245, 158, 11, 0.3);">
-                    <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent-gold); margin-bottom: 1rem;">🏛️ Enter The Divine Temple</h3>
-                    
-                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-                        Join thousands of awakening souls in our sacred digital sanctuary. Experience 9 chambers of spiritual growth, 
-                        divine tools, and a community dedicated to consciousness expansion.
-                    </p>
-                    
-                    <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
-                        <a href="login.html" class="btn btn-primary">✨ Try Free Access</a>
-                        <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00" class="btn btn-secondary">Join Premium ($9.99/month)</a>
-                    </div>
-
-                    <p style="margin-top: 1.5rem; color: var(--text-secondary); font-size: 0.95rem;">
-                        Start with <strong style="color: var(--accent-gold);">free access</strong> to the Enochian Calendar,
-                        then unlock all 14 spiritual tools with premium membership
-                    </p>
-                </div>
+                <a href="testimonials.html" class="btn btn-secondary">Read More Testimonials →</a>
             </div>
         </div>
     </section>
@@ -939,7 +1225,7 @@
             }
         });
 
-        // Popup timing logic
+        // Popup timing logic - REDUCED SPAM
         window.addEventListener('load', function() {
             // Check if popup was recently dismissed (within last 24 hours)
             const lastDismissed = localStorage.getItem('gamePopupDismissed');
@@ -952,47 +1238,28 @@
                 return;
             }
 
-            // Show first popup after 30 seconds
+            // Show first popup after 90 seconds (reduced spam)
             setTimeout(function() {
                 showGamePopup();
-            }, 30000); // 30 seconds
+            }, 90000); // 90 seconds
 
-            // Show popup again every 3 minutes if still on page
+            // Show popup again every 10 minutes if still on page (reduced frequency)
             setInterval(function() {
                 const lastDismissed = localStorage.getItem('gamePopupDismissed');
                 const now = Date.now();
-                const fiveMinutesInMs = 5 * 60 * 1000;
+                const tenMinutesInMs = 10 * 60 * 1000;
 
-                // Only show if not dismissed in last 5 minutes
-                if (!lastDismissed || (now - parseInt(lastDismissed)) > fiveMinutesInMs) {
+                // Only show if not dismissed in last 10 minutes
+                if (!lastDismissed || (now - parseInt(lastDismissed)) > tenMinutesInMs) {
                     showGamePopup();
                 }
-            }, 180000); // 3 minutes
+            }, 600000); // 10 minutes
 
-            console.log('🎮 Game popup: Initialized - Will show after 30 seconds');
+            console.log('🎮 Game popup: Initialized - Will show after 90 seconds');
         });
 
-        // Scroll-triggered popup (show after scrolling 50% down the page once)
-        let scrollTriggered = false;
-        window.addEventListener('scroll', function() {
-            if (scrollTriggered) return;
-
-            const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
-
-            if (scrollPercent > 50) {
-                scrollTriggered = true;
-
-                // Check if popup was recently dismissed
-                const lastDismissed = localStorage.getItem('gamePopupDismissed');
-                const now = Date.now();
-                const fiveMinutesInMs = 5 * 60 * 1000;
-
-                if (!lastDismissed || (now - parseInt(lastDismissed)) > fiveMinutesInMs) {
-                    // Wait 2 seconds after scroll trigger
-                    setTimeout(showGamePopup, 2000);
-                }
-            }
-        });
+        // Scroll-triggered popup DISABLED to reduce spam
+        // Users can click the "Join Premium" button if interested
     </script>
 
 
@@ -1090,32 +1357,26 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>Products</h3>
-                    <a href="https://buy.stripe.com/9B65kEf27f3r2VoaOBfjG01">Digital Book ($4.99)</a>
-                    <a href="https://buy.stripe.com/9B6fZif278F37bEaOBfjG03">Paperback ($25)</a>
-                    <a href="https://buy.stripe.com/dRmfZig6b1cB67A2i5fjG02">Hardback ($54)</a>
-                    <a href="https://buy.stripe.com/aFa4gA3jp5sRgMe9KxfjG04">Audiobook ($17)</a>
-                    <a href="https://buy.stripe.com/6oUbJ27zF4oN2Vo1e1fjG05">A.S.K Guide 1: Foundation ($24)</a>
-                    <a href="https://buy.stripe.com/7sY7sMdY3dZneE6g8VfjG06">A.S.K Guide 2: Meditation ($37)</a>
+                    <h3>Platform</h3>
+                    <a href="login.html">Start Free</a>
+                    <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00">Premium ($9.99/month)</a>
+                    <a href="members-new.html">Member Login</a>
+                    <a href="#pricing">Pricing</a>
                 </div>
                 <div class="footer-section">
-                    <h3>Temple Access</h3>
-                    <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00">Monthly Membership</a>
-                    <a href="https://square.link/u/qodANI9O">Student Access</a>
-                    <a href="https://square.link/u/xuKzAPeA">Founding Members</a>
-                    <a href="members-new.html">Member Login</a>
+                    <h3>Learn More</h3>
+                    <a href="about-nazir.html">About Nazir</a>
+                    <a href="books.html">Books & Guides</a>
+                    <a href="resources.html">Free Resources</a>
+                    <a href="https://medium.com/@edenconsciousnesssdt" target="_blank" rel="noopener noreferrer">Blog</a>
                 </div>
                 <div class="footer-section">
                     <h3>Community</h3>
                     <a href="testimonials.html">Testimonials</a>
-                    <a href="book-reviews.html">Book Reviews</a>
-                    <a href="https://medium.com/@edenconsciousnesssdt" target="_blank" rel="noopener noreferrer">Blog</a>
-                    <a href="events.html">Live Events</a>
+                    <a href="contact.html">Contact Us</a>
                 </div>
                 <div class="footer-section">
-                    <h3>Support</h3>
-                    <a href="contact.html">Contact Us</a>
-                    <a href="resources.html">Free Resources</a>
+                    <h3>Legal</h3>
                     <a href="privacy.html">Privacy Policy</a>
                     <a href="terms.html">Terms of Service</a>
                     <a href="affiliate-disclosure.html">Affiliate Disclosure</a>
@@ -1358,7 +1619,10 @@
 
     <!-- Load section validation utility -->
     <script src="js/section-validation.min.js" defer></script>
-    
+
+    <!-- Header Navigation Script -->
+    <script src="js/header.js" defer></script>
+
     <!-- PWA Installation Script -->
     <script>
         // Use global deferredPrompt (declared above)
