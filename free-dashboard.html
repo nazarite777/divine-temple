@@ -1817,21 +1817,40 @@
 
             try {
                 console.log('📊 Checking membership level...');
-                const userDoc = await firebase.firestore()
-                    .collection('users')
-                    .doc(user.uid)
-                    .get();
 
-                if (userDoc.exists) {
-                    const userData = userDoc.data();
-                    membershipLevel = userData.membershipLevel || userData.membership || 'free';
-                    console.log('   Found membership level:', membershipLevel);
-                } else {
-                    console.log('   No user doc found, defaulting to free');
-                    membershipLevel = 'free';
+                // FIRST: Check hardcoded whitelist (for authorized premium users)
+                if (typeof FirebaseConfig !== 'undefined' &&
+                    typeof FirebaseConfig.auth !== 'undefined' &&
+                    FirebaseConfig.auth.isAuthorizedPremiumUser) {
+
+                    if (FirebaseConfig.auth.isAuthorizedPremiumUser(user.email, user.displayName)) {
+                        membershipLevel = 'premium';
+                        console.log('👑 User is in authorized premium whitelist:', user.email);
+                    }
                 }
 
+                // SECOND: Check Firestore if not already premium from whitelist
+                if (membershipLevel === 'free') {
+                    const userDoc = await firebase.firestore()
+                        .collection('users')
+                        .doc(user.uid)
+                        .get();
+
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        membershipLevel = userData.membership || userData.membershipLevel || 'free';
+                        console.log('   Found membership level in Firestore:', membershipLevel);
+                    } else {
+                        console.log('   No user doc found, defaulting to free');
+                        membershipLevel = 'free';
+                    }
+                }
+
+                // Store fresh membership data
                 localStorage.setItem('membershipLevel', membershipLevel);
+                localStorage.setItem('membership', membershipLevel);
+
+                console.log('📊 Final membership level:', membershipLevel);
 
                 // Redirect premium users
                 if (membershipLevel !== 'free' && membershipLevel !== 'basic') {
