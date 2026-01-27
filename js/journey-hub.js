@@ -9,54 +9,45 @@ let currentUser = null;
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('ÃƒÂ°Ã…Â¸Ã…Â¡Ã¢â€šÂ¬ Journey Hub loading...');
+    console.log('🚀 Journey Hub loading...');
 
     try {
         // Wait for Firebase to be ready
         await waitForFirebase();
-        console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Firebase ready');
+        console.log('✅ Firebase ready');
 
-
-        // Wait for authentication
+        // Check if user is logged in (optional - don't require login)
         await waitForAuth();
 
-        if (!currentUser) {
-            console.log('ÃƒÂ¢Ã‚ÂÃ…â€™ Not logged in, redirecting...');
-            window.location.href = 'login.html?redirect=journey.html';
-            return;
+        if (currentUser) {
+            console.log('✅ User authenticated:', currentUser.email);
+
+            // Load journey progress from Firebase
+            console.log('📊 Loading journey progress...');
+            await loadJourneyProgress();
+        } else {
+            console.log('👤 Guest user - using default progress');
+            // Use default progress for guest users
+            userProgress = createDefaultProgress();
         }
-
-        console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ User authenticated:', currentUser.email);
-
-        // Check premium access
-        const hasAccess = await checkPremiumAccess();
-
-        if (!hasAccess) {
-            console.log('ÃƒÂ¢Ã‚ÂÃ…â€™ No premium access');
-            showPremiumUpgradeModal();
-            return;
-        }
-
-        console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Premium access verified');
-
-        // Load journey progress
-        console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â  Loading journey progress...');
-        await loadJourneyProgress();
 
         // Update UI
-        console.log('ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¨ Updating dashboard...');
+        console.log('🎨 Updating dashboard...');
         updateDashboard();
 
         // Hide loading, show content
         hideLoading();
         showContent();
 
-        console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Journey Hub loaded successfully!');
+        console.log('✅✅✅ Journey Hub loaded successfully!');
 
     } catch (error) {
-        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ Journey loading error:', error);
-        showError('Failed to load your journey data: ' + error.message);
+        console.error('❌ Journey loading error:', error);
+        // Still show the page with default content
+        userProgress = createDefaultProgress();
+        updateDashboard();
         hideLoading();
+        showContent();
     }
 });
 
@@ -76,7 +67,8 @@ function waitForFirebase() {
                     resolve();
                 } else if (attempts > 50) {
                     clearInterval(checkFirebase);
-                    throw new Error('Firebase failed to load after 5 seconds');
+                    // Resolve anyway - we'll use default progress
+                    resolve();
                 }
             }, 100);
         }
@@ -88,6 +80,10 @@ function waitForFirebase() {
  */
 function waitForAuth() {
     return new Promise((resolve) => {
+        if (typeof firebase === 'undefined' || !firebase.auth) {
+            resolve();
+            return;
+        }
         const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
             currentUser = user;
             unsubscribe();
@@ -106,7 +102,7 @@ async function checkPremiumAccess() {
         const userDoc = await db.collection('users').doc(currentUser.uid).get();
 
         if (!userDoc.exists) {
-            console.log('ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¹ÃƒÂ¯Ã‚Â¸Ã‚Â User document not found - assuming no premium');
+            console.log('⚠️ User document not found - assuming no premium');
             return false;
         }
 
@@ -140,6 +136,11 @@ async function checkPremiumAccess() {
  */
 async function loadJourneyProgress() {
     try {
+        if (!currentUser || typeof db === 'undefined') {
+            userProgress = createDefaultProgress();
+            return;
+        }
+
         const progressRef = db.collection('users')
             .doc(currentUser.uid)
             .collection('journey_progress')
@@ -149,7 +150,7 @@ async function loadJourneyProgress() {
 
         if (doc.exists) {
             userProgress = doc.data();
-            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Progress loaded:', userProgress);
+            console.log('✅ Progress loaded:', userProgress);
 
             // Convert Firestore timestamps to readable dates
             if (userProgress.started_date && userProgress.started_date.toDate) {
@@ -157,10 +158,10 @@ async function loadJourneyProgress() {
             }
         } else {
             // Initialize new journey
-            console.log('ÃƒÂ°Ã…Â¸Ã¢â‚¬Â Ã¢â‚¬Â¢ Creating new journey...');
+            console.log('🆕 Creating new journey...');
             userProgress = createDefaultProgress();
             await progressRef.set(userProgress);
-            console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Journey initialized');
+            console.log('✅ Journey initialized');
         }
 
         // Calculate days active
@@ -175,8 +176,8 @@ async function loadJourneyProgress() {
         }
 
     } catch (error) {
-        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ Error loading progress:', error);
-        throw error;
+        console.error('❌ Error loading progress:', error);
+        userProgress = createDefaultProgress();
     }
 }
 
@@ -226,7 +227,7 @@ function createDefaultProgress() {
  */
 function updateDashboard() {
     if (!userProgress) {
-        console.error('ÃƒÂ¢Ã‚ÂÃ…â€™ No progress data to display');
+        console.error('❌ No progress data to display');
         return;
     }
 
@@ -276,7 +277,7 @@ function updateDashboard() {
     // Update current focus
     updateCurrentFocus();
 
-    console.log('ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Dashboard updated successfully');
+    console.log('✅ Dashboard updated successfully');
 }
 
 /**
@@ -328,7 +329,7 @@ function updatePhaseCard(phaseNum, phaseData) {
     // Update status text
     if (progressText) {
         if (phaseData.status === 'completed') {
-            progressText.textContent = 'Completed ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“';
+            progressText.textContent = 'Completed ✓';
         } else if (phaseData.status === 'in_progress') {
             if (phaseNum === 1 && phaseData.sections_completed) {
                 progressText.textContent = `${phaseData.sections_completed.length}/11 sections`;
@@ -366,13 +367,13 @@ function updateCurrentFocus() {
         const sectionsComplete = userProgress.phase1_awakening?.sections_completed?.length || 0;
         focusTitle.textContent = 'Continue Phase 1: Awakening';
         focusDescription.textContent = `You've completed ${sectionsComplete} of 11 sections. Continue your journey through Ya Heard Me.`;
-        focusAction.textContent = 'Continue Phase 1 ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢';
+        focusAction.textContent = 'Continue Phase 1 →';
         focusAction.href = 'phase1-awakening.html';
     } else if (currentPhase === 2) {
         const principlesComplete = userProgress.phase2_understanding?.principles_completed?.length || 0;
         focusTitle.textContent = 'Continue Phase 2: Understanding';
         focusDescription.textContent = `You've completed ${principlesComplete} of 6 principles. Master the Aligned Manifestation teachings.`;
-        focusAction.textContent = 'Continue Phase 2 ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢';
+        focusAction.textContent = 'Continue Phase 2 →';
         focusAction.href = 'phase2-understanding.html';
     }
 }
@@ -415,7 +416,7 @@ function showError(message) {
     errorDiv.className = 'error-banner';
     errorDiv.innerHTML = `
         <div class="error-content">
-            <h3>ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â Error Loading Journey</h3>
+            <h3>⚠️ Error Loading Journey</h3>
             <p>${message}</p>
             <div class="error-actions">
                 <button onclick="location.reload()" class="reload-button">Reload Page</button>
@@ -435,23 +436,23 @@ function showPremiumUpgradeModal() {
     modal.className = 'premium-modal-overlay';
     modal.innerHTML = `
         <div class="premium-modal">
-            <h2>ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂºÃ‚Â¤ÃƒÂ¯Ã‚Â¸Ã‚Â Journey Hub - Premium Feature</h2>
+            <h2>🛡️ Journey Hub - Premium Feature</h2>
             <p>The 4-Phase Journey to Aligned Manifestation Mastery is available to Premium members.</p>
             <div class="journey-preview">
                 <h3>What You'll Get:</h3>
                 <ul>
-                    <li>ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Phase 1: Ya Heard Me audiobook journey (90 days)</li>
-                    <li>ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Phase 2: 6 Principles with workbook guides (90 days)</li>
-                    <li>ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Phase 3: I-N-I Year mastery practice (365 days)</li>
-                    <li>ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Phase 4: Certification to teach others</li>
-                    <li>ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Progress tracking & achievements</li>
+                    <li>✅ Phase 1: Ya Heard Me audiobook journey (90 days)</li>
+                    <li>✅ Phase 2: 6 Principles with workbook guides (90 days)</li>
+                    <li>✅ Phase 3: I-N-I Year mastery practice (365 days)</li>
+                    <li>✅ Phase 4: Certification to teach others</li>
+                    <li>✅ Progress tracking & achievements</li>
                 </ul>
             </div>
             <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00" class="upgrade-button">
                 Upgrade to Premium - $9.99/month
             </a>
             <button onclick="window.location.href='index.html'" class="modal-back-button">
-                ÃƒÂ¢Ã¢â‚¬Â Ã‚Â Back to Home
+                ← Back to Home
             </button>
         </div>
     `;
@@ -477,5 +478,4 @@ function navigateToPhase(phaseNumber) {
     window.location.href = urls[phaseNumber];
 }
 
-console.log('ÃƒÂ¢Ã…â€œÃ‚Â¨ Journey Hub script loaded');
-
+console.log('✨ Journey Hub script loaded');

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Journey Premium Gate
  * Protects premium-only journey content
  */
@@ -33,14 +33,14 @@
                     firebase.auth &&
                     typeof window.AuthHelper !== 'undefined' &&
                     typeof window.AuthHelper.checkJourneyAccess === 'function') {
-                    
+
                     clearInterval(checkInterval);
-                    
+
                     // Wait for Firebase to know about the auth state
                     let authAttempts = 0;
                     const authCheckInterval = setInterval(() => {
                         authAttempts++;
-                        
+
                         const currentUser = firebase.auth().currentUser;
                         if (currentUser || authAttempts > 15) {
                             clearInterval(authCheckInterval);
@@ -49,7 +49,7 @@
                     }, 100);
                 } else if (attempts > 100) {
                     clearInterval(checkInterval);
-                    console.error(' Journey Gate: Dependencies failed to load');
+                    console.error('Journey Gate: Dependencies failed to load');
                     resolve();
                 }
             }, 100);
@@ -57,13 +57,13 @@
     }
 
     /**
-     * Handle access denied - redirect to login
+     * Handle access denied - show message
      */
     function handleAccessDenied(reason) {
-        console.log(' Access denied. Reason:', reason);
+        console.log('Access denied. Reason:', reason);
 
-        // Show loading message
-        document.body.innerHTML = 
+        // Show premium required message
+        document.body.innerHTML = `
             <div style="
                 display: flex;
                 flex-direction: column;
@@ -74,39 +74,28 @@
                 color: white;
                 font-family: 'Inter', sans-serif;
             ">
-                <div style="font-size: 3rem; margin-bottom: 2rem;"></div>
+                <div style="font-size: 3rem; margin-bottom: 2rem;">🔒</div>
                 <h2 style="margin-bottom: 1rem;">Premium Access Required</h2>
                 <p style="margin-bottom: 2rem; color: rgba(255, 255, 255, 0.8);">
-                    Redirecting to login...
+                    This content requires premium membership.
                 </p>
-                <div style="
-                    width: 40px;
-                    height: 40px;
-                    border: 4px solid rgba(255, 255, 255, 0.3);
-                    border-top: 4px solid #D4AF37;
-                    border-radius: 50%;
-                    animation: spin 1s linear infinite;
-                "></div>
+                <a href="index.html" style="
+                    background: linear-gradient(135deg, #D4AF37, #F59E0B);
+                    color: #0F0F23;
+                    padding: 1rem 2rem;
+                    border-radius: 10px;
+                    text-decoration: none;
+                    font-weight: 600;
+                ">Back to Home</a>
             </div>
-            <style>
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-            </style>
-        ;
-
-        // Redirect to login after 2 seconds
-        setTimeout(() => {
-            window.location.href = '/login.html';
-        }, 2000);
+        `;
     }
 
     /**
      * Initialize journey content - enable all phase buttons and content
      */
     function initJourneyContent(accessCheck) {
-        console.log(' Initializing journey content...');
+        console.log('Initializing journey content...');
 
         // Mark page as fully loaded
         document.documentElement.setAttribute('data-journey-loaded', 'true');
@@ -123,18 +112,18 @@
         const event = new CustomEvent('journeyAccessGranted', { detail: accessCheck });
         document.dispatchEvent(event);
 
-        console.log(' Journey content initialized');
+        console.log('Journey content initialized');
     }
 
     /**
      * Show admin badge for admin users
      */
     function showAdminBadge() {
-        console.log(' Displaying admin badge...');
+        console.log('Displaying admin badge...');
 
         const badge = document.createElement('div');
         badge.id = 'admin-badge';
-        badge.innerHTML = 
+        badge.innerHTML = `
             <div style="
                 position: fixed;
                 top: 20px;
@@ -148,7 +137,7 @@
                 box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
                 animation: slideIn 0.5s ease-out;
             ">
-                 Admin Mode
+                👑 Admin Mode
             </div>
             <style>
                 @keyframes slideIn {
@@ -162,7 +151,7 @@
                     }
                 }
             </style>
-        ;
+        `;
 
         document.body.appendChild(badge);
     }
@@ -182,5 +171,3 @@
         showAdminBadge
     };
 })();
-
-
