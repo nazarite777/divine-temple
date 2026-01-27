@@ -32,6 +32,7 @@
     
     <!-- Performance Optimization Script -->
     <script src="js/performance-optimizer.js" defer></script>
+    
     <style>
         :root {
             --primary-gold: #D4AF37;
@@ -544,6 +545,7 @@
                 height: calc(100vh - 120px);
             }
         }
+
         /* PWA Install Button - Sidebar Style */
         .pwa-install-btn {
             position: fixed;
@@ -609,6 +611,18 @@
             .pwa-install-btn.hidden {
                 right: -130px;
             }
+        }
+
+        /* Status Badge */
+        .status-badge {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--success);
+            border-radius: 8px;
+            color: var(--success);
+            font-size: 0.85rem;
+            font-weight: 500;
         }
     </style>
     
@@ -708,7 +722,7 @@
 
                     <div class="journey-action" style="flex-shrink: 0;">
                         <button class="cta-button" onclick="window.location.href='journey.html'" style="background: white; color: #8B5CF6; padding: 15px 30px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                            Continue Journey 
+                            Continue Journey →
                         </button>
                     </div>
                 </div>
@@ -748,6 +762,7 @@
                     </div>
                 </div>
 
+                <!-- 3. Meditation & Mindfulness -->
                 <a href="sections/meditation-mindfulness.html" class="nav-card" style="text-decoration: none; cursor: pointer;">
                     <span class="nav-icon">🧘</span>
                     <h3 class="nav-title">Meditation & Mindfulness</h3>
@@ -973,7 +988,7 @@
     <!-- Section Container -->
     <div id="section-container">
         <div class="section-header">
-            <button onclick="returnToDashboard()" class="back-btn">← Back to Temple</button>
+            <button onclick="returnToDashboard()" class="back-btn">← Back to Temple</button>
             <h2 id="section-title" class="section-title"></h2>
         </div>
         <iframe id="section-frame" class="section-frame" src=""></iframe>
@@ -989,7 +1004,7 @@
     <footer class="footer">
         <p class="footer-text">Divine Temple • Eden Consciousness</p>
         <p style="margin-top: 0.5rem;">
-            <a href="index.html" class="footer-link">← Return to Main Site</a>
+            <a href="index.html" class="footer-link">← Return to Main Site</a>
         </p>
     </footer>
 
@@ -1205,15 +1220,15 @@
         // ========================================
 
         function checkAuth() {
-            console.log('' Checking authentication status...');
+            console.log('🔐 Checking authentication status...');
             
             const isAuth = sessionStorage.getItem('divineAuth');
             const memberDataStr = sessionStorage.getItem('memberData');
             const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
             
-            console.log('' Auth check - isAuth:', isAuth);
-            console.log('' Auth check - memberData exists:', !!memberDataStr);
-            console.log('' Auth check - isAdmin:', isAdmin);
+            console.log('📋 Auth check - isAuth:', isAuth);
+            console.log('📋 Auth check - memberData exists:', !!memberDataStr);
+            console.log('📋 Auth check - isAdmin:', isAdmin);
             
             if (isAuth === 'true' && memberDataStr) {
                 try {
@@ -1221,7 +1236,7 @@
                     const displayName = memberData.username || memberData.displayName || memberData.name || 'User';
                     
                     console.log('✅ User authenticated:', displayName);
-                    console.log('' Member data:', memberData);
+                    console.log('📋 Member data:', memberData);
                     
                     if (isAdmin) {
                         console.log('⚙️ Admin user detected');
@@ -1230,7 +1245,7 @@
                     showDashboard(memberData);
                     return true;
                 } catch (error) {
-                    console.error('âŒ Error parsing member data:', error);
+                    console.error('❌ Error parsing member data:', error);
                     // Clear corrupted data
                     sessionStorage.removeItem('divineAuth');
                     sessionStorage.removeItem('memberData');
@@ -1239,7 +1254,7 @@
                     return false;
                 }
             } else {
-                console.log('' No authentication found - showing auth overlay');
+                console.log('🔒 No authentication found - showing auth overlay');
                 showAuthOverlay();
                 return false;
             }
@@ -1247,7 +1262,7 @@
 
         async function authenticateUser(event) {
             event.preventDefault();
-            console.log('' Attempting authentication...');
+            console.log('🔐 Attempting authentication...');
 
             const email = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
@@ -1255,8 +1270,8 @@
             const successDiv = document.getElementById('auth-success');
             const submitBtn = event.target.querySelector('button[type="submit"]');
 
-            console.log(''🧠Email/Username entered:', email);
-            console.log(''' Password length:', password.length);
+            console.log('📧 Email/Username entered:', email);
+            console.log('🔑 Password length:', password.length);
 
             // Clear previous messages
             errorDiv.classList.remove('show');
@@ -1264,14 +1279,14 @@
             
             // Show loading state
             const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'â³ Authenticating...';
+            submitBtn.textContent = '⏳ Authenticating...';
             submitBtn.disabled = true;
 
             try {
-                console.log('👥 Firebase Config available:', !!window.FirebaseConfig);
+                console.log('🔥 Firebase Config available:', !!window.FirebaseConfig);
 
                 // Firebase authentication
-                console.log('👥 Attempting Firebase authentication...');
+                console.log('👤 Attempting Firebase authentication...');
                 if (!window.FirebaseConfig) {
                     throw new Error('Firebase not initialized');
                 }
@@ -1320,7 +1335,7 @@
                             </div>
                         `;
                     } else {
-                        successDiv.textContent = `âœ¨ Welcome, ${memberData.displayName}! âœ¨`;
+                        successDiv.textContent = `✨ Welcome, ${memberData.displayName}! ✨`;
                     }
                     successDiv.classList.add('show');
 
@@ -1342,9 +1357,9 @@
                 }
                 
             } catch (error) {
-                console.error('âŒ Authentication failed:', error);
+                console.error('❌ Authentication failed:', error);
                 
-                let errorMessage = 'âŒ Authentication failed. ';
+                let errorMessage = '❌ Authentication failed. ';
                 
                 // Handle specific Firebase auth errors
                 if (error.message.includes('user-not-found')) {
@@ -1379,7 +1394,7 @@
         async function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 try {
-                    console.log(' Logging out...');
+                    console.log('🚪 Logging out...');
 
                     // Sign out from Firebase
                     if (typeof firebase !== 'undefined' && firebase.auth) {
@@ -1412,12 +1427,12 @@
                     localStorage.removeItem('hasPremiumAccess');
 
                     console.log('✅ All session data cleared');
-                    console.log(''„ Redirecting to login...');
+                    console.log('🔄 Redirecting to login...');
 
                     // Redirect to login page
                     window.location.href = 'login.html';
                 } catch (error) {
-                    console.error('âŒ Logout failed:', error);
+                    console.error('❌ Logout failed:', error);
                     // Fallback - clear all storage anyway and redirect
                     sessionStorage.clear();
                     localStorage.clear();
@@ -1431,7 +1446,7 @@
             if (window.FirebaseConfig) {
                 FirebaseConfig.onAuthStateChanged(async (user) => {
                     if (user) {
-                        console.log('' User authenticated via Firebase:', user.email);
+                        console.log('👤 User authenticated via Firebase:', user.email);
                         
                         // Get user data and show dashboard
                         const userData = await FirebaseConfig.data.getUserData();
@@ -1448,7 +1463,7 @@
                         sessionStorage.setItem('memberData', JSON.stringify(memberData));
                         showDashboard(memberData);
                     } else {
-                        console.log(''' No authenticated user');
+                        console.log('🔒 No authenticated user');
                         if (sessionStorage.getItem('divineAuth') === 'true') {
                             // Clear stale session
                             sessionStorage.clear();
@@ -1468,7 +1483,7 @@
         }
 
         function showAuthOverlay() {
-            console.log(''' Showing authentication overlay');
+            console.log('🔒 Showing authentication overlay');
             const authOverlay = document.getElementById('auth-overlay');
             const dashboard = document.getElementById('dashboard');
             const memberBadge = document.getElementById('member-badge');
@@ -1494,7 +1509,7 @@
         }
 
         function hideAuthOverlay() {
-            console.log(''' Hiding authentication overlay');
+            console.log('🔓 Hiding authentication overlay');
             const authOverlay = document.getElementById('auth-overlay');
             
             if (authOverlay) {
@@ -1517,19 +1532,19 @@
 
             const journeyCard = document.getElementById('journey-card');
             if (!journeyCard) {
-                console.log('âš ï¸ Journey card not found');
+                console.log('⚠️ Journey card not found');
                 return;
             }
 
             // Check if Firebase is ready and user is authenticated
             if (typeof firebase === 'undefined' || !firebase.auth) {
-                console.log('âš ï¸ Firebase not ready');
+                console.log('⚠️ Firebase not ready');
                 return;
             }
 
             const user = firebase.auth().currentUser;
             if (!user) {
-                console.log('âš ï¸ No authenticated user for journey card');
+                console.log('⚠️ No authenticated user for journey card');
                 journeyCard.style.display = 'none';
                 return;
             }
@@ -1599,7 +1614,7 @@
                 journeyCard.style.display = 'block';
 
             } catch (error) {
-                console.error('âŒ Error loading journey progress:', error);
+                console.error('❌ Error loading journey progress:', error);
             }
         }
 
@@ -1682,10 +1697,10 @@
         // ========================================
 
         function showSection(sectionId) {
-            console.log(''‚ Opening section:', sectionId);
+            console.log('📂 Opening section:', sectionId);
             
             if (!SECTION_MAP[sectionId]) {
-                console.error('âŒ Section not found:', sectionId);
+                console.error('❌ Section not found:', sectionId);
                 alert('Section not available yet.');
                 return;
             }
@@ -1725,13 +1740,13 @@
                 };
                 
                 sectionFrame.onerror = function() {
-                    console.error('âŒ Failed to load section:', sectionId);
+                    console.error('❌ Failed to load section:', sectionId);
                     hideLoading();
-                    alert('âš ï¸ Failed to load section. Please try again.');
+                    alert('⚠️ Failed to load section. Please try again.');
                     returnToDashboard();
                 };
                 
-                console.log(''„ Loading section URL:', SECTION_MAP[sectionId]);
+                console.log('🔄 Loading section URL:', SECTION_MAP[sectionId]);
                 sectionFrame.src = SECTION_MAP[sectionId];
             }
         }
@@ -1746,7 +1761,7 @@
             // Verify admin status
             const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
             if (!isAdmin) {
-                alert('âŒ Access denied. Admin privileges required.');
+                alert('❌ Access denied. Admin privileges required.');
                 return;
             }
             
@@ -1781,7 +1796,7 @@
                             <p style="color: #A1A1AA; margin: 0.5rem 0 0 0;">Divine Temple Creator Dashboard</p>
                         </div>
                         <button onclick="closeAdminPanel()" style="background: #F59E0B; color: #0A0E27; border: none; padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 1rem;">
-                            ← Return to Temple
+                            ← Return to Temple
                         </button>
                     </div>
                     
@@ -1815,7 +1830,7 @@
                         
                         <!-- System Status -->
                         <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 2rem; border: 1px solid rgba(245, 158, 11, 0.3);">
-                            <h3 style="color: #F59E0B; margin-bottom: 1rem;">âš🙏ï¸ System Status</h3>
+                            <h3 style="color: #F59E0B; margin-bottom: 1rem;">⚡ System Status</h3>
                             <p style="color: #A1A1AA; margin-bottom: 1.5rem;">Firebase and system health</p>
                             <button onclick="checkSystemStatus()" style="background: #3B82F6; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; width: 100%;">
                                 Check Status
@@ -1881,9 +1896,9 @@
 
         function checkSystemStatus() {
             const content = document.getElementById('admin-content');
-            const firebaseStatus = window.FirebaseConfig ? 🟢 Online' : '🔴 Offline';
+            const firebaseStatus = window.FirebaseConfig ? '🟢 Online' : '🔴 Offline';
             content.innerHTML = `
-                <h3 style="color: #F59E0B; margin-bottom: 1rem;">âš🙏ï¸ System Status</h3>
+                <h3 style="color: #F59E0B; margin-bottom: 1rem;">⚡ System Status</h3>
                 <div style="display: grid; gap: 1rem; margin-top: 1rem;">
                     <div style="padding: 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
                         <h4 style="color: #3B82F6; margin: 0 0 0.5rem 0;">🔥 Firebase Status</h4>
@@ -1891,14 +1906,14 @@
                     </div>
                     <div style="padding: 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
                         <h4 style="color: #3B82F6; margin: 0 0 0.5rem 0;">🔐 Authentication</h4>
-                        <p style="margin: 0; color: #A1A1AA;">Admin Session: Ÿ¢ Active (nazir23)</p>
+                        <p style="margin: 0; color: #A1A1AA;">Admin Session: 🟢 Active (nazir23)</p>
                     </div>
                 </div>
             `;
         }
 
         function returnToDashboard() {
-            console.log('  Returning to dashboard');
+            console.log('🔙 Returning to dashboard');
             
             const memberData = JSON.parse(sessionStorage.getItem('memberData') || '{}');
             
@@ -1997,20 +2012,15 @@
             if (window.performanceOptimizer) {
                 window.performanceOptimizer.optimizeCriticalSection('auth-overlay');
                 window.performanceOptimizer.lazyLoadImages();
-                console.log('š€ Performance optimizations applied');
+                console.log('🚀 Performance optimizations applied');
             }
             
             // Initialize Universal Progress System
             window.UniversalProgressSystem.init();
-            console.log(🎮 Universal Progress System ready');
+            console.log('🎮 Universal Progress System ready');
             
-            // Initialize Firebase authentication check
-            setTimeout(() => {
-                checkAuthStatus();
-                loadJourneyProgress(); // Load journey card
-            }, 1000); // Wait for Firebase to load
-
-            console.log('' Firebase authentication check initiated');
+            // Get DOM elements
+            const authOverlay = document.getElementById('auth-overlay');
             const dashboard = document.getElementById('dashboard');
             const memberBadge = document.getElementById('member-badge');
             
@@ -2037,11 +2047,19 @@
             // Ensure body can't scroll initially
             document.body.style.overflow = 'hidden';
             
+            // Initialize Firebase authentication check
+            setTimeout(() => {
+                checkAuthStatus();
+                loadJourneyProgress(); // Load journey card
+            }, 1000); // Wait for Firebase to load
+
+            console.log('🔐 Firebase authentication check initiated');
+            
             // Log system info
-            console.log('âœ¨ Portal ready for authentication');
-            console.log(''Š Available sections:', Object.keys(SECTION_MAP).length);
+            console.log('✨ Portal ready for authentication');
+            console.log('📊 Available sections:', Object.keys(SECTION_MAP).length);
             console.log('%c🕉️ Divine Temple', 'font-size: 24px; font-weight: bold; color: #F59E0B;');
-            console.log('%câœ¨ Eden Consciousness - Nazir El', 'font-size: 16px; color: #8B5CF6;');
+            console.log('%c✨ Eden Consciousness - Nazir El', 'font-size: 16px; color: #8B5CF6;');
         });
 
         // ========================================
@@ -2081,7 +2099,7 @@
                 localStorage.setItem('currentUser', JSON.stringify(adminData));
                 
                 console.log('✅ Admin session data set');
-                console.log('' Session data:', adminData);
+                console.log('📋 Session data:', adminData);
                 
                 // Force hide auth overlay and show dashboard
                 const authOverlay = document.getElementById('auth-overlay');
@@ -2135,7 +2153,7 @@
                 const admin = sessionStorage.getItem('adminAuth');
                 const data = sessionStorage.getItem('memberData');
                 
-                console.log('' Auth state check:');
+                console.log('📋 Auth state check:');
                 console.log('  - divineAuth:', auth);
                 console.log('  - adminAuth:', admin);
                 console.log('  - memberData exists:', !!data);
@@ -2169,7 +2187,7 @@
                 const state = this.getState();
                 console.log('Current State:', state);
                 
-                console.log('\n'Š Test Results:');
+                console.log('\n📊 Test Results:');
                 console.log('✅ Authentication:', state.authenticated ? 'PASS' : 'FAIL');
                 console.log('✅ Dashboard:', state.dashboardActive ? 'VISIBLE' : 'HIDDEN');
                 console.log('✅ Sections Available:', state.availableSections.length);
@@ -2179,7 +2197,7 @@
         };
 
         // Console welcome
-        console.log('%c'🧠Debug Tools Available:', 'font-size: 14px; font-weight: bold; color: #10B981;');
+        console.log('%c🔧 Debug Tools Available:', 'font-size: 14px; font-weight: bold; color: #10B981;');
         console.log('%cdivineTemple.getState() - View current state', 'color: #8B5CF6;');
         console.log('%cdivineTemple.test() - Run system test', 'color: #8B5CF6;');
         console.log('%cdivineTemple.showSection("oracle-divination") - Open section', 'color: #8B5CF6;');
@@ -2389,14 +2407,14 @@
             
             // Initialize final systems
             console.log('🌟 Divine Temple Members Portal initialized with final polish');
-            console.log('â🙏¿ Accessibility features active');
-            console.log('' SEO optimization complete');
+            console.log('♿ Accessibility features active');
+            console.log('🔍 SEO optimization complete');
             console.log('🧪 Testing suite ready');
             
             // Run a quick validation after initialization
             if (window.finalTestingSuite) {
                 setTimeout(() => {
-                    console.log('' Running quick validation...');
+                    console.log('🔍 Running quick validation...');
                     window.finalTestingSuite.runSingleValidator('navigation').then(result => {
                         console.log('✅ Navigation validation:', result.passed ? 'PASSED' : 'NEEDS ATTENTION');
                     }).catch(console.error);
@@ -2493,7 +2511,7 @@
                         console.log('🕉️ Members Portal SW registered:', registration);
                     })
                     .catch(error => {
-                        console.error('âŒ SW registration failed:', error);
+                        console.error('❌ SW registration failed:', error);
                     });
             }
             
@@ -2515,7 +2533,7 @@
                 installBtn.classList.remove('hidden');
                 installBtn.classList.add('show');
                 installBtn.style.display = 'flex';
-                console.log(''± Members Portal - PWA supported, showing install button immediately');
+                console.log('📱 Members Portal - PWA supported, showing install button immediately');
                 
                 // Auto-slide in after page load
                 setTimeout(() => {
@@ -2525,7 +2543,7 @@
             
             // Listen for beforeinstallprompt with enhanced handling
             window.addEventListener('beforeinstallprompt', (e) => {
-                console.log(''± Members Portal - beforeinstallprompt event fired');
+                console.log('📱 Members Portal - beforeinstallprompt event fired');
                 e.preventDefault();
                 deferredPrompt = e;
                 
@@ -2538,7 +2556,7 @@
             
             // Listen for app installed
             window.addEventListener('appinstalled', () => {
-                console.log(💎‰ Divine Temple PWA installed from members portal');
+                console.log('💎 Divine Temple PWA installed from members portal');
                 
                 // Hide install button with animation
                 if (installBtn) {
@@ -2551,7 +2569,7 @@
                 // Show success notification using existing system
                 if (window.uxEnhancementManager) {
                     window.uxEnhancementManager.showNotification(
-                        💎‰ Divine Temple installed successfully! Check your home screen or app launcher.',
+                        '💎 Divine Temple installed successfully! Check your home screen or app launcher.',
                         'success',
                         5000
                     );
@@ -2583,13 +2601,13 @@
                 let instructions = '';
                 
                 if (userAgent.includes('chrome') && !userAgent.includes('edg')) {
-                    instructions = 'Œ Chrome: Click the install icon (âŠ•) in the address bar';
+                    instructions = '🌐 Chrome: Click the install icon (⊕) in the address bar';
                 } else if (userAgent.includes('edg')) {
-                    instructions = '🌐 Edge: Click the install icon (âŠ•) in the address bar';
+                    instructions = '🌐 Edge: Click the install icon (⊕) in the address bar';
                 } else if (userAgent.includes('firefox')) {
-                    instructions = '¦Š Firefox: Look for install option in address bar or menu';
+                    instructions = '🦊 Firefox: Look for install option in address bar or menu';
                 } else if (userAgent.includes('safari')) {
-                    instructions = '📱 Safari: Tap Share button →' "Add to Home Screen"';
+                    instructions = '📱 Safari: Tap Share button → "Add to Home Screen"';
                 } else {
                     instructions = '📱 Use your browser menu → "Install app"';
                 }
@@ -2607,23 +2625,23 @@
             try {
                 // Show the install prompt
                 const result = await deferredPrompt.prompt();
-                console.log(''± Members Portal - Install prompt shown');
+                console.log('📱 Members Portal - Install prompt shown');
                 
                 // Wait for the user to respond to the prompt
                 const choiceResult = await deferredPrompt.userChoice;
-                console.log(''🤝 Members Portal - User choice:', choiceResult.outcome);
+                console.log('🤝 Members Portal - User choice:', choiceResult.outcome);
                 
                 if (choiceResult.outcome === 'accepted') {
                     console.log('✅ User accepted PWA install from members portal');
                     if (window.uxEnhancementManager) {
                         window.uxEnhancementManager.showNotification(
-                            💎‰ Installing Divine Temple...',
+                            '💎 Installing Divine Temple...',
                             'success',
                             4000
                         );
                     }
                 } else {
-                    console.log('âŒ User dismissed PWA install from members portal');
+                    console.log('❌ User dismissed PWA install from members portal');
                     if (window.uxEnhancementManager) {
                         window.uxEnhancementManager.showNotification(
                             '📲 Install anytime using your browser menu',
@@ -2635,10 +2653,10 @@
                 
                 deferredPrompt = null;
             } catch (error) {
-                console.error('âŒ PWA install failed:', error);
+                console.error('❌ PWA install failed:', error);
                 if (window.uxEnhancementManager) {
                     window.uxEnhancementManager.showNotification(
-                        'âŒ Installation failed. Try using your browser menu → "Install app"',
+                        '❌ Installation failed. Try using your browser menu → "Install app"',
                         'error',
                         4000
                     );
@@ -2657,8 +2675,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
