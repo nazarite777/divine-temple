@@ -5,7 +5,7 @@
 
 let userProgress = null;
 let currentUser = null;
-let journeyDb = null;
+
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
@@ -16,34 +16,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         await waitForFirebase();
         console.log('✅ Firebase ready');
 
-        // Initialize Firestore
-        journeyDb = firebase.firestore();
-
-        // Wait for authentication
+        // Check if user is logged in (optional - don't require login)
         await waitForAuth();
 
-        if (!currentUser) {
-            console.log('❌ Not logged in, redirecting...');
-            window.location.href = 'login.html?redirect=journey.html';
-            return;
+        if (currentUser) {
+            console.log('✅ User authenticated:', currentUser.email);
+
+            // Load journey progress from Firebase
+            console.log('📊 Loading journey progress...');
+            await loadJourneyProgress();
+        } else {
+            console.log('👤 Guest user - using default progress');
+            // Use default progress for guest users
+            userProgress = createDefaultProgress();
         }
-
-        console.log('✅ User authenticated:', currentUser.email);
-
-        // Check premium access
-        const hasAccess = await checkPremiumAccess();
-
-        if (!hasAccess) {
-            console.log('❌ No premium access');
-            showPremiumUpgradeModal();
-            return;
-        }
-
-        console.log('✅ Premium access verified');
-
-        // Load journey progress
-        console.log('📊 Loading journey progress...');
-        await loadJourneyProgress();
 
         // Update UI
         console.log('🎨 Updating dashboard...');
@@ -57,8 +43,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     } catch (error) {
         console.error('❌ Journey loading error:', error);
-        showError('Failed to load your journey data: ' + error.message);
+        // Still show the page with default content
+        userProgress = createDefaultProgress();
+        updateDashboard();
         hideLoading();
+        showContent();
     }
 });
 
@@ -78,7 +67,8 @@ function waitForFirebase() {
                     resolve();
                 } else if (attempts > 50) {
                     clearInterval(checkFirebase);
-                    throw new Error('Firebase failed to load after 5 seconds');
+                    // Resolve anyway - we'll use default progress
+                    resolve();
                 }
             }, 100);
         }
@@ -90,6 +80,10 @@ function waitForFirebase() {
  */
 function waitForAuth() {
     return new Promise((resolve) => {
+        if (typeof firebase === 'undefined' || !firebase.auth) {
+            resolve();
+            return;
+        }
         const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
             currentUser = user;
             unsubscribe();
@@ -105,10 +99,10 @@ async function checkPremiumAccess() {
     try {
         if (!currentUser) return false;
 
-        const userDoc = await journeyDb.collection('users').doc(currentUser.uid).get();
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
 
         if (!userDoc.exists) {
-            console.log('ℹ️ User document not found - assuming no premium');
+            console.log('⚠️ User document not found - assuming no premium');
             return false;
         }
 
@@ -142,7 +136,12 @@ async function checkPremiumAccess() {
  */
 async function loadJourneyProgress() {
     try {
-        const progressRef = journeyDb.collection('users')
+        if (!currentUser || typeof db === 'undefined') {
+            userProgress = createDefaultProgress();
+            return;
+        }
+
+        const progressRef = db.collection('users')
             .doc(currentUser.uid)
             .collection('journey_progress')
             .doc('current');
@@ -178,7 +177,7 @@ async function loadJourneyProgress() {
 
     } catch (error) {
         console.error('❌ Error loading progress:', error);
-        throw error;
+        userProgress = createDefaultProgress();
     }
 }
 
@@ -437,7 +436,7 @@ function showPremiumUpgradeModal() {
     modal.className = 'premium-modal-overlay';
     modal.innerHTML = `
         <div class="premium-modal">
-            <h2>🛤️ Journey Hub - Premium Feature</h2>
+            <h2>🛡️ Journey Hub - Premium Feature</h2>
             <p>The 4-Phase Journey to Aligned Manifestation Mastery is available to Premium members.</p>
             <div class="journey-preview">
                 <h3>What You'll Get:</h3>

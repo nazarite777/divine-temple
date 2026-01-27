@@ -19,6 +19,11 @@
     <meta name="twitter:description" content="Join me on the path to Aligned Manifestation Mastery">
     <meta name="twitter:image" content="https://edenconsciousnesssdt.com/images/journey-share.jpg">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/icons/icon-32.png">
+    <link rel="apple-touch-icon" href="images/icons/icon-192.png">
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Confetti Celebration Library -->
@@ -174,6 +179,7 @@
             color: var(--text-secondary);
             max-width: 700px;
             margin: 0 auto;
+            line-height: 1.6;
         }
 
         /* Overall Progress */
@@ -419,15 +425,14 @@
         }
 
         .phase-number {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             background: var(--phase-color);
             color: white;
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 1rem;
@@ -537,37 +542,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-
-            .header {
-                padding: 2rem 1rem;
-            }
-
-            .title {
-                font-size: 2rem;
-            }
-
-            .subtitle {
-                font-size: 1rem;
-            }
-
-            .overall-progress {
-                padding: 1.5rem;
-            }
-
-            .progress-percentage {
-                font-size: 2rem;
-            }
-
-            .phases-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         /* Premium Badge */
         .premium-badge {
             display: inline-block;
@@ -647,6 +621,7 @@
             transition: all 0.3s ease;
             text-decoration: none;
             border: 1px solid var(--glass-border);
+            color: white;
         }
 
         .share-btn:hover {
@@ -670,10 +645,145 @@
             background: var(--accent-purple);
         }
 
+        /* Celebration Modal */
+        .celebration-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .celebration-modal.active {
+            display: flex;
+        }
+
+        .celebration-content {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(139, 92, 246, 0.2));
+            border: 2px solid var(--primary-gold);
+            border-radius: 30px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            animation: celebrationPop 0.5s ease-out;
+        }
+
+        @keyframes celebrationPop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .celebration-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .celebration-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+        }
+
+        .celebration-message {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .celebration-btn {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .celebration-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                padding: 2rem 1rem;
+            }
+
+            .title {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .overall-progress {
+                padding: 1.5rem;
+            }
+
+            .progress-percentage {
+                font-size: 2rem;
+            }
+
+            .phases-grid {
+                grid-template-columns: 1fr;
+            }
+
             .social-sharing {
                 flex-direction: column;
                 gap: 1rem;
+            }
+
+            .progress-stats {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus States */
+        .phase-card:focus-visible,
+        .back-btn:focus-visible,
+        .focus-action:focus-visible,
+        .share-btn:focus-visible {
+            outline: 3px solid var(--primary-gold);
+            outline-offset: 3px;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+
+            .back-btn,
+            .social-sharing {
+                display: none;
             }
         }
     </style>
@@ -681,6 +791,16 @@
 <body>
     <!-- Premium Gate (shown if user doesn't have access) -->
     <div id="journeyGate" style="display: none;"></div>
+
+    <!-- Celebration Modal -->
+    <div class="celebration-modal" id="celebrationModal">
+        <div class="celebration-content">
+            <div class="celebration-icon" id="celebrationIcon">🎉</div>
+            <h2 class="celebration-title" id="celebrationTitle">Congratulations!</h2>
+            <p class="celebration-message" id="celebrationMessage">You've completed a milestone on your journey!</p>
+            <button class="celebration-btn" onclick="closeCelebration()">Continue Journey</button>
+        </div>
+    </div>
 
     <div class="container" id="journeyContainer">
         <a href="members-new.html" class="back-btn">
@@ -695,12 +815,12 @@
                 </div>
                 <span class="breadcrumb-separator">›</span>
                 <div class="breadcrumb-item">
-                    <span class="breadcrumb-current">Journey</span>
+                    <span class="breadcrumb-current">🗺️ Journey</span>
                 </div>
             </nav>
         </div>
 
-        <div class="header">
+        <header class="header">
             <div class="header-content">
                 <div class="header-icon">🌟</div>
                 <h1 class="title">Your Sacred Journey</h1>
@@ -709,7 +829,7 @@
                     Four phases guide you from awakening to mastery.
                 </p>
             </div>
-        </div>
+        </header>
 
         <!-- Loading State -->
         <div id="loadingState" class="loading">
@@ -718,38 +838,38 @@
         </div>
 
         <!-- Journey Content (hidden until loaded) -->
-        <div id="journeyMainContent" style="display: none;">
+        <main id="journeyMainContent" style="display: none;">
 
             <!-- Overall Progress -->
-            <div class="overall-progress">
+            <section class="overall-progress" aria-label="Overall Progress">
                 <div class="overall-progress-content">
                     <div class="progress-header">
                         <h2 class="progress-title">Overall Journey Progress</h2>
-                        <div class="progress-percentage" id="overallPercentage">0%</div>
+                        <div class="progress-percentage" id="overallPercentage" aria-live="polite">0%</div>
                     </div>
-                    <div class="progress-bar-container">
+                    <div class="progress-bar-container" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                         <div class="progress-bar-fill" id="overallProgressBar" style="width: 0%"></div>
                     </div>
                     <div class="progress-stats">
                         <div class="progress-stat">
-                            <span class="progress-stat-icon">📚</span>
+                            <span class="progress-stat-icon" aria-hidden="true">📚</span>
                             <span id="phasesCompleted">0/4 Phases Complete</span>
                         </div>
                         <div class="progress-stat">
-                            <span class="progress-stat-icon">🔥</span>
+                            <span class="progress-stat-icon" aria-hidden="true">🔥</span>
                             <span id="currentStreak">0 Day Streak</span>
                         </div>
                         <div class="progress-stat">
-                            <span class="progress-stat-icon">⏱️</span>
+                            <span class="progress-stat-icon" aria-hidden="true">⏱️</span>
                             <span id="lastActivity">Last activity: Today</span>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
             <!-- Current Focus -->
-            <div class="current-focus" id="currentFocus">
-                <span class="focus-badge">Up Next</span>
+            <section class="current-focus" id="currentFocus" aria-label="Current Focus">
+                <span class="focus-badge">✨ Up Next</span>
                 <h3 class="focus-title" id="focusTitle">Continue Your Journey</h3>
                 <p class="focus-description" id="focusDescription">
                     Pick up where you left off and continue your transformation.
@@ -757,17 +877,17 @@
                 <a href="#" class="focus-action" id="focusAction">
                     Continue Learning →
                 </a>
-            </div>
+            </section>
 
             <!-- Phase Cards -->
-            <div class="phases-grid">
+            <section class="phases-grid" aria-label="Journey Phases">
                 <!-- Phase 1: Awakening -->
-                <div class="phase-card phase-1" id="phase1Card" onclick="navigateToPhase(1)">
-                    <div class="phase-number">1</div>
+                <article class="phase-card phase-1" id="phase1Card" onclick="navigateToPhase(1)" tabindex="0" role="button" aria-label="Phase 1: The Awakening">
+                    <div class="phase-number" aria-hidden="true">1</div>
                     <h3 class="phase-title">The Awakening</h3>
                     <p class="phase-subtitle">Ya Heard Me - Foundation</p>
                     <div class="phase-progress">
-                        <div class="phase-progress-bar">
+                        <div class="phase-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                             <div class="phase-progress-fill" id="phase1Progress" style="width: 0%"></div>
                         </div>
                         <div class="phase-progress-text">
@@ -781,19 +901,19 @@
                         <li>Reflective journal prompts</li>
                         <li>Foundation for transformation</li>
                     </ul>
-                </div>
+                </article>
 
                 <!-- Phase 2: Understanding -->
-                <div class="phase-card phase-2 locked" id="phase2Card" onclick="navigateToPhase(2)">
-                    <div class="phase-number">2</div>
+                <article class="phase-card phase-2 locked" id="phase2Card" onclick="navigateToPhase(2)" tabindex="0" role="button" aria-label="Phase 2: The Understanding - Locked">
+                    <div class="phase-number" aria-hidden="true">2</div>
                     <h3 class="phase-title">The Understanding</h3>
                     <p class="phase-subtitle">6 Principles of Aligned Manifestation™</p>
                     <div class="phase-progress">
-                        <div class="phase-progress-bar">
+                        <div class="phase-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                             <div class="phase-progress-fill" id="phase2Progress" style="width: 0%"></div>
                         </div>
                         <div class="phase-progress-text">
-                            <span id="phase2Text">Locked</span>
+                            <span id="phase2Text">🔒 Locked</span>
                             <span id="phase2Percent">0%</span>
                         </div>
                     </div>
@@ -803,19 +923,19 @@
                         <li>Daily practices & reflections</li>
                         <li>Divine foundation building</li>
                     </ul>
-                </div>
+                </article>
 
                 <!-- Phase 3: Mastery -->
-                <div class="phase-card phase-3 locked" id="phase3Card" onclick="navigateToPhase(3)">
-                    <div class="phase-number">3</div>
+                <article class="phase-card phase-3 locked" id="phase3Card" onclick="navigateToPhase(3)" tabindex="0" role="button" aria-label="Phase 3: The Mastery - Locked">
+                    <div class="phase-number" aria-hidden="true">3</div>
                     <h3 class="phase-title">The Mastery</h3>
                     <p class="phase-subtitle">I-N-I Year Practice</p>
                     <div class="phase-progress">
-                        <div class="phase-progress-bar">
+                        <div class="phase-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                             <div class="phase-progress-fill" id="phase3Progress" style="width: 0%"></div>
                         </div>
                         <div class="phase-progress-text">
-                            <span id="phase3Text">Locked</span>
+                            <span id="phase3Text">🔒 Locked</span>
                             <span id="phase3Percent">0%</span>
                         </div>
                     </div>
@@ -825,19 +945,19 @@
                         <li>Gate energies & divine timing</li>
                         <li>Complete cosmic integration</li>
                     </ul>
-                </div>
+                </article>
 
                 <!-- Phase 4: Teacher -->
-                <div class="phase-card phase-4 locked" id="phase4Card" onclick="navigateToPhase(4)">
-                    <div class="phase-number">4</div>
+                <article class="phase-card phase-4 locked" id="phase4Card" onclick="navigateToPhase(4)" tabindex="0" role="button" aria-label="Phase 4: The Teacher - Locked">
+                    <div class="phase-number" aria-hidden="true">4</div>
                     <h3 class="phase-title">The Teacher</h3>
                     <p class="phase-subtitle">Certification & Community Leadership</p>
                     <div class="phase-progress">
-                        <div class="phase-progress-bar">
+                        <div class="phase-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                             <div class="phase-progress-fill" id="phase4Progress" style="width: 0%"></div>
                         </div>
                         <div class="phase-progress-text">
-                            <span id="phase4Text">Locked</span>
+                            <span id="phase4Text">🔒 Locked</span>
                             <span id="phase4Percent">0%</span>
                         </div>
                     </div>
@@ -847,59 +967,212 @@
                         <li>Affiliate program access</li>
                         <li>Community leadership role</li>
                     </ul>
-                </div>
-            </div>
+                </article>
+            </section>
 
             <!-- Social Sharing -->
-            <div class="social-sharing">
+            <section class="social-sharing" aria-label="Share Your Journey">
                 <span class="share-label">Share Your Journey:</span>
                 <div class="share-buttons">
-                    <a href="#" class="share-btn twitter" onclick="shareToTwitter(); return false;" title="Share on Twitter">
+                    <a href="#" class="share-btn twitter" onclick="shareToTwitter(); return false;" title="Share on Twitter" aria-label="Share on Twitter">
                         𝕏
                     </a>
-                    <a href="#" class="share-btn facebook" onclick="shareToFacebook(); return false;" title="Share on Facebook">
+                    <a href="#" class="share-btn facebook" onclick="shareToFacebook(); return false;" title="Share on Facebook" aria-label="Share on Facebook">
                         f
                     </a>
-                    <a href="#" class="share-btn linkedin" onclick="shareToLinkedIn(); return false;" title="Share on LinkedIn">
+                    <a href="#" class="share-btn linkedin" onclick="shareToLinkedIn(); return false;" title="Share on LinkedIn" aria-label="Share on LinkedIn">
                         in
                     </a>
-                    <a href="#" class="share-btn copy" onclick="copyJourneyLink(); return false;" title="Copy Link">
+                    <a href="#" class="share-btn copy" onclick="copyJourneyLink(); return false;" title="Copy Link" aria-label="Copy link to clipboard">
                         🔗
                     </a>
                 </div>
-            </div>
+            </section>
 
-        </div>
+        </main>
     </div>
 
     <!-- Journey Hub JavaScript -->
     <script src="js/journey-hub.js"></script>
 
-    <!-- Social Sharing Scripts -->
+    <!-- Social Sharing & Celebration Scripts -->
     <script>
+        // ========================================
+        // SOCIAL SHARING FUNCTIONS
+        // ========================================
+
         function shareToTwitter() {
             const text = "I'm on a transformational journey through 4 phases of spiritual growth at Divine Temple! 🌟";
             const url = encodeURIComponent(window.location.href);
-            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}`, '_blank');
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}`, '_blank', 'noopener,noreferrer');
+            console.log('📤 Shared to Twitter');
         }
 
         function shareToFacebook() {
             const url = encodeURIComponent(window.location.href);
-            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'noopener,noreferrer');
+            console.log('📤 Shared to Facebook');
         }
 
         function shareToLinkedIn() {
             const url = encodeURIComponent(window.location.href);
-            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'noopener,noreferrer');
+            console.log('📤 Shared to LinkedIn');
         }
 
         function copyJourneyLink() {
             navigator.clipboard.writeText(window.location.href).then(() => {
-                alert('✅ Journey link copied to clipboard!');
+                showNotification('✅ Journey link copied to clipboard!', 'success');
+                console.log('📋 Link copied to clipboard');
             }).catch(err => {
-                console.error('Failed to copy:', err);
+                console.error('❌ Failed to copy:', err);
+                showNotification('❌ Failed to copy link', 'error');
             });
         }
+
+        // ========================================
+        // CELEBRATION FUNCTIONS
+        // ========================================
+
+        function showCelebration(type, title, message) {
+            const modal = document.getElementById('celebrationModal');
+            const iconEl = document.getElementById('celebrationIcon');
+            const titleEl = document.getElementById('celebrationTitle');
+            const messageEl = document.getElementById('celebrationMessage');
+
+            // Set content based on type
+            const celebrations = {
+                'phase-complete': { icon: '🎉', defaultTitle: 'Phase Complete!' },
+                'milestone': { icon: '🏆', defaultTitle: 'Milestone Reached!' },
+                'streak': { icon: '🔥', defaultTitle: 'Streak Achievement!' },
+                'level-up': { icon: '⭐', defaultTitle: 'Level Up!' },
+                'certificate': { icon: '📜', defaultTitle: 'Certificate Earned!' }
+            };
+
+            const celebrationData = celebrations[type] || celebrations['milestone'];
+            
+            iconEl.textContent = celebrationData.icon;
+            titleEl.textContent = title || celebrationData.defaultTitle;
+            messageEl.textContent = message || 'You\'ve reached an important milestone on your journey!';
+
+            // Show modal
+            modal.classList.add('active');
+
+            // Launch confetti
+            if (window.confetti) {
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#D4AF37', '#8B5CF6', '#4fc3f7', '#F59E0B']
+                });
+            }
+
+            console.log(`🎊 Celebration shown: ${type}`);
+        }
+
+        function closeCelebration() {
+            const modal = document.getElementById('celebrationModal');
+            modal.classList.remove('active');
+        }
+
+        // ========================================
+        // NOTIFICATION SYSTEM
+        // ========================================
+
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            const existing = document.querySelector('.journey-notification');
+            if (existing) existing.remove();
+
+            const notification = document.createElement('div');
+            notification.className = 'journey-notification';
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 2rem;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 1rem 2rem;
+                border-radius: 15px;
+                font-weight: 600;
+                z-index: 10001;
+                animation: slideUp 0.3s ease-out;
+                ${type === 'success' ? 'background: linear-gradient(135deg, #10B981, #059669); color: white;' : ''}
+                ${type === 'error' ? 'background: linear-gradient(135deg, #EF4444, #DC2626); color: white;' : ''}
+                ${type === 'info' ? 'background: linear-gradient(135deg, #8B5CF6, #7C3AED); color: white;' : ''}
+            `;
+            notification.textContent = message;
+
+            // Add animation keyframes if not exists
+            if (!document.querySelector('#notificationStyles')) {
+                const styles = document.createElement('style');
+                styles.id = 'notificationStyles';
+                styles.textContent = `
+                    @keyframes slideUp {
+                        from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+                        to { opacity: 1; transform: translateX(-50%) translateY(0); }
+                    }
+                `;
+                document.head.appendChild(styles);
+            }
+
+            document.body.appendChild(notification);
+
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(-50%) translateY(20px)';
+                notification.style.transition = 'all 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // ========================================
+        // KEYBOARD NAVIGATION
+        // ========================================
+
+        document.addEventListener('keydown', function(e) {
+            // Close celebration modal with Escape
+            if (e.key === 'Escape') {
+                closeCelebration();
+            }
+
+            // Navigate phases with Enter/Space on focused cards
+            if (e.key === 'Enter' || e.key === ' ') {
+                const focused = document.activeElement;
+                if (focused.classList.contains('phase-card')) {
+                    e.preventDefault();
+                    focused.click();
+                }
+            }
+        });
+
+        // ========================================
+        // INITIALIZATION
+        // ========================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🗺️ Journey page initialized');
+            console.log('📅 Date:', new Date().toISOString());
+
+            // Check for celebration triggers in URL params
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('celebrate')) {
+                const celebrationType = urlParams.get('celebrate');
+                setTimeout(() => {
+                    showCelebration(celebrationType);
+                }, 1000);
+            }
+        });
+
+        // Make functions globally available
+        window.showCelebration = showCelebration;
+        window.closeCelebration = closeCelebration;
+        window.showNotification = showNotification;
+
+        // Console welcome
+        console.log('%c🗺️ Journey Hub', 'font-size: 20px; font-weight: bold; color: #D4AF37;');
+        console.log('%c✨ Eden Consciousness - Divine Temple', 'font-size: 14px; color: #8B5CF6;');
     </script>
 </body>
 </html>

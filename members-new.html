@@ -32,6 +32,7 @@
     
     <!-- Performance Optimization Script -->
     <script src="js/performance-optimizer.js" defer></script>
+    
     <style>
         :root {
             --primary-gold: #D4AF37;
@@ -544,6 +545,7 @@
                 height: calc(100vh - 120px);
             }
         }
+
         /* PWA Install Button - Sidebar Style */
         .pwa-install-btn {
             position: fixed;
@@ -610,6 +612,18 @@
                 right: -130px;
             }
         }
+
+        /* Status Badge */
+        .status-badge {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--success);
+            border-radius: 8px;
+            color: var(--success);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
     </style>
     
     <!-- Enhanced PWA Installer -->
@@ -621,13 +635,13 @@
 <body>
     <!-- PWA Install Button -->
     <button id="pwaInstallBtn" class="pwa-install-btn" onclick="window.enhancedPWAInstaller ? window.enhancedPWAInstaller.install() : installPWA()" title="Install Divine Temple App">
-        🏛️ Install App
+        🕉️ Install App
     </button>
 
     <!-- Auth Overlay -->
     <div id="auth-overlay" class="auth-overlay">
         <div class="auth-container">
-            <div class="divine-symbol">🏛️</div>
+            <div class="divine-symbol">🕉️</div>
             <div class="auth-header">
                 <h2>Divine Temple Access</h2>
                 <p class="auth-subtitle">Enter Your Sacred Credentials</p>
@@ -656,7 +670,7 @@
     <header class="header">
         <div class="header-content">
             <div>
-                <h1 class="logo">🏛️ Divine Temple</h1>
+                <h1 class="logo">🕉️ Divine Temple</h1>
                 <p class="tagline">Sacred Members Portal</p>
             </div>
             <div style="display: flex; align-items: center; gap: 1rem;">
@@ -694,7 +708,7 @@
                 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background: url('data:image/svg+xml,<svg width=\"100\" height=\"100\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"50\" cy=\"50\" r=\"2\" fill=\"white\"/></svg>');"></div>
 
                 <div class="journey-banner-content" style="position: relative; z-index: 1; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
-                    <div class="journey-icon" style="font-size: 4rem; flex-shrink: 0;">🛤️</div>
+                    <div class="journey-icon" style="font-size: 4rem; flex-shrink: 0;">🗺️</div>
 
                     <div class="journey-text" style="flex-grow: 1; min-width: 250px;">
                         <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: white; font-weight: 700;">Your Journey Progress</h3>
@@ -748,6 +762,7 @@
                     </div>
                 </div>
 
+                <!-- 3. Meditation & Mindfulness -->
                 <a href="sections/meditation-mindfulness.html" class="nav-card" style="text-decoration: none; cursor: pointer;">
                     <span class="nav-icon">🧘</span>
                     <h3 class="nav-title">Meditation & Mindfulness</h3>
@@ -939,7 +954,7 @@
 
                 <!-- 16. Singing Bowl Harmony Garden -->
                 <div class="nav-card" onclick="showSection('singing-bowl-garden')">
-                    <span class="nav-icon">🥣</span>
+                    <span class="nav-icon">🔔</span>
                     <h4 class="nav-title">Singing Bowl Harmony Garden</h4>
                     <p class="nav-description">
                         Immersive sound healing experience with chakra-tuned singing bowls, zen garden creation, and meditation practices.
@@ -954,7 +969,7 @@
 
                 <!-- ADMIN PANEL (Only visible to admin) -->
                 <div class="nav-card admin-only" onclick="showAdminPanel()" style="display: none; background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1)); border: 2px solid #F59E0B; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);">
-                    <span class="nav-icon">🔱</span>
+                    <span class="nav-icon">⚙️</span>
                     <h4 class="nav-title" style="color: #F59E0B;">Admin Control Panel</h4>
                     <p class="nav-description">
                         Creator dashboard for managing users, content, analytics, and system administration.
@@ -1211,9 +1226,9 @@
             const memberDataStr = sessionStorage.getItem('memberData');
             const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
             
-            console.log('🔍 Auth check - isAuth:', isAuth);
-            console.log('🔍 Auth check - memberData exists:', !!memberDataStr);
-            console.log('🔍 Auth check - isAdmin:', isAdmin);
+            console.log('📋 Auth check - isAuth:', isAuth);
+            console.log('📋 Auth check - memberData exists:', !!memberDataStr);
+            console.log('📋 Auth check - isAdmin:', isAdmin);
             
             if (isAuth === 'true' && memberDataStr) {
                 try {
@@ -1221,10 +1236,10 @@
                     const displayName = memberData.username || memberData.displayName || memberData.name || 'User';
                     
                     console.log('✅ User authenticated:', displayName);
-                    console.log('🔍 Member data:', memberData);
+                    console.log('📋 Member data:', memberData);
                     
                     if (isAdmin) {
-                        console.log('🔱 Admin user detected');
+                        console.log('⚙️ Admin user detected');
                     }
                     
                     showDashboard(memberData);
@@ -1239,7 +1254,7 @@
                     return false;
                 }
             } else {
-                console.log('📝 No authentication found - showing auth overlay');
+                console.log('🔒 No authentication found - showing auth overlay');
                 showAuthOverlay();
                 return false;
             }
@@ -1271,7 +1286,7 @@
                 console.log('🔥 Firebase Config available:', !!window.FirebaseConfig);
 
                 // Firebase authentication
-                console.log('🔥 Attempting Firebase authentication...');
+                console.log('👤 Attempting Firebase authentication...');
                 if (!window.FirebaseConfig) {
                     throw new Error('Firebase not initialized');
                 }
@@ -1298,7 +1313,7 @@
                     const isAdmin = FirebaseConfig.auth.isAdminEmail(result.user.email);
                     if (isAdmin) {
                         sessionStorage.setItem('adminAuth', 'true');
-                        console.log('🔱 Admin access granted for:', result.user.email);
+                        console.log('⚙️ Admin access granted for:', result.user.email);
                     }
 
                     // Store authentication
@@ -1314,7 +1329,7 @@
                     if (isAdmin) {
                         successDiv.innerHTML = `
                             <div style="text-align: center;">
-                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔱</div>
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚙️</div>
                                 <div style="font-weight: 600; color: var(--accent-gold);">ADMIN ACCESS GRANTED</div>
                                 <div style="font-size: 0.9rem; opacity: 0.8;">Welcome back, ${memberData.displayName}</div>
                             </div>
@@ -1431,7 +1446,7 @@
             if (window.FirebaseConfig) {
                 FirebaseConfig.onAuthStateChanged(async (user) => {
                     if (user) {
-                        console.log('🔐 User authenticated via Firebase:', user.email);
+                        console.log('👤 User authenticated via Firebase:', user.email);
                         
                         // Get user data and show dashboard
                         const userData = await FirebaseConfig.data.getUserData();
@@ -1448,7 +1463,7 @@
                         sessionStorage.setItem('memberData', JSON.stringify(memberData));
                         showDashboard(memberData);
                     } else {
-                        console.log('🔓 No authenticated user');
+                        console.log('🔒 No authenticated user');
                         if (sessionStorage.getItem('divineAuth') === 'true') {
                             // Clear stale session
                             sessionStorage.clear();
@@ -1468,7 +1483,7 @@
         }
 
         function showAuthOverlay() {
-            console.log('🔓 Showing authentication overlay');
+            console.log('🔒 Showing authentication overlay');
             const authOverlay = document.getElementById('auth-overlay');
             const dashboard = document.getElementById('dashboard');
             const memberBadge = document.getElementById('member-badge');
@@ -1494,7 +1509,7 @@
         }
 
         function hideAuthOverlay() {
-            console.log('🔒 Hiding authentication overlay');
+            console.log('🔓 Hiding authentication overlay');
             const authOverlay = document.getElementById('auth-overlay');
             
             if (authOverlay) {
@@ -1513,7 +1528,7 @@
          * Load Journey Progress and Update Card
          */
         async function loadJourneyProgress() {
-            console.log('🛤️ Loading journey progress for card...');
+            console.log('🗺️ Loading journey progress for card...');
 
             const journeyCard = document.getElementById('journey-card');
             if (!journeyCard) {
@@ -1604,7 +1619,7 @@
         }
 
         function showDashboard(memberData) {
-            console.log('🏛️ Showing dashboard for:', memberData);
+            console.log('🕉️ Showing dashboard for:', memberData);
             
             // Hide auth overlay first
             hideAuthOverlay();
@@ -1641,7 +1656,7 @@
             
             if (memberDisplay && memberData) {
                 const displayName = isAdmin ? 
-                    `🔱 ${memberData.displayName || 'Nazir El - Creator'}` : 
+                    `⚙️ ${memberData.displayName || 'Nazir El - Creator'}` : 
                     (memberData.name || memberData.username || memberData.displayName);
                     
                 memberDisplay.textContent = displayName;
@@ -1650,7 +1665,7 @@
                 if (isAdmin) {
                     memberDisplay.innerHTML = `
                         <div style="font-weight: 600; color: #0A0E27;">${memberData.displayName || 'Nazir El - Creator'}</div>
-                        <div style="font-size: 0.8rem; opacity: 0.8; color: #0A0E27;">🔱 DIVINE TEMPLE CREATOR</div>
+                        <div style="font-size: 0.8rem; opacity: 0.8; color: #0A0E27;">⚙️ DIVINE TEMPLE CREATOR</div>
                     `;
                 }
             }
@@ -1667,7 +1682,7 @@
                 const adminCard = document.querySelector('.admin-only');
                 if (adminCard) {
                     adminCard.style.display = 'block';
-                    console.log('🔱 Admin navigation card shown');
+                    console.log('⚙️ Admin navigation card shown');
                 }
             }
             
@@ -1741,7 +1756,7 @@
         // ========================================
 
         function showAdminPanel() {
-            console.log('🔱 Opening Admin Control Panel...');
+            console.log('⚙️ Opening Admin Control Panel...');
             
             // Verify admin status
             const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
@@ -1777,7 +1792,7 @@
                 <div style="max-width: 1200px; margin: 0 auto;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #F59E0B;">
                         <div>
-                            <h1 style="color: #F59E0B; font-size: 2.5rem; margin: 0; font-family: 'Playfair Display', serif;">🔱 Admin Control Panel</h1>
+                            <h1 style="color: #F59E0B; font-size: 2.5rem; margin: 0; font-family: 'Playfair Display', serif;">⚙️ Admin Control Panel</h1>
                             <p style="color: #A1A1AA; margin: 0.5rem 0 0 0;">Divine Temple Creator Dashboard</p>
                         </div>
                         <button onclick="closeAdminPanel()" style="background: #F59E0B; color: #0A0E27; border: none; padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 1rem;">
@@ -1815,7 +1830,7 @@
                         
                         <!-- System Status -->
                         <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 2rem; border: 1px solid rgba(245, 158, 11, 0.3);">
-                            <h3 style="color: #F59E0B; margin-bottom: 1rem;">⚙️ System Status</h3>
+                            <h3 style="color: #F59E0B; margin-bottom: 1rem;">⚡ System Status</h3>
                             <p style="color: #A1A1AA; margin-bottom: 1.5rem;">Firebase and system health</p>
                             <button onclick="checkSystemStatus()" style="background: #3B82F6; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; width: 100%;">
                                 Check Status
@@ -1824,7 +1839,7 @@
                     </div>
                     
                     <div id="admin-content" style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 2rem; border: 1px solid rgba(245, 158, 11, 0.3); min-height: 400px;">
-                        <h3 style="color: #F59E0B; margin-bottom: 1rem;">🔱 Welcome, Creator Nazir El</h3>
+                        <h3 style="color: #F59E0B; margin-bottom: 1rem;">⚙️ Welcome, Creator Nazir El</h3>
                         <p style="color: #A1A1AA;">Select an option above to manage your Divine Temple.</p>
                         <div style="margin-top: 2rem; padding: 1rem; background: rgba(245, 158, 11, 0.1); border-radius: 10px; border-left: 4px solid #F59E0B;">
                             <h4 style="color: #F59E0B; margin: 0 0 0.5rem 0;">Admin Credentials Active</h4>
@@ -1835,7 +1850,7 @@
             `;
             
             document.body.appendChild(adminPanel);
-            console.log('🔱 Admin panel opened');
+            console.log('⚙️ Admin panel opened');
         }
 
         function closeAdminPanel() {
@@ -1883,7 +1898,7 @@
             const content = document.getElementById('admin-content');
             const firebaseStatus = window.FirebaseConfig ? '🟢 Online' : '🔴 Offline';
             content.innerHTML = `
-                <h3 style="color: #F59E0B; margin-bottom: 1rem;">⚙️ System Status</h3>
+                <h3 style="color: #F59E0B; margin-bottom: 1rem;">⚡ System Status</h3>
                 <div style="display: grid; gap: 1rem; margin-top: 1rem;">
                     <div style="padding: 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
                         <h4 style="color: #3B82F6; margin: 0 0 0.5rem 0;">🔥 Firebase Status</h4>
@@ -1898,7 +1913,7 @@
         }
 
         function returnToDashboard() {
-            console.log('🏠 Returning to dashboard');
+            console.log('🔙 Returning to dashboard');
             
             const memberData = JSON.parse(sessionStorage.getItem('memberData') || '{}');
             
@@ -1990,7 +2005,7 @@
         // ========================================
 
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🏛️ Divine Temple Portal Initializing...');
+            console.log('🕉️ Divine Temple Portal Initializing...');
             console.log('📅 Date:', new Date().toISOString());
             
             // Initialize Performance Optimizer
@@ -2004,13 +2019,8 @@
             window.UniversalProgressSystem.init();
             console.log('🎮 Universal Progress System ready');
             
-            // Initialize Firebase authentication check
-            setTimeout(() => {
-                checkAuthStatus();
-                loadJourneyProgress(); // Load journey card
-            }, 1000); // Wait for Firebase to load
-
-            console.log('🔐 Firebase authentication check initiated');
+            // Get DOM elements
+            const authOverlay = document.getElementById('auth-overlay');
             const dashboard = document.getElementById('dashboard');
             const memberBadge = document.getElementById('member-badge');
             
@@ -2037,10 +2047,18 @@
             // Ensure body can't scroll initially
             document.body.style.overflow = 'hidden';
             
+            // Initialize Firebase authentication check
+            setTimeout(() => {
+                checkAuthStatus();
+                loadJourneyProgress(); // Load journey card
+            }, 1000); // Wait for Firebase to load
+
+            console.log('🔐 Firebase authentication check initiated');
+            
             // Log system info
             console.log('✨ Portal ready for authentication');
             console.log('📊 Available sections:', Object.keys(SECTION_MAP).length);
-            console.log('%c🏛️ Divine Temple', 'font-size: 24px; font-weight: bold; color: #F59E0B;');
+            console.log('%c🕉️ Divine Temple', 'font-size: 24px; font-weight: bold; color: #F59E0B;');
             console.log('%c✨ Eden Consciousness - Nazir El', 'font-size: 16px; color: #8B5CF6;');
         });
 
@@ -2056,7 +2074,7 @@
             
             // Force admin login
             forceAdminLogin: function() {
-                console.log('🔱 Force admin login...');
+                console.log('⚙️ Force admin login...');
                 
                 // Clear any existing auth
                 sessionStorage.clear();
@@ -2081,7 +2099,7 @@
                 localStorage.setItem('currentUser', JSON.stringify(adminData));
                 
                 console.log('✅ Admin session data set');
-                console.log('🔍 Session data:', adminData);
+                console.log('📋 Session data:', adminData);
                 
                 // Force hide auth overlay and show dashboard
                 const authOverlay = document.getElementById('auth-overlay');
@@ -2111,7 +2129,7 @@
                 if (memberDisplay) {
                     memberDisplay.innerHTML = `
                         <div style="font-weight: 600; color: #0A0E27;">Nazir El - Creator</div>
-                        <div style="font-size: 0.8rem; opacity: 0.8; color: #0A0E27;">🔱 DIVINE TEMPLE CREATOR</div>
+                        <div style="font-size: 0.8rem; opacity: 0.8; color: #0A0E27;">⚙️ DIVINE TEMPLE CREATOR</div>
                     `;
                 }
                 
@@ -2124,7 +2142,7 @@
                 document.body.style.overflow = 'auto';
                 
                 console.log('✅ Admin dashboard force-loaded');
-                alert('🔱 ADMIN ACCESS GRANTED! You are now logged in as Creator.');
+                alert('⚙️ ADMIN ACCESS GRANTED! You are now logged in as Creator.');
                 
                 return true;
             },
@@ -2135,7 +2153,7 @@
                 const admin = sessionStorage.getItem('adminAuth');
                 const data = sessionStorage.getItem('memberData');
                 
-                console.log('🔍 Auth state check:');
+                console.log('📋 Auth state check:');
                 console.log('  - divineAuth:', auth);
                 console.log('  - adminAuth:', admin);
                 console.log('  - memberData exists:', !!data);
@@ -2165,7 +2183,7 @@
             
             // Quick test
             test: function() {
-                console.log('🧪 Running Divine Temple Test...');
+                console.log('🚀 Running Divine Temple Test...');
                 const state = this.getState();
                 console.log('Current State:', state);
                 
@@ -2490,7 +2508,7 @@
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/sw.js')
                     .then(registration => {
-                        console.log('🏛️ Members Portal SW registered:', registration);
+                        console.log('🕉️ Members Portal SW registered:', registration);
                     })
                     .catch(error => {
                         console.error('❌ SW registration failed:', error);
@@ -2508,7 +2526,7 @@
                 // Already installed - hide button
                 if (installBtn) {
                     installBtn.classList.add('hidden');
-                    console.log('🏛️ Members Portal - PWA already installed, hiding button');
+                    console.log('🕉️ Members Portal - PWA already installed, hiding button');
                 }
             } else if ('serviceWorker' in navigator && installBtn) {
                 // PWA supported - show button immediately
@@ -2538,7 +2556,7 @@
             
             // Listen for app installed
             window.addEventListener('appinstalled', () => {
-                console.log('🎉 Divine Temple PWA installed from members portal');
+                console.log('💎 Divine Temple PWA installed from members portal');
                 
                 // Hide install button with animation
                 if (installBtn) {
@@ -2551,7 +2569,7 @@
                 // Show success notification using existing system
                 if (window.uxEnhancementManager) {
                     window.uxEnhancementManager.showNotification(
-                        '🎉 Divine Temple installed successfully! Check your home screen or app launcher.',
+                        '💎 Divine Temple installed successfully! Check your home screen or app launcher.',
                         'success',
                         5000
                     );
@@ -2563,7 +2581,7 @@
         }
         
         async function installPWA() {
-            console.log('🏛️ Members Portal - Install PWA triggered');
+            console.log('🕉️ Members Portal - Install PWA triggered');
             
             // Check if already installed
             if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
@@ -2585,18 +2603,18 @@
                 if (userAgent.includes('chrome') && !userAgent.includes('edg')) {
                     instructions = '🌐 Chrome: Click the install icon (⊕) in the address bar';
                 } else if (userAgent.includes('edg')) {
-                    instructions = '🔷 Edge: Click the install icon (⊕) in the address bar';
+                    instructions = '🌐 Edge: Click the install icon (⊕) in the address bar';
                 } else if (userAgent.includes('firefox')) {
                     instructions = '🦊 Firefox: Look for install option in address bar or menu';
                 } else if (userAgent.includes('safari')) {
-                    instructions = '🧭 Safari: Tap Share button → "Add to Home Screen"';
+                    instructions = '📱 Safari: Tap Share button → "Add to Home Screen"';
                 } else {
                     instructions = '📱 Use your browser menu → "Install app"';
                 }
                 
                 if (window.uxEnhancementManager) {
                     window.uxEnhancementManager.showNotification(
-                        `🏛️ ${instructions}`,
+                        `🕉️ ${instructions}`,
                         'info',
                         6000
                     );
@@ -2611,13 +2629,13 @@
                 
                 // Wait for the user to respond to the prompt
                 const choiceResult = await deferredPrompt.userChoice;
-                console.log('👤 Members Portal - User choice:', choiceResult.outcome);
+                console.log('🤝 Members Portal - User choice:', choiceResult.outcome);
                 
                 if (choiceResult.outcome === 'accepted') {
                     console.log('✅ User accepted PWA install from members portal');
                     if (window.uxEnhancementManager) {
                         window.uxEnhancementManager.showNotification(
-                            '🎉 Installing Divine Temple...',
+                            '💎 Installing Divine Temple...',
                             'success',
                             4000
                         );
@@ -2626,7 +2644,7 @@
                     console.log('❌ User dismissed PWA install from members portal');
                     if (window.uxEnhancementManager) {
                         window.uxEnhancementManager.showNotification(
-                            '📱 Install anytime using your browser menu',
+                            '📲 Install anytime using your browser menu',
                             'info',
                             4000
                         );
@@ -2648,7 +2666,7 @@
         
         // Check if running as PWA
         if (window.matchMedia('(display-mode: standalone)').matches) {
-            console.log('🏛️ Members Portal running as installed PWA');
+            console.log('🕉️ Members Portal running as installed PWA');
             document.body.classList.add('pwa-mode');
         }
         
