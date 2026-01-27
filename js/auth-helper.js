@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Authentication Helper Functions
  * Admin checks, premium verification, and user management
  */
@@ -261,22 +261,22 @@ async function initAdminPremiumAccess() {
  */
 async function checkJourneyAccess() {
     if (typeof firebase === 'undefined' || !firebase.auth) {
-        console.warn('Firebase not initialized');
+        console.warn('⚠️ Firebase not initialized');
         return { hasAccess: false, reason: 'not_initialized' };
     }
 
     const user = firebase.auth().currentUser;
 
     if (!user) {
-        console.log('User not logged in - no access');
+        console.log('ℹ️ User not logged in - no access');
         return { hasAccess: false, reason: 'not_logged_in' };
     }
 
-    console.log('Checking journey access for:', user.email);
+    console.log('🔍 Checking journey access for:', user.email);
 
     // Admins always have access
     if (isAdmin(user)) {
-        console.log('Admin user - granting journey access');
+        console.log('✅ Admin user - granting journey access');
         return {
             hasAccess: true,
             isAdmin: true,
@@ -287,25 +287,27 @@ async function checkJourneyAccess() {
     try {
         const db = firebase.firestore();
         
-        // Add timeout wrapper for Firestore operations (mobile-friendly)
+        // Add timeout wrapper for Firestore operations (especially important on mobile with slow connections)
         const firestoreTimeout = new Promise((_, reject) =>
             setTimeout(() => reject(new Error('Firestore timeout - taking too long')), 8000)
         );
 
         const firestoreOperation = async () => {
-            console.log('Fetching user data from Firestore...');
+            console.log('📊 Fetching user data from Firestore...');
             const userDoc = await db.collection('users').doc(user.uid).get();
 
             if (!userDoc.exists) {
-                console.warn('User document not found in Firestore');
+                console.warn('⚠️ User document not found in Firestore');
                 return { hasAccess: false, reason: 'user_not_found' };
             }
 
             const userData = userDoc.data();
-            console.log('User document retrieved:', {
+            console.log('✅ User document retrieved:', {
                 email: userData.email,
                 membershipLevel: userData.membershipLevel,
-                premium: userData.premium
+                premium: userData.premium,
+                premium_status: userData.premium_status,
+                journey_access: userData.journey_access
             });
 
             const hasAccess = hasPremiumAccess(userData, user);
@@ -323,10 +325,10 @@ async function checkJourneyAccess() {
         return result;
 
     } catch (error) {
-        console.error('Error checking journey access:', error);
-        console.error('Error message:', error.message);
+        console.error('❌ Error checking journey access:', error);
+        console.error('   Error message:', error.message);
         
-        // On timeout or network error, deny access
+        // On timeout or network error, deny access to prevent infinite loading
         return { 
             hasAccess: false, 
             reason: 'error', 
