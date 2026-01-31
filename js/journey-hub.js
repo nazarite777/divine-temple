@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Journey Hub - Complete Dashboard with Error Handling
  * Manages 4-phase journey progress with Firebase integration
  */
