@@ -1174,5 +1174,69 @@
         console.log('%c🗺️ Journey Hub', 'font-size: 20px; font-weight: bold; color: #D4AF37;');
         console.log('%c✨ Eden Consciousness - Divine Temple', 'font-size: 14px; color: #8B5CF6;');
     </script>
+
+    <!-- ============================================ -->
+    <!-- FIX: Fallback loader to prevent infinite loading -->
+    <!-- If external scripts (journey-hub.js, journey-gate.js, etc.) -->
+    <!-- fail to resolve, this ensures content still appears. -->
+    <!-- ============================================ -->
+    <script>
+        (function() {
+            var FALLBACK_TIMEOUT = 5000; // 5 seconds
+            var fallbackTriggered = false;
+
+            function showJourneyFallback() {
+                if (fallbackTriggered) return;
+
+                var loading = document.getElementById('loadingState');
+                var content = document.getElementById('journeyMainContent');
+                var gate = document.getElementById('journeyGate');
+
+                // Only trigger if still stuck on loading
+                if (loading && window.getComputedStyle(loading).display !== 'none') {
+                    fallbackTriggered = true;
+                    console.warn('⚠️ Journey fallback triggered — external scripts did not resolve in time');
+                    console.warn('⚠️ Check browser console for errors in: journey-hub.js, journey-gate.js, premium-access-control.js, firebase-config.js');
+
+                    loading.style.display = 'none';
+                    if (content) content.style.display = 'block';
+                    if (gate) gate.style.display = 'none';
+
+                    // Provide a default navigateToPhase function if journey-hub.js failed to load
+                    if (typeof window.navigateToPhase !== 'function') {
+                        window.navigateToPhase = function(phaseNum) {
+                            var phasePages = {
+                                1: 'phase1.html',
+                                2: 'phase2.html',
+                                3: 'phase3.html',
+                                4: 'phase4.html'
+                            };
+                            var card = document.getElementById('phase' + phaseNum + 'Card');
+                            if (card && card.classList.contains('locked')) {
+                                showNotification('🔒 Complete the previous phase first to unlock this one.', 'info');
+                                return;
+                            }
+                            if (phasePages[phaseNum]) {
+                                window.location.href = phasePages[phaseNum];
+                            }
+                        };
+                        console.warn('⚠️ Using fallback navigateToPhase — journey-hub.js did not load');
+                    }
+                }
+            }
+
+            // Timeout fallback: if scripts don't load in 5 seconds, show content anyway
+            setTimeout(showJourneyFallback, FALLBACK_TIMEOUT);
+
+            // Script error fallback: if any script fails to load, show content immediately
+            window.addEventListener('error', function(e) {
+                if (e.target && (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK')) {
+                    console.error('❌ Failed to load:', e.target.src || e.target.href);
+                    // Give a brief moment for other scripts, then show content
+                    setTimeout(showJourneyFallback, 1000);
+                }
+            }, true);
+        })();
+    </script>
 </body>
 </html>

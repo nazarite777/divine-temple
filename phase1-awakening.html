@@ -691,14 +691,20 @@
             transition: all 0.2s ease;
         }
 
-        .btn-primary {
-            background: var(--accent-orange);
-            color: white;
+        /* Fallback notice banner */
+        .fallback-notice {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.1));
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            display: none;
         }
 
-        .btn-success {
-            background: #10b981;
-            color: white;
+        .fallback-notice strong {
+            color: var(--accent-orange);
         }
     </style>
 </head>
@@ -734,6 +740,11 @@
                 Ya Heard Me - A Journey from Programming to Divine Truth<br>
                 <span style="font-size: 0.9rem; opacity: 0.8;">Introduction + 9 Chapters + Conclusion | 90 Days</span>
             </p>
+        </div>
+
+        <!-- Fallback Notice (shown only when fallback triggers) -->
+        <div class="fallback-notice" id="fallbackNotice">
+            <strong>⚠️ Note:</strong> Progress tracking is loading in offline mode. Your progress may not be saved until the connection is restored. Try refreshing the page, or check your internet connection.
         </div>
 
         <!-- Loading State -->
@@ -842,5 +853,97 @@
 
     <!-- Phase 1 Audio Chapters -->`n    <script src="js/phase1-audio-chapters.js"></script>`n`n    <!-- Phase 1 Awakening JavaScript -->
     <script src="js/phase1-awakening.js"></script>
+
+    <!-- ============================================ -->
+    <!-- FIX: Fallback loader to prevent infinite loading -->
+    <!-- If phase1-awakening.js or Firebase scripts fail, -->
+    <!-- this ensures the page content still appears.     -->
+    <!-- ============================================ -->
+    <script>
+        (function() {
+            var FALLBACK_TIMEOUT = 5000; // 5 seconds
+            var fallbackTriggered = false;
+
+            // Fallback section data (used only if phase1-awakening.js fails to load)
+            var FALLBACK_SECTIONS = [
+                { num: 'Intro', title: 'Introduction', subtitle: 'Setting the Stage' },
+                { num: '1', title: 'Chapter 1', subtitle: 'The Beginning' },
+                { num: '2', title: 'Chapter 2', subtitle: 'Breaking Free' },
+                { num: '3', title: 'Chapter 3', subtitle: 'The Awakening' },
+                { num: '4', title: 'Chapter 4', subtitle: 'Finding Truth' },
+                { num: '5', title: 'Chapter 5', subtitle: 'Divine Connection' },
+                { num: '6', title: 'Chapter 6', subtitle: 'The Shift' },
+                { num: '7', title: 'Chapter 7', subtitle: 'Walking the Path' },
+                { num: '8', title: 'Chapter 8', subtitle: 'Deeper Understanding' },
+                { num: '9', title: 'Chapter 9', subtitle: 'Integration' },
+                { num: 'End', title: 'Conclusion', subtitle: 'The Journey Continues' }
+            ];
+
+            function showFallbackContent() {
+                if (fallbackTriggered) return;
+
+                var loading = document.getElementById('loadingState');
+                var content = document.getElementById('mainContent');
+                var container = document.getElementById('sectionsContainer');
+                var notice = document.getElementById('fallbackNotice');
+
+                // Only trigger if still stuck on loading
+                if (loading && window.getComputedStyle(loading).display !== 'none') {
+                    fallbackTriggered = true;
+                    console.warn('⚠️ Phase 1 fallback triggered — external scripts did not resolve in time');
+                    console.warn('⚠️ Check console for errors in: phase1-awakening.js, firebase-config.js, journey-gate.js');
+
+                    loading.style.display = 'none';
+                    if (content) content.style.display = 'block';
+                    if (notice) notice.style.display = 'block';
+
+                    // Populate sections only if phase1-awakening.js didn't already do it
+                    if (container && container.children.length === 0) {
+                        console.warn('⚠️ Populating fallback section cards');
+                        FALLBACK_SECTIONS.forEach(function(section, index) {
+                            var card = document.createElement('div');
+                            card.className = 'chapter-card';
+                            card.innerHTML =
+                                '<div class="chapter-header">' +
+                                    '<div class="chapter-number">' + section.num + '</div>' +
+                                    '<div class="chapter-info">' +
+                                        '<div class="chapter-title">' + section.title + '</div>' +
+                                        '<div class="chapter-duration">' + section.subtitle + '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="chapter-content collapsed" id="fallback-content-' + index + '">' +
+                                    '<div class="content-section">' +
+                                        '<p style="color: var(--text-muted);">Listen to this section on Spotify, then reflect on how it connects to your own journey.</p>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<button class="expand-button" onclick="toggleFallbackSection(' + index + ', this)">▼ Expand Details</button>';
+                            container.appendChild(card);
+                        });
+                    }
+                }
+            }
+
+            // Global toggle for fallback sections
+            window.toggleFallbackSection = function(index, btn) {
+                var content = document.getElementById('fallback-content-' + index);
+                if (content) {
+                    var isCollapsed = content.classList.contains('collapsed');
+                    content.classList.toggle('collapsed');
+                    btn.textContent = isCollapsed ? '▲ Collapse' : '▼ Expand Details';
+                }
+            };
+
+            // Timeout fallback
+            setTimeout(showFallbackContent, FALLBACK_TIMEOUT);
+
+            // Script error fallback
+            window.addEventListener('error', function(e) {
+                if (e.target && (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK')) {
+                    console.error('❌ Failed to load:', e.target.src || e.target.href);
+                    setTimeout(showFallbackContent, 1000);
+                }
+            }, true);
+        })();
+    </script>
 </body>
 </html>
