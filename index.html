@@ -28,13 +28,13 @@
             --text-secondary: #666;
             --glass-bg: rgba(255, 255, 255, 0.05);
             --transition: 0.3s ease-in-out;
-        }
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
         body {
             font-family: 'Outfit', sans-serif;
@@ -722,5 +722,312 @@
             navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e.message));
         }
     </script>
+<<<<<<< HEAD
+
+    <!-- Load section validation utility -->
+    <script src="js/section-validation.min.js" defer></script>
+
+    <!-- Header Navigation Script -->
+    <script src="js/header.js" defer></script>
+
+    <!-- PWA Installation Script -->
+    <script>
+        // Use global deferredPrompt (declared above)
+        
+        // PWA Installation Setup
+        document.addEventListener('DOMContentLoaded', function() {
+            // Register service worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('🏛️ Divine Temple SW registered:', registration);
+                    })
+                    .catch(error => {
+                        console.error('❌ SW registration failed:', error);
+                    });
+            }
+            
+            // Setup PWA install functionality
+            setupPWAInstall();
+        });
+        
+        function setupPWAInstall() {
+            const installBanner = document.getElementById('pwaInstallBanner');
+            const installBtn = document.getElementById('pwaInstallBtn');
+            const dismissBtn = document.getElementById('pwaDismissBtn');
+            const manualBtn = document.getElementById('pwaManualBtn');
+            
+            if (!installBanner || !installBtn || !dismissBtn || !manualBtn) return;
+            
+            // Handle button visibility based on install status
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+                // Already installed - hide button
+                manualBtn.classList.add('hidden');
+                console.log('🏛️ PWA already installed, hiding install button');
+            } else if ('serviceWorker' in navigator) {
+                // PWA supported - show button immediately
+                manualBtn.classList.remove('hidden');
+                manualBtn.classList.add('show');
+                manualBtn.style.display = 'flex';
+                console.log('📱 PWA supported, showing install button immediately');
+                
+                // Auto-slide in after page load
+                setTimeout(() => {
+                    manualBtn.classList.add('show');
+                }, 2000);
+            } else {
+                console.log('❌ PWA not supported on this browser');
+            }
+            
+            // Listen for beforeinstallprompt with enhanced handling
+            window.addEventListener('beforeinstallprompt', (e) => {
+                console.log('📱 beforeinstallprompt event fired');
+                e.preventDefault();
+                deferredPrompt = e;
+                
+                // Update button visibility
+                if (manualBtn) {
+                    manualBtn.classList.remove('hidden');
+                    manualBtn.classList.add('show');
+                    manualBtn.style.display = 'flex';
+                }
+                
+                // Show install banner after delay (only if not dismissed recently)
+                const lastDismissed = localStorage.getItem('pwa-install-dismissed');
+                const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+                
+                if (!lastDismissed || parseInt(lastDismissed) < oneDayAgo) {
+                    setTimeout(() => {
+                        showInstallBanner();
+                    }, 3000);
+                }
+            });
+            
+            // Install button click
+            installBtn.addEventListener('click', installPWA);
+            
+            // Dismiss button click
+            dismissBtn.addEventListener('click', () => {
+                hideInstallBanner();
+                localStorage.setItem('pwa-install-dismissed', Date.now().toString());
+            });
+            
+            // Listen for app installed
+            window.addEventListener('appinstalled', () => {
+                console.log('🎉 Divine Temple PWA installed successfully');
+                hideInstallBanner();
+                
+                // Hide install button with animation
+                if (manualBtn) {
+                    manualBtn.classList.add('hidden');
+                    setTimeout(() => {
+                        manualBtn.style.display = 'none';
+                    }, 400);
+                }
+                
+                // Show success message
+                showNotification('🎉 Divine Temple installed successfully! Check your home screen or app launcher.', 'success');
+                
+                // Store installation status
+                localStorage.setItem('pwa-installed', 'true');
+            });
+        }
+        
+        function showInstallBanner() {
+            const banner = document.getElementById('pwaInstallBanner');
+            if (banner) {
+                banner.style.display = 'block';
+                setTimeout(() => banner.classList.add('show'), 100);
+            }
+        }
+        
+        function hideInstallBanner() {
+            const banner = document.getElementById('pwaInstallBanner');
+            if (banner) {
+                banner.classList.remove('show');
+                setTimeout(() => banner.style.display = 'none', 300);
+            }
+        }
+        
+        async function installPWA() {
+            console.log('🏛️ Install PWA triggered, deferredPrompt:', !!deferredPrompt);
+            
+            // Check if already installed
+            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+                showNotification('✅ Divine Temple is already installed!', 'success');
+                return;
+            }
+            
+            if (!deferredPrompt) {
+                // Enhanced fallback with platform-specific instructions
+                const userAgent = navigator.userAgent.toLowerCase();
+                let instructions = '';
+                
+                if (userAgent.includes('chrome') && !userAgent.includes('edg')) {
+                    instructions = '🌐 Chrome: Click the install icon (⊕) in the address bar';
+                } else if (userAgent.includes('edg')) {
+                    instructions = '🔷 Edge: Click the install icon (⊕) in the address bar';
+                } else if (userAgent.includes('firefox')) {
+                    instructions = '🦊 Firefox: Look for install option in address bar or menu';
+                } else if (userAgent.includes('safari')) {
+                    instructions = '🧭 Safari: Tap Share button → "Add to Home Screen"';
+                } else {
+                    instructions = '📱 Use your browser menu → "Install app" or "Add to Home Screen"';
+                }
+                
+                showNotification(`🏛️ ${instructions}`, 'info');
+                return;
+            }
+            
+            try {
+                // Show the install prompt
+                const result = await deferredPrompt.prompt();
+                console.log('📱 Install prompt shown');
+                
+                // Wait for the user to respond to the prompt
+                const choiceResult = await deferredPrompt.userChoice;
+                console.log('👤 User choice:', choiceResult.outcome);
+                
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('✅ User accepted PWA install');
+                    hideInstallBanner();
+                    showNotification('🎉 Installing Divine Temple...', 'success');
+                } else {
+                    console.log('❌ User dismissed PWA install');
+                    showNotification('📱 Install anytime using your browser menu', 'info');
+                }
+                
+                // Reset the deferred prompt
+                deferredPrompt = null;
+            } catch (error) {
+                console.error('❌ PWA install failed:', error);
+                showNotification('❌ Installation failed. Try using your browser menu → "Install app"', 'error');
+            }
+        }
+        
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `pwa-notification pwa-notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()">✕</button>
+                </div>
+            `;
+            
+            // Add notification styles if not already added
+            if (!document.querySelector('#pwa-notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'pwa-notification-styles';
+                style.textContent = `
+                    .pwa-notification {
+                        position: fixed;
+                        top: 1rem;
+                        right: 1rem;
+                        z-index: 10001;
+                        background: #1a1a2e;
+                        border: 1px solid #d4af37;
+                        border-radius: 10px;
+                        padding: 1rem;
+                        color: white;
+                        max-width: 300px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                        animation: slideIn 0.3s ease;
+                    }
+                    .pwa-notification-success { border-color: #10b981; }
+                    .pwa-notification-error { border-color: #ef4444; }
+                    .notification-content { display: flex; justify-content: space-between; align-items: center; }
+                    .notification-content button { background: transparent; border: none; color: white; cursor: pointer; }
+                    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+        
+        // Check if running as PWA
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('🏛️ Running as installed PWA');
+            document.body.classList.add('pwa-mode');
+        }
+        
+        // Make installPWA globally available
+        window.installPWA = installPWA;
+    </script>
+    <!-- Subscriber Count Update Script -->
+    <script>
+        // Load and update subscriber count from Firestore
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (typeof firebase !== 'undefined' && firebase.firestore) {
+                try {
+                    const db = firebase.firestore();
+
+                    // Listen for real-time updates to subscriber count
+                    db.collection('stats').doc('globalStats')
+                        .onSnapshot((doc) => {
+                            if (doc.exists) {
+                                const data = doc.data();
+                                const count = data.totalMembers || data.totalSubscribers || 40;
+                                const displayElement = document.getElementById('memberCountDisplay');
+
+                                if (displayElement) {
+                                    // Animate the count update
+                                    const currentCount = parseInt(displayElement.textContent) || 40;
+                                    const targetCount = count;
+
+                                    if (targetCount > currentCount) {
+                                        let current = currentCount;
+                                        const increment = Math.ceil((targetCount - currentCount) / 20);
+                                        const interval = setInterval(() => {
+                                            current += increment;
+                                            if (current >= targetCount) {
+                                                current = targetCount;
+                                                clearInterval(interval);
+                                            }
+                                            displayElement.textContent = current >= 100 ? current.toLocaleString() : `${current}+`;
+                                        }, 50);
+                                    } else {
+                                        displayElement.textContent = targetCount >= 100 ? targetCount.toLocaleString() : `${targetCount}+`;
+                                    }
+                                }
+                            }
+                        }, (error) => {
+                            console.error('Error fetching subscriber count:', error);
+                            // Keep the default 40+ if error occurs
+                        });
+
+                } catch (error) {
+                    console.error('Error initializing subscriber count:', error);
+                }
+            }
+        });
+
+        // Analytics: Track CTA Button Clicks
+        document.querySelectorAll('a[href*="members-new.html"], a[href*="pricing"], a[href*="stripe"]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                gtag('event', 'click', {
+                    'event_category': 'cta_button',
+                    'event_label': this.textContent.trim(),
+                    'event_value': 1
+                });
+            });
+        });
+
+        // Analytics: Track page view on load
+        window.addEventListener('load', function() {
+            trackPageView(document.title, 'homepage');
+        });
+    </script>
+
+    <!-- Custom Analytics Module -->
+    <script src="/js/analytics.js"></script>
 </body>
 </html>
