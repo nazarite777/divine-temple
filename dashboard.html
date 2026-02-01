@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Member Dashboard - Welcome to Eden Consciousness. Access your 4-phase journey, tools, community, and progress tracking all in one sacred temple.">
+    <meta name="title" content="Dashboard - Eden Consciousness Member Portal">
+    <title>Dashboard - Eden Consciousness</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --deep-purple: #2D1B4E;
+            --gold: #D4AF37;
+            --cream: #F5F1E8;
+            --text-primary: #0a0e1b;
+            --text-secondary: #666;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --transition: 0.3s ease-in-out;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #0a0e1b 0%, #1a1630 50%, #0f0a1a 100%);
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+        }
+
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 1.8rem; }
+        h3 { font-size: 1.2rem; }
+
+        /* Header */
+        header {
+            background: rgba(10, 14, 27, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        .user-menu {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .user-name {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all var(--transition);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn:hover {
+            background: var(--gold);
+            color: var(--deep-purple);
+        }
+
+        /* Main Layout */
+        main {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--glass-bg);
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+        }
+
+        .sidebar h3 {
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .sidebar-menu li {
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            color: #bbb;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            transition: all var(--transition);
+            border-left: 3px solid transparent;
+            font-size: 0.95rem;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            color: var(--gold);
+            border-left-color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        /* Content Area */
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: rgba(45, 27, 78, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 2.5rem;
+        }
+
+        .welcome-card h1 {
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-card p {
+            color: #bbb;
+            font-size: 1.05rem;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: var(--deep-purple);
+        }
+
+        .btn-primary:hover {
+            background: #e8c547;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--gold);
+            border: 2px solid var(--gold);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gold);
+            color: var(--deep-purple);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: rgba(45, 27, 78, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #bbb;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        /* Quick Access */
+        .quick-access {
+            background: var(--glass-bg);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .quick-access h2 {
+            color: var(--gold);
+            margin-bottom: 2rem;
+        }
+
+        .access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .access-item {
+            background: rgba(45, 27, 78, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .access-item:hover {
+            border-color: rgba(212, 175, 55, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15);
+        }
+
+        .access-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .access-item h3 {
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .access-item p {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        /* Phase Progress */
+        .phase-progress {
+            background: var(--glass-bg);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .phase-progress h2 {
+            color: var(--gold);
+            margin-bottom: 2rem;
+        }
+
+        .phase-item {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .phase-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .phase-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 8px;
+            font-size: 2rem;
+            color: var(--gold);
+        }
+
+        .phase-info h3 {
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .phase-info p {
+            color: #bbb;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gold);
+            border-radius: 4px;
+            width: 45%;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                top: 0;
+            }
+
+            .welcome-buttons {
+                flex-direction: column;
+            }
+
+            .welcome-buttons .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">🏛️ Eden Consciousness</a>
+            <div class="user-menu">
+                <span class="user-name">Welcome, Seeker ✨</span>
+                <button class="logout-btn" onclick="alert('Logout functionality will connect to members-new.html authentication')">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 2rem;">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <h3>Navigation</h3>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html" class="active">🏠 Dashboard</a></li>
+                <li><a href="journey.html">🌅 My Journey</a></li>
+                <li><a href="meditation.html">🧘 Meditation</a></li>
+                <li><a href="chat.html">💬 Community Chat</a></li>
+                <li><a href="journal.html">📖 Sacred Journal</a></li>
+                <li><a href="ai-guide.html">🤖 AI Guide</a></li>
+                <li><a href="quests.html">⚡ Daily Quests</a></li>
+                <li><a href="study-groups.html">📚 Study Groups</a></li>
+                <li><a href="profile.html">👤 My Profile</a></li>
+                <li><a href="leaderboard.html">🏆 Leaderboard</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="content">
+            <section class="welcome-card">
+                <h1 id="dashboard">Welcome to the Divine Temple</h1>
+                <p>You are now part of the awakening community. Your journey from consciousness to mastery begins here.</p>
+                <div class="welcome-buttons">
+                    <a href="journey.html" class="btn btn-primary">Continue Your Journey</a>
+                    <a href="meditation.html" class="btn btn-secondary">Start Meditation</a>
+                    <a href="chat.html" class="btn btn-secondary">Join Community</a>
+                </div>
+            </section>
+
+            <!-- Stats Grid -->
+            <section>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Current Phase</h3>
+                        <div class="stat-number">🌅</div>
+                        <div class="stat-label">Phase 1: Awakening (23% complete)</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Daily Streak</h3>
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Days of practice</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>XP Earned</h3>
+                        <div class="stat-number">2,450</div>
+                        <div class="stat-label">Journey progression points</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Achievements</h3>
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">Unlocked badges</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Access Tools -->
+            <section class="quick-access">
+                <h2 id="tools">Your Spiritual Toolkit</h2>
+                <div class="access-grid">
+                    <div class="access-item">
+                        <div class="access-icon">📅</div>
+                        <h3>Enochian Calendar</h3>
+                        <p>Sacred date tracking & alignment</p>
+                    </div>
+                    <div class="access-item">
+                        <div class="access-icon">📔</div>
+                        <h3>Sacred Journal</h3>
+                        <p>Track your inner transformation</p>
+                    </div>
+                    <div class="access-item">
+                        <div class="access-icon">🤖</div>
+                        <h3>AI Guide</h3>
+                        <p>Consciousness mentor 24/7</p>
+                    </div>
+                    <div class="access-item">
+                        <div class="access-icon">🎮</div>
+                        <h3>Wisdom Games</h3>
+                        <p>Engage & learn through play</p>
+                    </div>
+                    <div class="access-item">
+                        <div class="access-icon">⚡</div>
+                        <h3>Daily Quests</h3>
+                        <p>Guided practices & challenges</p>
+                    </div>
+                    <div class="access-item">
+                        <div class="access-icon">🧘</div>
+                        <h3>Meditations</h3>
+                        <p>Guided practice library</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Phase Progress -->
+            <section class="phase-progress">
+                <h2 id="journey">Your 4-Phase Journey</h2>
+                
+                <div class="phase-item">
+                    <div class="phase-badge">🌅</div>
+                    <div class="phase-info">
+                        <h3>Phase 1: Awakening (In Progress)</h3>
+                        <p>Remember your divine nature through foundational teachings. Current: Reading Ya Heard Me audiobook.</p>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
+                        <p style="margin-top: 0.75rem; font-size: 0.85rem; color: #888;">45% Complete · 41 days remaining</p>
+                    </div>
+                </div>
+
+                <div class="phase-item">
+                    <div class="phase-badge">🧠</div>
+                    <div class="phase-info">
+                        <h3>Phase 2: Understanding (Locked)</h3>
+                        <p>Master the 7 Aligned Principles. Unlock after completing Phase 1.</p>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+                        <p style="margin-top: 0.75rem; font-size: 0.85rem; color: #888;">Locked · Complete Phase 1 to unlock</p>
+                    </div>
+                </div>
+
+                <div class="phase-item">
+                    <div class="phase-badge">⚡</div>
+                    <div class="phase-info">
+                        <h3>Phase 3: Mastery (Locked)</h3>
+                        <p>365-day daily practice integration. Unlock after Phase 2.</p>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+                        <p style="margin-top: 0.75rem; font-size: 0.85rem; color: #888;">Locked · Progress through earlier phases</p>
+                    </div>
+                </div>
+
+                <div class="phase-item">
+                    <div class="phase-badge">👑</div>
+                    <div class="phase-info">
+                        <h3>Phase 4: Teaching (Locked)</h3>
+                        <p>Become a certified teacher & guide others. Unlock after Phase 3.</p>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+                        <p style="margin-top: 0.75rem; font-size: 0.85rem; color: #888;">Locked · Full mastery required</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Community Section -->
+            <section style="background: var(--glass-bg); border-radius: 12px; padding: 2rem;">
+                <h2 id="community">Community & Support</h2>
+                <div class="stats-grid" style="margin-top: 2rem;">
+                    <div class="stat-card">
+                        <h3>Chat Rooms</h3>
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">Phase-specific + general</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Members</h3>
+                        <div class="stat-number">2.3K</div>
+                        <div class="stat-label">Currently online</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Study Groups</h3>
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Join or create</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Support Tickets</h3>
+                        <div class="stat-number">Avg 2hrs</div>
+                        <div class="stat-label">Response time</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Simple active link highlighting
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.sidebar-menu a').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                // Would normally navigate or show sections
+            });
+        });
+    </script>
+</body>
+</html>
