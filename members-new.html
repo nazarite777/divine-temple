@@ -2673,5 +2673,51 @@
         // Make functions globally available
         window.installPWA = installPWA;
     </script>
+
+    <!-- ===== AUTHENTICATION SYSTEM ===== -->
+    <!-- Firebase Authentication Module -->
+    <script src="/js/firebase-auth.js" defer></script>
+    
+    <!-- Authentication Guard for Access Control -->
+    <script src="/js/auth-guard.js" defer></script>
+    
+    <!-- Member Features (Journal, Chat, Quests, Meditations) -->
+    <script src="/js/member-features.js" defer></script>
+    
+    <!-- Stripe Payment Integration -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="/js/stripe-integration.js" defer></script>
+
+    <!-- Initialize Authentication on Page Load -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is authenticated
+            if (typeof checkAuth === 'function') {
+                checkAuth();
+            }
+            
+            // Initialize member features if user is premium
+            if (typeof firebase !== 'undefined' && firebase.auth) {
+                firebase.auth().onAuthStateChanged(async (user) => {
+                    if (user) {
+                        console.log('✅ User authenticated:', user.email);
+                        
+                        // Load user premium status
+                        if (typeof checkUserPremiumStatus === 'function') {
+                            const isPremium = await checkUserPremiumStatus(user.uid);
+                            console.log('Premium status:', isPremium);
+                            
+                            // Initialize premium features
+                            if (isPremium && typeof window.memberFeatures !== 'undefined') {
+                                console.log('🎉 Loading premium member features');
+                            }
+                        }
+                    } else {
+                        console.log('User not authenticated');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
