@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - Eden Consciousness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --deep-purple: #2D1B4E; --gold: #D4AF37; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Outfit', sans-serif; background: linear-gradient(135deg, #0a0e1b 0%, #1a1630 50%, #0f0a1a 100%); color: #aaa; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        header { background: rgba(10,14,27,0.8); padding: 1rem 2rem; border-bottom: 1px solid rgba(212,175,55,0.1); margin-bottom: 2rem; }
+        h1 { color: var(--gold); font-family: 'Cormorant Garamond', serif; margin-bottom: 2rem; }
+        .filter-bar { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        .filter-btn { background: transparent; border: 1px solid rgba(212,175,55,0.3); color: #aaa; padding: 0.5rem 1.5rem; border-radius: 20px; cursor: pointer; transition: all 0.3s; }
+        .filter-btn.active { background: var(--gold); color: var(--deep-purple); border-color: var(--gold); }
+        .leaderboard { background: rgba(45,27,78,0.3); border-radius: 12px; overflow: hidden; border: 1px solid rgba(212,175,55,0.1); }
+        .leaderboard-header { display: grid; grid-template-columns: 80px 1fr 150px 150px; gap: 1rem; padding: 1rem 1.5rem; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(212,175,55,0.1); font-weight: 600; color: var(--gold); }
+        .leaderboard-row { display: grid; grid-template-columns: 80px 1fr 150px 150px; gap: 1rem; padding: 1rem 1.5rem; border-bottom: 1px solid rgba(212,175,55,0.05); align-items: center; transition: all 0.3s; }
+        .leaderboard-row:hover { background: rgba(212,175,55,0.05); }
+        .rank { text-align: center; color: var(--gold); font-weight: 600; font-size: 1.1rem; }
+        .rank.top-1 { color: #FFD700; font-size: 1.2rem; }
+        .rank.top-2 { color: #C0C0C0; }
+        .rank.top-3 { color: #CD7F32; }
+        .member-info { display: flex; align-items: center; gap: 1rem; }
+        .member-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--gold), #2d1b4e); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .member-name { color: #ddd; }
+        .member-phase { color: #999; font-size: 0.85rem; }
+        .member-xp { text-align: center; color: var(--gold); font-weight: 600; }
+        .member-streak { text-align: center; color: #999; }
+        .back-link { color: var(--gold); text-decoration: none; display: inline-block; margin-bottom: 2rem; }
+        .your-rank { background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.3); }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+    </header>
+    <div class="container">
+        <h1>🏆 Consciousness Leaderboard</h1>
+        
+        <div class="filter-bar">
+            <button class="filter-btn active">This Week</button>
+            <button class="filter-btn">This Month</button>
+            <button class="filter-btn">All Time</button>
+        </div>
+
+        <div class="leaderboard">
+            <div class="leaderboard-header">
+                <div>Rank</div>
+                <div>Member</div>
+                <div>XP Points</div>
+                <div>Streak</div>
+            </div>
+
+            <div class="leaderboard-row top-1">
+                <div class="rank top-1">🥇 1</div>
+                <div class="member-info">
+                    <div class="member-avatar">👑</div>
+                    <div>
+                        <div class="member-name">Divine Sage</div>
+                        <div class="member-phase">Phase 4 Master</div>
+                    </div>
+                </div>
+                <div class="member-xp">12,450 XP</div>
+                <div class="member-streak">92 days 🔥</div>
+            </div>
+
+            <div class="leaderboard-row top-2">
+                <div class="rank top-2">🥈 2</div>
+                <div class="member-info">
+                    <div class="member-avatar">⭐</div>
+                    <div>
+                        <div class="member-name">Enlightened Soul</div>
+                        <div class="member-phase">Phase 3 Master</div>
+                    </div>
+                </div>
+                <div class="member-xp">11,820 XP</div>
+                <div class="member-streak">78 days 🔥</div>
+            </div>
+
+            <div class="leaderboard-row top-3">
+                <div class="rank top-3">🥉 3</div>
+                <div class="member-info">
+                    <div class="member-avatar">✨</div>
+                    <div>
+                        <div class="member-name">Consciousness Seeker</div>
+                        <div class="member-phase">Phase 3 Initiate</div>
+                    </div>
+                </div>
+                <div class="member-xp">10,945 XP</div>
+                <div class="member-streak">65 days 🔥</div>
+            </div>
+
+            <div class="leaderboard-row">
+                <div class="rank">4</div>
+                <div class="member-info">
+                    <div class="member-avatar">🌟</div>
+                    <div>
+                        <div class="member-name">Awakened Heart</div>
+                        <div class="member-phase">Phase 2 Master</div>
+                    </div>
+                </div>
+                <div class="member-xp">9,720 XP</div>
+                <div class="member-streak">45 days 🔥</div>
+            </div>
+
+            <div class="leaderboard-row">
+                <div class="rank">5</div>
+                <div class="member-info">
+                    <div class="member-avatar">💫</div>
+                    <div>
+                        <div class="member-name">Truth Seeker</div>
+                        <div class="member-phase">Phase 2 Master</div>
+                    </div>
+                </div>
+                <div class="member-xp">8,890 XP</div>
+                <div class="member-streak">38 days 🔥</div>
+            </div>
+
+            <div class="leaderboard-row">
+                <div class="rank">6</div>
+                <div class="member-info">
+                    <div class="member-avatar">🔮</div>
+                    <div>
+                        <div class="member-name">Inner Light</div>
+                        <div class="member-phase">Phase 2 Initiate</div>
+                    </div>
+                </div>
+                <div class="member-xp">8,120 XP</div>
+                <div class="member-streak">32 days 🔥</div>
+            </div>
+
+            <div class="leaderboard-row">
+                <div class="rank">7</div>
+                <div class="member-info">
+                    <div class="member-avatar">🌸</div>
+                    <div>
+                        <div class="member-name">Rising Spirit</div>
+                        <div class="member-phase">Phase 1 Master</div>
+                    </div>
+                </div>
+                <div class="member-xp">7,340 XP</div>
+                <div class="member-streak">28 days 🔥</div>
+            </div>
+
+            <div class="leaderboard-row">
+                <div class="rank">8</div>
+                <div class="member-info">
+                    <div class="member-avatar">💚</div>
+                    <div>
+                        <div class="member-name">Healing Journey</div>
+                        <div class="member-phase">Phase 1 Master</div>
+                    </div>
+                </div>
+                <div class="member-xp">6,890 XP</div>
+                <div class="member-streak">21 days 🔥</div>
+            </div>
+
+            <div class="leaderboard-row your-rank">
+                <div class="rank">👤 42</div>
+                <div class="member-info">
+                    <div class="member-avatar">✨</div>
+                    <div>
+                        <div class="member-name">You (Sacred Seeker)</div>
+                        <div class="member-phase">Phase 2 Initiate</div>
+                    </div>
+                </div>
+                <div class="member-xp">2,450 XP</div>
+                <div class="member-streak">18 days 🔥</div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Platform</h4>
+                <a href="members-new.html">Dashboard</a>
+                <a href="pricing.html">Pricing</a>
+                <a href="index.html">Home</a>
+            </div>
+            <div class="footer-section">
+                <h4>Learn</h4>
+                <a href="about-eden.html">About Eden</a>
+                <a href="features.html">Features</a>
+                <a href="journey.html">Journey</a>
+            </div>
+            <div class="footer-section">
+                <h4>Company</h4>
+                <a href="about-nazir-enhanced.html">About Nazir</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="footer-section">
+                <h4>Community</h4>
+                <a href="testimonials.html">Testimonials</a>
+                <a href="resources.html">Resources</a>
+                <a href="books.html">Books</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Eden Consciousness. You Never Left Eden.</p>
+        </div>
+    </footer>
+</body>
+</html>
+
+
+

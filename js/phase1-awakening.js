@@ -1,7 +1,26 @@
-/**
+﻿/**
  * Phase 1: Awakening - Ya Heard Me Audiobook Journey
  * Complete chapter tracking with Introduction + 9 Chapters + Conclusion = 11 sections
  */
+
+// Audio streaming URLs from Google Drive
+const audioMap = {
+    'intro': { id: '1hwRwWKa7TcP6iXLP4fia7A9Hg7CN8vSS', duration: '~8 min' },
+    'ch1': { id: '1xjGZAE9e_B7FGMqtW-ujp7gCT5pEk9wc', duration: '~12 min' },
+    'ch2': { id: '1qxlYoLaYI_8iyOWkP7NrS2XOphrtKFOX', duration: '~14 min' },
+    'ch3': { id: '1PrIRPymEsnlMx9G7vL0htbpSsM8MN0_s', duration: '~11 min' },
+    'ch4': { id: '1fNWY8-cyWLPOmmy5QmQGrMu6aXRiF5wC', duration: '~13 min' },
+    'ch5': { id: '1dqTo_AgYH6Rtvmii5L2EonHe7dXYDV74', duration: '~10 min' },
+    'ch6': { id: '172xFi6l6U0cXerrjQPvK7tou3_WdPSpb', duration: '~15 min' },
+    'ch7': { id: '1N6xlY7UAjuU3i3pCdX0-uCXUFuXzlRYr', duration: '~12 min' },
+    'ch8': { id: '1q7bJgZkNXRutSu-PrKSERQBlkR8aLF0x', duration: '~11 min' },
+    'ch9': { id: '1mS-shUXhHfiP9cdI_spbDny8LXLg64XN', duration: '~13 min' },
+    'conclusion': { id: '1UO1IuinGpvsp3uYZqJmE-a8p9nl5dyfM', duration: '~6 min' }
+};
+
+function getDriveStreamUrl(driveId) {
+    return https://drive.google.com/uc?id=&export=download;
+}
 
 let sectionsCompleted = [];
 let user = null;
@@ -178,20 +197,20 @@ const sections = [
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('🌅 Phase 1: Awakening (Ya Heard Me) initializing...');
+    console.log('ðŸŒ… Phase 1: Awakening (Ya Heard Me) initializing...');
 
     await waitForFirebase();
 
     firebase.auth().onAuthStateChanged(async (firebaseUser) => {
         if (!firebaseUser) {
-            console.log('⛔ User not logged in - redirecting...');
+            console.log('â›” User not logged in - redirecting...');
             window.location.href = 'login.html?redirect=phase1-awakening.html';
             return;
         }
 
         user = firebaseUser;
         db = firebase.firestore();
-        console.log('✅ User authenticated:', user.email);
+        console.log('âœ… User authenticated:', user.email);
 
         await loadProgress();
         renderSections();
@@ -219,7 +238,7 @@ function waitForFirebase() {
 }
 
 async function loadProgress() {
-    console.log('📊 Loading Phase 1 progress...');
+    console.log('ðŸ“Š Loading Phase 1 progress...');
 
     const progressRef = db.collection('users')
         .doc(user.uid)
@@ -232,13 +251,13 @@ async function loadProgress() {
         if (doc.exists) {
             const data = doc.data();
             sectionsCompleted = data.phase1_awakening?.sections_completed || [];
-            console.log('✅ Sections completed:', sectionsCompleted);
+            console.log('âœ… Sections completed:', sectionsCompleted);
         } else {
-            console.log('⚡ No progress found, starting fresh');
+            console.log('âš¡ No progress found, starting fresh');
             sectionsCompleted = [];
         }
     } catch (error) {
-        console.error('❌ Error loading progress:', error);
+        console.error('âŒ Error loading progress:', error);
         sectionsCompleted = [];
     }
 }
@@ -255,7 +274,7 @@ function renderSections() {
                     <div class="chapter-number">${section.type}</div>
                     <h3 class="chapter-title">${section.title}</h3>
                     <div class="chapter-status" id="${section.id}-status">
-                        ${isCompleted ? '✅ Complete' : '⭕ Not Started'}
+                        ${isCompleted ? 'âœ… Complete' : 'â­• Not Started'}
                     </div>
                 </div>
 
@@ -265,19 +284,19 @@ function renderSections() {
                     </div>
 
                     <div class="discussion-questions">
-                        <h4>💭 Reflection Questions</h4>
+                        <h4>ðŸ’­ Reflection Questions</h4>
                         <ol>
                             ${section.questions.map(q => `<li>${q}</li>`).join('')}
                         </ol>
                     </div>
 
                     <div class="journal-prompts">
-                        <h4>✍️ Journal Prompts</h4>
+                        <h4>âœï¸ Journal Prompts</h4>
                         ${section.prompts.map((prompt, index) => `
                             <div class="prompt">
                                 <p><strong>Prompt ${index + 1}:</strong> ${prompt}</p>
                                 <button class="journal-button" onclick="openJournal('${section.title} - Prompt ${index + 1}')">
-                                    Write in Journal →
+                                    Write in Journal â†’
                                 </button>
                             </div>
                         `).join('')}
@@ -286,18 +305,18 @@ function renderSections() {
                     <div class="chapter-actions">
                         ${!isCompleted ? `
                             <button class="complete-button" onclick="markSectionComplete('${section.id}')">
-                                ✓ Mark Complete
+                                âœ“ Mark Complete
                             </button>
                         ` : `
                             <button class="completed-badge">
-                                ✅ Completed
+                                âœ… Completed
                             </button>
                         `}
                     </div>
                 </div>
 
                 <button class="expand-button" onclick="toggleChapter('${section.id}')" id="${section.id}-toggle">
-                    Show Details ▼
+                    Show Details â–¼
                 </button>
             </div>
         `;
@@ -310,10 +329,10 @@ function toggleChapter(sectionId) {
 
     if (content.classList.contains('collapsed')) {
         content.classList.remove('collapsed');
-        toggle.textContent = 'Hide Details ▲';
+        toggle.textContent = 'Hide Details â–²';
     } else {
         content.classList.add('collapsed');
-        toggle.textContent = 'Show Details ▼';
+        toggle.textContent = 'Show Details â–¼';
     }
 }
 
@@ -345,11 +364,11 @@ async function markSectionComplete(sectionId) {
         }, { merge: true });
 
         // Update UI
-        document.getElementById(`${sectionId}-status`).innerHTML = '✅ Complete';
+        document.getElementById(`${sectionId}-status`).innerHTML = 'âœ… Complete';
         document.querySelector(`[data-section="${sectionId}"]`).classList.add('completed');
 
         updateProgressBar();
-        showToast('Section completed! 🎉', 'success');
+        showToast('Section completed! ðŸŽ‰', 'success');
 
         // Celebrate if all done
         if (sectionsCompleted.length === 11) {
@@ -411,7 +430,7 @@ function showCompletionModal() {
     modal.className = 'completion-modal';
     modal.innerHTML = `
         <div class="modal-content">
-            <h2>🎉 Phase 1 Complete!</h2>
+            <h2>ðŸŽ‰ Phase 1 Complete!</h2>
             <p>Congratulations! You've completed the Awakening phase of your journey.</p>
             <p><strong>Phase 2: Understanding</strong> is now unlocked!</p>
             <div class="modal-actions">
@@ -419,7 +438,7 @@ function showCompletionModal() {
                     Return to Journey Dashboard
                 </button>
                 <button onclick="window.location.href='phase2-understanding.html'" class="btn-success">
-                    Begin Phase 2 →
+                    Begin Phase 2 â†’
                 </button>
             </div>
         </div>
@@ -448,3 +467,4 @@ function showToast(message, type = 'info') {
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
+

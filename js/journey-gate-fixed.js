@@ -15,7 +15,10 @@
         if (journeyGateInitialized) return;
         journeyGateInitialized = true;
 
-        console.log('Journey gate initializing...');
+        console.log('🗝️ Journey gate initializing...');
+
+        // Wait for Firebase and AuthHelper to be ready
+        await waitForDependencies();
 
         // Check access with timeout to prevent infinite loading on mobile
         const accessCheckTimeout = new Promise((_, reject) =>
@@ -29,13 +32,13 @@
             ]);
 
             if (!accessCheck.hasAccess) {
-                console.log('Access denied:', accessCheck.reason);
+                console.log('🚫 Journey access denied:', accessCheck.reason);
                 handleAccessDenied(accessCheck.reason);
             } else {
-                console.log('Access granted');
+                console.log('✅ Journey access granted');
 
                 if (accessCheck.isAdmin) {
-                    console.log('Admin user detected');
+                    console.log('👑 Admin user detected');
                     showAdminBadge();
                 }
 
@@ -43,11 +46,11 @@
                 initJourneyContent(accessCheck);
             }
         } catch (error) {
-            console.error('Journey gate error:', error.message);
+            console.error('❌ Journey gate error:', error.message);
             
             // On timeout, redirect to login to prevent infinite loading
             if (error.message.includes('timed out')) {
-                console.error('Journey access check timed out - redirecting to login');
+                console.error('⏱️ Journey access check timed out - redirecting to login');
                 handleAccessDenied('timeout');
             } else {
                 handleAccessDenied('error');
@@ -55,6 +58,9 @@
         }
     }
 
+    /**
+     * Wait for required dependencies to load
+     */
     function waitForDependencies() {
         return new Promise((resolve) => {
             let attempts = 0;
@@ -64,14 +70,19 @@
                     firebase.auth &&
                     typeof window.AuthHelper !== 'undefined' &&
                     typeof window.AuthHelper.checkJourneyAccess === 'function') {
-
+                    
+                    // Dependencies ready - now wait for auth state to be known
                     clearInterval(checkInterval);
-
+                    
                     // Wait for Firebase to know about the auth state
+                    // This can take 500-1500ms depending on token verification
                     let authAttempts = 0;
                     const authCheckInterval = setInterval(() => {
                         authAttempts++;
-
+                        
+                        // Auth state is ready when:
+                        // 1. currentUser is set (logged in), OR
+                        // 2. More than 1500ms has passed (verified as not logged in)
                         const currentUser = firebase.auth().currentUser;
                         if (currentUser || authAttempts > 15) {
                             clearInterval(authCheckInterval);
