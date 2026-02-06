@@ -1,6 +1,7 @@
 /**
- * Stripe Webhook Handler for Eden Consciousness Premium Subscriptions
- * Deploy as Cloud Function: functions/stripeWebhook
+ * Stripe Webhook Handler Helper Module
+ * Note: Cloud Function is exported from functions/index.js
+ * This file contains helper functions only
  */
 
 const functions = require('firebase-functions');
@@ -10,7 +11,7 @@ const express = require('express');
 const app = express();
 const { grantPremiumAccessAfterPayment, findUserByCustomerId, findUserByEmail } = require('./handle-payment-success');
 
-admin.initializeApp();
+// Note: admin.initializeApp() is called in index.js, not here
 const db = admin.firestore();
 
 // Middleware
@@ -190,23 +191,25 @@ async function handleInvoicePaymentFailed(invoice) {
 }
 
 // Export the Express app
-exports.stripeWebhook = functions.https.onRequest(app);
+// NOTE: This is disabled - using functions/index.js stripeWebhook instead
+// exports.stripeWebhook = functions.https.onRequest(app);
 
 // Helper function to check user premium status
-exports.checkPremium = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be logged in');
-  }
+// NOTE: This is disabled - use functions/index.js verifyPremiumAccess instead
+// exports.checkPremium = functions.https.onCall(async (data, context) => {
+//   if (!context.auth) {
+//     throw new functions.https.HttpsError('unauthenticated', 'User must be logged in');
+//   }
+//
+//   try {
+//     const userDoc = await db.collection('users').doc(context.auth.uid).get();
+//     return {
+//       premium: userDoc.data()?.premium || false,
+//       premiumStatus: userDoc.data()?.premiumStatus || 'free'
+//     };
+//   } catch (error) {
+//     throw new functions.https.HttpsError('internal', error.message);
+//   }
+// });
 
-  try {
-    const userDoc = await db.collection('users').doc(context.auth.uid).get();
-    return {
-      premium: userDoc.data()?.premium || false,
-      premiumStatus: userDoc.data()?.premiumStatus || 'free'
-    };
-  } catch (error) {
-    throw new functions.https.HttpsError('internal', error.message);
-  }
-});
-
-console.log('Stripe webhook handler initialized');
+console.log('Stripe webhook handler module initialized (helpers only)');

@@ -4,6 +4,7 @@
  */
 
 const admin = require('firebase-admin');
+// Note: admin.initializeApp() is called in index.js, not here
 const db = admin.firestore();
 
 /**
