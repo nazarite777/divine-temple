@@ -1,0 +1,370 @@
+﻿/* ===================================
+   EDEN CONSCIOUSNESS LANDING PAGE
+   =================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #000000;
+    color: #ffffff;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* ===================================
+   LANDING SCREEN
+   =================================== */
+
+.landing-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 2s ease-out;
+}
+
+.landing-screen.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.landing-content {
+    text-align: center;
+    z-index: 10;
+    position: relative;
+}
+
+/* ===================================
+   LOGO
+   =================================== */
+
+.logo-container {
+    margin-bottom: 3rem;
+    animation: fadeInDown 1.5s ease-out;
+}
+
+.eden-logo {
+    max-width: 200px;
+    height: auto;
+    filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.5));
+    animation: gentlePulse 4s ease-in-out infinite;
+}
+
+/* ===================================
+   TYPOGRAPHY
+   =================================== */
+
+.tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    margin-bottom: 3rem;
+    color: #D4AF37;
+    text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+    animation: fadeIn 2s ease-out 0.5s both;
+}
+
+.subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 200;
+    letter-spacing: 0.2em;
+    margin-top: 2rem;
+    color: rgba(255, 255, 255, 0.6);
+    animation: fadeIn 2s ease-out 1.5s both;
+}
+
+/* ===================================
+   ENTER BUTTON
+   =================================== */
+
+.enter-button {
+    position: relative;
+    padding: 1.5rem 4rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    color: #000000;
+    background: linear-gradient(135deg, #D4AF37 0%, #F4E4C1 100%);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
+    animation: fadeInUp 2s ease-out 1s both;
+}
+
+.button-text {
+    position: relative;
+    z-index: 2;
+}
+
+.button-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.enter-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 60px rgba(212, 175, 55, 0.6);
+}
+
+.enter-button:hover .button-glow {
+    width: 300px;
+    height: 300px;
+}
+
+.enter-button:active {
+    transform: translateY(-1px);
+}
+
+/* ===================================
+   STARFIELD ANIMATION
+   =================================== */
+
+.stars,
+.stars2,
+.stars3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.stars {
+    background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"><circle cx="1" cy="1" r="1" fill="white" opacity="0.8"/></svg>') repeat;
+    animation: animateStars 50s linear infinite;
+}
+
+.stars2 {
+    background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="3" height="3"><circle cx="1.5" cy="1.5" r="1.5" fill="white" opacity="0.6"/></svg>') repeat;
+    animation: animateStars 100s linear infinite;
+}
+
+.stars3 {
+    background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4"><circle cx="2" cy="2" r="2" fill="white" opacity="0.4"/></svg>') repeat;
+    animation: animateStars 150s linear infinite;
+}
+
+@keyframes animateStars {
+    from {
+        transform: translateY(0px);
+    }
+    to {
+        transform: translateY(-2000px);
+    }
+}
+
+/* ===================================
+   MAIN SITE (after transition)
+   =================================== */
+
+.main-site {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2s ease-in;
+}
+
+.main-site.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#main-content {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* ===================================
+   AUDIO CONTROLS
+   =================================== */
+
+.audio-controls {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 1rem 1.5rem;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 3s both;
+}
+
+.audio-toggle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #D4AF37 0%, #F4E4C1 100%);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.audio-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+}
+
+.audio-toggle .play-icon {
+    display: none;
+    color: #000000;
+}
+
+.audio-toggle .pause-icon {
+    display: block;
+    color: #000000;
+}
+
+.audio-toggle.paused .play-icon {
+    display: block;
+}
+
+.audio-toggle.paused .pause-icon {
+    display: none;
+}
+
+.now-playing {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+}
+
+/* ===================================
+   ANIMATIONS
+   =================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes gentlePulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.5));
+    }
+    50% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.7));
+    }
+}
+
+/* ===================================
+   RESPONSIVE
+   =================================== */
+
+@media (max-width: 768px) {
+    .tagline {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .enter-button {
+        padding: 1rem 2.5rem;
+        font-size: 1.2rem;
+    }
+    
+    .eden-logo {
+        max-width: 150px;
+    }
+    
+    .subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .audio-controls {
+        bottom: 1rem;
+        right: 1rem;
+        padding: 0.8rem 1rem;
+    }
+    
+    .now-playing {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .tagline {
+        font-size: 1.5rem;
+    }
+    
+    .enter-button {
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+    }
+    
+    .subtitle {
+        font-size: 0.8rem;
+    }
+    
+    .now-playing {
+        display: none;
+    }
+}
