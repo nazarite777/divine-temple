@@ -40,57 +40,6 @@ async function checkPremiumAccess(userId) {
   }
 }
 
-/**
- * Helper: Find user by email (case-insensitive)
- */
-async function findUserByEmail(email) {
-  if (!email) return null;
-
-  const snapshot = await db.collection('users')
-    .where('email', '==', email.toLowerCase())
-    .limit(1)
-    .get();
-
-  if (snapshot.empty) {
-    // Try case-insensitive search by scanning all users
-    const allUsers = await db.collection('users').get();
-    const match = allUsers.docs.find(doc =>
-      doc.data().email?.toLowerCase() === email.toLowerCase()
-    );
-    return match || null;
-  }
-
-  return snapshot.docs[0];
-}
-
-/**
- * Helper: Find user by Stripe subscription ID
- */
-async function findUserBySubscriptionId(subscriptionId) {
-  if (!subscriptionId) return null;
-
-  const snapshot = await db.collection('users')
-    .where('stripeSubscriptionId', '==', subscriptionId)
-    .limit(1)
-    .get();
-
-  return snapshot.empty ? null : snapshot.docs[0];
-}
-
-/**
- * Helper: Find user by Stripe customer ID
- */
-async function findUserByCustomerId(customerId) {
-  if (!customerId) return null;
-
-  const snapshot = await db.collection('users')
-    .where('stripeCustomerId', '==', customerId)
-    .limit(1)
-    .get();
-
-  return snapshot.empty ? null : snapshot.docs[0];
-}
-
 // ==================== CLOUD FUNCTIONS ====================
 
 /**
