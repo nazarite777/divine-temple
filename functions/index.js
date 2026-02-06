@@ -1,6 +1,9 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
+// Import the payment success handler
+const { grantPremiumAccessAfterPayment, findUserByCustomerId, findUserByEmail } = require('./handle-payment-success');
+
 admin.initializeApp();
 const db = admin.firestore();
 
@@ -339,46 +342,21 @@ async function handleCheckoutComplete(session) {
     return;
   }
 
-  // Find user by email
-  const userDoc = await findUserByEmail(customerEmail);
+  try {
+    // Find user by email and grant premium access
+    const userDoc = await findUserByEmail(customerEmail);
 
-  if (userDoc) {
-    await userDoc.ref.update({
-      // Primary membership fields
-      isPremium: true,
-      membership: 'premium',
-      membershipLevel: 'premium',
-      subscriptionStatus: 'active',
-
-      // Stripe reference fields
-      stripeCustomerId: customerId || null,
-      stripeSubscriptionId: subscriptionId || null,
-
-      // Timestamps
-      premiumSince: admin.firestore.FieldValue.serverTimestamp(),
-      lastPaymentAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
-    });
-
-    console.log('✅ User upgraded to PREMIUM:', customerEmail);
-  } else {
-    // User doesn't exist yet - create them
-    console.log('⚠️ User not found, creating new premium user:', customerEmail);
-
-    await db.collection('users').add({
-      email: customerEmail,
-      isPremium: true,
-      membership: 'premium',
-      membershipLevel: 'premium',
-      subscriptionStatus: 'active',
-      stripeCustomerId: customerId || null,
-      stripeSubscriptionId: subscriptionId || null,
-      premiumSince: admin.firestore.FieldValue.serverTimestamp(),
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
-    });
-
-    console.log('✅ New premium user created:', customerEmail);
+    if (userDoc) {
+      // Use the new payment success handler to grant premium
+      await grantPremiumAccessAfterPayment(userDoc.uid, customerId, subscriptionId);
+      console.log(`✅ Premium access granted to ${customerEmail} via checkout completion`);
+    } else {
+      console.warn(`⚠️ User not found for email: ${customerEmail}`);
+      // Optionally create user document with premium access
+    }
+  } catch (error) {
+    console.error('❌ Error handling checkout completion:', error);
+    throw error;
   }
 }
 

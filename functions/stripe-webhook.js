@@ -8,6 +8,7 @@ const admin = require('firebase-admin');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const express = require('express');
 const app = express();
+const { grantPremiumAccessAfterPayment, findUserByCustomerId, findUserByEmail } = require('./handle-payment-success');
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -64,31 +65,39 @@ app.post('/webhook', async (req, res) => {
 
 // Handle successful checkout
 async function handleCheckoutSessionCompleted(session) {
-  console.log('✅ Checkout completed:', session.id);
+  console.log('🎉 Checkout completed:', session.id);
 
   try {
     const customerId = session.customer;
-    const customer = await stripe.customers.retrieve(customerId);
-    
-    // Find Firebase user by email
-    const userRecord = await admin.auth().getUserByEmail(customer.email);
-    
-    // Update user document with premium status
-    await db.collection('users').doc(userRecord.uid).set({
-      premium: true,
-      premiumStartDate: new Date(),
-      premiumStatus: 'active',
-      stripeCustomerId: customerId,
-      subscriptionId: session.subscription,
-      lastPaymentDate: new Date()
-    }, { merge: true });
+    const subscriptionId = session.subscription;
+    const customerEmail = session.customer_email || session.customer_details?.email;
 
-    // Set custom claim for premium
-    await admin.auth().setCustomUserClaims(userRecord.uid, { premium: true });
+    console.log('   Customer ID:', customerId);
+    console.log('   Subscription ID:', subscriptionId);
+    console.log('   Email:', customerEmail);
 
-    console.log(`✅ User ${userRecord.uid} upgraded to premium`);
+    if (!customerEmail) {
+      console.error('❌ No customer email found in checkout session');
+      return;
+    }
+
+    // Find user by email
+    const userDoc = await findUserByEmail(customerEmail);
+
+    if (userDoc) {
+      const uid = userDoc.uid;
+      console.log(`✅ Found user ${uid} for email ${customerEmail}`);
+
+      // Grant premium access with all necessary flags
+      await grantPremiumAccessAfterPayment(uid, customerId, subscriptionId);
+
+      console.log(`✅ Premium access granted after checkout for user ${uid}`);
+    } else {
+      console.warn(`⚠️ No user found for email ${customerEmail}`);
+      // Could implement auto-user-creation here if needed
+    }
   } catch (error) {
-    console.error('Error handling checkout completion:', error);
+    console.error('❌ Error handling checkout completion:', error);
   }
 }
 
