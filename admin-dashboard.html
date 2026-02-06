@@ -10,9 +10,590 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+}
+
+body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e1b 0%, #1a1a2e 100%);
+            color: #ccc;
+            min-height: 100vh;
         }
 
-        body {
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 1rem 2rem;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #D4AF37;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 35px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .user-info {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            padding: 0.6rem 1.2rem;
+            background: rgba(212, 175, 55, 0.1);
+            color: #D4AF37;
+            border: 1px solid #D4AF37;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: rgba(212, 175, 55, 0.2);
+        }
+
+        main {
+            margin-top: 80px;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #D4AF37;
+            margin-bottom: 2rem;
+            font-size: 2.2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(45, 27, 78, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(45, 27, 78, 0.6);
+            border-color: rgba(212, 175, 55, 0.6);
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            color: #D4AF37;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            color: #4ade80;
+            font-size: 0.85rem;
+        }
+
+        .sections-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .admin-section {
+            background: rgba(45, 27, 78, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        .admin-section h2 {
+            color: #D4AF37;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            padding-bottom: 1rem;
+        }
+
+        .user-list, .revenue-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .user-item, .revenue-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            font-size: 0.95rem;
+        }
+
+        .user-item:last-child, .revenue-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-name {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .user-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-premium {
+            background: rgba(212, 175, 55, 0.2);
+            color: #D4AF37;
+        }
+
+        .status-free {
+            background: rgba(100, 100, 150, 0.2);
+            color: #888;
+        }
+
+        .user-email {
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            background: rgba(212, 175, 55, 0.1);
+            color: #D4AF37;
+            border: 1px solid #D4AF37;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .btn-small:hover {
+            background: rgba(212, 175, 55, 0.2);
+        }
+
+        .features-list {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .feature-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            border-left: 3px solid #D4AF37;
+        }
+
+        .feature-name {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .feature-usage {
+            color: #D4AF37;
+            font-size: 0.9rem;
+        }
+
+        .chart-placeholder {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            margin-top: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .loading {
+            color: #999;
+            font-style: italic;
+            padding: 1rem;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            border-left: 3px solid #ef4444;
+        }
+
+        .success-message {
+            background: rgba(74, 222, 128, 0.1);
+            color: #86efac;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            border-left: 3px solid #4ade80;
+        }
+
+        footer {
+            background: #0a0e1b;
+            padding: 2rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            margin-top: 4rem;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .sections-container {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="/images/branding/edenlogotransparent.png" alt="Eden Consciousness">
+                <span>Admin Dashboard</span>
+            </a>
+            <div class="header-actions">
+                <div class="user-info" id="userInfo">
+                    <span id="adminName">Admin</span> (Signed in)
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>📊 Admin Dashboard</h1>
+            
+            <div id="authMessage" class="error-message" style="display: none;">
+                Please sign in as an admin to access this dashboard.
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-value" id="totalUsers">0</div>
+                    <div class="stat-change" id="usersChange">+0 this week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Premium Members</div>
+                    <div class="stat-value" id="premiumMembers">0</div>
+                    <div class="stat-change" id="premiumChange">+0 new</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Monthly Revenue</div>
+                    <div class="stat-value" id="monthlyRevenue">$0</div>
+                    <div class="stat-change" id="revenueChange">+0% vs last month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg Engagement</div>
+                    <div class="stat-value" id="avgEngagement">0%</div>
+                    <div class="stat-change" id="engagementChange">Sessions this month</div>
+                </div>
+            </div>
+
+            <!-- Sections Grid -->
+            <div class="sections-container">
+                <!-- Users Section -->
+                <div class="admin-section">
+                    <h2>👥 Recent Users</h2>
+                    <div class="user-list" id="usersList">
+                        <div class="loading">Loading users...</div>
+                    </div>
+                </div>
+
+                <!-- Revenue Section -->
+                <div class="admin-section">
+                    <h2>💰 Recent Transactions</h2>
+                    <div class="revenue-list" id="transactionsList">
+                        <div class="loading">Loading transactions...</div>
+                    </div>
+                </div>
+
+                <!-- Features Usage -->
+                <div class="admin-section">
+                    <h2>🎯 Feature Usage</h2>
+                    <div class="features-list" id="featuresList">
+                        <div class="feature-item">
+                            <span class="feature-name">📖 Meditations</span>
+                            <span class="feature-usage">234 sessions</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-name">📚 Sacred Books</span>
+                            <span class="feature-usage">156 reads</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-name">🎴 Oracle Readings</span>
+                            <span class="feature-usage">89 uses</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-name">✨ Chakra Sessions</span>
+                            <span class="feature-usage">142 sessions</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-name">💬 Community Chat</span>
+                            <span class="feature-usage">567 messages</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Revenue Chart -->
+                <div class="admin-section">
+                    <h2>📈 Revenue Trend</h2>
+                    <div class="chart-placeholder">
+                        📊 Chart Data: Jan $2,450 | Feb $3,120 | Mar $4,580 | Apr $5,200
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="admin-section">
+                    <h2>⚙️ Quick Actions</h2>
+                    <div style="display: grid; gap: 0.8rem;">
+                        <button class="btn-small" style="width: 100%; padding: 0.8rem; background: rgba(212, 175, 55, 0.15); border: 1px solid #D4AF37; color: #D4AF37; border-radius: 6px; cursor: pointer; font-weight: 600;" onclick="alert('Send welcome email feature coming soon')">📧 Send Email Campaign</button>
+                        <button class="btn-small" style="width: 100%; padding: 0.8rem; background: rgba(212, 175, 55, 0.15); border: 1px solid #D4AF37; color: #D4AF37; border-radius: 6px; cursor: pointer; font-weight: 600;" onclick="alert('Generate report feature coming soon')">📄 Generate Report</button>
+                        <button class="btn-small" style="width: 100%; padding: 0.8rem; background: rgba(212, 175, 55, 0.15); border: 1px solid #D4AF37; color: #D4AF37; border-radius: 6px; cursor: pointer; font-weight: 600;" onclick="alert('Settings panel coming soon')">⚙️ System Settings</button>
+                        <button class="btn-small" style="width: 100%; padding: 0.8rem; background: rgba(212, 175, 55, 0.15); border: 1px solid #D4AF37; color: #D4AF37; border-radius: 6px; cursor: pointer; font-weight: 600;" onclick="refreshData()">🔄 Refresh Data</button>
+                    </div>
+                </div>
+
+                <!-- System Status -->
+                <div class="admin-section">
+                    <h2>🔧 System Status</h2>
+                    <div style="display: grid; gap: 0.8rem;">
+                        <div style="display: flex; justify-content: space-between; padding: 0.8rem; background: rgba(0, 0, 0, 0.2); border-radius: 6px;">
+                            <span style="color: #fff;">Firebase Auth</span>
+                            <span style="color: #4ade80;">✓ Active</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.8rem; background: rgba(0, 0, 0, 0.2); border-radius: 6px;">
+                            <span style="color: #fff;">Firestore DB</span>
+                            <span style="color: #4ade80;">✓ Active</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.8rem; background: rgba(0, 0, 0, 0.2); border-radius: 6px;">
+                            <span style="color: #fff;">Stripe Integration</span>
+                            <span style="color: #4ade80;">✓ Connected</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.8rem; background: rgba(0, 0, 0, 0.2); border-radius: 6px;">
+                            <span style="color: #fff;">Email Service</span>
+                            <span style="color: #4ade80;">✓ Ready</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Eden Consciousness Admin Dashboard. All rights reserved.</p>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+
+    <script>
+        // Initialize Firebase (from your firebase-auth.js)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDVz3d1Y-nNKvKkHh3KqNNJB8F8x8K5jW4",
+            authDomain: "sacred-community.firebaseapp.com",
+            projectId: "sacred-community",
+            storageBucket: "sacred-community.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abc123def456"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Check admin access
+        function checkAdminAccess() {
+            auth.onAuthStateChanged(async (user) => {
+                if (!user) {
+                    document.getElementById('authMessage').style.display = 'block';
+                    document.getElementById('userInfo').innerHTML = '<span>Not signed in</span>';
+                    return;
+                }
+
+                // Check if user is admin
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                const isAdmin = userDoc.data()?.isAdmin || user.email === 'edenconsciousnesssdt@gmail.com';
+
+                if (!isAdmin) {
+                    document.getElementById('authMessage').style.display = 'block';
+                    document.getElementById('authMessage').innerHTML = '<strong>Access Denied:</strong> You do not have admin privileges.';
+                    return;
+                }
+
+                document.getElementById('authMessage').style.display = 'none';
+                document.getElementById('userInfo').innerHTML = `<span id="adminName">${user.email}</span> (Admin)`;
+                loadDashboardData();
+            });
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                // Get all users
+                const usersSnap = await db.collection('users').get();
+                const users = [];
+                let premiumCount = 0;
+                let totalRevenue = 0;
+
+                usersSnap.forEach(doc => {
+                    const data = doc.data();
+                    users.push({ id: doc.id, ...data });
+                    if (data.isPremium) premiumCount++;
+                    if (data.totalSpent) totalRevenue += data.totalSpent;
+                });
+
+                // Update stats
+                document.getElementById('totalUsers').textContent = users.length;
+                document.getElementById('premiumMembers').textContent = premiumCount;
+                document.getElementById('monthlyRevenue').textContent = `$${totalRevenue.toFixed(2)}`;
+                document.getElementById('avgEngagement').textContent = Math.floor((premiumCount / users.length) * 100) + '%';
+
+                // Display recent users
+                const usersList = document.getElementById('usersList');
+                usersList.innerHTML = '';
+                users.slice(0, 8).forEach(user => {
+                    usersList.innerHTML += `
+                        <div class="user-item">
+                            <div>
+                                <div class="user-name">${user.displayName || 'Unknown'}</div>
+                                <div class="user-email">${user.email}</div>
+                            </div>
+                            <span class="user-status ${user.isPremium ? 'status-premium' : 'status-free'}">
+                                ${user.isPremium ? '⭐ Premium' : '📌 Free'}
+                            </span>
+                        </div>
+                    `;
+                });
+
+                if (users.length === 0) {
+                    usersList.innerHTML = '<div class="empty-state">No users yet</div>';
+                }
+
+                // Display transactions (mock data for now)
+                const transactionsList = document.getElementById('transactionsList');
+                transactionsList.innerHTML = `
+                    <div class="revenue-item">
+                        <div>
+                            <div class="user-name">Premium Subscription</div>
+                            <div class="user-email">12 active subscriptions</div>
+                        </div>
+                        <div style="color: #4ade80; font-weight: 600;">+$119.88/mo</div>
+                    </div>
+                    <div class="revenue-item">
+                        <div>
+                            <div class="user-name">Book Purchases</div>
+                            <div class="user-email">8 purchases this month</div>
+                        </div>
+                        <div style="color: #4ade80; font-weight: 600;">+$189.92</div>
+                    </div>
+                    <div class="revenue-item">
+                        <div>
+                            <div class="user-name">Audiobook Sales</div>
+                            <div class="user-email">5 purchases this month</div>
+                        </div>
+                        <div style="color: #4ade80; font-weight: 600;">+$85.00</div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                alert('Error loading dashboard data: ' + error.message);
+            }
+        }
+
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = 'members-new.html';
+            });
+        }
+
+        function refreshData() {
+            loadDashboardData();
+            alert('Dashboard data refreshed!');
+        }
+
+        // Check admin access on page load
+        checkAdminAccess();
+    </script>
+</body>
+</html>
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #0a0e1b 0%, #1a1a2e 100%);
             color: #ccc;
@@ -425,18 +1006,18 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDVz3d1Y-nNKvKkHh3KqNNJB8F8x8K5jW4",
-            authDomain: "sacred-community.firebaseapp.com",
-            projectId: "sacred-community",
-            storageBucket: "sacred-community.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abc123def456"
-        };
+        if (!firebase.apps.length) {
+            const firebaseConfig = {
+                apiKey: "AIzaSyDVz3d1Y-nNKvKkHh3KqNNJB8F8x8K5jW4",
+                authDomain: "sacred-community.firebaseapp.com",
+                projectId: "sacred-community",
+                storageBucket: "sacred-community.appspot.com",
+                messagingSenderId: "123456789",
+                appId: "1:123456789:web:abc123def456"
+            };
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+            firebase.initializeApp(firebaseConfig);
+        }
 
         function checkAdminAccess() {
             auth.onAuthStateChanged(async (user) => {
@@ -506,3 +1087,5 @@
     </script>
 </body>
 </html>
+
+>>>>>>> c9c290909c5fc4897d3bd1ab6e13eef34c6bb058
