@@ -170,6 +170,40 @@ async function findUserByEmail(email) {
 }
 
 /**
+ * Find user by Stripe subscription ID
+ * 
+ * @param {string} subscriptionId - Stripe subscription ID
+ * @returns {Promise<Object|null>} User document with uid and data, or null if not found
+ */
+async function findUserBySubscriptionId(subscriptionId) {
+  if (!subscriptionId) {
+    return null;
+  }
+
+  try {
+    const query = await getDb().collection('users')
+      .where('stripe_subscription_id', '==', subscriptionId)
+      .limit(1)
+      .get();
+
+    if (query.empty) {
+      console.warn(`⚠️ No user found for Stripe subscription ID: ${subscriptionId}`);
+      return null;
+    }
+
+    const doc = query.docs[0];
+    return {
+      uid: doc.id,
+      ref: doc.ref,
+      data: doc.data()
+    };
+  } catch (error) {
+    console.error('Error finding user by subscription ID:', error);
+    return null;
+  }
+}
+
+/**
  * Revoke premium access (used when subscription is cancelled)
  * 
  * @param {string} userId - The user's Firebase UID
@@ -220,5 +254,6 @@ module.exports = {
   grantPremiumAccessAfterPayment,
   findUserByCustomerId,
   findUserByEmail,
+  findUserBySubscriptionId,
   revokePremiumAccess
 };

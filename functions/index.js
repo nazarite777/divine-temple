@@ -2,7 +2,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
 // Import the payment success handler
-const { grantPremiumAccessAfterPayment, findUserByCustomerId, findUserByEmail } = require('./handle-payment-success');
+const { grantPremiumAccessAfterPayment, findUserByCustomerId, findUserByEmail, findUserBySubscriptionId } = require('./handle-payment-success');
 
 admin.initializeApp();
 const db = admin.firestore();

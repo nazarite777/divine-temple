@@ -213,28 +213,64 @@
         // Trigger confetti on page load
         window.addEventListener('load', createConfetti);
 
-        // Verify premium access was granted
-        firebase.auth().onAuthStateChanged(async (user) => {
+        // Verify premium access and redirect to phase1-awakening
+        let checkCount = 0;
+        const maxChecks = 30; // Check for up to 60 seconds (2 second intervals)
+
+        async function checkAndRedirect() {
+            const user = firebase.auth().currentUser;
+            
+            if (!user) {
+                // User not authenticated, wait a moment and retry
+                if (checkCount < maxChecks) {
+                    checkCount++;
+                    setTimeout(checkAndRedirect, 2000);
+                }
+                return;
+            }
+
+            try {
+                const userDoc = await firebase.firestore()
+                    .collection('users')
+                    .doc(user.uid)
+                    .get();
+
+                const userData = userDoc.data();
+                
+                if (userData && (userData.isPremium || userData.premium || userData.is_premium)) {
+                    console.log('🎉 Premium access confirmed! Redirecting to phase1-awakening...');
+                    // Redirect to phase1-awakening.html after premium is confirmed
+                    window.location.href = '/phase1-awakening.html';
+                    return;
+                } else {
+                    // Premium not yet set, webhook may still be processing
+                    if (checkCount < maxChecks) {
+                        checkCount++;
+                        console.log(`⏳ Premium not yet granted. Checking again... (${checkCount}/${maxChecks})`);
+                        setTimeout(checkAndRedirect, 2000);
+                    } else {
+                        console.log('⚠️ Premium status not confirmed after 60 seconds. Showing manual button.');
+                        // Show manual redirect button if webhook takes too long
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking premium status:', error);
+                if (checkCount < maxChecks) {
+                    checkCount++;
+                    setTimeout(checkAndRedirect, 2000);
+                }
+            }
+        }
+
+        firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 console.log('✅ User authenticated, verifying premium access...');
-
-                // Wait a moment for webhook to process
-                setTimeout(async () => {
-                    try {
-                        const userDoc = await firebase.firestore()
-                            .collection('users')
-                            .doc(user.uid)
-                            .get();
-
-                        const userData = userDoc.data();
-                        if (userData && userData.isPremium) {
-                            console.log('🎉 Premium access confirmed!');
-                        } else {
-                            console.log('⏳ Premium access pending... Webhook may still be processing.');
-                        }
-                    } catch (error) {
-                        console.error('Error verifying premium:', error);
-                    }
+                // Start checking for premium status
+                checkAndRedirect();
+            } else {
+                console.log('User not authenticated, redirecting to login...');
+                setTimeout(() => {
+                    window.location.href = '/members-new.html';
                 }, 2000);
             }
         });

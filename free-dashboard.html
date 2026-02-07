@@ -1798,6 +1798,23 @@
             // USER EXISTS - proceed
             console.log('✅ User authenticated:', user.email);
 
+            // CHECK IF USER IS PREMIUM AND REDIRECT
+            try {
+                const userDoc = await firebase.firestore()
+                    .collection('users')
+                    .doc(user.uid)
+                    .get();
+
+                const userData = userDoc.data();
+                if (userData && (userData.isPremium || userData.premium || userData.is_premium)) {
+                    console.log('🎉 Premium user detected! Redirecting to phase1-awakening...');
+                    window.location.href = '/phase1-awakening.html';
+                    return;
+                }
+            } catch (error) {
+                console.warn('Could not check premium status:', error);
+            }
+
             // Update UI safely
             try {
                 const userEmailEl = document.getElementById('userEmail');
