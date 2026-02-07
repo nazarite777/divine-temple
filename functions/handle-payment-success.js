@@ -4,8 +4,15 @@
  */
 
 const admin = require('firebase-admin');
-// Note: admin.initializeApp() is called in index.js, not here
-const db = admin.firestore();
+
+// Lazy initialization of Firestore to avoid initialization errors during deployment analysis
+let db;
+function getDb() {
+  if (!db) {
+    db = admin.firestore();
+  }
+  return db;
+}
 
 /**
  * Grant premium access after successful payment
@@ -63,7 +70,7 @@ async function grantPremiumAccessAfterPayment(userId, customerId, subscriptionId
     };
 
     // Update user document with merge to preserve other fields
-    const userRef = db.collection('users').doc(userId);
+    const userRef = getDb().collection('users').doc(userId);
     await userRef.update(updateData, { merge: true });
 
     console.log(`✅ Premium access granted successfully for user: ${userId}`);
@@ -106,7 +113,7 @@ async function findUserByCustomerId(customerId) {
   }
 
   try {
-    const query = await db.collection('users')
+    const query = await getDb().collection('users')
       .where('stripe_customer_id', '==', customerId)
       .limit(1)
       .get();
@@ -140,7 +147,7 @@ async function findUserByEmail(email) {
   }
 
   try {
-    const query = await db.collection('users')
+    const query = await getDb().collection('users')
       .where('email', '==', email)
       .limit(1)
       .get();
@@ -192,7 +199,7 @@ async function revokePremiumAccess(userId) {
       updated_at: admin.firestore.FieldValue.serverTimestamp()
     };
 
-    const userRef = db.collection('users').doc(userId);
+    const userRef = getDb().collection('users').doc(userId);
     await userRef.update(updateData, { merge: true });
 
     console.log(`✅ Premium access revoked for user: ${userId}`);
@@ -215,5 +222,3 @@ module.exports = {
   findUserByEmail,
   revokePremiumAccess
 };
-
-console.log('🚀 Premium access handler module loaded');
