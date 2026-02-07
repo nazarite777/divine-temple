@@ -1,14 +1,14 @@
 // Stripe Integration Module for Eden Consciousness Premium
 // Initialize Stripe with publishable key
-const stripe = Stripe('pk_test_YOUR_PUBLISHABLE_KEY');
+const stripe = Stripe('pk_live_51SRqpyJ2w43XIVJIO3ygkLZAnsODBJhQUyMarnEEXyAWeaFiJJjC2wpDTL3H3yHGdOAXbwJDYOTgMjPT5j0XJcl600ytNIr5CC');
 
 // Stripe Payment Configuration
 const STRIPE_CONFIG = {
-  priceId: 'price_YOUR_MONTHLY_PRICE_ID', // $9.99/month
+  priceId: 'price_1STd7ZJ2w43XIVJI8ERrDNqp', // $9.99/month
   productName: 'Eden Consciousness Premium',
   productDescription: 'Unlimited access to 4-phase transformation journey',
-  successUrl: 'https://sacred-community.web.app/premium-success.html',
-  cancelUrl: 'https://sacred-community.web.app/pricing.html',
+  successUrl: 'https://edenconsciousnesssdt.com/premium-success.html',
+  cancelUrl: 'https://edenconsciousnesssdt.com/pricing.html',
   currency: 'usd',
   amount: 999, // $9.99 in cents
 };

@@ -14,7 +14,7 @@
 
 class InAppPurchases {
     constructor() {
-        this.stripePublicKey = 'pk_test_YOUR_STRIPE_PUBLIC_KEY'; // Replace with real key
+        this.stripePublicKey = 'pk_live_51SRqpyJ2w43XIVJIO3ygkLZAnsODBJhQUyMarnEEXyAWeaFiJJjC2wpDTL3H3yHGdOAXbwJDYOTgMjPT5j0XJcl600ytNIr5CC'; // Real live key
         this.stripe = null;
         this.currentUser = null;
         this.purchaseHistory = this.loadPurchaseHistory();
