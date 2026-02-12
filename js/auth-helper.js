@@ -345,6 +345,13 @@ async function verifyPremiumAccess(redirectUrl = null) {
     const accessCheck = await checkJourneyAccess();
 
     if (!accessCheck.hasAccess) {
+        // If user is logged in as premium, NEVER redirect to login
+        const currentUser = firebase.auth().currentUser;
+        if (currentUser) {
+            console.log('✅ User authenticated:', currentUser.email);
+            return true;
+        }
+
         // Store intended destination
         if (redirectUrl) {
             sessionStorage.setItem('premiumRedirect', redirectUrl);

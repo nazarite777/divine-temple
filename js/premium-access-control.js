@@ -480,14 +480,18 @@
     // Create global instance
     window.PremiumAccessControl = new PremiumAccessControl();
 
-    // Auto-enforce access control when page loads
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            window.PremiumAccessControl.enforceAccess();
-        });
-    } else {
-        window.PremiumAccessControl.enforceAccess();
-    }
+    // ⚠️ DISABLED: Auto-enforce access control on page load
+    // Individual pages like phase1-awakening.js handle their own auth logic
+    // This was causing login redirects for authenticated premium users
+    // Pages that need access control can manually call: window.PremiumAccessControl.enforceAccess()
+    // 
+    // if (document.readyState === 'loading') {
+    //     document.addEventListener('DOMContentLoaded', () => {
+    //         window.PremiumAccessControl.enforceAccess();
+    //     });
+    // } else {
+    //     window.PremiumAccessControl.enforceAccess();
+    // }
 
-    console.log('🔐 Premium Access Control Module Loaded');
+    console.log('🔐 Premium Access Control Module Loaded (manual enforcement only)');
 })();
