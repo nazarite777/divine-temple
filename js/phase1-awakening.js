@@ -281,19 +281,54 @@
     }
 
     async function handleAuth(firebaseUser) {
+        var overlay = document.getElementById('accessDeniedOverlay');
+        var loading = document.getElementById('loadingState');
+
         if (!firebaseUser) {
-            window.location.href = 'index.html';
+            // Not logged in — show gate
+            if (overlay) overlay.style.display = 'flex';
+            if (loading) loading.style.display = 'none';
             return;
         }
 
+        // Logged in — check premium status
         currentUser = firebaseUser;
         db = firebase.firestore();
+
+        try {
+            var userDoc = await db.collection('users').doc(currentUser.uid).get();
+            var d = userDoc.exists ? userDoc.data() : {};
+            var isPremium = d.isPremium || d.membershipStatus === 'premium' ||
+                           d.paymentVerified || d.premium === true ||
+                           d.premium_status === 'active' || d.membershipLevel === 'premium';
+
+            // Admin override
+            var adminEmails = ['cbevvv@gmail.com'];
+            if (currentUser.email && adminEmails.indexOf(currentUser.email.toLowerCase()) !== -1) {
+                isPremium = true;
+            }
+
+            if (!isPremium) {
+                // Logged in but not premium — show gate
+                if (overlay) overlay.style.display = 'flex';
+                if (loading) loading.style.display = 'none';
+                return;
+            }
+        } catch (e) {
+            console.error('Premium check failed:', e);
+            if (overlay) overlay.style.display = 'flex';
+            if (loading) loading.style.display = 'none';
+            return;
+        }
+
+        // Premium confirmed — load the experience
+        if (overlay) overlay.style.display = 'none';
 
         if (typeof firebase.storage === 'function') {
             storageRef = firebase.storage().ref();
         }
 
-        console.log('✅ Authenticated:', currentUser.email);
+        console.log('✅ Authenticated (premium):', currentUser.email);
 
         try {
             await loadProgress();
