@@ -1,549 +1,538 @@
-/**
- * Divine Temple - Phase 1: Awakening System
- * Manages Ya Heard Me audiobook with chapter tracking and progress
- */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 1: The Awakening — Ya Heard Me | Eden Consciousness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-class Phase1System {
-    constructor() {
-        this.db = null;
-        this.auth = null;
-        this.currentUser = null;
-        this.journeyData = null;
-        this.currentChapter = null;
-        this.audioPlayer = null;
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/journey-styles.css">
+    <link rel="stylesheet" href="css/breadcrumbs.css">
 
-        // Chapter data with discussion questions and journal prompts
-        this.chapters = [
-            {
-                number: 1,
-                title: "The Call to Awakening",
-                duration: "18:32",
-                audioUrl: "audio/ya-heard-me/chapter-01.mp3", // Placeholder - update with actual URLs
-                description: "Discover the first steps of your spiritual awakening and understand the divine call within you.",
-                discussionQuestions: [
-                    "What does 'awakening' mean to you personally?",
-                    "Have you felt a spiritual calling? When did you first recognize it?",
-                    "What resistance have you encountered on your path?"
-                ],
-                journalPrompts: [
-                    "Write about a moment when you felt truly awakened or aware of something greater.",
-                    "What part of your life is calling for transformation right now?",
-                    "Describe your vision of your highest self."
-                ]
-            },
-            {
-                number: 2,
-                title: "Understanding Divine Timing",
-                duration: "22:15",
-                audioUrl: "audio/ya-heard-me/chapter-02.mp3",
-                description: "Learn to recognize and align with divine timing in all aspects of your life.",
-                discussionQuestions: [
-                    "How do you differentiate between divine timing and delay?",
-                    "Recall a time when perfect timing revealed itself to you.",
-                    "What are you trying to force that might benefit from patience?"
-                ],
-                journalPrompts: [
-                    "Reflect on a situation where waiting led to a better outcome.",
-                    "What signs tell you that you're in alignment with divine timing?",
-                    "Write a letter to your future self about trusting the process."
-                ]
-            },
-            {
-                number: 3,
-                title: "The Power of Sacred Truth",
-                duration: "20:48",
-                audioUrl: "audio/ya-heard-me/chapter-03.mp3",
-                description: "Embrace the transformative power of speaking and living your sacred truth.",
-                discussionQuestions: [
-                    "Where in your life are you not speaking your truth?",
-                    "What fears prevent you from being authentic?",
-                    "How does living truthfully align with your spiritual path?"
-                ],
-                journalPrompts: [
-                    "Write about a time when speaking your truth changed everything.",
-                    "What truth have you been avoiding? Why?",
-                    "Create an affirmation that empowers you to live authentically."
-                ]
-            },
-            {
-                number: 4,
-                title: "Releasing Ancestral Patterns",
-                duration: "25:10",
-                audioUrl: "audio/ya-heard-me/chapter-04.mp3",
-                description: "Identify and release limiting patterns inherited from your lineage.",
-                discussionQuestions: [
-                    "What patterns do you notice repeating in your family?",
-                    "How have ancestral beliefs shaped your current reality?",
-                    "What would it feel like to break free from these cycles?"
-                ],
-                journalPrompts: [
-                    "List three patterns you've inherited that no longer serve you.",
-                    "Write a forgiveness letter to your ancestors for patterns they passed down.",
-                    "Describe the new legacy you want to create for future generations."
-                ]
-            },
-            {
-                number: 5,
-                title: "The Sacred Masculine & Feminine",
-                duration: "23:45",
-                audioUrl: "audio/ya-heard-me/chapter-05.mp3",
-                description: "Balance the divine masculine and feminine energies within yourself.",
-                discussionQuestions: [
-                    "Which energy (masculine or feminine) feels more dominant in you?",
-                    "How can you honor both aspects of your divine nature?",
-                    "What does sacred balance look like in your daily life?"
-                ],
-                journalPrompts: [
-                    "Describe your relationship with your masculine energy.",
-                    "Describe your relationship with your feminine energy.",
-                    "What would perfect inner balance create in your external world?"
-                ]
-            },
-            {
-                number: 6,
-                title: "Alchemy of Transformation",
-                duration: "21:30",
-                audioUrl: "audio/ya-heard-me/chapter-06.mp3",
-                description: "Master the spiritual alchemy that transforms challenges into gold.",
-                discussionQuestions: [
-                    "What current challenge could be your greatest teacher?",
-                    "How have past struggles shaped who you are today?",
-                    "What needs to be transmuted in your life right now?"
-                ],
-                journalPrompts: [
-                    "Write about a difficulty that later became a blessing.",
-                    "What 'lead' in your life is ready to become 'gold'?",
-                    "Create a ritual for transforming negative energy into positive power."
-                ]
-            },
-            {
-                number: 7,
-                title: "Divine Alignment & Purpose",
-                duration: "24:20",
-                audioUrl: "audio/ya-heard-me/chapter-07.mp3",
-                description: "Discover and align with your soul's true purpose and mission.",
-                discussionQuestions: [
-                    "What activities make you feel most aligned and alive?",
-                    "How does your current life reflect your soul's purpose?",
-                    "What would you do if you knew you couldn't fail?"
-                ],
-                journalPrompts: [
-                    "Complete this: 'I came to Earth to...'",
-                    "List 10 things that bring you joy - what patterns do you notice?",
-                    "Describe a day in your perfectly aligned life."
-                ]
-            },
-            {
-                number: 8,
-                title: "The Language of the Universe",
-                duration: "19:55",
-                audioUrl: "audio/ya-heard-me/chapter-08.mp3",
-                description: "Learn to recognize and interpret the signs, symbols, and synchronicities around you.",
-                discussionQuestions: [
-                    "What synchronicities have you noticed recently?",
-                    "How does the universe communicate with you personally?",
-                    "What sign have you been asking for?"
-                ],
-                journalPrompts: [
-                    "Record the most meaningful synchronicity you've experienced.",
-                    "What symbols or numbers keep appearing in your life?",
-                    "How can you become more receptive to universal guidance?"
-                ]
-            },
-            {
-                number: 9,
-                title: "Sacred Sovereignty",
-                duration: "22:40",
-                audioUrl: "audio/ya-heard-me/chapter-09.mp3",
-                description: "Claim your power as a sovereign divine being and set sacred boundaries.",
-                discussionQuestions: [
-                    "Where do you give your power away?",
-                    "What boundaries need to be established or reinforced?",
-                    "How does sovereignty differ from selfish independence?"
-                ],
-                journalPrompts: [
-                    "Write a declaration of your divine sovereignty.",
-                    "List areas where you need to reclaim your power.",
-                    "What boundaries would your highest self set?"
-                ]
-            },
-            {
-                number: 10,
-                title: "The Frequency of Abundance",
-                duration: "26:15",
-                audioUrl: "audio/ya-heard-me/chapter-10.mp3",
-                description: "Attune to the vibration of abundance and unlock infinite prosperity.",
-                discussionQuestions: [
-                    "What beliefs about abundance are you ready to release?",
-                    "How do you define true prosperity?",
-                    "Where in your life do you already experience abundance?"
-                ],
-                journalPrompts: [
-                    "List 20 things you're abundant in right now.",
-                    "What would abundance in all areas feel like?",
-                    "Rewrite your money story from a place of overflow."
-                ]
-            },
-            {
-                number: 11,
-                title: "Embodying the Divine",
-                duration: "23:50",
-                audioUrl: "audio/ya-heard-me/chapter-11.mp3",
-                description: "Integrate divine wisdom into your physical body and daily actions.",
-                discussionQuestions: [
-                    "How does your body communicate spiritual truth to you?",
-                    "What daily practices help you embody divine wisdom?",
-                    "How can you make the spiritual practical?"
-                ],
-                journalPrompts: [
-                    "Describe how it feels in your body when you're aligned.",
-                    "What spiritual insights need to be embodied in action?",
-                    "Create a daily ritual for embodying your divine nature."
-                ]
-            },
-            {
-                number: 12,
-                title: "The Path Forward: Integration",
-                duration: "20:30",
-                audioUrl: "audio/ya-heard-me/chapter-12.mp3",
-                description: "Integrate all teachings and step confidently into your awakened life.",
-                discussionQuestions: [
-                    "What has been your biggest revelation from this journey?",
-                    "How will you apply these teachings in your daily life?",
-                    "What commitment are you making to your continued awakening?"
-                ],
-                journalPrompts: [
-                    "Write a gratitude letter to yourself for completing this phase.",
-                    "What are your three main takeaways from Ya Heard Me?",
-                    "Set intentions for Phase 2 of your journey."
-                ]
-            }
-        ];
-    }
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
-    async init() {
-        console.log('🌅 Initializing Phase 1: Awakening System...');
+    <!-- Divine Temple Core -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth-helper.js"></script>
+    <script src="js/premium-access-control.js"></script>
+    <script src="js/header.js" defer></script>
 
-        try {
-            await this.waitForFirebase();
-
-            this.db = firebase.firestore();
-            this.auth = firebase.auth();
-            this.audioPlayer = document.getElementById('audioPlayer');
-
-            this.auth.onAuthStateChanged(async (user) => {
-                if (user) {
-                    this.currentUser = user;
-                    await this.loadProgress();
-                    this.renderChapters();
-                    this.setupAudioPlayer();
-                } else {
-                    window.location.href = 'login.html';
-                }
-            });
-
-        } catch (error) {
-            console.error('Error initializing Phase 1 System:', error);
-            this.showError('Failed to initialize. Please refresh the page.');
-        }
-    }
-
-    waitForFirebase() {
-        return new Promise((resolve) => {
-            if (typeof firebase !== 'undefined' && firebase.firestore) {
-                resolve();
-            } else {
-                const checkFirebase = setInterval(() => {
-                    if (typeof firebase !== 'undefined' && firebase.firestore) {
-                        clearInterval(checkFirebase);
-                        resolve();
+    <!-- Premium Access Gate -->
+    <script>
+        function checkPremiumAccess() {
+            return new Promise(function (resolve) {
+                var checkId = setInterval(function () {
+                    if (typeof firebase !== 'undefined' && firebase.auth) {
+                        clearInterval(checkId);
+                        firebase.auth().onAuthStateChanged(async function (user) {
+                            if (!user) { resolve(false); return; }
+                            try {
+                                var doc = await firebase.firestore().collection('users').doc(user.uid).get();
+                                var d = doc.data() || {};
+                                var ok = d.isPremium || d.membershipStatus === 'premium' || d.paymentVerified;
+                                if (!ok) {
+                                    document.getElementById('accessDeniedOverlay').style.display = 'flex';
+                                    document.getElementById('loadingState').style.display = 'none';
+                                } else {
+                                    document.getElementById('accessDeniedOverlay').style.display = 'none';
+                                }
+                                resolve(!!ok);
+                            } catch (e) {
+                                console.error('Premium check error:', e);
+                                resolve(false);
+                            }
+                            var logoutBtn = document.getElementById('logoutBtn');
+                            if (logoutBtn) {
+                                logoutBtn.addEventListener('click', function () {
+                                    firebase.auth().signOut().then(function () {
+                                        window.location.href = 'dashboard.html';
+                                    });
+                                });
+                            }
+                        });
                     }
                 }, 100);
-            }
-        });
-    }
-
-    async loadProgress() {
-        try {
-            const userId = this.currentUser.uid;
-            const journeyRef = this.db.collection('user_journey').doc(userId);
-            const journeyDoc = await journeyRef.get();
-
-            if (journeyDoc.exists) {
-                this.journeyData = journeyDoc.data();
-            } else {
-                // Initialize default journey data
-                this.journeyData = {
-                    userId: userId,
-                    current_phase: 1,
-                    phase1_progress: {
-                        chapters_completed: [],
-                        total_chapters: 12,
-                        last_activity: new Date().toISOString(),
-                        notes: {}
-                    }
-                };
-                await journeyRef.set(this.journeyData);
-            }
-
-            this.updateProgressDisplay();
-
-            // Hide loading, show content
-            document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'block';
-
-        } catch (error) {
-            console.error('Error loading progress:', error);
-            this.showError('Failed to load your progress.');
-        }
-    }
-
-    updateProgressDisplay() {
-        const completed = this.journeyData.phase1_progress.chapters_completed.length;
-        const total = this.journeyData.phase1_progress.total_chapters;
-        const percentage = Math.round((completed / total) * 100);
-
-        document.getElementById('progressPercentage').textContent = `${percentage}%`;
-        document.getElementById('progressBar').style.width = `${percentage}%`;
-        document.getElementById('progressText').textContent = `${completed} of ${total} chapters completed`;
-    }
-
-    renderChapters() {
-        const chapterList = document.getElementById('chapterList');
-        const completedChapters = this.journeyData.phase1_progress.chapters_completed;
-
-        chapterList.innerHTML = this.chapters.map(chapter => {
-            const isCompleted = completedChapters.includes(chapter.number);
-            const isCurrent = !isCompleted &&
-                (completedChapters.length === 0 ? chapter.number === 1 : chapter.number === completedChapters.length + 1);
-
-            return `
-                <div class="chapter-card ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}"
-                     data-chapter="${chapter.number}">
-                    <div class="chapter-header">
-                        <div class="chapter-number">${chapter.number}</div>
-                        <div class="chapter-info">
-                            <h3 class="chapter-title">${chapter.title}</h3>
-                            <p class="chapter-duration">⏱️ ${chapter.duration}</p>
-                        </div>
-                    </div>
-
-                    <div class="chapter-content">
-                        <div class="content-section">
-                            <p>${chapter.description}</p>
-                        </div>
-
-                        <div class="content-section">
-                            <h4>💭 Discussion Questions</h4>
-                            <ul class="discussion-questions">
-                                ${chapter.discussionQuestions.map(q => `<li>${q}</li>`).join('')}
-                            </ul>
-                        </div>
-
-                        <div class="content-section">
-                            <h4>📝 Journal Prompts</h4>
-                            <ul class="journal-prompts">
-                                ${chapter.journalPrompts.map(p => `<li>${p}</li>`).join('')}
-                            </ul>
-                        </div>
-
-                        <div class="chapter-actions">
-                            <a href="https://open.spotify.com/show/6zyMF2ljZyaDYNAJyA5I5l" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
-                                ${isCompleted ? '🔄 Listen Again on Spotify' : '🎧 Listen on Spotify'}
-                            </a>
-                            <button class="btn btn-secondary" onclick="phase1System.openJournal(${chapter.number})">
-                                📓 Journal
-                            </button>
-                            ${!isCompleted ? `
-                                <button class="btn btn-success" onclick="phase1System.completeChapter(${chapter.number})">
-                                    ✓ Mark Complete
-                                </button>
-                            ` : `
-                                <span class="btn" style="background: rgba(16, 185, 129, 0.2); color: #10b981; cursor: default;">
-                                    ✓ Completed
-                                </span>
-                            `}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    setupAudioPlayer() {
-        this.audioPlayer.addEventListener('timeupdate', () => {
-            const current = this.formatTime(this.audioPlayer.currentTime);
-            const duration = this.formatTime(this.audioPlayer.duration);
-            document.getElementById('audioTime').textContent = `${current} / ${duration}`;
-        });
-
-        this.audioPlayer.addEventListener('ended', () => {
-            if (this.currentChapter) {
-                this.showCompletionPrompt(this.currentChapter.number);
-            }
-        });
-    }
-
-    playChapter(chapterNumber) {
-        const chapter = this.chapters.find(c => c.number === chapterNumber);
-        if (!chapter) return;
-
-        this.currentChapter = chapter;
-
-        // Note: You'll need to update audioUrl with actual audio file URLs
-        // For demo purposes, this will show a message
-        if (!chapter.audioUrl || chapter.audioUrl.includes('Placeholder')) {
-            alert(`📢 Audio for "${chapter.title}" will be available soon!\n\nFor now, you can:\n• Read the discussion questions\n• Complete the journal prompts\n• Mark the chapter complete when ready`);
-            return;
-        }
-
-        this.audioPlayer.src = chapter.audioUrl;
-        this.audioPlayer.play();
-
-        document.getElementById('currentChapter').textContent = `Chapter ${chapter.number}: ${chapter.title}`;
-
-        // Scroll to player
-        document.querySelector('.audiobook-player').scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-        // Update last activity
-        this.updateLastActivity();
-    }
-
-    formatTime(seconds) {
-        if (isNaN(seconds)) return '0:00';
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
-    }
-
-    showCompletionPrompt(chapterNumber) {
-        const isCompleted = this.journeyData.phase1_progress.chapters_completed.includes(chapterNumber);
-
-        if (!isCompleted) {
-            const complete = confirm(`You've finished Chapter ${chapterNumber}!\n\nWould you like to mark it as complete?`);
-            if (complete) {
-                this.completeChapter(chapterNumber);
-            }
-        }
-    }
-
-    async completeChapter(chapterNumber) {
-        try {
-            const completedChapters = this.journeyData.phase1_progress.chapters_completed;
-
-            if (completedChapters.includes(chapterNumber)) {
-                alert('This chapter is already marked as complete!');
-                return;
-            }
-
-            // Add chapter to completed list
-            completedChapters.push(chapterNumber);
-            completedChapters.sort((a, b) => a - b);
-
-            // Update Firestore
-            const userId = this.currentUser.uid;
-            const journeyRef = this.db.collection('user_journey').doc(userId);
-
-            await journeyRef.update({
-                'phase1_progress.chapters_completed': completedChapters,
-                'phase1_progress.last_activity': new Date().toISOString()
+                setTimeout(function () { clearInterval(checkId); }, 6000);
             });
-
-            // Update local data
-            this.journeyData.phase1_progress.chapters_completed = completedChapters;
-
-            // Update display
-            this.updateProgressDisplay();
-            this.renderChapters();
-
-            // Show success message
-            const chapter = this.chapters.find(c => c.number === chapterNumber);
-            alert(`🎉 Chapter ${chapterNumber}: "${chapter.title}" completed!\n\n${completedChapters.length} of 12 chapters done.${completedChapters.length === 12 ? '\n\n✨ Phase 1 Complete! You can now move to Phase 2!' : ''}`);
-
-            // Record achievement if phase complete
-            if (completedChapters.length === 12) {
-                await this.completePhase1();
-            }
-
-        } catch (error) {
-            console.error('Error completing chapter:', error);
-            alert('Failed to save progress. Please try again.');
         }
-    }
+        checkPremiumAccess();
+    </script>
 
-    async completePhase1() {
-        try {
-            const userId = this.currentUser.uid;
-            const journeyRef = this.db.collection('user_journey').doc(userId);
-
-            // Unlock Phase 2
-            await journeyRef.update({
-                current_phase: 2
-            });
-
-            // Award achievement (integrate with achievement system if available)
-            console.log('🏆 Phase 1 Complete - Awakening Seeker achievement unlocked!');
-
-            // You could also update the universal progress system here
-            if (window.progressSystem) {
-                await window.progressSystem.awardXP(500, 'Completed Phase 1: The Awakening');
-            }
-
-        } catch (error) {
-            console.error('Error completing phase:', error);
+    <style>
+        /* ─── VARIABLES ─────────────────────────────────────── */
+        :root {
+            --primary-gold: #D4AF37;
+            --accent-orange: #F59E0B;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #4fc3f7;
+            --accent-green: #10b981;
+            --dark-bg: #0F0F23;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-muted: rgba(255, 255, 255, 0.6);
         }
-    }
 
-    openJournal(chapterNumber) {
-        // Navigate to journaling system with chapter context
-        const chapter = this.chapters.find(c => c.number === chapterNumber);
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        // Store chapter context in localStorage for journaling system
-        localStorage.setItem('journalContext', JSON.stringify({
-            phase: 1,
-            chapter: chapterNumber,
-            title: chapter.title,
-            prompts: chapter.journalPrompts
-        }));
-
-        // Navigate to journal (if available) or show prompts
-        if (document.querySelector('[href*="journal"]')) {
-            window.location.href = 'sections/journaling-system.html';
-        } else {
-            alert(`📓 Journal Prompts for "${chapter.title}":\n\n${chapter.journalPrompts.map((p, i) => `${i + 1}. ${p}`).join('\n\n')}\n\nOpen your personal journal and reflect on these prompts.`);
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a1e 0%, #1a1a2e 50%, #0f3460 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-    }
 
-    async updateLastActivity() {
-        try {
-            const userId = this.currentUser.uid;
-            const journeyRef = this.db.collection('user_journey').doc(userId);
-
-            await journeyRef.update({
-                'phase1_progress.last_activity': new Date().toISOString()
-            });
-
-        } catch (error) {
-            console.error('Error updating last activity:', error);
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+            pointer-events: none; z-index: -1;
         }
-    }
 
-    showError(message) {
-        const loadingState = document.getElementById('loadingState');
-        loadingState.innerHTML = `
-            <div style="text-align: center; color: var(--error);">
-                <h3>⚠️ Error</h3>
-                <p>${message}</p>
-                <button onclick="location.reload()" class="btn btn-primary" style="margin-top: 1rem;">
-                    Reload Page
-                </button>
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+
+        /* ─── NAV ───────────────────────────────────────────── */
+        .nav-buttons { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .nav-btn {
+            display: inline-flex; align-items: center; gap: .5rem;
+            padding: .75rem 1.25rem;
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 12px;
+            color: white; cursor: pointer; font-weight: 600; text-decoration: none;
+            transition: all .25s ease;
+        }
+        .nav-btn:hover { background: rgba(255,255,255,.1); transform: translateX(-3px); }
+        .nav-btn.danger { background: #ef4444; border-color: #ef4444; }
+        .nav-btn.danger:hover { background: #dc2626; }
+
+        /* ─── PREMIUM NAV BAR ───────────────────────────────── */
+        .premium-nav-bar {
+            background: linear-gradient(90deg, rgba(212,175,55,.12), rgba(139,92,246,.12));
+            border: 1.5px solid var(--accent-orange); border-radius: 18px;
+            padding: 1.25rem; margin-bottom: 2rem; backdrop-filter: blur(20px);
+        }
+        .premium-nav-title {
+            font-size: .85rem; font-weight: 700; color: var(--accent-orange);
+            margin-bottom: .75rem; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .premium-nav-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .75rem; }
+        .premium-nav-link {
+            display: flex; align-items: center; gap: .6rem; padding: .75rem;
+            background: rgba(255,255,255,.04); border: 1px solid rgba(212,175,55,.25);
+            border-radius: 10px; color: var(--text-primary); text-decoration: none;
+            font-weight: 600; font-size: .9rem; transition: all .25s ease;
+        }
+        .premium-nav-link:hover { background: rgba(212,175,55,.15); border-color: var(--accent-orange); transform: translateY(-2px); }
+        .premium-nav-link.active { background: var(--accent-orange); border-color: var(--accent-orange); color: white; }
+
+        /* ─── HEADER ────────────────────────────────────────── */
+        .page-header {
+            text-align: center; margin-bottom: 2.5rem; padding: 2.5rem 2rem;
+            background: linear-gradient(135deg, rgba(245,158,11,.08), rgba(212,175,55,.08));
+            backdrop-filter: blur(20px);
+            border: 1.5px solid var(--accent-orange); border-radius: 22px;
+        }
+        .phase-badge {
+            display: inline-block; background: var(--accent-orange); color: white;
+            padding: .4rem 1.2rem; border-radius: 20px; font-weight: 700; font-size: .8rem;
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: .75rem;
+        }
+        .header-icon { font-size: 3.5rem; margin-bottom: .75rem; }
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3rem); font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-orange), var(--primary-gold));
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; margin-bottom: .75rem;
+        }
+        .page-subtitle { font-size: 1.1rem; color: var(--text-secondary); max-width: 650px; margin: 0 auto; line-height: 1.5; }
+
+        /* ─── PROGRESS ──────────────────────────────────────── */
+        .progress-section {
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 18px;
+            padding: 1.75rem; margin-bottom: 2.5rem;
+        }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .75rem; }
+        .progress-title { font-size: 1.15rem; font-weight: 700; }
+        .progress-percentage { font-size: 1.8rem; font-weight: 700; color: var(--accent-orange); }
+        .progress-track { width: 100%; height: 16px; background: rgba(0,0,0,.3); border-radius: 8px; overflow: hidden; margin-bottom: .5rem; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-orange), var(--primary-gold)); border-radius: 8px; transition: width .5s ease; }
+        .progress-text { color: var(--text-muted); font-size: .9rem; }
+
+        /* ─── SPOTIFY PLAYER ────────────────────────────────── */
+        .spotify-section {
+            background: linear-gradient(135deg, rgba(29,185,84,.08), rgba(212,175,55,.06));
+            backdrop-filter: blur(20px);
+            border: 1.5px solid rgba(29,185,84,.35); border-radius: 22px;
+            padding: 2rem; margin-bottom: 2.5rem;
+        }
+        .spotify-header { text-align: center; margin-bottom: 1.5rem; }
+        .spotify-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: #1DB954; margin-bottom: .4rem; }
+        .spotify-subtitle { color: var(--text-secondary); font-size: .95rem; }
+        .spotify-embed { border-radius: 12px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,.15); margin-bottom: 1.5rem; }
+        .how-it-works {
+            background: rgba(139,92,246,.08); border-left: 3px solid var(--accent-purple);
+            padding: 1rem 1.25rem; border-radius: 0 10px 10px 0; color: var(--text-secondary);
+            font-size: .9rem; line-height: 1.7;
+        }
+        .how-it-works strong { color: var(--primary-gold); }
+        .spotify-cta { text-align: center; margin-top: 1.25rem; }
+        .spotify-btn {
+            display: inline-flex; align-items: center; gap: .5rem;
+            background: #1DB954; color: white; padding: .75rem 1.5rem;
+            border-radius: 24px; text-decoration: none; font-weight: 600;
+            transition: transform .2s, box-shadow .2s;
+            box-shadow: 0 4px 12px rgba(29,185,84,.3);
+        }
+        .spotify-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(29,185,84,.4); }
+
+        /* ─── CHAPTER CARDS ─────────────────────────────────── */
+        .section-heading { font-size: 1.6rem; font-weight: 700; margin-bottom: .5rem; display: flex; align-items: center; gap: .6rem; }
+        .section-subtext { text-align: center; color: var(--text-secondary); margin-bottom: 2rem; font-size: .95rem; }
+        .chapter-list { display: grid; gap: 1.25rem; }
+
+        .chapter-card {
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border: 1.5px solid var(--glass-border); border-radius: 18px;
+            overflow: hidden; transition: all .3s ease;
+        }
+        .chapter-card:hover { border-color: rgba(245,158,11,.4); }
+        .chapter-card.completed { border-color: var(--accent-green); border-left: 4px solid var(--accent-green); }
+
+        .chapter-header {
+            display: flex; align-items: center; gap: 1rem;
+            padding: 1.25rem 1.5rem; cursor: pointer; transition: background .2s;
+        }
+        .chapter-header:hover { background: rgba(255,255,255,.03); }
+        .chapter-number {
+            width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; font-weight: 700; color: white;
+            background: var(--accent-orange);
+        }
+        .chapter-card.completed .chapter-number { background: var(--accent-green); }
+        .chapter-info { flex: 1; min-width: 0; }
+        .chapter-title { font-size: 1.1rem; font-weight: 700; margin-bottom: .15rem; }
+        .chapter-duration { color: var(--text-muted); font-size: .85rem; }
+        .chapter-status { font-size: .85rem; font-weight: 600; flex-shrink: 0; white-space: nowrap; }
+
+        /* Expandable content */
+        .chapter-content { padding: 0 1.5rem; max-height: 5000px; overflow: hidden; transition: max-height .35s ease, opacity .35s ease, padding .35s ease; opacity: 1; }
+        .chapter-content.collapsed { max-height: 0; opacity: 0; padding-top: 0; padding-bottom: 0; }
+
+        .content-section { margin-bottom: 1.5rem; }
+        .content-section h4 { font-size: 1rem; font-weight: 700; color: var(--accent-orange); margin-bottom: .6rem; }
+        .content-section p { color: var(--text-secondary); line-height: 1.65; }
+
+        .reflection-list { padding-left: 1.25rem; }
+        .reflection-list li { padding: .5rem 0; color: var(--text-secondary); line-height: 1.5; }
+
+        /* Inline audio player */
+        .inline-player {
+            display: flex; align-items: center; gap: 1rem;
+            background: rgba(0,0,0,.25); border-radius: 12px; padding: 1rem;
+        }
+        .play-btn {
+            padding: .6rem 1.25rem; background: linear-gradient(135deg, var(--accent-orange), #D97706);
+            color: white; border: none; border-radius: 10px; font-weight: 700;
+            cursor: pointer; transition: all .2s; white-space: nowrap; font-size: .9rem;
+        }
+        .play-btn:hover { transform: scale(1.05); box-shadow: 0 4px 16px rgba(245,158,11,.35); }
+        .audio-status { color: var(--text-muted); font-size: .85rem; font-variant-numeric: tabular-nums; }
+
+        /* Journal prompts */
+        .prompt-card {
+            background: rgba(139,92,246,.06); border: 1px solid rgba(139,92,246,.2);
+            padding: 1rem; border-radius: 12px; margin-bottom: .75rem;
+        }
+        .prompt-card p { color: var(--text-secondary); line-height: 1.55; margin-bottom: .5rem; }
+        .journal-btn {
+            padding: .5rem 1rem; background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+            color: white; border: none; border-radius: 8px; font-weight: 600;
+            cursor: pointer; font-size: .85rem; transition: all .2s;
+        }
+        .journal-btn:hover { transform: scale(1.04); box-shadow: 0 3px 12px rgba(139,92,246,.3); }
+
+        /* Actions */
+        .chapter-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .mark-done-btn {
+            padding: .75rem 1.75rem; background: linear-gradient(135deg, #10b981, #059669);
+            color: white; border: none; border-radius: 12px; font-weight: 700;
+            cursor: pointer; font-size: .95rem; transition: all .25s;
+        }
+        .mark-done-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16,185,129,.35); }
+        .badge-done {
+            padding: .75rem 1.75rem; background: rgba(16,185,129,.15);
+            color: #10b981; border: 1.5px solid #10b981; border-radius: 12px;
+            font-weight: 700; font-size: .95rem;
+        }
+
+        /* Toggle */
+        .expand-btn {
+            width: 100%; padding: .75rem; background: rgba(245,158,11,.06);
+            border: none; border-top: 1px solid var(--glass-border);
+            color: var(--accent-orange); font-weight: 600; cursor: pointer;
+            transition: background .2s; font-size: .9rem;
+        }
+        .expand-btn:hover { background: rgba(245,158,11,.12); }
+
+        /* ─── NEXT PHASE PREVIEW ────────────────────────────── */
+        .next-phase {
+            margin-top: 3rem; padding: 2rem;
+            background: rgba(139,92,246,.05); border: 1px solid rgba(139,92,246,.2);
+            border-radius: 18px; text-align: center;
+        }
+        .next-phase h3 { color: var(--primary-gold); margin-bottom: .75rem; font-size: 1.2rem; }
+        .next-phase p { color: var(--text-secondary); margin-bottom: .5rem; }
+        .next-phase .unlock-text { color: var(--accent-purple); font-weight: 600; }
+
+        /* ─── LOADING ───────────────────────────────────────── */
+        .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 350px; gap: 1rem; }
+        .spinner { width: 52px; height: 52px; border: 3px solid var(--glass-border); border-top-color: var(--accent-orange); border-radius: 50%; animation: spin .9s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ─── TOAST ─────────────────────────────────────────── */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            padding: 1rem 1.5rem; background: rgba(15,15,35,.95); backdrop-filter: blur(12px);
+            color: white; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,.4);
+            opacity: 0; transform: translateY(16px); transition: all .3s ease; z-index: 9000;
+            max-width: 380px; font-size: .9rem;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast-success { border-left: 4px solid #10b981; }
+        .toast-error { border-left: 4px solid #ef4444; }
+        .toast-info { border-left: 4px solid #3b82f6; }
+
+        /* ─── COMPLETION MODAL ──────────────────────────────── */
+        .completion-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,.8); display: flex; align-items: center;
+            justify-content: center; z-index: 9500; padding: 2rem;
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            border: 2px solid var(--primary-gold); border-radius: 22px;
+            padding: 3rem; max-width: 480px; text-align: center;
+        }
+        .modal-content h2 { font-size: 2rem; color: var(--primary-gold); margin-bottom: 1rem; }
+        .modal-content p { color: var(--text-secondary); line-height: 1.6; margin-bottom: .75rem; }
+        .modal-actions { display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .modal-btn {
+            padding: .9rem 1.75rem; border: none; border-radius: 12px;
+            font-weight: 700; cursor: pointer; transition: all .25s; font-size: .95rem;
+        }
+        .modal-btn.primary { background: var(--accent-orange); color: white; }
+        .modal-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245,158,11,.3); }
+        .modal-btn.secondary { background: rgba(255,255,255,.1); color: white; border: 1px solid var(--glass-border); }
+        .modal-btn.secondary:hover { background: rgba(255,255,255,.15); }
+
+        /* ─── ACCESS DENIED ─────────────────────────────────── */
+        .access-denied-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(15,15,35,.98), rgba(26,26,46,.98));
+            display: flex; align-items: center; justify-content: center; z-index: 9999;
+        }
+        .access-denied-card {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(139,92,246,.08), rgba(212,175,55,.08));
+            border: 2px solid var(--accent-purple); border-radius: 22px;
+            padding: 3rem; max-width: 480px;
+        }
+        .access-denied-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+        .access-denied-card h2 {
+            font-size: 1.8rem; margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-orange));
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .access-denied-card p { color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.6; }
+        .access-denied-buttons { display: flex; flex-direction: column; gap: 1rem; }
+        .ad-btn {
+            padding: 1rem; border: none; border-radius: 12px;
+            font-weight: 700; cursor: pointer; transition: all .25s; text-decoration: none; display: block; text-align: center;
+        }
+        .ad-btn.upgrade { background: linear-gradient(135deg, var(--accent-orange), #D97706); color: white; }
+        .ad-btn.upgrade:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,158,11,.3); }
+        .ad-btn.home { background: rgba(255,255,255,.08); color: var(--text-primary); border: 1px solid rgba(212,175,55,.25); }
+        .ad-btn.home:hover { background: rgba(255,255,255,.12); }
+
+        /* ─── RESPONSIVE ────────────────────────────────────── */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .page-header { padding: 1.75rem 1rem; }
+            .page-title { font-size: 1.8rem; }
+            .spotify-section { padding: 1.25rem; }
+            .chapter-header { padding: 1rem; gap: .75rem; }
+            .chapter-content { padding: 0 1rem; }
+            .chapter-actions { flex-direction: column; }
+            .mark-done-btn, .badge-done { width: 100%; text-align: center; }
+            .inline-player { flex-direction: column; align-items: stretch; }
+            .premium-nav-links { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Access Denied (shown for non-premium users) -->
+    <div id="accessDeniedOverlay" class="access-denied-overlay" style="display: none;">
+        <div class="access-denied-card">
+            <div class="access-denied-icon">🔐</div>
+            <h2>Premium Access Required</h2>
+            <p>This sacred journey is exclusively for premium members. Upgrade to unlock Phase 1: Awakening and all premium content.</p>
+            <div class="access-denied-buttons">
+                <a href="pricing.html" class="ad-btn upgrade">💎 Upgrade to Premium</a>
+                <a href="index.html" class="ad-btn home">← Back to Home</a>
             </div>
-        `;
-    }
-}
+        </div>
+    </div>
 
-// Initialize Phase 1 System
-document.addEventListener('DOMContentLoaded', () => {
-    window.phase1System = new Phase1System();
-    window.phase1System.init();
-});
+    <div class="container">
+        <!-- Premium Navigation -->
+        <div class="premium-nav-bar">
+            <div class="premium-nav-title">🔥 Premium Journey Navigation</div>
+            <div class="premium-nav-links">
+                <a href="phase1-awakening.html" class="premium-nav-link active">
+                    <span>🌅</span><span>Phase 1: Awakening</span>
+                </a>
+                <a href="phase2-understanding.html" class="premium-nav-link">
+                    <span>🧠</span><span>Phase 2: Understanding</span>
+                </a>
+                <a href="phase3-mastery.html" class="premium-nav-link">
+                    <span>⚡</span><span>Phase 3: Mastery</span>
+                </a>
+                <a href="phase4-teaching.html" class="premium-nav-link">
+                    <span>👑</span><span>Phase 4: Teaching</span>
+                </a>
+                <a href="audiobook.html" class="premium-nav-link">
+                    <span>📖</span><span>Premium Audiobooks</span>
+                </a>
+                <a href="meditation.html" class="premium-nav-link">
+                    <span>🧘</span><span>Meditation Vault</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="index.html" class="nav-btn">← Back to Home</a>
+            <a href="members-new.html" class="nav-btn">👤 Member Portal</a>
+            <button id="logoutBtn" class="nav-btn danger">Log Out</button>
+        </div>
+
+        <!-- Breadcrumbs -->
+        <div class="breadcrumb-container">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <div class="breadcrumb-item"><a href="index.html">🏠 Home</a></div>
+                <span class="breadcrumb-separator">›</span>
+                <div class="breadcrumb-item"><a href="journey.html">Journey</a></div>
+                <span class="breadcrumb-separator">›</span>
+                <div class="breadcrumb-item"><span class="breadcrumb-current">Phase 1: Awakening</span></div>
+            </nav>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <span class="phase-badge">Phase 1 of 4</span>
+            <div class="header-icon">🌅</div>
+            <h1 class="page-title">Phase 1: Awakening</h1>
+            <p class="page-subtitle">
+                Ya Heard Me — A Journey from Programming to Divine Truth<br>
+                <span style="font-size: .85rem; opacity: .75;">Introduction + 9 Chapters + Conclusion &nbsp;|&nbsp; 90 Days</span>
+            </p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <div class="spinner"></div>
+            <p>Loading your progress…</p>
+        </div>
+
+        <!-- Main Content (hidden until JS renders) -->
+        <div id="mainContent" style="display: none;">
+
+            <!-- Progress -->
+            <div class="progress-section">
+                <div class="progress-header">
+                    <h3 class="progress-title">Your Progress</h3>
+                    <div class="progress-percentage" id="progressPercentage">0%</div>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+                <p class="progress-text" id="progressText">0 of 11 sections completed</p>
+            </div>
+
+            <!-- Spotify Player -->
+            <div class="spotify-section">
+                <div class="spotify-header">
+                    <h2 class="spotify-title">🎵 Ya Heard Me on Spotify</h2>
+                    <p class="spotify-subtitle">Listen via Spotify or play chapters directly below</p>
+                </div>
+
+                <div class="spotify-embed">
+                    <iframe
+                        style="border-radius:12px"
+                        src="https://open.spotify.com/embed/show/6zyMF2ljZyaDYNAJyA5I5l?utm_source=generator&theme=0"
+                        width="100%"
+                        height="232"
+                        frameBorder="0"
+                        allowfullscreen=""
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                        loading="lazy"
+                        title="Ya Heard Me on Spotify">
+                    </iframe>
+                </div>
+
+                <div class="how-it-works">
+                    <strong>📋 How it works:</strong><br>
+                    1. Listen to each section (Spotify above, or play directly in each card below)<br>
+                    2. Read the reflection questions and complete the journal prompts<br>
+                    3. Mark each section complete as you finish it<br>
+                    4. Complete all 11 sections to unlock Phase 2: Understanding
+                </div>
+
+                <div class="spotify-cta">
+                    <a href="https://open.spotify.com/show/6zyMF2ljZyaDYNAJyA5I5l?si=aa90d1ba17294bb7"
+                       target="_blank" rel="noopener noreferrer" class="spotify-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                        Open in Spotify
+                    </a>
+                </div>
+            </div>
+
+            <!-- Chapter Sections -->
+            <div style="margin-bottom: 2.5rem;">
+                <h2 class="section-heading" style="text-align:center; justify-content:center;">📚 Chapter Readings</h2>
+                <p class="section-subtext">Expand each section to listen, reflect, and journal. Mark complete as you go.</p>
+                <div class="chapter-list" id="sectionsContainer">
+                    <!-- Dynamically rendered by phase1-awakening.js -->
+                </div>
+            </div>
+
+            <!-- Next Phase Preview -->
+            <div class="next-phase">
+                <h3>🔮 Phase 2: Understanding</h3>
+                <p>Master the 7 Principles of Aligned Manifestation</p>
+                <p style="font-size:.85rem; color: var(--text-muted);">Complete all 11 sections of Phase 1 to unlock Phase 2</p>
+                <p class="unlock-text" id="unlockProgress" style="margin-top:.5rem;">0/11 sections complete</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Phase 1 Awakening (single unified script — handles everything) -->
+    <script src="js/phase1-awakening.js"></script>
+</body>
+</html>
