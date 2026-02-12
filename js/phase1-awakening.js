@@ -291,25 +291,40 @@
             return;
         }
 
-        // Logged in — check premium status
+        // Logged in — check premium status using AuthHelper
         currentUser = firebaseUser;
         db = firebase.firestore();
 
         try {
-            var userDoc = await db.collection('users').doc(currentUser.uid).get();
-            var d = userDoc.exists ? userDoc.data() : {};
-            var isPremium = d.isPremium || d.membershipStatus === 'premium' ||
+            // Use AuthHelper if available for consistent premium checks
+            var isPremium = false;
+            
+            if (typeof window.AuthHelper !== 'undefined' && typeof window.AuthHelper.hasPremiumAccess === 'function') {
+                // Fetch user data from Firestore
+                var userDoc = await db.collection('users').doc(currentUser.uid).get();
+                var userData = userDoc.exists ? userDoc.data() : null;
+                
+                // Use AuthHelper's unified premium check (includes admin override)
+                isPremium = window.AuthHelper.hasPremiumAccess(userData, currentUser);
+                console.log('✅ Using AuthHelper for premium check:', isPremium);
+            } else {
+                // Fallback to local check if AuthHelper not available
+                var userDoc = await db.collection('users').doc(currentUser.uid).get();
+                var d = userDoc.exists ? userDoc.data() : {};
+                isPremium = d.isPremium || d.membershipStatus === 'premium' ||
                            d.paymentVerified || d.premium === true ||
                            d.premium_status === 'active' || d.membershipLevel === 'premium';
 
-            // Admin override
-            var adminEmails = ['cbevvv@gmail.com'];
-            if (currentUser.email && adminEmails.indexOf(currentUser.email.toLowerCase()) !== -1) {
-                isPremium = true;
+                // Admin override with extended list
+                var adminEmails = ['cbevvv@gmail.com', 'nazir@edenconsciousness.com', 'nazir@edenconsiousness.com'];
+                if (currentUser.email && adminEmails.indexOf(currentUser.email.toLowerCase()) !== -1) {
+                    isPremium = true;
+                }
             }
 
             if (!isPremium) {
                 // Logged in but not premium — show gate
+                console.warn('⛔ User not premium, showing access denied overlay');
                 if (overlay) overlay.style.display = 'flex';
                 if (loading) loading.style.display = 'none';
                 return;
