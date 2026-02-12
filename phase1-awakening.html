@@ -34,41 +34,36 @@
                         clearInterval(checkAccessInterval);
                         
                         firebase.auth().onAuthStateChanged(async (user) => {
-                            if (!user) {
-                                // Not logged in - redirect to login
-                                window.location.href = 'login.html?redirect=phase1-awakening.html';
-                                return;
-                            }
+                            if (user) {
+                                // Check if user has premium access
+                                try {
+                                    const db = firebase.firestore();
+                                    const userDoc = await db.collection('users').doc(user.uid).get();
+                                    const userData = userDoc.data() || {};
+                                    
+                                    // Check for premium subscription/payment
+                                    const isPremium = userData.isPremium || userData.membershipStatus === 'premium' || userData.paymentVerified;
+                                    
+                                    if (!isPremium) {
+                                        // Show access denied overlay
+                                        document.getElementById('accessDeniedOverlay').style.display = 'flex';
+                                        document.getElementById('loadingState').style.display = 'none';
+                                        console.warn('⛔ Non-premium user attempted to access Phase 1: Awakening');
+                                    } else {
+                                        // Premium user - hide access denied overlay
+                                        document.getElementById('accessDeniedOverlay').style.display = 'none';
+                                        resolve(true);
+                                    }
 
-                            // Check if user has premium access
-                            try {
-                                const db = firebase.firestore();
-                                const userDoc = await db.collection('users').doc(user.uid).get();
-                                const userData = userDoc.data() || {};
-                                
-                                // Check for premium subscription/payment
-                                const isPremium = userData.isPremium || userData.membershipStatus === 'premium' || userData.paymentVerified;
-                                
-                                if (!isPremium) {
-                                    // Show access denied overlay
-                                    document.getElementById('accessDeniedOverlay').style.display = 'flex';
-                                    document.getElementById('loadingState').style.display = 'none';
-                                    console.warn('⛔ Non-premium user attempted to access Phase 1: Awakening');
-                                } else {
-                                    // Premium user - hide access denied overlay
-                                    document.getElementById('accessDeniedOverlay').style.display = 'none';
-                                    resolve(true);
-                                }
-
-                                // Setup logout button
-                                const logoutBtn = document.getElementById('logoutBtn');
-                                if (logoutBtn) {
-                                    logoutBtn.addEventListener('click', () => {
-                                        firebase.auth().signOut().then(() => {
-                                            window.location.href = 'login.html';
+                                    // Setup logout button
+                                    const logoutBtn = document.getElementById('logoutBtn');
+                                    if (logoutBtn) {
+                                        logoutBtn.addEventListener('click', () => {
+                                            firebase.auth().signOut().then(() => {
+                                                window.location.href = 'dashboard.html';
+                                            });
                                         });
-                                    });
-                                }
+                                    }
 
                             } catch (error) {
                                 console.error('Error checking premium access:', error);
