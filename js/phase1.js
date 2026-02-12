@@ -16,9 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Check authentication
     firebase.auth().onAuthStateChanged(async (firebaseUser) => {
         if (!firebaseUser) {
-            console.log('⛔ User not logged in - redirecting...');
-            window.location.href = 'login.html?redirect=phase1-awakening.html';
-            return;
+            console.log('⛔ User not logged in')
         }
 
         user = firebaseUser;
