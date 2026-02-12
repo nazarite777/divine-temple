@@ -1,0 +1,38 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Allow authenticated users to read/write to their own user directory
+    match /users/{userId}/{allPaths=**} {
+      allow read, write: if request.auth.uid == userId;
+    }
+
+    // Allow public read access to published content
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+    }
+
+    // Phase 1 Awakening - User journals and notes
+    match /phase1-awakening/{userId}/{allPaths=**} {
+      allow read, write: if request.auth.uid == userId;
+      allow read: if isAdmin();
+    }
+
+    // Audio files - Read-only for all authenticated users
+    match /audio/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // Images and media - Read-only for all authenticated users
+    match /media/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth.token.email in ['cbevvv@gmail.com'];
+    }
+  }
+}
