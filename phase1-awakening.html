@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phase 1: The Awakening - Divine Temple | Firebase-Powered</title>
+    <title>Phase 1: The Awakening — Ya Heard Me | Eden Consciousness</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Styles -->
@@ -17,78 +17,61 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
-    <!-- Divine Temple Systems -->
+    <!-- Divine Temple Core -->
     <script src="js/firebase-config.js"></script>
     <script src="js/auth-helper.js"></script>
-    <!-- <script src="js/journey-gate.js"></script> -->
     <script src="js/premium-access-control.js"></script>
     <script src="js/header.js" defer></script>
 
-    <!-- Premium Access Gate - Must be paid member -->
+    <!-- Premium Access Gate -->
     <script>
-        // Check premium access before loading content
         function checkPremiumAccess() {
-            return new Promise((resolve) => {
-                const checkAccessInterval = setInterval(() => {
+            return new Promise(function (resolve) {
+                var checkId = setInterval(function () {
                     if (typeof firebase !== 'undefined' && firebase.auth) {
-                        clearInterval(checkAccessInterval);
-                        
-                        firebase.auth().onAuthStateChanged(async (user) => {
-                            if (user) {
-                                // Check if user has premium access
-                                try {
-                                    const db = firebase.firestore();
-                                    const userDoc = await db.collection('users').doc(user.uid).get();
-                                    const userData = userDoc.data() || {};
-                                    
-                                    // Check for premium subscription/payment
-                                    const isPremium = userData.isPremium || userData.membershipStatus === 'premium' || userData.paymentVerified;
-                                    
-                                    if (!isPremium) {
-                                        // Show access denied overlay
-                                        document.getElementById('accessDeniedOverlay').style.display = 'flex';
-                                        document.getElementById('loadingState').style.display = 'none';
-                                        console.warn('⛔ Non-premium user attempted to access Phase 1: Awakening');
-                                    } else {
-                                        // Premium user - hide access denied overlay
-                                        document.getElementById('accessDeniedOverlay').style.display = 'none';
-                                        resolve(true);
-                                    }
-
-                                    // Setup logout button
-                                    const logoutBtn = document.getElementById('logoutBtn');
-                                    if (logoutBtn) {
-                                        logoutBtn.addEventListener('click', () => {
-                                            firebase.auth().signOut().then(() => {
-                                                window.location.href = 'dashboard.html';
-                                            });
-                                        });
-                                    }
-
-                            } catch (error) {
-                                console.error('Error checking premium access:', error);
+                        clearInterval(checkId);
+                        firebase.auth().onAuthStateChanged(async function (user) {
+                            if (!user) { resolve(false); return; }
+                            try {
+                                var doc = await firebase.firestore().collection('users').doc(user.uid).get();
+                                var d = doc.data() || {};
+                                var ok = d.isPremium || d.membershipStatus === 'premium' || d.paymentVerified;
+                                if (!ok) {
+                                    document.getElementById('accessDeniedOverlay').style.display = 'flex';
+                                    document.getElementById('loadingState').style.display = 'none';
+                                } else {
+                                    document.getElementById('accessDeniedOverlay').style.display = 'none';
+                                }
+                                resolve(!!ok);
+                            } catch (e) {
+                                console.error('Premium check error:', e);
                                 resolve(false);
+                            }
+                            var logoutBtn = document.getElementById('logoutBtn');
+                            if (logoutBtn) {
+                                logoutBtn.addEventListener('click', function () {
+                                    firebase.auth().signOut().then(function () {
+                                        window.location.href = 'dashboard.html';
+                                    });
+                                });
                             }
                         });
                     }
                 }, 100);
-
-                // Timeout after 5 seconds of checking
-                setTimeout(() => clearInterval(checkAccessInterval), 5000);
+                setTimeout(function () { clearInterval(checkId); }, 6000);
             });
         }
-
-        // Run access check when page loads
         checkPremiumAccess();
     </script>
 
     <style>
+        /* ─── VARIABLES ─────────────────────────────────────── */
         :root {
             --primary-gold: #D4AF37;
-            --accent-purple: #8B5CF6;
             --accent-orange: #F59E0B;
+            --accent-purple: #8B5CF6;
             --accent-blue: #4fc3f7;
-            --accent-green: #66bb6a;
+            --accent-green: #10b981;
             --dark-bg: #0F0F23;
             --glass-bg: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
@@ -97,11 +80,7 @@
             --text-muted: rgba(255, 255, 255, 0.6);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -113,840 +92,332 @@
 
         body::before {
             content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background:
-                radial-gradient(circle at 20% 30%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
+                radial-gradient(circle at 20% 30%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+            pointer-events: none; z-index: -1;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
 
-        /* Navigation */
-        .nav-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
+        /* ─── NAV ───────────────────────────────────────────── */
+        .nav-buttons { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
         .nav-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.875rem 1.5rem;
-            background: var(--glass-bg);
+            display: inline-flex; align-items: center; gap: .5rem;
+            padding: .75rem 1.25rem;
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 12px;
+            color: white; cursor: pointer; font-weight: 600; text-decoration: none;
+            transition: all .25s ease;
+        }
+        .nav-btn:hover { background: rgba(255,255,255,.1); transform: translateX(-3px); }
+        .nav-btn.danger { background: #ef4444; border-color: #ef4444; }
+        .nav-btn.danger:hover { background: #dc2626; }
+
+        /* ─── PREMIUM NAV BAR ───────────────────────────────── */
+        .premium-nav-bar {
+            background: linear-gradient(90deg, rgba(212,175,55,.12), rgba(139,92,246,.12));
+            border: 1.5px solid var(--accent-orange); border-radius: 18px;
+            padding: 1.25rem; margin-bottom: 2rem; backdrop-filter: blur(20px);
+        }
+        .premium-nav-title {
+            font-size: .85rem; font-weight: 700; color: var(--accent-orange);
+            margin-bottom: .75rem; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .premium-nav-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .75rem; }
+        .premium-nav-link {
+            display: flex; align-items: center; gap: .6rem; padding: .75rem;
+            background: rgba(255,255,255,.04); border: 1px solid rgba(212,175,55,.25);
+            border-radius: 10px; color: var(--text-primary); text-decoration: none;
+            font-weight: 600; font-size: .9rem; transition: all .25s ease;
+        }
+        .premium-nav-link:hover { background: rgba(212,175,55,.15); border-color: var(--accent-orange); transform: translateY(-2px); }
+        .premium-nav-link.active { background: var(--accent-orange); border-color: var(--accent-orange); color: white; }
+
+        /* ─── HEADER ────────────────────────────────────────── */
+        .page-header {
+            text-align: center; margin-bottom: 2.5rem; padding: 2.5rem 2rem;
+            background: linear-gradient(135deg, rgba(245,158,11,.08), rgba(212,175,55,.08));
             backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            text-decoration: none;
+            border: 1.5px solid var(--accent-orange); border-radius: 22px;
         }
-
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(-5px);
-        }
-
-        .nav-btn.primary {
-            background: var(--accent-orange);
-            border-color: var(--accent-orange);
-        }
-
-        .nav-btn.primary:hover {
-            background: #D97706;
-            transform: translateY(-2px);
-        }
-
-        /* Header */
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 3rem 2rem;
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(212, 175, 55, 0.1));
-            backdrop-filter: blur(20px);
-            border: 2px solid var(--accent-orange);
-            border-radius: 25px;
-        }
-
         .phase-badge {
-            display: inline-block;
-            background: var(--accent-orange);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 20px;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            display: inline-block; background: var(--accent-orange); color: white;
+            padding: .4rem 1.2rem; border-radius: 20px; font-weight: 700; font-size: .8rem;
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: .75rem;
         }
-
-        .header-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        .title {
+        .header-icon { font-size: 3.5rem; margin-bottom: .75rem; }
+        .page-title {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
-            font-weight: 700;
+            font-size: clamp(2rem, 5vw, 3rem); font-weight: 700;
             background: linear-gradient(135deg, var(--accent-orange), var(--primary-gold));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; margin-bottom: .75rem;
         }
+        .page-subtitle { font-size: 1.1rem; color: var(--text-secondary); max-width: 650px; margin: 0 auto; line-height: 1.5; }
 
-        .subtitle {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        /* Progress Section */
+        /* ─── PROGRESS ──────────────────────────────────────── */
         .progress-section {
-            background: var(--glass-bg);
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 18px;
+            padding: 1.75rem; margin-bottom: 2.5rem;
+        }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .75rem; }
+        .progress-title { font-size: 1.15rem; font-weight: 700; }
+        .progress-percentage { font-size: 1.8rem; font-weight: 700; color: var(--accent-orange); }
+        .progress-track { width: 100%; height: 16px; background: rgba(0,0,0,.3); border-radius: 8px; overflow: hidden; margin-bottom: .5rem; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-orange), var(--primary-gold)); border-radius: 8px; transition: width .5s ease; }
+        .progress-text { color: var(--text-muted); font-size: .9rem; }
+
+        /* ─── SPOTIFY PLAYER ────────────────────────────────── */
+        .spotify-section {
+            background: linear-gradient(135deg, rgba(29,185,84,.08), rgba(212,175,55,.06));
             backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 3rem;
+            border: 1.5px solid rgba(29,185,84,.35); border-radius: 22px;
+            padding: 2rem; margin-bottom: 2.5rem;
         }
+        .spotify-header { text-align: center; margin-bottom: 1.5rem; }
+        .spotify-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: #1DB954; margin-bottom: .4rem; }
+        .spotify-subtitle { color: var(--text-secondary); font-size: .95rem; }
+        .spotify-embed { border-radius: 12px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,.15); margin-bottom: 1.5rem; }
+        .how-it-works {
+            background: rgba(139,92,246,.08); border-left: 3px solid var(--accent-purple);
+            padding: 1rem 1.25rem; border-radius: 0 10px 10px 0; color: var(--text-secondary);
+            font-size: .9rem; line-height: 1.7;
+        }
+        .how-it-works strong { color: var(--primary-gold); }
+        .spotify-cta { text-align: center; margin-top: 1.25rem; }
+        .spotify-btn {
+            display: inline-flex; align-items: center; gap: .5rem;
+            background: #1DB954; color: white; padding: .75rem 1.5rem;
+            border-radius: 24px; text-decoration: none; font-weight: 600;
+            transition: transform .2s, box-shadow .2s;
+            box-shadow: 0 4px 12px rgba(29,185,84,.3);
+        }
+        .spotify-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(29,185,84,.4); }
 
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .progress-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-        }
-
-        .progress-percentage {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--accent-orange);
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 0.5rem;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-orange), var(--primary-gold));
-            border-radius: 10px;
-            transition: width 0.5s ease;
-        }
-
-        .progress-text {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        /* Audiobook Player */
-        .audiobook-player {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(212, 175, 55, 0.1));
-            backdrop-filter: blur(20px);
-            border: 2px solid var(--accent-orange);
-            border-radius: 25px;
-            padding: 2.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .player-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .player-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--accent-orange);
-        }
-
-        .player-subtitle {
-            color: var(--text-secondary);
-        }
-
-        .audio-controls {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        audio {
-            width: 100%;
-            height: 50px;
-            border-radius: 10px;
-        }
-
-        .playback-info {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 1rem;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        /* Chapter List */
-        .chapters-section {
-            margin-bottom: 3rem;
-        }
-
-        .section-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .chapter-list {
-            display: grid;
-            gap: 1.5rem;
-        }
+        /* ─── CHAPTER CARDS ─────────────────────────────────── */
+        .section-heading { font-size: 1.6rem; font-weight: 700; margin-bottom: .5rem; display: flex; align-items: center; gap: .6rem; }
+        .section-subtext { text-align: center; color: var(--text-secondary); margin-bottom: 2rem; font-size: .95rem; }
+        .chapter-list { display: grid; gap: 1.25rem; }
 
         .chapter-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 2px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border: 1.5px solid var(--glass-border); border-radius: 18px;
+            overflow: hidden; transition: all .3s ease;
         }
-
-        .chapter-card:hover {
-            border-color: var(--accent-orange);
-            transform: translateX(5px);
-        }
-
-        .chapter-card.completed {
-            border-color: var(--accent-green);
-            background: linear-gradient(135deg, var(--glass-bg), rgba(102, 187, 106, 0.1));
-        }
-
-        .chapter-card.completed::after {
-            content: '?';
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            width: 40px;
-            height: 40px;
-            background: var(--accent-green);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: white;
-        }
-
-        .chapter-card.current {
-            border-color: var(--accent-orange);
-            background: linear-gradient(135deg, var(--glass-bg), rgba(245, 158, 11, 0.1));
-        }
+        .chapter-card:hover { border-color: rgba(245,158,11,.4); }
+        .chapter-card.completed { border-color: var(--accent-green); border-left: 4px solid var(--accent-green); }
 
         .chapter-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 1rem;
+            padding: 1.25rem 1.5rem; cursor: pointer; transition: background .2s;
         }
-
+        .chapter-header:hover { background: rgba(255,255,255,.03); }
         .chapter-number {
+            width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; font-weight: 700; color: white;
             background: var(--accent-orange);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            font-weight: 700;
-            flex-shrink: 0;
+        }
+        .chapter-card.completed .chapter-number { background: var(--accent-green); }
+        .chapter-info { flex: 1; min-width: 0; }
+        .chapter-title { font-size: 1.1rem; font-weight: 700; margin-bottom: .15rem; }
+        .chapter-duration { color: var(--text-muted); font-size: .85rem; }
+        .chapter-status { font-size: .85rem; font-weight: 600; flex-shrink: 0; white-space: nowrap; }
+
+        /* Expandable content */
+        .chapter-content { padding: 0 1.5rem; max-height: 5000px; overflow: hidden; transition: max-height .35s ease, opacity .35s ease, padding .35s ease; opacity: 1; }
+        .chapter-content.collapsed { max-height: 0; opacity: 0; padding-top: 0; padding-bottom: 0; }
+
+        .content-section { margin-bottom: 1.5rem; }
+        .content-section h4 { font-size: 1rem; font-weight: 700; color: var(--accent-orange); margin-bottom: .6rem; }
+        .content-section p { color: var(--text-secondary); line-height: 1.65; }
+
+        .reflection-list { padding-left: 1.25rem; }
+        .reflection-list li { padding: .5rem 0; color: var(--text-secondary); line-height: 1.5; }
+
+        /* Inline audio player */
+        .inline-player {
+            display: flex; align-items: center; gap: 1rem;
+            background: rgba(0,0,0,.25); border-radius: 12px; padding: 1rem;
+        }
+        .play-btn {
+            padding: .6rem 1.25rem; background: linear-gradient(135deg, var(--accent-orange), #D97706);
+            color: white; border: none; border-radius: 10px; font-weight: 700;
+            cursor: pointer; transition: all .2s; white-space: nowrap; font-size: .9rem;
+        }
+        .play-btn:hover { transform: scale(1.05); box-shadow: 0 4px 16px rgba(245,158,11,.35); }
+        .audio-status { color: var(--text-muted); font-size: .85rem; font-variant-numeric: tabular-nums; }
+
+        /* Journal prompts */
+        .prompt-card {
+            background: rgba(139,92,246,.06); border: 1px solid rgba(139,92,246,.2);
+            padding: 1rem; border-radius: 12px; margin-bottom: .75rem;
+        }
+        .prompt-card p { color: var(--text-secondary); line-height: 1.55; margin-bottom: .5rem; }
+        .journal-btn {
+            padding: .5rem 1rem; background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+            color: white; border: none; border-radius: 8px; font-weight: 600;
+            cursor: pointer; font-size: .85rem; transition: all .2s;
+        }
+        .journal-btn:hover { transform: scale(1.04); box-shadow: 0 3px 12px rgba(139,92,246,.3); }
+
+        /* Actions */
+        .chapter-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .mark-done-btn {
+            padding: .75rem 1.75rem; background: linear-gradient(135deg, #10b981, #059669);
+            color: white; border: none; border-radius: 12px; font-weight: 700;
+            cursor: pointer; font-size: .95rem; transition: all .25s;
+        }
+        .mark-done-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16,185,129,.35); }
+        .badge-done {
+            padding: .75rem 1.75rem; background: rgba(16,185,129,.15);
+            color: #10b981; border: 1.5px solid #10b981; border-radius: 12px;
+            font-weight: 700; font-size: .95rem;
         }
 
-        .chapter-card.completed .chapter-number {
-            background: var(--accent-green);
+        /* Toggle */
+        .expand-btn {
+            width: 100%; padding: .75rem; background: rgba(245,158,11,.06);
+            border: none; border-top: 1px solid var(--glass-border);
+            color: var(--accent-orange); font-weight: 600; cursor: pointer;
+            transition: background .2s; font-size: .9rem;
         }
+        .expand-btn:hover { background: rgba(245,158,11,.12); }
 
-        .chapter-info {
-            flex-grow: 1;
+        /* ─── NEXT PHASE PREVIEW ────────────────────────────── */
+        .next-phase {
+            margin-top: 3rem; padding: 2rem;
+            background: rgba(139,92,246,.05); border: 1px solid rgba(139,92,246,.2);
+            border-radius: 18px; text-align: center;
         }
+        .next-phase h3 { color: var(--primary-gold); margin-bottom: .75rem; font-size: 1.2rem; }
+        .next-phase p { color: var(--text-secondary); margin-bottom: .5rem; }
+        .next-phase .unlock-text { color: var(--accent-purple); font-weight: 600; }
 
-        .chapter-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-        }
+        /* ─── LOADING ───────────────────────────────────────── */
+        .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 350px; gap: 1rem; }
+        .spinner { width: 52px; height: 52px; border: 3px solid var(--glass-border); border-top-color: var(--accent-orange); border-radius: 50%; animation: spin .9s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .chapter-duration {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .chapter-content {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--glass-border);
-        }
-
-        .content-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .content-section h4 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-            color: var(--accent-orange);
-        }
-
-        .content-section p {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 0.5rem;
-        }
-
-        .discussion-questions {
-            list-style: none;
-        }
-
-        .discussion-questions li {
-            padding: 0.75rem 0;
-            color: var(--text-secondary);
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .discussion-questions li::before {
-            content: '??';
-            flex-shrink: 0;
-        }
-
-        .journal-prompts {
-            list-style: none;
-        }
-
-        .journal-prompts li {
-            padding: 0.75rem 0;
-            color: var(--text-secondary);
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .journal-prompts li::before {
-            content: '??';
-            flex-shrink: 0;
-        }
-
-        .chapter-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 0.875rem 1.75rem;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            font-size: 1rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: var(--accent-orange);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #D97706;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(245, 158, 11, 0.3);
-        }
-
-        .btn-secondary {
-            background: var(--glass-bg);
-            color: white;
-            border: 1px solid var(--glass-border);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .btn-success {
-            background: var(--accent-green);
-            color: white;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Loading State */
-        .loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 400px;
-            gap: 1rem;
-        }
-
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid var(--glass-border);
-            border-top-color: var(--accent-orange);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-
-            .header {
-                padding: 2rem 1rem;
-            }
-
-            .title {
-                font-size: 2rem;
-            }
-
-            .audiobook-player {
-                padding: 1.5rem;
-            }
-
-            .chapter-actions {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        /* New Styles for Collapsible Sections */
-        .chapter-content {
-            max-height: 5000px;
-            overflow: hidden;
-            transition: max-height 0.3s ease, opacity 0.3s ease;
-            opacity: 1;
-        }
-
-        .chapter-content.collapsed {
-            max-height: 0;
-            opacity: 0;
-        }
-
-        .expand-button {
-            width: 100%;
-            padding: 1rem;
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 0 0 15px 15px;
-            color: var(--accent-purple);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-top: -1px;
-        }
-
-        .expand-button:hover {
-            background: rgba(139, 92, 246, 0.2);
-        }
-
-        .journal-button {
-            padding: 0.5rem 1rem;
-            background: linear-gradient(135deg, #8B5CF6, #3B82F6);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
-
-        .journal-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-        }
-
-        .prompt {
-            background: rgba(139, 92, 246, 0.05);
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-        }
-
-        .complete-button {
-            padding: 0.875rem 2rem;
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .complete-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-        }
-
-        .completed-badge {
-            padding: 0.875rem 2rem;
-            background: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-            border: 2px solid #10b981;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: default;
-        }
-
-        .chapter-card.completed {
-            border-left: 4px solid #10b981;
-        }
-
-        .chapter-card.completed .chapter-header {
-            background: rgba(16, 185, 129, 0.1);
-        }
-
-        /* Toast Notifications */
+        /* ─── TOAST ─────────────────────────────────────────── */
         .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-            z-index: 1000;
+            position: fixed; bottom: 24px; right: 24px;
+            padding: 1rem 1.5rem; background: rgba(15,15,35,.95); backdrop-filter: blur(12px);
+            color: white; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,.4);
+            opacity: 0; transform: translateY(16px); transition: all .3s ease; z-index: 9000;
+            max-width: 380px; font-size: .9rem;
         }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast-success { border-left: 4px solid #10b981; }
+        .toast-error { border-left: 4px solid #ef4444; }
+        .toast-info { border-left: 4px solid #3b82f6; }
 
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .toast.toast-success {
-            border-left: 4px solid #10b981;
-        }
-
-        .toast.toast-error {
-            border-left: 4px solid #ef4444;
-        }
-
-        .toast.toast-info {
-            border-left: 4px solid #3b82f6;
-        }
-
-        /* Completion Modal */
+        /* ─── COMPLETION MODAL ──────────────────────────────── */
         .completion-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            padding: 2rem;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,.8); display: flex; align-items: center;
+            justify-content: center; z-index: 9500; padding: 2rem;
         }
-
         .modal-content {
             background: linear-gradient(135deg, #1a1a2e, #0f3460);
-            border: 2px solid var(--accent-gold);
-            border-radius: 20px;
-            padding: 3rem;
-            max-width: 500px;
-            text-align: center;
+            border: 2px solid var(--primary-gold); border-radius: 22px;
+            padding: 3rem; max-width: 480px; text-align: center;
         }
-
-        .modal-content h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: var(--accent-gold);
+        .modal-content h2 { font-size: 2rem; color: var(--primary-gold); margin-bottom: 1rem; }
+        .modal-content p { color: var(--text-secondary); line-height: 1.6; margin-bottom: .75rem; }
+        .modal-actions { display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .modal-btn {
+            padding: .9rem 1.75rem; border: none; border-radius: 12px;
+            font-weight: 700; cursor: pointer; transition: all .25s; font-size: .95rem;
         }
+        .modal-btn.primary { background: var(--accent-orange); color: white; }
+        .modal-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245,158,11,.3); }
+        .modal-btn.secondary { background: rgba(255,255,255,.1); color: white; border: 1px solid var(--glass-border); }
+        .modal-btn.secondary:hover { background: rgba(255,255,255,.15); }
 
-        .modal-content p {
-            margin-bottom: 1rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .modal-actions button {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        /* Fallback notice banner */
-        .fallback-notice {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.1));
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            border-radius: 12px;
-            padding: 1rem 1.5rem;
-            margin-bottom: 2rem;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            display: none;
-        }
-
-        .fallback-notice strong {
-            color: var(--accent-orange);
-        }
-
-        /* Premium Navigation Bar */
-        .premium-nav-bar {
-            background: linear-gradient(90deg, rgba(212, 175, 55, 0.15), rgba(139, 92, 246, 0.15));
-            border: 2px solid var(--accent-orange);
-            border-radius: 20px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            backdrop-filter: blur(20px);
-        }
-
-        .premium-nav-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--accent-orange);
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .premium-nav-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .premium-nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 12px;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .premium-nav-link:hover {
-            background: rgba(212, 175, 55, 0.2);
-            border-color: var(--accent-orange);
-            transform: translateY(-2px);
-        }
-
-        .premium-nav-link.active {
-            background: var(--accent-orange);
-            border-color: var(--accent-orange);
-            color: white;
-        }
-
-        .premium-nav-link-icon {
-            font-size: 1.3rem;
-        }
-
-        /* Access Denied Overlay */
+        /* ─── ACCESS DENIED ─────────────────────────────────── */
         .access-denied-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(15, 15, 35, 0.98), rgba(26, 26, 46, 0.98));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(15,15,35,.98), rgba(26,26,46,.98));
+            display: flex; align-items: center; justify-content: center; z-index: 9999;
         }
-
         .access-denied-card {
             text-align: center;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(212, 175, 55, 0.1));
-            border: 2px solid var(--accent-purple);
-            border-radius: 25px;
-            padding: 3rem;
-            max-width: 500px;
+            background: linear-gradient(135deg, rgba(139,92,246,.08), rgba(212,175,55,.08));
+            border: 2px solid var(--accent-purple); border-radius: 22px;
+            padding: 3rem; max-width: 480px;
         }
-
-        .access-denied-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
+        .access-denied-icon { font-size: 3.5rem; margin-bottom: 1rem; }
         .access-denied-card h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
+            font-size: 1.8rem; margin-bottom: 1rem;
             background: linear-gradient(135deg, var(--accent-purple), var(--accent-orange));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
         }
-
-        .access-denied-card p {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
+        .access-denied-card p { color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.6; }
+        .access-denied-buttons { display: flex; flex-direction: column; gap: 1rem; }
+        .ad-btn {
+            padding: 1rem; border: none; border-radius: 12px;
+            font-weight: 700; cursor: pointer; transition: all .25s; text-decoration: none; display: block; text-align: center;
         }
+        .ad-btn.upgrade { background: linear-gradient(135deg, var(--accent-orange), #D97706); color: white; }
+        .ad-btn.upgrade:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,158,11,.3); }
+        .ad-btn.home { background: rgba(255,255,255,.08); color: var(--text-primary); border: 1px solid rgba(212,175,55,.25); }
+        .ad-btn.home:hover { background: rgba(255,255,255,.12); }
 
-        .access-denied-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-direction: column;
-        }
-
-        .access-denied-btn {
-            padding: 1rem;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .access-denied-btn.upgrade {
-            background: linear-gradient(135deg, var(--accent-orange), #F59E0B);
-            color: white;
-        }
-
-        .access-denied-btn.upgrade:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
-        }
-
-        .access-denied-btn.home {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-        }
-
-        .access-denied-btn.home:hover {
-            background: rgba(255, 255, 255, 0.15);
+        /* ─── RESPONSIVE ────────────────────────────────────── */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .page-header { padding: 1.75rem 1rem; }
+            .page-title { font-size: 1.8rem; }
+            .spotify-section { padding: 1.25rem; }
+            .chapter-header { padding: 1rem; gap: .75rem; }
+            .chapter-content { padding: 0 1rem; }
+            .chapter-actions { flex-direction: column; }
+            .mark-done-btn, .badge-done { width: 100%; text-align: center; }
+            .inline-player { flex-direction: column; align-items: stretch; }
+            .premium-nav-links { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
 <body>
-    <!-- Access Denied Message (shown if not premium member) -->
+    <!-- Access Denied (shown for non-premium users) -->
     <div id="accessDeniedOverlay" class="access-denied-overlay" style="display: none;">
         <div class="access-denied-card">
             <div class="access-denied-icon">🔐</div>
             <h2>Premium Access Required</h2>
-            <p>
-                This sacred journey is exclusively for our premium members. Upgrade your membership to unlock Phase 1: Awakening and all premium content.
-            </p>
+            <p>This sacred journey is exclusively for premium members. Upgrade to unlock Phase 1: Awakening and all premium content.</p>
             <div class="access-denied-buttons">
-                <a href="pricing.html" class="access-denied-btn upgrade">💎 Upgrade to Premium</a>
-                <a href="index.html" class="access-denied-btn home">← Back to Home</a>
+                <a href="pricing.html" class="ad-btn upgrade">💎 Upgrade to Premium</a>
+                <a href="index.html" class="ad-btn home">← Back to Home</a>
             </div>
         </div>
     </div>
 
     <div class="container">
-        <!-- Premium Navigation Bar - Gateway to All Premium Content -->
-        <div class="premium-nav-bar" id="premiumNavBar">
+        <!-- Premium Navigation -->
+        <div class="premium-nav-bar">
             <div class="premium-nav-title">🔥 Premium Journey Navigation</div>
             <div class="premium-nav-links">
                 <a href="phase1-awakening.html" class="premium-nav-link active">
-                    <span class="premium-nav-link-icon">🌅</span>
-                    <span>Phase 1: Awakening</span>
+                    <span>🌅</span><span>Phase 1: Awakening</span>
                 </a>
                 <a href="phase2-understanding.html" class="premium-nav-link">
-                    <span class="premium-nav-link-icon">🧠</span>
-                    <span>Phase 2: Understanding</span>
+                    <span>🧠</span><span>Phase 2: Understanding</span>
                 </a>
                 <a href="phase3-mastery.html" class="premium-nav-link">
-                    <span class="premium-nav-link-icon">⚡</span>
-                    <span>Phase 3: Mastery</span>
+                    <span>⚡</span><span>Phase 3: Mastery</span>
                 </a>
                 <a href="phase4-teaching.html" class="premium-nav-link">
-                    <span class="premium-nav-link-icon">👑</span>
-                    <span>Phase 4: Teaching</span>
+                    <span>👑</span><span>Phase 4: Teaching</span>
                 </a>
                 <a href="audiobook.html" class="premium-nav-link">
-                    <span class="premium-nav-link-icon">📖</span>
-                    <span>Premium Audiobooks</span>
+                    <span>📖</span><span>Premium Audiobooks</span>
                 </a>
                 <a href="meditation.html" class="premium-nav-link">
-                    <span class="premium-nav-link-icon">🧘</span>
-                    <span>Meditation Vault</span>
+                    <span>🧘</span><span>Meditation Vault</span>
                 </a>
             </div>
         </div>
@@ -954,241 +425,114 @@
         <div class="nav-buttons">
             <a href="index.html" class="nav-btn">← Back to Home</a>
             <a href="members-new.html" class="nav-btn">👤 Member Portal</a>
-            <button id="logoutBtn" class="nav-btn primary" style="background: #ef4444; border-color: #ef4444;">Log Out</button>
+            <button id="logoutBtn" class="nav-btn danger">Log Out</button>
         </div>
 
-        <!-- Breadcrumb Navigation -->
+        <!-- Breadcrumbs -->
         <div class="breadcrumb-container">
             <nav class="breadcrumb" aria-label="Breadcrumb">
-                <div class="breadcrumb-item">
-                    <a href="index.html">?? Home</a>
-                </div>
-                <span class="breadcrumb-separator">�</span>
-                <div class="breadcrumb-item">
-                    <a href="journey.html">Journey</a>
-                </div>
-                <span class="breadcrumb-separator">�</span>
-                <div class="breadcrumb-item">
-                    <span class="breadcrumb-current">Phase 1: Awakening</span>
-                </div>
+                <div class="breadcrumb-item"><a href="index.html">🏠 Home</a></div>
+                <span class="breadcrumb-separator">›</span>
+                <div class="breadcrumb-item"><a href="journey.html">Journey</a></div>
+                <span class="breadcrumb-separator">›</span>
+                <div class="breadcrumb-item"><span class="breadcrumb-current">Phase 1: Awakening</span></div>
             </nav>
         </div>
 
-        <div class="header">
+        <!-- Page Header -->
+        <div class="page-header">
             <span class="phase-badge">Phase 1 of 4</span>
-            <div class="header-icon">??</div>
-            <h1 class="title">Phase 1: Awakening</h1>
-            <p class="subtitle">
-                Ya Heard Me - A Journey from Programming to Divine Truth<br>
-                <span style="font-size: 0.9rem; opacity: 0.8;">Introduction + 9 Chapters + Conclusion | 90 Days</span>
+            <div class="header-icon">🌅</div>
+            <h1 class="page-title">Phase 1: Awakening</h1>
+            <p class="page-subtitle">
+                Ya Heard Me — A Journey from Programming to Divine Truth<br>
+                <span style="font-size: .85rem; opacity: .75;">Introduction + 9 Chapters + Conclusion &nbsp;|&nbsp; 90 Days</span>
             </p>
-        </div>
-
-        <!-- Fallback Notice (shown only when fallback triggers) -->
-        <div class="fallback-notice" id="fallbackNotice">
-            <strong>?? Note:</strong> Progress tracking is loading in offline mode. Your progress may not be saved until the connection is restored. Try refreshing the page, or check your internet connection.
         </div>
 
         <!-- Loading State -->
         <div id="loadingState" class="loading">
             <div class="spinner"></div>
-            <p>Loading your progress...</p>
+            <p>Loading your progress…</p>
         </div>
 
-        <!-- Main Content (hidden until loaded) -->
+        <!-- Main Content (hidden until JS renders) -->
         <div id="mainContent" style="display: none;">
 
-            <!-- Progress Section -->
+            <!-- Progress -->
             <div class="progress-section">
                 <div class="progress-header">
                     <h3 class="progress-title">Your Progress</h3>
                     <div class="progress-percentage" id="progressPercentage">0%</div>
                 </div>
-                <div class="progress-bar">
-                    <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
                 </div>
                 <p class="progress-text" id="progressText">0 of 11 sections completed</p>
             </div>
 
-            <!-- Audiobook Player -->
-            <div class="audiobook-player">
-                <div class="player-header">
-                    <h2 class="player-title">?? Ya Heard Me Audiobook on Spotify</h2>
-                    <p class="player-subtitle">Listen on Spotify and mark chapters complete below to track your progress</p>
+            <!-- Spotify Player -->
+            <div class="spotify-section">
+                <div class="spotify-header">
+                    <h2 class="spotify-title">🎵 Ya Heard Me on Spotify</h2>
+                    <p class="spotify-subtitle">Listen via Spotify or play chapters directly below</p>
                 </div>
 
-                <!-- Spotify Podcast Embed -->
-                <div class="spotify-embed-container" style="margin: 2rem 0; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+                <div class="spotify-embed">
                     <iframe
-                        data-testid="embed-iframe"
                         style="border-radius:12px"
                         src="https://open.spotify.com/embed/show/6zyMF2ljZyaDYNAJyA5I5l?utm_source=generator&theme=0"
                         width="100%"
-                        height="352"
+                        height="232"
                         frameBorder="0"
                         allowfullscreen=""
                         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                         loading="lazy"
-                        title="Ya Heard Me Podcast on Spotify">
+                        title="Ya Heard Me on Spotify">
                     </iframe>
                 </div>
 
-                <div style="background: rgba(139, 92, 246, 0.1); border-left: 4px solid #8B5CF6; padding: 1rem; border-radius: 8px; margin: 1.5rem 0;">
-                    <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">
-                        <strong style="color: var(--accent-gold);">?? How it works:</strong><br>
-                        1. Listen to episodes on Spotify (Introduction + 9 Chapters + Conclusion = 11 total)<br>
-                        2. Read reflection questions and complete journal prompts for each section<br>
-                        3. Mark each section complete as you finish it<br>
-                        4. Complete all 11 sections to unlock Phase 2: Understanding
-                    </p>
+                <div class="how-it-works">
+                    <strong>📋 How it works:</strong><br>
+                    1. Listen to each section (Spotify above, or play directly in each card below)<br>
+                    2. Read the reflection questions and complete the journal prompts<br>
+                    3. Mark each section complete as you finish it<br>
+                    4. Complete all 11 sections to unlock Phase 2: Understanding
                 </div>
 
-                <div style="text-align: center; margin-top: 1.5rem;">
-                    <a
-                        href="https://open.spotify.com/show/6zyMF2ljZyaDYNAJyA5I5l?si=aa90d1ba17294bb7"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style="display: inline-flex; align-items: center; gap: 0.5rem; background: #1DB954; color: white; padding: 12px 24px; border-radius: 24px; text-decoration: none; font-weight: 600; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);"
-                        onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 20px rgba(29, 185, 84, 0.4)';"
-                        onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(29, 185, 84, 0.3)';">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
-                        </svg>
+                <div class="spotify-cta">
+                    <a href="https://open.spotify.com/show/6zyMF2ljZyaDYNAJyA5I5l?si=aa90d1ba17294bb7"
+                       target="_blank" rel="noopener noreferrer" class="spotify-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
                         Open in Spotify
                     </a>
                 </div>
             </div>
 
-            <!-- Sections (All Audiobook Chapters) -->
-            <div class="chapters-section">
-                <h2 class="section-title">?? Chapter Readings</h2>
-                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
-                    Expand each section below to read reflection questions and journal prompts.
-                    Mark complete as you progress through the audiobook.
-                </p>
+            <!-- Chapter Sections -->
+            <div style="margin-bottom: 2.5rem;">
+                <h2 class="section-heading" style="text-align:center; justify-content:center;">📚 Chapter Readings</h2>
+                <p class="section-subtext">Expand each section to listen, reflect, and journal. Mark complete as you go.</p>
                 <div class="chapter-list" id="sectionsContainer">
-                    <!-- Sections will be dynamically loaded here -->
+                    <!-- Dynamically rendered by phase1-awakening.js -->
                 </div>
             </div>
 
             <!-- Next Phase Preview -->
-            <div class="next-phase-preview" style="margin-top: 3rem; padding: 2rem; background: rgba(139, 92, 246, 0.05); border-radius: 15px; text-align: center;">
-                <h3 style="color: var(--accent-gold); margin-bottom: 1rem;">?? Phase 2: Understanding</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
-                    Master the 7 Principles of Aligned Manifestation
-                </p>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">
-                    Complete all 11 sections of Phase 1 to unlock Phase 2
-                </p>
-                <div style="margin-top: 1rem;">
-                    <span id="unlockProgress" style="color: var(--accent-purple); font-weight: 600;">
-                        0/11 sections complete
-                    </span>
-                </div>
+            <div class="next-phase">
+                <h3>🔮 Phase 2: Understanding</h3>
+                <p>Master the 7 Principles of Aligned Manifestation</p>
+                <p style="font-size:.85rem; color: var(--text-muted);">Complete all 11 sections of Phase 1 to unlock Phase 2</p>
+                <p class="unlock-text" id="unlockProgress" style="margin-top:.5rem;">0/11 sections complete</p>
             </div>
 
         </div>
     </div>
 
-    <!-- Confetti Library -->
+    <!-- Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    <!-- Phase 1 Audio Chapters -->`n    <script src="js/phase1-audio-chapters.js"></script>`n`n    <!-- Phase 1 Awakening JavaScript -->
+    <!-- Phase 1 Awakening (single unified script — handles everything) -->
     <script src="js/phase1-awakening.js"></script>
-
-    <!-- ============================================ -->
-    <!-- FIX: Fallback loader to prevent infinite loading -->
-    <!-- If phase1-awakening.js or Firebase scripts fail, -->
-    <!-- this ensures the page content still appears.     -->
-    <!-- ============================================ -->
-    <script>
-        (function() {
-            var FALLBACK_TIMEOUT = 5000; // 5 seconds
-            var fallbackTriggered = false;
-
-            // Fallback section data (used only if phase1-awakening.js fails to load)
-            var FALLBACK_SECTIONS = [
-                { num: 'Intro', title: 'Introduction', subtitle: 'Setting the Stage' },
-                { num: '1', title: 'Chapter 1', subtitle: 'The Beginning' },
-                { num: '2', title: 'Chapter 2', subtitle: 'Breaking Free' },
-                { num: '3', title: 'Chapter 3', subtitle: 'The Awakening' },
-                { num: '4', title: 'Chapter 4', subtitle: 'Finding Truth' },
-                { num: '5', title: 'Chapter 5', subtitle: 'Divine Connection' },
-                { num: '6', title: 'Chapter 6', subtitle: 'The Shift' },
-                { num: '7', title: 'Chapter 7', subtitle: 'Walking the Path' },
-                { num: '8', title: 'Chapter 8', subtitle: 'Deeper Understanding' },
-                { num: '9', title: 'Chapter 9', subtitle: 'Integration' },
-                { num: 'End', title: 'Conclusion', subtitle: 'The Journey Continues' }
-            ];
-
-            function showFallbackContent() {
-                if (fallbackTriggered) return;
-
-                var loading = document.getElementById('loadingState');
-                var content = document.getElementById('mainContent');
-                var container = document.getElementById('sectionsContainer');
-                var notice = document.getElementById('fallbackNotice');
-
-                // Only trigger if still stuck on loading
-                if (loading && window.getComputedStyle(loading).display !== 'none') {
-                    fallbackTriggered = true;
-                    console.warn('?? Phase 1 fallback triggered � external scripts did not resolve in time');
-                    console.warn('?? Check console for errors in: phase1-awakening.js, firebase-config.js, journey-gate.js');
-
-                    loading.style.display = 'none';
-                    if (content) content.style.display = 'block';
-                    if (notice) notice.style.display = 'block';
-
-                    // Populate sections only if phase1-awakening.js didn't already do it
-                    if (container && container.children.length === 0) {
-                        console.warn('?? Populating fallback section cards');
-                        FALLBACK_SECTIONS.forEach(function(section, index) {
-                            var card = document.createElement('div');
-                            card.className = 'chapter-card';
-                            card.innerHTML =
-                                '<div class="chapter-header">' +
-                                    '<div class="chapter-number">' + section.num + '</div>' +
-                                    '<div class="chapter-info">' +
-                                        '<div class="chapter-title">' + section.title + '</div>' +
-                                        '<div class="chapter-duration">' + section.subtitle + '</div>' +
-                                    '</div>' +
-                                '</div>' +
-                                '<div class="chapter-content collapsed" id="fallback-content-' + index + '">' +
-                                    '<div class="content-section">' +
-                                        '<p style="color: var(--text-muted);">Listen to this section on Spotify, then reflect on how it connects to your own journey.</p>' +
-                                    '</div>' +
-                                '</div>' +
-                                '<button class="expand-button" onclick="toggleFallbackSection(' + index + ', this)">? Expand Details</button>';
-                            container.appendChild(card);
-                        });
-                    }
-                }
-            }
-
-            // Global toggle for fallback sections
-            window.toggleFallbackSection = function(index, btn) {
-                var content = document.getElementById('fallback-content-' + index);
-                if (content) {
-                    var isCollapsed = content.classList.contains('collapsed');
-                    content.classList.toggle('collapsed');
-                    btn.textContent = isCollapsed ? '? Collapse' : '? Expand Details';
-                }
-            };
-
-            // Timeout fallback
-            setTimeout(showFallbackContent, FALLBACK_TIMEOUT);
-
-            // Script error fallback
-            window.addEventListener('error', function(e) {
-                if (e.target && (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK')) {
-                    console.error('? Failed to load:', e.target.src || e.target.href);
-                    setTimeout(showFallbackContent, 1000);
-                }
-            }, true);
-        })();
-    </script>
 </body>
 </html>
-
-
-
