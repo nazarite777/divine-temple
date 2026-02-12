@@ -356,7 +356,7 @@ async function verifyPremiumAccess(redirectUrl = null) {
         } else {
             // Fallback: redirect to login or upgrade page
             if (accessCheck.reason === 'not_logged_in') {
-                window.location.href = `login.html?redirect=${encodeURIComponent(redirectUrl || window.location.href)}`;
+                window.location.href = `members-new.html?redirect=${encodeURIComponent(redirectUrl || window.location.href)}`;
             } else {
                 window.location.href = 'index.html#pricing';
             }

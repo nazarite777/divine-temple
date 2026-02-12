@@ -1787,7 +1787,7 @@
                     const currentUser = firebase.auth().currentUser;
                     if (!currentUser) {
                         console.log('❌ Confirmed no user - redirecting to login');
-                        window.location.href = 'login.html';
+                        window.location.href = 'members-new.html';
                     } else {
                         console.log('✅ User appeared during delay, staying');
                     }
@@ -1808,7 +1808,7 @@
                 const userData = userDoc.data();
                 if (userData && (userData.isPremium || userData.premium || userData.is_premium)) {
                     console.log('🎉 Premium user detected! Redirecting to phase1-awakening...');
-                    window.location.href = '/phase1-awakening.html';
+                    window.location.href = 'phase1-awakening.html';
                     return;
                 }
             } catch (error) {
@@ -1904,7 +1904,7 @@
             setTimeout(() => {
                 if (!authReady && !checkAdminSession()) {
                     console.error('⏱️  TIMEOUT: No auth state received in 8 seconds');
-                    window.location.href = 'login.html';
+                    window.location.href = 'members-new.html';
                 }
             }, 8000);
 
@@ -1947,7 +1947,7 @@
                 firebase.auth().signOut()
                     .then(() => {
                         localStorage.clear();
-                        window.location.href = 'login.html';
+                        window.location.href = 'members-new.html';
                     })
                     .catch((error) => {
                         console.error('Logout error:', error);

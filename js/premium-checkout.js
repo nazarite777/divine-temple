@@ -72,7 +72,7 @@
             if (!this.currentUser) {
                 this.showMessage('Please log in to upgrade to premium', 'error');
                 // Redirect to login
-                window.location.href = '/login.html';
+                window.location.href = 'members-new.html';
                 return;
             }
 
@@ -107,7 +107,7 @@
 
                 if (error.code === 'unauthenticated') {
                     errorMessage = 'Please log in to upgrade to premium';
-                    window.location.href = '/login.html';
+                    window.location.href = 'members-new.html';
                     return;
                 } else if (error.code === 'already-exists') {
                     errorMessage = 'You already have premium access!';

@@ -19,7 +19,7 @@
     const PREMIUM_SECTIONS = [
         'daily-trivia-PREMIUM.html',
         'members-new.html',
-        'members.html', 
+        'members-new.html', 
         'chakras-auras.html',
         'meditation-mindfulness.html',
         'oracle-divination.html',
@@ -282,7 +282,7 @@
             this.showAccessDeniedMessage('Please log in to access this content');
 
             setTimeout(() => {
-                window.location.href = '/login.html';
+                window.location.href = 'members-new.html';
             }, 1500);
         }
 
@@ -299,7 +299,7 @@
 
             setTimeout(() => {
                 // Redirect to free dashboard with upgrade prompt
-                window.location.href = '/free-dashboard.html?showUpgrade=true';
+                window.location.href = 'free-dashboard.html?showUpgrade=true';
             }, 3000);
         }
 
@@ -314,7 +314,7 @@
             this.showAccessDeniedMessage('This content requires a premium membership');
 
             setTimeout(() => {
-                window.location.href = '/free-dashboard.html?showUpgrade=true';
+                window.location.href = 'free-dashboard.html?showUpgrade=true';
             }, 2000);
         }
 

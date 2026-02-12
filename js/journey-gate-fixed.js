@@ -140,7 +140,7 @@
 
         // Redirect to login after 2 seconds
         setTimeout(() => {
-            window.location.href = '/login.html';
+            window.location.href = 'members-new.html';
         }, 2000);
     }
 

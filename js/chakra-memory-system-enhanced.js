@@ -1390,7 +1390,7 @@ class ChakraMemoryGameEnhanced {
                     }
                 } else {
                     this.log('No user authenticated, redirecting to login');
-                    window.location.href = '../login.html';
+                    window.location.href = '../members-new.html';
                 }
             });
         } catch (error) {

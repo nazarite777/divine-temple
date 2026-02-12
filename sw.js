@@ -13,11 +13,11 @@ const STATIC_ASSETS = [
     // Core platform pages
     '/',
     '/index.html',
-    '/members.html',
+    '/members-new.html',
     '/members-new.html',
     '/free-dashboard.html',
     '/register.html',
-    '/login.html',
+    '/members-new.html',
     '/offline.html',
     '/manifest.json',
     

@@ -185,7 +185,7 @@ function updateAuthButtons() {
         } else {
             // User is not logged in
             loginBtn.textContent = 'Login';
-            loginBtn.href = 'login.html';
+            loginBtn.href = 'members-new.html';
             loginBtn.classList.remove('logged-in');
 
             if (upgradeBtn) {

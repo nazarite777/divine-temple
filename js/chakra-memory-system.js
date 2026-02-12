@@ -310,7 +310,7 @@ class ChakraMemoryGame {
                 await this.loadGameData();
                 this.updateBestTimes();
             } else {
-                window.location.href = '../login.html';
+                window.location.href = '../members-new.html';
             }
         });
     }

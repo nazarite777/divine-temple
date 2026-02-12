@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     firebase.auth().onAuthStateChanged(async (firebaseUser) => {
         if (!firebaseUser) {
             console.log('⛔ User not logged in - redirecting...');
-            window.location.href = 'login.html?redirect=phase2-understanding.html';
+            window.location.href = 'members-new.html?redirect=phase2-understanding.html';
             return;
         }
 

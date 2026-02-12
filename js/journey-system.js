@@ -32,7 +32,7 @@ class JourneySystem {
                     this.initialized = true;
                 } else {
                     console.log('No user logged in, redirecting...');
-                    window.location.href = 'login.html';
+                    window.location.href = 'members-new.html';
                 }
             });
 
@@ -423,7 +423,7 @@ class JourneySystem {
                     title: 'Phase 4: Mastery - Teacher Certification',
                     description: 'Complete your certification to become a Divine Temple teacher and guide others.',
                     actionText: 'Continue Certification →',
-                    actionLink: 'phase4-mastery.html'
+                    actionLink: 'phase4-teaching.html'
                 };
 
             default:
@@ -614,7 +614,7 @@ function navigateToPhase(phaseNumber) {
             window.location.href = 'phase3-mastery.html';
             break;
         case 4:
-            window.location.href = 'phase4-mastery.html';
+            window.location.href = 'phase4-teaching.html';
             break;
     }
 }
