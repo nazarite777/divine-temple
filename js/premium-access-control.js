@@ -444,7 +444,7 @@
                         Access exclusive content, advanced features, and the complete Divine Temple experience.
                     </p>
                     <div style="display: flex; gap: 1rem; justify-content: center;">
-                        <button onclick="window.location.href='/free-dashboard.html?showUpgrade=true'" style="
+                        <button onclick="window.location.href='free-dashboard.html?showUpgrade=true'" style="
                             background: linear-gradient(135deg, #d4af37, #f59e0b);
                             border: none;
                             color: white;

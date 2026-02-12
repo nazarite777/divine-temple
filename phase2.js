@@ -18,14 +18,12 @@ async function initializeFirebase() {
             db = firebase.firestore();
             auth = firebase.auth();
             
-            // Listen for auth changes
+            // Auth protection handled by journey-gate.js
+            // This listener only loads progress for authenticated users
             auth.onAuthStateChanged(user => {
                 currentUser = user;
                 if (user) {
-                    checkPremiumAccess(user.uid);
                     loadPhase2Progress(user.uid);
-                } else {
-                    showPremiumGate();
                 }
             });
         }
@@ -83,7 +81,7 @@ function allowDemoAccess() {
 }
 
 function redirectToUpgrade() {
-    window.location.href = '/premium-success.html';
+    window.location.href = 'pricing.html';
 }
 
 // Toggle Principle Expansion

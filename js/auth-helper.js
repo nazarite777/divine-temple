@@ -358,7 +358,7 @@ async function verifyPremiumAccess(redirectUrl = null) {
             if (accessCheck.reason === 'not_logged_in') {
                 window.location.href = `members-new.html?redirect=${encodeURIComponent(redirectUrl || window.location.href)}`;
             } else {
-                window.location.href = 'index.html#pricing';
+                window.location.href = 'pricing.html';
             }
         }
 

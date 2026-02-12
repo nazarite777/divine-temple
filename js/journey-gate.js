@@ -1,215 +1,134 @@
 /**
  * Journey Premium Gate
- * Protects premium-only journey content
+ * Protects premium-only journey content with a translucent overlay
+ * Consistent UX across Phase 1-4 pages
  */
-
 (function() {
     'use strict';
+    var journeyGateInitialized = false;
 
-    let journeyGateInitialized = false;
+    function detectPhase() {
+        var path = window.location.pathname.toLowerCase();
+        if (path.indexOf('phase1') !== -1) return { num: 1, name: 'Awakening', icon: '\u{1F305}' };
+        if (path.indexOf('phase2') !== -1) return { num: 2, name: 'Understanding', icon: '\u{1F9E0}' };
+        if (path.indexOf('phase3') !== -1) return { num: 3, name: 'Mastery', icon: '\u26A1' };
+        if (path.indexOf('phase4') !== -1) return { num: 4, name: 'Teaching', icon: '\u{1F451}' };
+        return { num: 0, name: 'Journey', icon: '\u2728' };
+    }
 
-    /**
-     * Initialize journey gate on page load
-     */
     async function initJourneyGate() {
         if (journeyGateInitialized) return;
         journeyGateInitialized = true;
-
         console.log('Journey gate initializing...');
 
-        // Check access with timeout to prevent infinite loading on mobile
-        const accessCheckTimeout = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Journey access check timed out')), 10000)
-        );
+        await waitForDependencies();
+
+        if (typeof window.AuthHelper === 'undefined' ||
+            typeof window.AuthHelper.checkJourneyAccess !== 'function') {
+            console.warn('AuthHelper not available - showing gate');
+            showPremiumOverlay('not_logged_in');
+            return;
+        }
 
         try {
-            const accessCheck = await Promise.race([
+            var accessCheck = await Promise.race([
                 window.AuthHelper.checkJourneyAccess(),
-                accessCheckTimeout
+                new Promise(function(_, reject) {
+                    setTimeout(function() { reject(new Error('timeout')); }, 10000);
+                })
             ]);
-
             if (!accessCheck.hasAccess) {
-                console.log('Access denied:', accessCheck.reason);
-                handleAccessDenied(accessCheck.reason);
+                showPremiumOverlay(accessCheck.reason);
             } else {
-                console.log('Access granted');
-
-                if (accessCheck.isAdmin) {
-                    console.log('Admin user detected');
-                    showAdminBadge();
-                }
-
-                // Initialize journey content
+                hidePremiumOverlay();
+                if (accessCheck.isAdmin) showAdminBadge();
                 initJourneyContent(accessCheck);
             }
         } catch (error) {
             console.error('Journey gate error:', error.message);
-            
-            // On timeout, redirect to login to prevent infinite loading
-            if (error.message.includes('timed out')) {
-                console.error('Journey access check timed out - redirecting to login');
-                handleAccessDenied('timeout');
-            } else {
-                handleAccessDenied('error');
-            }
+            showPremiumOverlay('error');
         }
     }
 
     function waitForDependencies() {
-        return new Promise((resolve) => {
-            let attempts = 0;
-            const checkInterval = setInterval(() => {
+        return new Promise(function(resolve) {
+            var attempts = 0;
+            var check = setInterval(function() {
                 attempts++;
-                if (typeof firebase !== 'undefined' &&
-                    firebase.auth &&
+                if (typeof firebase !== 'undefined' && firebase.auth &&
                     typeof window.AuthHelper !== 'undefined' &&
                     typeof window.AuthHelper.checkJourneyAccess === 'function') {
-
-                    clearInterval(checkInterval);
-
-                    // Wait for Firebase to know about the auth state
-                    let authAttempts = 0;
-                    const authCheckInterval = setInterval(() => {
+                    clearInterval(check);
+                    var authAttempts = 0;
+                    var authCheck = setInterval(function() {
                         authAttempts++;
-
-                        const currentUser = firebase.auth().currentUser;
-                        if (currentUser || authAttempts > 15) {
-                            clearInterval(authCheckInterval);
+                        if (firebase.auth().currentUser || authAttempts > 15) {
+                            clearInterval(authCheck);
                             resolve();
                         }
                     }, 100);
                 } else if (attempts > 100) {
-                    clearInterval(checkInterval);
-                    console.error('🔄 Journey Gate: Dependencies failed to load after 10 seconds');
+                    clearInterval(check);
                     resolve();
                 }
             }, 100);
         });
     }
 
-    /**
-     * Handle access denied - redirect to login
-     */
-    function handleAccessDenied(reason) {
-        console.log('🔒 Access denied. Reason:', reason);
+    function showPremiumOverlay(reason) {
+        var phase = detectPhase();
+        var existing = document.getElementById('journeyGateOverlay');
+        if (existing) existing.remove();
 
-        // Show loading message
-        document.body.innerHTML = `
-            <div style="
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                min-height: 100vh;
-                background: linear-gradient(135deg, #0a0a1e 0%, #1a1a2e 50%, #0f3460 100%);
-                color: white;
-                font-family: 'Inter', sans-serif;
-            ">
-                <div style="font-size: 3rem; margin-bottom: 2rem;">🔐</div>
-                <h2 style="margin-bottom: 1rem;">Premium Access Required</h2>
-                <p style="margin-bottom: 2rem; color: rgba(255, 255, 255, 0.8);">
-                    Redirecting to login...
-                </p>
-                <div style="
-                    width: 40px;
-                    height: 40px;
-                    border: 4px solid rgba(255, 255, 255, 0.3);
-                    border-top: 4px solid #D4AF37;
-                    border-radius: 50%;
-                    animation: spin 1s linear infinite;
-                "></div>
-            </div>
-            <style>
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-            </style>
-        `;
+        var isNotLoggedIn = (reason === 'not_logged_in' || reason === 'timeout' || reason === 'error');
+        var msg = isNotLoggedIn
+            ? 'Sign in to your premium account to access this phase of your transformation journey.'
+            : 'This phase is exclusively for premium members. Upgrade to continue your transformation.';
 
-        // Redirect to login after 2 seconds
-        setTimeout(() => {
-            window.location.href = 'members-new.html';
-        }, 2000);
+        var overlay = document.createElement('div');
+        overlay.id = 'journeyGateOverlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,10,25,0.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:9999;padding:1rem;';
+
+        overlay.innerHTML =
+            '<div style="text-align:center;background:linear-gradient(135deg,rgba(20,20,45,.95),rgba(30,25,50,.95));border:1px solid rgba(212,175,55,.3);border-radius:22px;padding:2.5rem 2rem;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.5);">' +
+                '<div style="font-size:3rem;margin-bottom:0.75rem;">' + phase.icon + '</div>' +
+                '<div style="font-size:0.85rem;text-transform:uppercase;letter-spacing:2px;color:#F59E0B;margin-bottom:1rem;font-weight:600;">Phase ' + phase.num + ' \u00B7 ' + phase.name + '</div>' +
+                '<h2 style="font-size:1.6rem;margin-bottom:0.5rem;background:linear-gradient(135deg,#8B5CF6,#F59E0B);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Unlock Your Journey</h2>' +
+                '<p style="color:rgba(255,255,255,.7);margin-bottom:1.5rem;line-height:1.6;font-size:0.95rem;">' + msg + '</p>' +
+                '<div style="display:flex;flex-direction:column;gap:0.75rem;">' +
+                    '<a href="pricing.html" style="padding:0.9rem;border-radius:12px;font-weight:600;text-decoration:none;display:block;text-align:center;font-size:0.95rem;background:linear-gradient(135deg,#F59E0B,#D97706);color:white;">Upgrade to Premium</a>' +
+                    '<a href="members-new.html" style="padding:0.9rem;border-radius:12px;font-weight:600;text-decoration:none;display:block;text-align:center;font-size:0.95rem;background:rgba(255,255,255,.06);color:rgba(255,255,255,.8);border:1px solid rgba(212,175,55,.2);">Sign In to Existing Account</a>' +
+                    '<a href="journey.html" style="padding:0.9rem;border-radius:12px;font-weight:600;text-decoration:none;display:block;text-align:center;font-size:0.95rem;background:rgba(255,255,255,.06);color:rgba(255,255,255,.8);border:1px solid rgba(212,175,55,.2);">\u2190 Back to Journey Overview</a>' +
+                '</div>' +
+            '</div>';
+
+        document.body.appendChild(overlay);
     }
 
-    /**
-     * Initialize journey content - enable all phase buttons and content
-     */
+    function hidePremiumOverlay() {
+        var el = document.getElementById('journeyGateOverlay');
+        if (el) el.remove();
+    }
+
     function initJourneyContent(accessCheck) {
-        console.log('✨ Initializing journey content...');
-
-        // Mark page as fully loaded
         document.documentElement.setAttribute('data-journey-loaded', 'true');
-
-        // Enable all journey section buttons
-        const phaseButtons = document.querySelectorAll('[data-phase]');
-        phaseButtons.forEach(button => {
-            button.style.pointerEvents = 'auto';
-            button.style.opacity = '1';
-            button.classList.remove('disabled');
-        });
-
-        // Dispatch custom event for other scripts to react to
-        const event = new CustomEvent('journeyAccessGranted', { detail: accessCheck });
-        document.dispatchEvent(event);
-
-        console.log('✅ Journey content initialized');
+        var buttons = document.querySelectorAll('[data-phase]');
+        buttons.forEach(function(b) { b.style.pointerEvents = 'auto'; b.style.opacity = '1'; b.classList.remove('disabled'); });
+        document.dispatchEvent(new CustomEvent('journeyAccessGranted', { detail: accessCheck }));
+        console.log('Journey content initialized');
     }
 
-    /**
-     * Show admin badge for admin users
-     */
     function showAdminBadge() {
-        console.log('👑 Displaying admin badge...');
-
-        const badge = document.createElement('div');
-        badge.id = 'admin-badge';
-        badge.innerHTML = `
-            <div style="
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: linear-gradient(135deg, #D4AF37, #F59E0B);
-                color: #0F0F23;
-                padding: 0.75rem 1.5rem;
-                border-radius: 50px;
-                font-weight: 700;
-                z-index: 9999;
-                box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
-                animation: slideIn 0.5s ease-out;
-            ">
-                👑 Admin Mode
-            </div>
-            <style>
-                @keyframes slideIn {
-                    from {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                }
-            </style>
-        `;
-
+        var badge = document.createElement('div');
+        badge.innerHTML = '<div style="position:fixed;top:20px;right:20px;background:linear-gradient(135deg,#D4AF37,#F59E0B);color:#0F0F23;padding:0.75rem 1.5rem;border-radius:50px;font-weight:700;z-index:9999;box-shadow:0 8px 24px rgba(212,175,55,.3);">\u{1F451} Admin Mode</div>';
         document.body.appendChild(badge);
     }
 
-    // Initialize journey gate when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initJourneyGate);
     } else {
         initJourneyGate();
     }
 
-    // Also expose to window for manual triggering if needed
-    window.JourneyGate = {
-        init: initJourneyGate,
-        handleAccessDenied,
-        initJourneyContent,
-        showAdminBadge
-    };
+    window.JourneyGate = { init: initJourneyGate, showPremiumOverlay: showPremiumOverlay, hidePremiumOverlay: hidePremiumOverlay, initJourneyContent: initJourneyContent, showAdminBadge: showAdminBadge };
 })();
