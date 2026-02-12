@@ -24,6 +24,69 @@
     <script src="js/premium-access-control.js"></script>
     <script src="js/header.js" defer></script>
 
+    <!-- Premium Access Gate - Must be paid member -->
+    <script>
+        // Check premium access before loading content
+        function checkPremiumAccess() {
+            return new Promise((resolve) => {
+                const checkAccessInterval = setInterval(() => {
+                    if (typeof firebase !== 'undefined' && firebase.auth) {
+                        clearInterval(checkAccessInterval);
+                        
+                        firebase.auth().onAuthStateChanged(async (user) => {
+                            if (!user) {
+                                // Not logged in - redirect to login
+                                window.location.href = 'login.html?redirect=phase1-awakening.html';
+                                return;
+                            }
+
+                            // Check if user has premium access
+                            try {
+                                const db = firebase.firestore();
+                                const userDoc = await db.collection('users').doc(user.uid).get();
+                                const userData = userDoc.data() || {};
+                                
+                                // Check for premium subscription/payment
+                                const isPremium = userData.isPremium || userData.membershipStatus === 'premium' || userData.paymentVerified;
+                                
+                                if (!isPremium) {
+                                    // Show access denied overlay
+                                    document.getElementById('accessDeniedOverlay').style.display = 'flex';
+                                    document.getElementById('loadingState').style.display = 'none';
+                                    console.warn('⛔ Non-premium user attempted to access Phase 1: Awakening');
+                                } else {
+                                    // Premium user - hide access denied overlay
+                                    document.getElementById('accessDeniedOverlay').style.display = 'none';
+                                    resolve(true);
+                                }
+
+                                // Setup logout button
+                                const logoutBtn = document.getElementById('logoutBtn');
+                                if (logoutBtn) {
+                                    logoutBtn.addEventListener('click', () => {
+                                        firebase.auth().signOut().then(() => {
+                                            window.location.href = 'login.html';
+                                        });
+                                    });
+                                }
+
+                            } catch (error) {
+                                console.error('Error checking premium access:', error);
+                                resolve(false);
+                            }
+                        });
+                    }
+                }, 100);
+
+                // Timeout after 5 seconds of checking
+                setTimeout(() => clearInterval(checkAccessInterval), 5000);
+            });
+        }
+
+        // Run access check when page loads
+        checkPremiumAccess();
+    </script>
+
     <style>
         :root {
             --primary-gold: #D4AF37;
@@ -707,13 +770,196 @@
         .fallback-notice strong {
             color: var(--accent-orange);
         }
+
+        /* Premium Navigation Bar */
+        .premium-nav-bar {
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.15), rgba(139, 92, 246, 0.15));
+            border: 2px solid var(--accent-orange);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .premium-nav-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .premium-nav-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .premium-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .premium-nav-link:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: var(--accent-orange);
+            transform: translateY(-2px);
+        }
+
+        .premium-nav-link.active {
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+            color: white;
+        }
+
+        .premium-nav-link-icon {
+            font-size: 1.3rem;
+        }
+
+        /* Access Denied Overlay */
+        .access-denied-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(15, 15, 35, 0.98), rgba(26, 26, 46, 0.98));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .access-denied-card {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(212, 175, 55, 0.1));
+            border: 2px solid var(--accent-purple);
+            border-radius: 25px;
+            padding: 3rem;
+            max-width: 500px;
+        }
+
+        .access-denied-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .access-denied-card h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-orange));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .access-denied-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .access-denied-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-direction: column;
+        }
+
+        .access-denied-btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .access-denied-btn.upgrade {
+            background: linear-gradient(135deg, var(--accent-orange), #F59E0B);
+            color: white;
+        }
+
+        .access-denied-btn.upgrade:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+        }
+
+        .access-denied-btn.home {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .access-denied-btn.home:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
     </style>
 </head>
 <body>
+    <!-- Access Denied Message (shown if not premium member) -->
+    <div id="accessDeniedOverlay" class="access-denied-overlay" style="display: none;">
+        <div class="access-denied-card">
+            <div class="access-denied-icon">🔐</div>
+            <h2>Premium Access Required</h2>
+            <p>
+                This sacred journey is exclusively for our premium members. Upgrade your membership to unlock Phase 1: Awakening and all premium content.
+            </p>
+            <div class="access-denied-buttons">
+                <a href="pricing.html" class="access-denied-btn upgrade">💎 Upgrade to Premium</a>
+                <a href="index.html" class="access-denied-btn home">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
+        <!-- Premium Navigation Bar - Gateway to All Premium Content -->
+        <div class="premium-nav-bar" id="premiumNavBar">
+            <div class="premium-nav-title">🔥 Premium Journey Navigation</div>
+            <div class="premium-nav-links">
+                <a href="phase1-awakening.html" class="premium-nav-link active">
+                    <span class="premium-nav-link-icon">🌅</span>
+                    <span>Phase 1: Awakening</span>
+                </a>
+                <a href="phase2-understanding.html" class="premium-nav-link">
+                    <span class="premium-nav-link-icon">🧠</span>
+                    <span>Phase 2: Understanding</span>
+                </a>
+                <a href="phase3-mastery.html" class="premium-nav-link">
+                    <span class="premium-nav-link-icon">⚡</span>
+                    <span>Phase 3: Mastery</span>
+                </a>
+                <a href="phase4-teaching.html" class="premium-nav-link">
+                    <span class="premium-nav-link-icon">👑</span>
+                    <span>Phase 4: Teaching</span>
+                </a>
+                <a href="audiobook.html" class="premium-nav-link">
+                    <span class="premium-nav-link-icon">📖</span>
+                    <span>Premium Audiobooks</span>
+                </a>
+                <a href="meditation.html" class="premium-nav-link">
+                    <span class="premium-nav-link-icon">🧘</span>
+                    <span>Meditation Vault</span>
+                </a>
+            </div>
+        </div>
+
         <div class="nav-buttons">
-            <a href="journey.html" class="nav-btn">? Back to Journey</a>
-            <a href="members-new.html" class="nav-btn">?? Portal Home</a>
+            <a href="index.html" class="nav-btn">← Back to Home</a>
+            <a href="members-new.html" class="nav-btn">👤 Member Portal</a>
+            <button id="logoutBtn" class="nav-btn primary" style="background: #ef4444; border-color: #ef4444;">Log Out</button>
         </div>
 
         <!-- Breadcrumb Navigation -->
