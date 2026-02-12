@@ -247,6 +247,67 @@
         }
         .expand-btn:hover { background: rgba(245,158,11,.12); }
 
+        /* ─── ANSWER TEXTAREAS ─────────────────────────────── */
+        .question-block { margin-bottom: 1rem; }
+        .question-block li { list-style: none; margin-left: -1.25rem; }
+        .question-text { color: var(--text-secondary); line-height: 1.5; padding: .5rem 0; }
+        .answer-area {
+            width: 100%; min-height: 80px; padding: .75rem 1rem;
+            background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.1);
+            border-radius: 10px; color: var(--text-primary); font-family: 'Inter', sans-serif;
+            font-size: .9rem; line-height: 1.5; resize: vertical;
+            transition: border-color .3s, box-shadow .3s;
+        }
+        .answer-area:focus {
+            outline: none; border-color: rgba(139,92,246,.5);
+            box-shadow: 0 0 0 3px rgba(139,92,246,.15);
+        }
+        .answer-area::placeholder { color: rgba(255,255,255,.25); }
+        .answer-meta {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: .35rem; font-size: .75rem; color: var(--text-muted);
+        }
+        .save-indicator { transition: opacity .3s; }
+        .save-indicator.saving { color: #F59E0B; }
+        .save-indicator.saved { color: #10b981; }
+        .char-count { opacity: .5; }
+        .answers-progress {
+            display: flex; align-items: center; gap: .5rem;
+            padding: .5rem .75rem; background: rgba(16,185,129,.08);
+            border-radius: 8px; font-size: .8rem; color: #10b981;
+            margin-bottom: 1rem;
+        }
+        .answers-progress-bar {
+            flex: 1; height: 4px; background: rgba(16,185,129,.2);
+            border-radius: 2px; overflow: hidden;
+        }
+        .answers-progress-fill {
+            height: 100%; background: #10b981; border-radius: 2px;
+            transition: width .3s ease;
+        }
+
+        /* ─── WORKBOOK DOWNLOAD ────────────────────────────── */
+        .workbook-section {
+            background: linear-gradient(135deg, rgba(139,92,246,.08), rgba(212,175,55,.08));
+            border: 1.5px solid rgba(212,175,55,.25); border-radius: 20px;
+            padding: 2rem; margin-bottom: 2.5rem; text-align: center;
+        }
+        .workbook-icon { font-size: 3rem; margin-bottom: .75rem; }
+        .workbook-title { font-size: 1.4rem; font-weight: 700; color: #D4AF37; margin-bottom: .5rem; }
+        .workbook-desc { color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.25rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .workbook-download-btn {
+            display: inline-flex; align-items: center; gap: .6rem;
+            padding: .9rem 2rem; background: linear-gradient(135deg, #D4AF37, #F59E0B);
+            color: white; border: none; border-radius: 12px; font-weight: 700;
+            font-size: 1rem; text-decoration: none; cursor: pointer;
+            transition: transform .2s, box-shadow .2s;
+        }
+        .workbook-download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(212,175,55,.35);
+        }
+        .workbook-note { font-size: .8rem; color: var(--text-muted); margin-top: .75rem; }
+
         /* ─── NEXT PHASE PREVIEW ────────────────────────────── */
         .next-phase {
             margin-top: 3rem; padding: 2rem;
@@ -419,13 +480,13 @@
         </div>
 
         <!-- Loading State -->
-        <div id="loadingState" class="loading" style="display: none;">
+        <div id="loadingState" class="loading">
             <div class="spinner"></div>
             <p>Loading your progress…</p>
         </div>
 
         <!-- Main Content (hidden until JS renders) -->
-        <div id="mainContent" style="display: block;">
+        <div id="mainContent" style="display: none;">
 
             <!-- Progress -->
             <div class="progress-section">
@@ -475,6 +536,20 @@
                         Open in Spotify
                     </a>
                 </div>
+            </div>
+
+            <!-- Workbook Download -->
+            <div class="workbook-section">
+                <div class="workbook-icon">📖</div>
+                <h2 class="workbook-title">Complete Divine Discernment Workbook</h2>
+                <p class="workbook-desc">
+                    Your sacred companion for this journey. Download the full workbook to deepen your practice offline, 
+                    or answer the reflection questions directly in each chapter below — your responses are saved automatically.
+                </p>
+                <a href="assets/Divine-Discernment-Workbook.pdf" download class="workbook-download-btn">
+                    ⬇ Download Full Workbook (PDF)
+                </a>
+                <p class="workbook-note">Premium member exclusive · 9 chapters of exercises, reflections, and practices</p>
             </div>
 
             <!-- Chapter Sections -->
