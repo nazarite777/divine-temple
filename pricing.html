@@ -20,8 +20,8 @@
             --deep-purple: #2D1B4E;
             --gold: #D4AF37;
             --cream: #F5F1E8;
-            --text-primary: #0a0e1b;
-            --text-secondary: #666;
+            --text-primary: #E8E3D9;
+            --text-secondary: #9EA3B0;
             --glass-bg: rgba(255, 255, 255, 0.05);
             --transition: 0.3s ease-in-out;
         }
@@ -524,26 +524,66 @@
                 transform: translateY(-5px);
             }
 
+            .hamburger {
+                display: flex;
+            }
             nav {
                 display: none;
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(10, 14, 27, 0.97);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 2.5rem;
+                z-index: 999;
+            }
+            nav.open {
+                display: flex;
+            }
+            nav.open a {
+                font-size: 1.3rem;
+                color: white;
+            }
+            .nav-close {
+                display: block;
             }
 
             .cta-buttons {
-                flex-direction: column;
-            }
+        }
 
-            .cta-buttons .btn {
-                width: 100%;
-            }
-
-            .comparison-table {
-                font-size: 0.85rem;
-            }
-
-            .comparison-table th,
-            .comparison-table td {
-                padding: 1rem;
-            }
+        /* ===== HAMBURGER MENU ===== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 6px;
+            z-index: 1001;
+        }
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--gold);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .nav-close {
+            display: none;
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--gold);
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0.25rem 0.5rem;
         }
     </style>
 <script src="https://js.stripe.com/v3/"></script><script src="js/stripe-integration.js"></script></head>
@@ -553,13 +593,16 @@
         <div class="header-container">
             <a href="index.html" class="logo"><img src="images/branding/edenlogotransparent.png" alt="Eden Consciousness Logo" style="height: 40px; margin-right: 10px; vertical-align: middle;"><span style="vertical-align: middle;">Eden Consciousness</span></a>
             <nav>
+                <button class="nav-close" id="nav-close-btn" aria-label="Close navigation">&times;</button>
                 <a href="index.html">Home</a>
+                <a href="about-eden.html">About</a>
+                <a href="features.html">Features</a>
+                <a href="journey.html">Journey</a>
                 <a href="pricing.html">Pricing</a>
-                <a href="members-new.html">Member Portal</a>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="admin-dashboard.html">Admin</a>
-                <a href="system-testing-guide.html">Testing</a>
             </nav>
+            <button class="hamburger" id="hamburger-btn" aria-label="Open navigation" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
             <div class="header-actions">
                 <a href="members-new.html" class="btn btn-secondary">Login</a>
                 <a href="https://buy.stripe.com/aFaeVe2fl8F31Rk2i5fjG00" class="btn btn-primary">Start Premium Trial</a>
@@ -877,6 +920,32 @@
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e.message));
         }
+    </script>
+
+    <!-- Hamburger Menu -->
+    <script>
+        (function() {
+            var btn = document.getElementById('hamburger-btn');
+            var nav = document.querySelector('header nav');
+            var closeBtn = document.getElementById('nav-close-btn');
+            if (!btn || !nav) return;
+            btn.addEventListener('click', function() {
+                nav.classList.toggle('open');
+                btn.setAttribute('aria-expanded', nav.classList.contains('open'));
+            });
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    nav.classList.remove('open');
+                    btn.setAttribute('aria-expanded', 'false');
+                });
+            }
+            nav.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    nav.classList.remove('open');
+                    btn.setAttribute('aria-expanded', 'false');
+                });
+            });
+        })();
     </script>
 </body>
 </html>
