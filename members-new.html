@@ -1721,8 +1721,9 @@
                 if (result.success) {
                     console.log('? Firebase authentication successful');
                     
-                    // Get user data from Firestore
-                    const userData = await FirebaseConfig.data.getUserData();
+                    // Get user data from Firestore — non-fatal if it fails
+                    let userData = null;
+                    try { userData = await FirebaseConfig.data.getUserData(); } catch(e) { console.warn('Firestore user data unavailable:', e.message); }
                     
                     const memberData = {
                         uid: result.user.uid,

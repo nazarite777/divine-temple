@@ -211,10 +211,15 @@ const FirebaseAuth = {
             const userCredential = await auth.signInWithEmailAndPassword(email, password);
             const user = userCredential.user;
             
-            // Update last active timestamp
-            await db.collection('users').doc(user.uid).update({
-                'progress.lastActive': firebase.firestore.FieldValue.serverTimestamp()
-            });
+            // Update last active timestamp — use set+merge so it works even if doc/field is missing
+            try {
+                await db.collection('users').doc(user.uid).set({
+                    'lastActive': firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+            } catch (firestoreErr) {
+                // Non-fatal — don't block login if Firestore update fails
+                console.warn('⚠️ Could not update lastActive:', firestoreErr.message);
+            }
             
             console.log('✅ User signed in:', user.uid);
             return { success: true, user };
