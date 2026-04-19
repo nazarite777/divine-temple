@@ -18,8 +18,6 @@
     // Sections that require premium access
     const PREMIUM_SECTIONS = [
         'daily-trivia-PREMIUM.html',
-        'members-new.html',
-        'members-new.html', 
         'chakras-auras.html',
         'meditation-mindfulness.html',
         'oracle-divination.html',

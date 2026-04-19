@@ -1698,8 +1698,8 @@
             console.log('?? Password length:', password.length);
 
             // Clear previous messages
-            errorDiv.classList.remove('show');
-            successDiv.classList.remove('show');
+            errorDiv.classList.remove('show'); errorDiv.style.display = 'none';
+            successDiv.classList.remove('show'); successDiv.style.display = 'none';
             
             // Show loading state
             const originalText = submitBtn.textContent;
@@ -1733,11 +1733,15 @@
                         joinDate: userData?.createdAt?.toDate?.()?.toISOString() || new Date().toISOString()
                     };
 
-                    // Check if user is admin (based on email)
-                    const isAdmin = FirebaseConfig.auth.isAdminEmail(result.user.email);
+                    // Check if user is admin — direct email check (no dependency on AuthHelper timing)
+                    const ADMIN_EMAILS_LIST = ['cbevvv@gmail.com', 'nazir@edenconsciousness.com', 'nazir@edenconsiousness.com'];
+                    const userEmail = (result.user.email || '').toLowerCase();
+                    const isAdmin = ADMIN_EMAILS_LIST.includes(userEmail) ||
+                        (window.AuthHelper && typeof window.AuthHelper.isAdmin === 'function' && window.AuthHelper.isAdmin(result.user));
                     if (isAdmin) {
+                        memberData.membershipLevel = 'admin';
                         sessionStorage.setItem('adminAuth', 'true');
-                        console.log('?? Admin access granted for:', result.user.email);
+                        console.log('Admin access granted for:', result.user.email);
                     }
 
                     // Store authentication
@@ -1749,53 +1753,31 @@
                         displayName: memberData.displayName
                     }));
 
-                    // Show success message
-                    if (isAdmin) {
-                        successDiv.innerHTML = `
-                            <div style="text-align: center;">
-                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">??</div>
-                                <div style="font-weight: 600; color: var(--accent-gold);">ADMIN ACCESS GRANTED</div>
-                                <div style="font-size: 0.9rem; opacity: 0.8;">Welcome back, ${memberData.displayName}</div>
-                            </div>
-                        `;
-                    } else {
-                        successDiv.textContent = `? Welcome, ${memberData.displayName}! ?`;
-                    }
-                    successDiv.classList.add('show');
+                    // Show success
+                    const welcomeMsg = isAdmin ? `✦ Welcome back, ${memberData.displayName}! Admin access granted.` : `✅ Welcome, ${memberData.displayName}!`;
+                    successDiv.textContent = welcomeMsg;
+                    successDiv.style.display = 'block';
 
                     // Track successful login
-                    FirebaseConfig.analytics.trackEvent('login', {
-                        method: 'email',
-                        portal: portalType,
-                        user_id: result.user.uid
-                    });
-
-                    console.log('? Authentication successful - transitioning to dashboard');
-
-                    // Route based on portal type
-                    if (portalType === 'free') {
-                        // Free portal - redirect to free dashboard
-                        successDiv.textContent = '\u2705 Welcome! Redirecting to your portal...';
-                        successDiv.classList.add('show');
-                        setTimeout(() => {
-                            window.location.href = 'free-dashboard.html';
-                        }, 1200);
-                    } else {
-                        // Divine portal - check membership level
-                        const isPremium = isAdmin || ['premium', 'founding', 'student', 'monthly'].includes(memberData.membershipLevel);
-                        if (isPremium) {
-                            setTimeout(() => {
-                                showDashboard(memberData);
-                            }, 1500);
-                        } else {
-                            // Free-tier member tried divine portal
-                            successDiv.classList.remove('show');
-                            errorDiv.innerHTML = '\u2B06\uFE0F Your account is on the Free tier. <a href="journey.html" style="color:var(--accent-gold);font-weight:600;">Upgrade to Divine</a> or log in via the Free Portal.';
-                            errorDiv.classList.add('show');
-                            submitBtn.textContent = originalText;
-                            submitBtn.disabled = false;
-                        }
+                    if (window.FirebaseConfig && FirebaseConfig.analytics) {
+                        FirebaseConfig.analytics.trackEvent('login', {
+                            method: 'email',
+                            portal: portalType,
+                            user_id: result.user.uid
+                        });
                     }
+
+                    console.log('Authentication successful - redirecting to dashboard');
+
+                    // Route: admins and premium → main dashboard; free → free dashboard
+                    const isPremium = isAdmin || ['premium', 'elite', 'founding', 'admin', 'student', 'monthly', 'divine'].includes(memberData.membershipLevel);
+                    setTimeout(() => {
+                        if (isPremium) {
+                            showDashboard(memberData);
+                        } else {
+                            window.location.href = 'free-dashboard.html';
+                        }
+                    }, 1200);
                     
                 } else {
                     throw new Error(result.error || 'Authentication failed');
@@ -1820,7 +1802,7 @@
                 }
                 
                 errorDiv.textContent = errorMessage;
-                errorDiv.classList.add('show');
+                errorDiv.classList.add('show'); errorDiv.style.display = 'block';
                 
                 // Track failed login attempt
                 if (window.FirebaseConfig) {
@@ -2520,20 +2502,50 @@
         // =====
 
         document.addEventListener('DOMContentLoaded', function() {
-            // ===== REBUILD AUTH OVERLAY: Two-Panel Login =====
-            (function buildTwoPanel() {
+            // ===== SIMPLE SINGLE LOGIN FORM =====
+            (function buildSimpleLogin() {
                 const overlay = document.getElementById('auth-overlay');
                 if (!overlay) return;
                 overlay.innerHTML = `
-                    <div class="auth-split-container">
-                        <div class="auth-split-header">
-                            <div class="divine-symbol">✦</div>
-                            <h2>Choose Your Sacred Path</h2>
-                            <p class="auth-subtitle">Select the portal that matches your membership</p>
+                    <div style="max-width:420px;width:100%;margin:auto;padding:2.5rem;background:linear-gradient(135deg,rgba(20,10,40,0.97),rgba(30,15,60,0.97));border:1px solid rgba(212,175,55,0.4);border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,0.7);">
+                        <div style="text-align:center;margin-bottom:2rem;">
+                            <div style="font-size:2.5rem;margin-bottom:0.75rem;">✦</div>
+                            <h2 style="color:#d4af37;font-family:'Playfair Display',serif;font-size:1.8rem;margin:0 0 0.5rem;">Divine Temple</h2>
+                            <p style="color:#a0a0b0;margin:0;font-size:0.95rem;">Enter your sacred credentials</p>
                         </div>
-                        <div class="auth-panels">
-                            <!-- Free Member Panel -->
-                            <div class="auth-panel auth-panel-free">
+                        <form id="divine-auth-form" onsubmit="authenticateUser(event,'divine')" autocomplete="on">
+                            <div style="margin-bottom:1.25rem;">
+                                <label style="display:block;color:#d4af37;font-size:0.85rem;margin-bottom:0.5rem;font-weight:600;">Email</label>
+                                <input type="email" id="divine-email" required placeholder="your@email.com" autocomplete="email"
+                                    style="width:100%;padding:0.85rem 1rem;background:rgba(255,255,255,0.07);border:1px solid rgba(212,175,55,0.3);border-radius:10px;color:#fff;font-size:1rem;box-sizing:border-box;outline:none;">
+                            </div>
+                            <div style="margin-bottom:1.75rem;">
+                                <label style="display:block;color:#d4af37;font-size:0.85rem;margin-bottom:0.5rem;font-weight:600;">Password</label>
+                                <input type="password" id="divine-password" required placeholder="Enter password" autocomplete="current-password"
+                                    style="width:100%;padding:0.85rem 1rem;background:rgba(255,255,255,0.07);border:1px solid rgba(212,175,55,0.3);border-radius:10px;color:#fff;font-size:1rem;box-sizing:border-box;outline:none;">
+                            </div>
+                            <button type="submit" style="width:100%;padding:1rem;background:linear-gradient(135deg,#d4af37,#f0c040);border:none;border-radius:12px;color:#1a0a30;font-size:1.1rem;font-weight:700;cursor:pointer;transition:opacity 0.2s;">
+                                ✦ Enter Divine Temple
+                            </button>
+                            <div id="divine-auth-error" class="auth-message error" style="margin-top:1rem;padding:0.75rem;border-radius:8px;display:none;color:#ff6b6b;background:rgba(255,107,107,0.1);text-align:center;"></div>
+                            <div id="divine-auth-success" class="auth-message success" style="margin-top:1rem;padding:0.75rem;border-radius:8px;display:none;color:#51cf66;background:rgba(81,207,102,0.1);text-align:center;"></div>
+                        </form>
+                        <p style="text-align:center;margin-top:1.5rem;color:#666;font-size:0.85rem;">
+                            New member? <a href="pricing.html" style="color:#d4af37;">Join here</a> &nbsp;|&nbsp; <a href="index.html" style="color:#d4af37;">Free account</a>
+                        </p>
+                    </div>`;
+                // Make auth-message divs work with classList.add('show')
+                overlay.querySelectorAll('.auth-message').forEach(el => {
+                    el.style.display = 'none';
+                });
+            })();
+            // patch show/hide for rebuilt elements
+            const _origAddCls = DOMTokenList.prototype.add;
+            // (no-op patch not needed — we handle via style.display in authenticateUser)
+
+            // placeholder to keep structure intact
+            if (false) { const dummy = `
+                        <div class="auth-panel auth-panel-free">
                                 <div class="panel-badge">FREE</div>
                                 <div class="panel-icon-wrap">🌿</div>
                                 <h3 class="panel-title">Free Member</h3>
@@ -2556,43 +2568,8 @@
                                     <div id="free-auth-error" class="auth-message error"></div>
                                     <div id="free-auth-success" class="auth-message success"></div>
                                 </form>
-                                <div class="auth-links">
-                                    <a href="index.html">Register a Free Account</a>
-                                </div>
                             </div>
-                            <!-- Divider -->
-                            <div class="auth-divider"><span>or</span></div>
-                            <!-- Divine Member Panel -->
-                            <div class="auth-panel auth-panel-divine">
-                                <div class="panel-badge panel-badge-divine">DIVINE</div>
-                                <div class="panel-icon-wrap">✨</div>
-                                <h3 class="panel-title">Divine Member</h3>
-                                <p class="panel-subtitle">Full access to all 16 sacred portals</p>
-                                <div class="panel-features">
-                                    <div class="panel-feature-item">🔮 All 16 Sacred Portals</div>
-                                    <div class="panel-feature-item">🏛️ Full Temple Access</div>
-                                    <div class="panel-feature-item">⭐ Premium Content & Tools</div>
-                                </div>
-                                <form id="divine-auth-form" onsubmit="authenticateUser(event,'divine')">
-                                    <div class="input-group">
-                                        <label for="divine-email">Email</label>
-                                        <input type="email" id="divine-email" required placeholder="Enter your email" autocomplete="email">
-                                    </div>
-                                    <div class="input-group">
-                                        <label for="divine-password">Password</label>
-                                        <input type="password" id="divine-password" required placeholder="Enter password" autocomplete="current-password">
-                                    </div>
-                                    <button type="submit" class="auth-btn auth-btn-divine">✨ Enter Divine Temple</button>
-                                    <div id="divine-auth-error" class="auth-message error"></div>
-                                    <div id="divine-auth-success" class="auth-message success"></div>
-                                </form>
-                                <div class="auth-links">
-                                    <a href="journey.html">Upgrade to Divine ✦</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
-            })();
+                        `; } // end placeholder
 
             try {
                 console.log('??? Divine Temple Portal Initializing...');

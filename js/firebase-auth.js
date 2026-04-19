@@ -107,14 +107,6 @@ async function login(email, password) {
     const userCredential = await auth.signInWithEmailAndPassword(email, password);
     const user = userCredential.user;
 
-    // Check if email is verified
-    await user.reload();
-    if (!user.emailVerified) {
-      showMessage('⚠️ Please verify your email before logging in', 'warning');
-      await auth.signOut();
-      return null;
-    }
-
     // Store data if remember me checked
     if (rememberMeCheckbox && rememberMeCheckbox.checked) {
       localStorage.setItem('userEmail', email);
