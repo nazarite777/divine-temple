@@ -1762,6 +1762,7 @@
 
         // ==================== GLOBAL STATE ====================
         let currentUser = null;
+        let userMembership = null;
         let currentChatRoom = null;
         let unsubscribeFeeds = [];
         let selectedImage = null;
@@ -1804,6 +1805,12 @@
                 document.querySelectorAll('.user-avatar, #createPostAvatar, #userAvatar').forEach(el => {
                     el.textContent = initial;
                 });
+
+                // Load membership level
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    userMembership = userDoc.data().membershipLevel || 'basic';
+                }
                 
                 // Load app data
                 await Promise.all([
@@ -1816,10 +1823,42 @@
                 
                 console.log('🎉 Sacred Community loaded!');
                 showToast('Welcome to Sacred Community! 🕊️', 'success');
+
+                // Lock posting UI for free members
+                if (!isPremiumUser()) {
+                    lockFreeUserUI();
+                }
             } catch (error) {
                 console.error('Error initializing app:', error);
                 showToast('Error loading app. Please refresh.', 'error');
             }
+        }
+
+        // ==================== MEMBERSHIP GATING ====================
+        function isPremiumUser() {
+            const premiumTiers = ['premium', 'elite', 'admin', 'founding', 'student', 'monthly', 'divine'];
+            return premiumTiers.includes(userMembership);
+        }
+
+        function lockFreeUserUI() {
+            // Lock create-post card with an upgrade overlay
+            const postCard = document.querySelector('.create-post-card');
+            if (postCard) {
+                postCard.style.position = 'relative';
+                const overlay = document.createElement('div');
+                overlay.id = 'postLockOverlay';
+                overlay.style.cssText = 'position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(10,10,30,0.88);border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;backdrop-filter:blur(4px);';
+                overlay.innerHTML = '<div style="text-align:center;padding:1.5rem;"><div style="font-size:2.5rem;margin-bottom:0.75rem;">🔒</div><p style="color:#D4AF37;font-weight:700;font-size:1.1rem;margin-bottom:0.5rem;">Divine Members Only</p><p style="color:rgba(255,255,255,0.75);font-size:0.9rem;margin-bottom:1.25rem;">Upgrade to post, comment & chat</p><a href="../pricing.html" style="background:linear-gradient(135deg,#D4AF37,#8B5CF6);color:white;padding:0.65rem 1.75rem;border-radius:25px;text-decoration:none;font-weight:600;font-size:0.9rem;">Upgrade Now ✨</a></div>';
+                postCard.appendChild(overlay);
+            }
+            // Lock chat input
+            const chatInput = document.getElementById('chatMessageInput');
+            if (chatInput) {
+                chatInput.disabled = true;
+                chatInput.placeholder = '🔒 Divine Members only – upgrade to chat';
+            }
+            const sendBtn = document.querySelector('.send-btn');
+            if (sendBtn) sendBtn.disabled = true;
         }
 
         // ==================== ONLINE/OFFLINE HANDLING ====================
@@ -2122,6 +2161,11 @@
                 showToast('Please sign in to post', 'error');
                 return;
             }
+
+            if (!isPremiumUser()) {
+                showToast('💎 Posting is for Divine Members. Upgrade at pricing.html', 'info');
+                return;
+            }
             
             const btn = document.getElementById('postBtn');
             
@@ -2335,6 +2379,11 @@
                 showToast('Please sign in to comment', 'error');
                 return;
             }
+
+            if (!isPremiumUser()) {
+                showToast('💎 Comments are for Divine Members. Upgrade at pricing.html', 'info');
+                return;
+            }
             
             const input = document.getElementById(`comment-input-${postId}`);
             const text = input.value.trim();
@@ -2483,6 +2532,11 @@
             
             if (!currentUser) {
                 showToast('Please sign in to chat', 'error');
+                return;
+            }
+
+            if (!isPremiumUser()) {
+                showToast('💎 Chat is for Divine Members. Upgrade at pricing.html', 'info');
                 return;
             }
             
