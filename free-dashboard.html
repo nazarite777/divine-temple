@@ -2341,14 +2341,18 @@
 
         // REALISTIC THUNDER - Distance variation, rumble, crack
         function startThunder() {
-            soundIntervals.thunder = setInterval(() => {
+            // Setup gain FIRST so updateSoundVolume and immediate play work
+            soundGains.thunder = audioContext.createGain();
+            updateSoundVolume('thunder');
+            activeSounds.thunder = {};
+
+            const playThunder = () => {
                 if (!activeSounds.thunder) return;
 
                 const distance = Math.random(); // 0 = close, 1 = far
-                const duration = 2 + (distance * 4); // Longer for distant thunder
+                const duration = 2 + (distance * 4);
                 const now = audioContext.currentTime;
 
-                // Thunder crack (close thunder has sharp attack)
                 if (distance < 0.4) {
                     const crack = audioContext.createBufferSource();
                     crack.buffer = createWhiteNoise(0.1);
@@ -2363,7 +2367,6 @@
                     crack.start();
                 }
 
-                // Deep rumble (multiple oscillators for richness)
                 const freqs = [35, 40, 45, 50, 60];
                 freqs.forEach((freq, i) => {
                     const osc = audioContext.createOscillator();
@@ -2371,7 +2374,7 @@
                     osc.type = i % 2 === 0 ? 'sawtooth' : 'triangle';
 
                     const gain = audioContext.createGain();
-                    const delay = distance * 0.3; // Distant thunder arrives later
+                    const delay = distance * 0.3;
                     const peak = soundGains.thunder.gain.value * 0.15 * (1 - distance * 0.6);
 
                     gain.gain.setValueAtTime(0, now + delay);
@@ -2383,7 +2386,6 @@
                     osc.stop(now + delay + duration);
                 });
 
-                // Noise layer for realism
                 const noise = audioContext.createBufferSource();
                 noise.buffer = createPinkNoise(duration);
                 const noiseFilter = audioContext.createBiquadFilter();
@@ -2395,11 +2397,11 @@
                 noiseGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
                 noise.connect(noiseFilter).connect(noiseGain).connect(masterGainNode);
                 noise.start();
+            };
 
-            }, 25000 + Math.random() * 45000); // Every 25-70 seconds
-
-            soundGains.thunder = audioContext.createGain();
-            activeSounds.thunder = {};
+            // Play one clap immediately, then on interval
+            playThunder();
+            soundIntervals.thunder = setInterval(playThunder, 25000 + Math.random() * 45000);
         }
 
         // REALISTIC CRICKETS - Multiple species, spatial chorus
@@ -2560,6 +2562,7 @@
                 });
             };
 
+            callBird(); // Play one bird call immediately on enable
             soundIntervals.birds = setInterval(callBird, 3000 + Math.random() * 6000);
             activeSounds.birds = {};
         }
@@ -2780,6 +2783,7 @@
                 };
 
                 soundIntervals.chimes = setInterval(playChime, 8000 + Math.random() * 12000);
+                playChime(); // Play one immediately so user hears it right away
                 activeSounds.chimes = {};
                 console.log('🎵 Chimes started successfully');
             } catch (error) {
@@ -2791,14 +2795,13 @@
             soundGains.bowl = audioContext.createGain();
             updateSoundVolume('bowl');
 
-            soundIntervals.bowl = setInterval(() => {
+            const playBowl = () => {
                 if (!activeSounds.bowl) return;
 
                 const now = audioContext.currentTime;
                 const fundamentals = [216, 324, 432]; // Sacred frequencies
 
                 fundamentals.forEach((freq, i) => {
-                    // Add multiple harmonics for richness
                     [1, 2, 3, 4, 5].forEach((harmonic, h) => {
                         const osc = audioContext.createOscillator();
                         osc.frequency.value = freq * harmonic + (Math.random() * 2);
@@ -2814,7 +2817,10 @@
                         osc.stop(now + (8 - h * 0.5));
                     });
                 });
-            }, 45000 + Math.random() * 30000);
+            };
+
+            playBowl(); // Strike immediately on enable
+            soundIntervals.bowl = setInterval(playBowl, 20000 + Math.random() * 20000);
             activeSounds.bowl = {};
         }
 
@@ -2975,7 +2981,7 @@
             soundGains.owl = audioContext.createGain();
             updateSoundVolume('owl');
 
-            soundIntervals.owl = setInterval(() => {
+            const playOwl = () => {
                 if (!activeSounds.owl) return;
 
                 const now = audioContext.currentTime;
@@ -2986,7 +2992,7 @@
                     { freq: 400, dur: 0.15, delay: 0 },
                     { freq: 390, dur: 0.15, delay: 0.25 },
                     { freq: 385, dur: 0.15, delay: 0.5 },
-                    { freq: 380, dur: 0.4, delay: 0.75 }
+                    { freq: 380, dur: 0.4,  delay: 0.75 }
                 ];
 
                 pattern.forEach(note => {
@@ -3006,8 +3012,10 @@
                     osc.start(startTime);
                     osc.stop(startTime + note.dur);
                 });
-            }, 15000 + Math.random() * 25000); // Every 15-40 seconds
+            };
 
+            playOwl(); // Hoot immediately on enable
+            soundIntervals.owl = setInterval(playOwl, 15000 + Math.random() * 25000);
             activeSounds.owl = {};
         }
 
@@ -3046,7 +3054,8 @@
                     setTimeout(croakFrog, frogPosition.interval + Math.random() * 500);
                 };
 
-                setTimeout(() => croakFrog(), Math.random() * 2000);
+                // Stagger start slightly but start immediately (no delay > 200ms)
+                setTimeout(() => croakFrog(), i * 200);
             }
 
             activeSounds.frogs = {};
@@ -3220,6 +3229,7 @@
                 };
 
                 soundIntervals.wolf = setInterval(howl, 60000 + Math.random() * 120000); // Every 1-3 minutes
+                howl(); // Howl once immediately on enable
                 activeSounds.wolf = {};
                 console.log('🎵 Wolf sounds started successfully');
             } catch (error) {
