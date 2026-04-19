@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manifestation Vision Board - Eden Consciousness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <style>
+        :root { --gold:#D4AF37; --purple:#8B5CF6; --green:#10B981; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Outfit',sans-serif; background:linear-gradient(135deg,#0a0e1b,#1a1630,#0f0a1a); color:#ddd; min-height:100vh; }
+        .nav-bar { position:fixed; top:20px; left:20px; z-index:999; display:flex; gap:10px; }
+        .nav-btn { background:rgba(139,92,246,0.85); color:white; padding:8px 18px; border-radius:25px; text-decoration:none; font-weight:600; font-size:0.85rem; backdrop-filter:blur(10px); }
+        .page { max-width:960px; margin:0 auto; padding:5rem 1.5rem 3rem; }
+
+        /* Header */
+        .header { text-align:center; margin-bottom:2.5rem; }
+        .header h1 { font-family:'Playfair Display',serif; font-size:2.4rem; color:var(--gold); margin-bottom:0.5rem; }
+        .header p { color:#9EA3B0; font-size:0.95rem; max-width:520px; margin:0 auto 1.25rem; }
+        .save-row { display:flex; gap:1rem; justify-content:center; align-items:center; flex-wrap:wrap; }
+        .save-btn { padding:0.75rem 2rem; background:linear-gradient(135deg,var(--gold),var(--purple)); border:none; border-radius:25px; color:white; font-family:'Outfit',sans-serif; font-weight:700; cursor:pointer; font-size:0.95rem; transition:transform 0.2s; }
+        .save-btn:hover { transform:translateY(-2px); }
+        .save-status { font-size:0.83rem; color:#777; }
+
+        /* Gate */
+        .gate { text-align:center; background:rgba(45,27,78,0.4); border:1px solid rgba(212,175,55,0.2); border-radius:22px; padding:3rem 2rem; display:none; }
+        .gate h2 { font-family:'Playfair Display',serif; font-size:2rem; color:var(--gold); margin-bottom:1rem; }
+        .gate p { color:#aaa; margin-bottom:2rem; }
+        .gate a { display:inline-block; padding:1rem 2.5rem; background:linear-gradient(135deg,var(--gold),var(--purple)); border-radius:25px; color:white; text-decoration:none; font-weight:700; }
+
+        /* Category tabs */
+        .cat-tabs { display:flex; gap:0.5rem; overflow-x:auto; padding-bottom:0.5rem; margin-bottom:1.5rem; scrollbar-width:none; }
+        .cat-tabs::-webkit-scrollbar { display:none; }
+        .cat-tab { padding:0.5rem 1.1rem; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:20px; color:#aaa; cursor:pointer; font-size:0.85rem; white-space:nowrap; transition:all 0.2s; }
+        .cat-tab.active, .cat-tab:hover { background:rgba(212,175,55,0.12); border-color:rgba(212,175,55,0.3); color:var(--gold); }
+
+        /* Card picker */
+        .card-picker { margin-bottom:2rem; }
+        .card-picker h3 { font-size:0.85rem; color:#777; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:1rem; }
+        .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:0.75rem; }
+        .pick-card { background:rgba(45,27,78,0.3); border:1px solid rgba(212,175,55,0.1); border-radius:14px; padding:1rem 0.75rem; text-align:center; cursor:pointer; transition:all 0.2s; user-select:none; }
+        .pick-card:hover { border-color:rgba(212,175,55,0.4); transform:translateY(-2px); }
+        .pick-card .emoji { font-size:1.75rem; display:block; margin-bottom:0.4rem; }
+        .pick-card .label { font-size:0.8rem; color:#bbb; line-height:1.3; }
+
+        /* Board */
+        .board-section h3 { font-size:0.85rem; color:#777; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:1rem; }
+        .board { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:1rem; min-height:200px; }
+        .board-empty { grid-column:1/-1; text-align:center; padding:3rem; color:#555; border:2px dashed rgba(255,255,255,0.08); border-radius:18px; font-size:0.95rem; line-height:1.7; }
+        .board-card { background:rgba(45,27,78,0.4); border:1px solid rgba(212,175,55,0.15); border-radius:16px; padding:1.25rem; position:relative; animation:pop 0.3s ease; }
+        @keyframes pop { 0%{transform:scale(0.8);opacity:0} 100%{transform:scale(1);opacity:1} }
+        .board-card .card-emoji { font-size:2rem; display:block; margin-bottom:0.6rem; text-align:center; }
+        .board-card .card-title { font-weight:600; color:#E8E3D9; font-size:0.9rem; margin-bottom:0.4rem; }
+        .board-card .card-affirmation { font-size:0.8rem; color:#9EA3B0; line-height:1.5; }
+        .board-card .remove-btn { position:absolute; top:8px; right:8px; background:rgba(244,63,94,0.2); border:1px solid rgba(244,63,94,0.3); border-radius:50%; width:22px; height:22px; color:#F43F5E; font-size:0.75rem; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.2s; }
+        .board-card:hover .remove-btn { opacity:1; }
+
+        /* Custom intention input */
+        .intention-bar { display:flex; gap:0.75rem; margin-top:1.5rem; flex-wrap:wrap; }
+        .intention-input { flex:1; min-width:200px; padding:0.75rem 1rem; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:white; font-family:'Outfit',sans-serif; font-size:0.9rem; }
+        .intention-input:focus { outline:none; border-color:rgba(212,175,55,0.4); }
+        .intention-add { padding:0.75rem 1.5rem; background:rgba(139,92,246,0.2); border:1px solid rgba(139,92,246,0.3); border-radius:12px; color:#C4B5FD; font-family:'Outfit',sans-serif; cursor:pointer; font-size:0.9rem; white-space:nowrap; }
+        .intention-add:hover { background:rgba(139,92,246,0.35); }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <a href="../members-new.html" class="nav-btn">← Portal</a>
+    </div>
+    <div class="page">
+        <div class="header">
+            <h1>✨ Manifestation Vision Board</h1>
+            <p>Declare your intentions. Choose cards that call to your soul. Your board is saved to your sacred space.</p>
+            <div class="save-row" id="saveRow">
+                <button class="save-btn" onclick="saveBoard()">💾 Save My Board</button>
+                <span class="save-status" id="saveStatus"></span>
+            </div>
+        </div>
+
+        <!-- Premium gate -->
+        <div class="gate" id="gate">
+            <div style="font-size:3rem;margin-bottom:1rem;">🔒</div>
+            <h2>Premium Feature</h2>
+            <p>The Vision Board is exclusive to Eden Premium members.<br>Upgrade to save, build, and revisit your manifestation board anytime.</p>
+            <a href="../pricing.html">Unlock Access ✨</a>
+        </div>
+
+        <!-- Main board builder -->
+        <div id="mainBoard">
+            <!-- Category tabs -->
+            <div class="cat-tabs" id="catTabs"></div>
+
+            <!-- Card picker -->
+            <div class="card-picker">
+                <h3>Add to your board</h3>
+                <div class="card-grid" id="cardGrid"></div>
+            </div>
+
+            <!-- Custom intention -->
+            <div class="intention-bar">
+                <input class="intention-input" id="intentionInput" placeholder="Write your own intention (e.g. I am abundant and free...)" maxlength="80">
+                <button class="intention-add" onclick="addCustomIntention()">+ Add Intention</button>
+            </div>
+
+            <!-- Board -->
+            <div class="board-section" style="margin-top:2rem;">
+                <h3>My Sacred Board (<span id="cardCount">0</span> cards)</h3>
+                <div class="board" id="board">
+                    <div class="board-empty" id="emptyState">Your board is empty. Choose cards above or write your own intentions to begin manifesting. ✨</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const firebaseConfig = {
+        apiKey:"AIzaSyCOyZPb4gfYE5q_RwmYaKG6cpTvrE-3LxI",
+        authDomain:"sacred-community.firebaseapp.com",
+        projectId:"sacred-community",
+        storageBucket:"sacred-community.firebasestorage.app",
+        messagingSenderId:"582271923489",
+        appId:"1:582271923489:web:aa46a8bb5ac0859fe83a60"
+    };
+    try { if(!firebase.apps.length) firebase.initializeApp(firebaseConfig); } catch(e){}
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    const PREMIUM_LEVELS = ['premium','elite','admin','founding','student','monthly','divine'];
+
+    const CATEGORIES = {
+        '💛 Abundance': [
+            { emoji:'💰', label:'Financial Freedom', affirmation:'I am a magnet for unlimited abundance.' },
+            { emoji:'🏡', label:'Dream Home', affirmation:'I live in a space of beauty, peace, and safety.' },
+            { emoji:'💎', label:'Wealth Mindset', affirmation:'Prosperity flows to me easily and naturally.' },
+            { emoji:'🌾', label:'Overflow', affirmation:'I always have more than enough.' },
+            { emoji:'📈', label:'Growth & Success', affirmation:'My success is inevitable and aligned.' },
+            { emoji:'🎁', label:'Generous Life', affirmation:'I give and receive with an open heart.' }
+        ],
+        '❤️ Love & Relationships': [
+            { emoji:'💑', label:'Sacred Partnership', affirmation:'I attract and experience deep, conscious love.' },
+            { emoji:'👨‍👩‍👧', label:'Family Harmony', affirmation:'My family relationships are filled with love and understanding.' },
+            { emoji:'🤝', label:'Soulful Friendships', affirmation:'I am surrounded by people who uplift and honor me.' },
+            { emoji:'💞', label:'Self-Love', affirmation:'I am worthy of deep, beautiful love.' },
+            { emoji:'🌹', label:'Romance', affirmation:'Love finds me in unexpected and magical ways.' },
+            { emoji:'🫂', label:'Deep Connection', affirmation:'I experience genuine connection and belonging.' }
+        ],
+        '🧘 Health & Vitality': [
+            { emoji:'💪', label:'Strong Body', affirmation:'My body is strong, capable, and radiant with health.' },
+            { emoji:'🧠', label:'Clear Mind', affirmation:'My mind is clear, focused, and at peace.' },
+            { emoji:'😴', label:'Restful Sleep', affirmation:'I rest deeply and wake renewed each morning.' },
+            { emoji:'🌿', label:'Natural Wellness', affirmation:'I nourish my body with love and intention.' },
+            { emoji:'⚡', label:'Vibrant Energy', affirmation:'My energy is high, pure, and life-giving.' },
+            { emoji:'🏃', label:'Active Life', affirmation:'Movement brings me joy and vitality.' }
+        ],
+        '🌟 Purpose & Calling': [
+            { emoji:'🎯', label:'Clear Purpose', affirmation:'I know my purpose and I walk it with confidence.' },
+            { emoji:'🌍', label:'Global Impact', affirmation:'My work touches and transforms lives around the world.' },
+            { emoji:'📚', label:'Wisdom & Knowledge', affirmation:'I am a lifelong learner growing into greater understanding.' },
+            { emoji:'🦋', label:'Transformation', affirmation:'I embrace change as the path to my highest self.' },
+            { emoji:'🏆', label:'Achievement', affirmation:'I accomplish great things with grace and ease.' },
+            { emoji:'🔥', label:'Passion', affirmation:'I live fully alive, doing work I love.' }
+        ],
+        '🙏 Spirituality': [
+            { emoji:'🕊', label:'Peace', affirmation:'I carry deep peace within me, always.' },
+            { emoji:'🌈', label:'Divine Alignment', affirmation:'I am aligned with the highest divine plan for my life.' },
+            { emoji:'⭐', label:'Spiritual Gifts', affirmation:'My spiritual gifts are awakened and serve the world.' },
+            { emoji:'🌙', label:'Intuition', affirmation:'I trust my inner knowing completely.' },
+            { emoji:'🧿', label:'Protection', affirmation:'I am divinely protected in all areas of my life.' },
+            { emoji:'✨', label:'Awakening', affirmation:'I am becoming more conscious every single day.' }
+        ],
+        '🌱 Personal Growth': [
+            { emoji:'🦁', label:'Courage', affirmation:'I face every challenge with courage and faith.' },
+            { emoji:'🗽', label:'Freedom', affirmation:'I am free to create the life I was designed for.' },
+            { emoji:'🎨', label:'Creativity', affirmation:'My creativity flows freely and blesses the world.' },
+            { emoji:'📝', label:'Expression', affirmation:'I express myself authentically and powerfully.' },
+            { emoji:'🌅', label:'New Beginnings', affirmation:'Every day is a fresh opportunity to become who I am.' },
+            { emoji:'🔓', label:'Breaking Limits', affirmation:'I release all that holds me back and step into freedom.' }
+        ]
+    };
+
+    let boardCards = [];
+    let currentCategory = Object.keys(CATEGORIES)[0];
+    let currentUser = null;
+    let isPremium = false;
+
+    function buildCategoryTabs() {
+        const tabs = document.getElementById('catTabs');
+        tabs.innerHTML = '';
+        Object.keys(CATEGORIES).forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'cat-tab' + (cat === currentCategory ? ' active' : '');
+            btn.textContent = cat;
+            btn.onclick = () => {
+                currentCategory = cat;
+                document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+                btn.classList.add('active');
+                renderCardGrid();
+            };
+            tabs.appendChild(btn);
+        });
+    }
+
+    function renderCardGrid() {
+        const grid = document.getElementById('cardGrid');
+        grid.innerHTML = '';
+        CATEGORIES[currentCategory].forEach(card => {
+            const el = document.createElement('div');
+            el.className = 'pick-card';
+            el.innerHTML = `<span class="emoji">${card.emoji}</span><span class="label">${card.label}</span>`;
+            el.onclick = () => addCard(card);
+            grid.appendChild(el);
+        });
+    }
+
+    function addCard(card) {
+        if (boardCards.find(c => c.label === card.label)) return; // no duplicates
+        boardCards.push({ ...card, id: Date.now() + Math.random() });
+        renderBoard();
+    }
+
+    function removeCard(id) {
+        boardCards = boardCards.filter(c => c.id !== id);
+        renderBoard();
+    }
+
+    function addCustomIntention() {
+        const input = document.getElementById('intentionInput');
+        const text = input.value.trim();
+        if (!text) return;
+        boardCards.push({ emoji:'💫', label: text, affirmation: text, id: Date.now() + Math.random(), custom: true });
+        input.value = '';
+        renderBoard();
+    }
+
+    function renderBoard() {
+        const board = document.getElementById('board');
+        const empty = document.getElementById('emptyState');
+        document.getElementById('cardCount').textContent = boardCards.length;
+
+        if (boardCards.length === 0) {
+            board.innerHTML = '';
+            board.appendChild(empty);
+            return;
+        }
+        board.innerHTML = '';
+        boardCards.forEach(card => {
+            const el = document.createElement('div');
+            el.className = 'board-card';
+            el.innerHTML = `
+                <button class="remove-btn" onclick="removeCard(${card.id})" title="Remove">✕</button>
+                <span class="card-emoji">${card.emoji}</span>
+                <div class="card-title">${card.label}</div>
+                <div class="card-affirmation">${card.affirmation}</div>
+            `;
+            board.appendChild(el);
+        });
+    }
+
+    async function saveBoard() {
+        if (!currentUser) { document.getElementById('saveStatus').textContent = 'Sign in to save your board.'; return; }
+        if (boardCards.length === 0) { document.getElementById('saveStatus').textContent = 'Add some cards first!'; return; }
+        document.getElementById('saveStatus').textContent = 'Saving...';
+        try {
+            await db.collection('visionBoards').doc(currentUser.uid).set({
+                userId: currentUser.uid,
+                displayName: currentUser.displayName || currentUser.email,
+                cards: boardCards.map(c => ({ emoji:c.emoji, label:c.label, affirmation:c.affirmation })),
+                updatedAt: new Date().toISOString()
+            }, { merge: true });
+            document.getElementById('saveStatus').textContent = '✅ Board saved!';
+            setTimeout(() => { document.getElementById('saveStatus').textContent = ''; }, 3000);
+        } catch(e) {
+            document.getElementById('saveStatus').textContent = 'Save failed. Please try again.';
+        }
+    }
+
+    async function loadBoard() {
+        if (!currentUser) return;
+        try {
+            const doc = await db.collection('visionBoards').doc(currentUser.uid).get();
+            if (doc.exists && doc.data().cards) {
+                boardCards = doc.data().cards.map(c => ({ ...c, id: Date.now() + Math.random() }));
+                renderBoard();
+            }
+        } catch(e) {}
+    }
+
+    function showGate() {
+        document.getElementById('gate').style.display = 'block';
+        document.getElementById('mainBoard').style.display = 'none';
+        document.getElementById('saveRow').style.display = 'none';
+    }
+
+    auth.onAuthStateChanged(async user => {
+        currentUser = user;
+        if (!user) { showGate(); return; }
+        try {
+            const doc = await db.collection('users').doc(user.uid).get();
+            const level = doc.exists ? doc.data()?.membershipLevel : null;
+            isPremium = PREMIUM_LEVELS.includes(level);
+        } catch(e) { isPremium = false; }
+        if (!isPremium) { showGate(); return; }
+
+        buildCategoryTabs();
+        renderCardGrid();
+        await loadBoard();
+    });
+
+    // Handle intention input enter key
+    document.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('intentionInput');
+        if (input) {
+            input.addEventListener('keydown', e => { if (e.key === 'Enter') addCustomIntention(); });
+        }
+    });
+    </script>
+</body>
+</html>

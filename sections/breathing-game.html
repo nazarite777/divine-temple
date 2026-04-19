@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sacred Breathing - Eden Consciousness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <style>
+        :root { --gold:#D4AF37; --purple:#8B5CF6; --green:#10B981; --rose:#F43F5E; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Outfit',sans-serif; background:linear-gradient(135deg,#050910,#0d1225,#070d1c); color:#ddd; min-height:100vh; overflow-x:hidden; }
+        .nav-bar { position:fixed; top:20px; left:20px; z-index:999; display:flex; gap:10px; }
+        .nav-btn { background:rgba(139,92,246,0.85); color:white; padding:8px 18px; border-radius:25px; text-decoration:none; font-weight:600; font-size:0.85rem; backdrop-filter:blur(10px); }
+        .page { max-width:580px; margin:0 auto; padding:4rem 1.5rem 3rem; text-align:center; }
+
+        /* Header */
+        h1 { font-family:'Playfair Display',serif; font-size:2.2rem; color:var(--gold); margin-bottom:0.4rem; margin-top:2rem; }
+        .subtitle { color:#9EA3B0; font-size:0.92rem; margin-bottom:2rem; }
+
+        /* Pattern selector */
+        .pattern-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:0.75rem; margin-bottom:2rem; }
+        @media(min-width:420px) { .pattern-grid { grid-template-columns:repeat(4,1fr); } }
+        .pat-btn { padding:0.75rem 0.5rem; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:#aaa; cursor:pointer; font-family:'Outfit',sans-serif; font-size:0.8rem; text-align:center; transition:all 0.2s; }
+        .pat-btn:hover { border-color:rgba(212,175,55,0.4); color:var(--gold); }
+        .pat-btn.active { background:rgba(212,175,55,0.12); border-color:var(--gold); color:var(--gold); }
+        .pat-name { font-weight:600; font-size:0.85rem; }
+        .pat-desc { font-size:0.72rem; color:#666; margin-top:2px; }
+
+        /* Main circle */
+        .circle-container { position:relative; width:260px; height:260px; margin:0 auto 1.5rem; }
+        .breath-circle { position:absolute; inset:0; border-radius:50%; border:2px solid rgba(212,175,55,0.2); background:radial-gradient(circle, rgba(212,175,55,0.08), transparent 70%); transition:transform 0s; }
+        .breath-ring { position:absolute; inset:-20px; border-radius:50%; border:3px solid rgba(212,175,55,0.15); transition:transform 0s; }
+        .breath-ring-2 { position:absolute; inset:-40px; border-radius:50%; border:2px solid rgba(139,92,246,0.1); transition:transform 0s; }
+        .circle-inner { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+        .phase-label { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--gold); }
+        .phase-count { font-size:2.8rem; font-weight:700; color:white; line-height:1; margin-top:4px; }
+        .cycle-label { font-size:0.78rem; color:#777; margin-top:4px; }
+
+        /* Stats row */
+        .stats-row { display:flex; gap:1rem; justify-content:center; margin-bottom:2rem; flex-wrap:wrap; }
+        .stat-box { background:rgba(45,27,78,0.3); border:1px solid rgba(212,175,55,0.1); border-radius:12px; padding:0.75rem 1.25rem; min-width:90px; }
+        .stat-val { font-size:1.5rem; font-weight:700; color:var(--gold); }
+        .stat-lbl { font-size:0.72rem; color:#777; text-transform:uppercase; letter-spacing:0.05em; }
+
+        /* Control buttons */
+        .controls { display:flex; gap:1rem; justify-content:center; margin-bottom:2rem; flex-wrap:wrap; }
+        .ctrl-btn { padding:1rem 2.5rem; border-radius:25px; font-family:'Outfit',sans-serif; font-weight:700; font-size:1rem; cursor:pointer; transition:all 0.2s; border:none; }
+        .start-btn { background:linear-gradient(135deg,var(--gold),var(--purple)); color:white; }
+        .start-btn:hover { transform:translateY(-2px); }
+        .stop-btn { background:rgba(244,63,94,0.15); border:1px solid rgba(244,63,94,0.3); color:#F43F5E; padding:1rem 2rem; }
+
+        /* Progress bar */
+        .session-progress { height:4px; background:rgba(255,255,255,0.06); border-radius:2px; margin-bottom:1rem; overflow:hidden; }
+        .session-fill { height:100%; background:linear-gradient(90deg,var(--purple),var(--gold)); transition:width 0.5s; width:0%; }
+
+        /* Done screen */
+        .done-screen { display:none; background:rgba(45,27,78,0.4); border:1px solid rgba(212,175,55,0.2); border-radius:22px; padding:2rem; margin-top:1rem; }
+        .done-title { font-family:'Playfair Display',serif; font-size:2rem; color:var(--gold); margin-bottom:0.5rem; }
+        .done-msg { color:#C0B8D0; font-size:0.95rem; line-height:1.6; margin-bottom:1.5rem; }
+        .xp-badge { display:inline-flex; align-items:center; gap:0.5rem; background:rgba(212,175,55,0.12); border:1px solid rgba(212,175,55,0.3); border-radius:20px; padding:0.5rem 1.25rem; color:var(--gold); font-weight:700; margin-bottom:1.5rem; }
+        .done-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+        .da-btn { padding:0.85rem 1.75rem; border-radius:12px; font-weight:600; cursor:pointer; font-family:'Outfit',sans-serif; border:none; font-size:0.9rem; }
+        .da-primary { background:linear-gradient(135deg,var(--gold),var(--purple)); color:white; }
+        .da-outline { background:transparent; border:1px solid rgba(212,175,55,0.4); color:var(--gold); }
+
+        /* particles */
+        .particles { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:hidden; }
+        .particle { position:absolute; border-radius:50%; background:rgba(212,175,55,0.15); animation:float linear infinite; }
+        @keyframes float { 0%{transform:translateY(100vh) scale(0);opacity:0} 10%{opacity:1} 90%{opacity:0.5} 100%{transform:translateY(-100px) scale(1);opacity:0} }
+        .page { position:relative; z-index:1; }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="nav-bar">
+        <a href="../members-new.html" class="nav-btn">← Portal</a>
+    </div>
+    <div class="page">
+        <h1>🌬 Sacred Breathing</h1>
+        <p class="subtitle">Follow the rhythm. Calm your mind. Earn XP by completing breathing rounds.</p>
+
+        <!-- Pattern selector -->
+        <div class="pattern-grid" id="patternGrid">
+            <button class="pat-btn active" data-pat="box" onclick="selectPattern('box',this)">
+                <div class="pat-name">Box</div>
+                <div class="pat-desc">4-4-4-4</div>
+            </button>
+            <button class="pat-btn" data-pat="478" onclick="selectPattern('478',this)">
+                <div class="pat-name">4-7-8</div>
+                <div class="pat-desc">Sleep & Calm</div>
+            </button>
+            <button class="pat-btn" data-pat="coherent" onclick="selectPattern('coherent',this)">
+                <div class="pat-name">Coherent</div>
+                <div class="pat-desc">5-5</div>
+            </button>
+            <button class="pat-btn" data-pat="energize" onclick="selectPattern('energize',this)">
+                <div class="pat-name">Energize</div>
+                <div class="pat-desc">6-2-4</div>
+            </button>
+        </div>
+
+        <!-- Circle -->
+        <div class="circle-container" id="circleContainer">
+            <div class="breath-ring-2" id="ring2"></div>
+            <div class="breath-ring" id="ring1"></div>
+            <div class="breath-circle" id="breathCircle"></div>
+            <div class="circle-inner">
+                <div class="phase-label" id="phaseLabel">Ready</div>
+                <div class="phase-count" id="phaseCount">—</div>
+                <div class="cycle-label" id="cycleLabel">Select a pattern</div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-box"><div class="stat-val" id="cyclesDone">0</div><div class="stat-lbl">Cycles</div></div>
+            <div class="stat-box"><div class="stat-val" id="minutesDone">0:00</div><div class="stat-lbl">Time</div></div>
+            <div class="stat-box"><div class="stat-val" id="xpDisplay">0</div><div class="stat-lbl">XP</div></div>
+        </div>
+
+        <div class="session-progress"><div class="session-fill" id="sessionFill"></div></div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="ctrl-btn start-btn" id="startBtn" onclick="startSession()">Begin Session ▶</button>
+            <button class="ctrl-btn stop-btn" id="stopBtn" style="display:none" onclick="endSession(true)">End Session ◼</button>
+        </div>
+
+        <!-- Done screen -->
+        <div class="done-screen" id="doneScreen">
+            <div class="done-title">Session Complete 🙏</div>
+            <div class="done-msg" id="doneMsg"></div>
+            <div class="xp-badge" id="doneXP">✨ +0 XP</div>
+            <div class="done-actions">
+                <button class="da-btn da-primary" onclick="resetSession()">New Session 🌬</button>
+                <a href="../members-new.html" class="da-btn da-outline">Back to Portal</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const firebaseConfig = {
+        apiKey:"AIzaSyCOyZPb4gfYE5q_RwmYaKG6cpTvrE-3LxI",
+        authDomain:"sacred-community.firebaseapp.com",
+        projectId:"sacred-community",
+        storageBucket:"sacred-community.firebasestorage.app",
+        messagingSenderId:"582271923489",
+        appId:"1:582271923489:web:aa46a8bb5ac0859fe83a60"
+    };
+    try { if(!firebase.apps.length) firebase.initializeApp(firebaseConfig); } catch(e){}
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    const PATTERNS = {
+        box: { name:'Box Breathing', phases:[{l:'Inhale',s:4},{l:'Hold',s:4},{l:'Exhale',s:4},{l:'Hold',s:4}] },
+        '478': { name:'4-7-8 Breath', phases:[{l:'Inhale',s:4},{l:'Hold',s:7},{l:'Exhale',s:8},{l:'Rest',s:0}] },
+        coherent: { name:'Coherent Breathing', phases:[{l:'Inhale',s:5},{l:'Exhale',s:5}] },
+        energize: { name:'Energizing Breath', phases:[{l:'Inhale',s:6},{l:'Hold',s:2},{l:'Exhale',s:4}] }
+    };
+    const TARGET_CYCLES = 5;
+    const XP_PER_CYCLE = 10;
+
+    let selectedPat = 'box';
+    let running = false;
+    let phaseIdx = 0;
+    let phaseSecondsLeft = 0;
+    let cycleCount = 0;
+    let sessionSeconds = 0;
+    let xpEarned = 0;
+    let mainInterval = null;
+    let clockInterval = null;
+    let currentUser = null;
+
+    // Particles
+    function createParticles() {
+        const c = document.getElementById('particles');
+        for (let i=0;i<12;i++) {
+            const p = document.createElement('div');
+            p.className='particle';
+            const sz = 4+Math.random()*8;
+            p.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;animation-duration:${8+Math.random()*10}s;animation-delay:${Math.random()*6}s;`;
+            c.appendChild(p);
+        }
+    }
+    createParticles();
+
+    function selectPattern(pat, btn) {
+        if (running) return;
+        selectedPat = pat;
+        document.querySelectorAll('.pat-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('phaseLabel').textContent = PATTERNS[pat].name;
+        document.getElementById('phaseCount').textContent = '—';
+        document.getElementById('cycleLabel').textContent = 'Ready when you are';
+    }
+
+    function startSession() {
+        running = true;
+        phaseIdx = 0;
+        cycleCount = 0;
+        sessionSeconds = 0;
+        xpEarned = 0;
+        document.getElementById('startBtn').style.display = 'none';
+        document.getElementById('stopBtn').style.display = 'block';
+        document.getElementById('patternGrid').style.opacity = '0.4';
+        document.getElementById('patternGrid').style.pointerEvents = 'none';
+        document.getElementById('doneScreen').style.display = 'none';
+        updateStatsUI();
+        startPhase();
+
+        clockInterval = setInterval(() => {
+            sessionSeconds++;
+            const m = Math.floor(sessionSeconds/60);
+            const s = sessionSeconds%60;
+            document.getElementById('minutesDone').textContent = m+':'+(s<10?'0':'')+s;
+        }, 1000);
+    }
+
+    function startPhase() {
+        const pattern = PATTERNS[selectedPat];
+        const phase = pattern.phases[phaseIdx];
+        phaseSecondsLeft = phase.s || 1;
+        document.getElementById('phaseLabel').textContent = phase.l;
+        document.getElementById('phaseCount').textContent = phaseSecondsLeft;
+        document.getElementById('cycleLabel').textContent = `Cycle ${cycleCount + 1} of ${TARGET_CYCLES}`;
+        animateCircle(phase.l, phase.s);
+
+        clearInterval(mainInterval);
+        mainInterval = setInterval(() => {
+            phaseSecondsLeft--;
+            document.getElementById('phaseCount').textContent = phaseSecondsLeft;
+            if (phaseSecondsLeft <= 0) {
+                clearInterval(mainInterval);
+                advancePhase();
+            }
+        }, 1000);
+    }
+
+    function advancePhase() {
+        const pattern = PATTERNS[selectedPat];
+        phaseIdx++;
+        if (phaseIdx >= pattern.phases.length) {
+            phaseIdx = 0;
+            cycleCount++;
+            xpEarned += XP_PER_CYCLE;
+            updateStatsUI();
+            const pct = Math.min(cycleCount / TARGET_CYCLES * 100, 100);
+            document.getElementById('sessionFill').style.width = pct + '%';
+            if (cycleCount >= TARGET_CYCLES) {
+                endSession(false);
+                return;
+            }
+        }
+        startPhase();
+    }
+
+    function animateCircle(phase, dur) {
+        const circle = document.getElementById('breathCircle');
+        const ring1 = document.getElementById('ring1');
+        const ring2 = document.getElementById('ring2');
+        if (phase === 'Inhale') {
+            animate(circle, 'transform', 'scale(1)', 'scale(1.35)', dur * 1000);
+            animate(ring1, 'transform', 'scale(1)', 'scale(1.2)', dur * 1000);
+            animate(ring2, 'transform', 'scale(1)', 'scale(1.1)', dur * 1000);
+        } else if (phase === 'Exhale') {
+            animate(circle, 'transform', 'scale(1.35)', 'scale(1)', dur * 1000);
+            animate(ring1, 'transform', 'scale(1.2)', 'scale(1)', dur * 1000);
+            animate(ring2, 'transform', 'scale(1.1)', 'scale(1)', dur * 1000);
+        } else {
+            // Hold / Rest — freeze current
+        }
+    }
+
+    function animate(el, prop, from, to, ms) {
+        el.style.transition = `transform ${ms/1000}s ease-in-out`;
+        el.style.transform = from;
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => { el.style.transform = to; });
+        });
+    }
+
+    function updateStatsUI() {
+        document.getElementById('cyclesDone').textContent = cycleCount;
+        document.getElementById('xpDisplay').textContent = xpEarned;
+    }
+
+    async function endSession(manual) {
+        running = false;
+        clearInterval(mainInterval);
+        clearInterval(clockInterval);
+        document.getElementById('startBtn').style.display = 'block';
+        document.getElementById('stopBtn').style.display = 'none';
+        document.getElementById('patternGrid').style.opacity = '1';
+        document.getElementById('patternGrid').style.pointerEvents = 'all';
+        document.getElementById('phaseLabel').textContent = 'Done';
+        document.getElementById('phaseCount').textContent = '🙏';
+
+        let msg;
+        if (cycleCount >= TARGET_CYCLES) msg = `You completed all ${TARGET_CYCLES} cycles of ${PATTERNS[selectedPat].name}. Your nervous system is grateful. Your mind is clear. Carry this calm into your day.`;
+        else if (cycleCount > 0) msg = `You completed ${cycleCount} cycle${cycleCount>1?'s':''} today. Every conscious breath is a victory. Come back and build the habit.`;
+        else msg = 'Every journey begins with one breath. Return when you\'re ready.';
+
+        document.getElementById('doneMsg').textContent = msg;
+        document.getElementById('doneXP').textContent = '✨ +' + xpEarned + ' XP Earned';
+        document.getElementById('doneScreen').style.display = 'block';
+
+        if (xpEarned > 0 && currentUser) {
+            try {
+                await db.collection('universalProgress').doc(currentUser.uid).set({
+                    lastActive: new Date().toISOString(),
+                    displayName: currentUser.displayName || currentUser.email,
+                    userId: currentUser.uid,
+                    totalXP: firebase.firestore.FieldValue.increment(xpEarned),
+                    weeklyXP: firebase.firestore.FieldValue.increment(xpEarned),
+                    monthlyXP: firebase.firestore.FieldValue.increment(xpEarned),
+                    'stats.breathingSessions': firebase.firestore.FieldValue.increment(1),
+                    'stats.breathingCycles': firebase.firestore.FieldValue.increment(cycleCount),
+                    'stats.breathingMinutes': firebase.firestore.FieldValue.increment(Math.round(sessionSeconds/60))
+                }, { merge: true });
+            } catch(e) { console.error(e); }
+        }
+    }
+
+    function resetSession() {
+        cycleCount = 0;
+        xpEarned = 0;
+        sessionSeconds = 0;
+        updateStatsUI();
+        document.getElementById('minutesDone').textContent = '0:00';
+        document.getElementById('sessionFill').style.width = '0%';
+        document.getElementById('doneScreen').style.display = 'none';
+        document.getElementById('phaseLabel').textContent = PATTERNS[selectedPat].name;
+        document.getElementById('phaseCount').textContent = '—';
+        document.getElementById('cycleLabel').textContent = 'Ready when you are';
+        // Reset circle
+        ['breathCircle','ring1','ring2'].forEach(id=>{
+            const el=document.getElementById(id);
+            el.style.transition='none';
+            el.style.transform='scale(1)';
+        });
+    }
+
+    auth.onAuthStateChanged(u => { currentUser = u; });
+    </script>
+</body>
+</html>

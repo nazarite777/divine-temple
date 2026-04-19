@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Which Phase Are You In? - Eden Consciousness</title>
+    <meta name="description" content="Discover which phase of your consciousness journey you're in. Free spiritual quiz from Eden Consciousness.">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold:#D4AF37; --purple:#8B5CF6; --green:#10B981; --glass:rgba(255,255,255,0.05); --glass-border:rgba(255,255,255,0.1); }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Outfit',sans-serif; background:linear-gradient(135deg,#0a0e1b,#1a1630,#0f0a1a); color:#ddd; min-height:100vh; }
+        .nav-bar { position:fixed; top:20px; left:20px; z-index:999; display:flex; gap:10px; }
+        .nav-btn { background:rgba(139,92,246,0.85); color:white; padding:8px 18px; border-radius:25px; text-decoration:none; font-weight:600; font-size:0.85rem; backdrop-filter:blur(10px); }
+        .page { max-width:700px; margin:0 auto; padding:5rem 1.5rem 3rem; }
+
+        /* Intro */
+        .intro { text-align:center; margin-bottom:3rem; }
+        .intro h1 { font-family:'Playfair Display',serif; font-size:2.5rem; color:var(--gold); margin-bottom:0.75rem; line-height:1.2; }
+        .intro p { color:#9EA3B0; font-size:1rem; line-height:1.6; max-width:520px; margin:0 auto 2rem; }
+        .start-btn { padding:1rem 3rem; background:linear-gradient(135deg,var(--gold),var(--purple)); border:none; border-radius:25px; color:white; font-family:'Outfit',sans-serif; font-weight:700; font-size:1.1rem; cursor:pointer; transition:transform 0.2s; }
+        .start-btn:hover { transform:translateY(-3px); }
+        .phases-preview { display:flex; justify-content:center; gap:1rem; margin-bottom:2rem; flex-wrap:wrap; }
+        .phase-pip { background:rgba(212,175,55,0.1); border:1px solid rgba(212,175,55,0.2); border-radius:8px; padding:0.5rem 1rem; font-size:0.8rem; color:var(--gold); }
+
+        /* Progress */
+        .quiz-progress { display:flex; align-items:center; gap:1rem; margin-bottom:2rem; }
+        .progress-bar { flex:1; height:6px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden; }
+        .progress-fill { height:100%; background:linear-gradient(90deg,var(--purple),var(--gold)); border-radius:3px; transition:width 0.5s ease; }
+        .progress-label { color:#777; font-size:0.82rem; white-space:nowrap; }
+
+        /* Question */
+        .q-card { background:rgba(45,27,78,0.35); border:1px solid rgba(212,175,55,0.12); border-radius:18px; padding:2rem; margin-bottom:1.5rem; }
+        .q-num { font-size:0.78rem; color:var(--purple); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.6rem; }
+        .q-text { font-family:'Playfair Display',serif; font-size:1.35rem; color:#E8E3D9; line-height:1.55; }
+
+        /* Options */
+        .options { display:grid; gap:0.75rem; }
+        .opt { padding:1rem 1.25rem; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:#ddd; font-size:0.95rem; cursor:pointer; text-align:left; transition:all 0.2s; font-family:'Outfit',sans-serif; display:flex; align-items:flex-start; gap:0.75rem; }
+        .opt:hover:not(:disabled) { background:rgba(139,92,246,0.15); border-color:rgba(139,92,246,0.4); color:white; }
+        .opt.selected { background:rgba(212,175,55,0.15); border-color:var(--gold); color:white; }
+        .opt:disabled { cursor:default; }
+        .opt-dot { width:20px; height:20px; border-radius:50%; border:2px solid rgba(255,255,255,0.2); flex-shrink:0; margin-top:1px; transition:all 0.2s; }
+        .opt.selected .opt-dot { background:var(--gold); border-color:var(--gold); }
+
+        .next-btn { width:100%; padding:1rem; background:linear-gradient(135deg,var(--gold),var(--purple)); border:none; border-radius:12px; color:white; font-family:'Outfit',sans-serif; font-weight:700; font-size:1rem; cursor:pointer; margin-top:1.25rem; transition:transform 0.2s; opacity:0.4; pointer-events:none; }
+        .next-btn.ready { opacity:1; pointer-events:all; }
+        .next-btn.ready:hover { transform:translateY(-2px); }
+
+        /* Results */
+        .result-card { background:rgba(45,27,78,0.4); border:1px solid rgba(212,175,55,0.2); border-radius:22px; padding:2.5rem; text-align:center; }
+        .result-phase { font-size:3rem; margin-bottom:0.75rem; }
+        .result-title { font-family:'Playfair Display',serif; font-size:2.2rem; color:var(--gold); margin-bottom:0.5rem; }
+        .result-subtitle { color:var(--purple); font-size:1rem; letter-spacing:0.05em; margin-bottom:1.5rem; }
+        .result-desc { color:#C0B8D0; font-size:0.97rem; line-height:1.7; margin-bottom:2rem; max-width:520px; margin-left:auto; margin-right:auto; }
+        .result-traits { display:flex; flex-wrap:wrap; gap:0.6rem; justify-content:center; margin-bottom:2rem; }
+        .trait { background:rgba(139,92,246,0.12); border:1px solid rgba(139,92,246,0.25); border-radius:20px; padding:0.3rem 0.875rem; color:#C4B5FD; font-size:0.82rem; }
+        .result-cta { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-bottom:1.5rem; }
+        .cta-btn { padding:0.85rem 1.75rem; border-radius:12px; font-weight:600; font-size:0.9rem; cursor:pointer; font-family:'Outfit',sans-serif; text-decoration:none; border:none; }
+        .cta-primary { background:linear-gradient(135deg,var(--gold),var(--purple)); color:white; }
+        .cta-outline { background:transparent; border:1px solid rgba(212,175,55,0.4); color:var(--gold); }
+        .share-text { font-size:0.82rem; color:#666; }
+
+        /* Score bars */
+        .phase-scores { margin-bottom:2rem; text-align:left; max-width:400px; margin-left:auto; margin-right:auto; }
+        .phase-scores h4 { color:#aaa; font-size:0.85rem; margin-bottom:1rem; text-align:center; text-transform:uppercase; letter-spacing:0.06em; }
+        .ps-row { display:flex; align-items:center; gap:0.75rem; margin-bottom:0.6rem; }
+        .ps-label { font-size:0.82rem; color:#aaa; width:120px; flex-shrink:0; }
+        .ps-bar-wrap { flex:1; height:8px; background:rgba(255,255,255,0.07); border-radius:4px; overflow:hidden; }
+        .ps-bar { height:100%; border-radius:4px; transition:width 1s ease; }
+        .hidden { display:none; }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <a href="../members-new.html" class="nav-btn">← Portal</a>
+    </div>
+    <div class="page">
+
+        <!-- Intro screen -->
+        <div id="introScreen">
+            <div class="intro">
+                <h1>Which Phase of Consciousness Are You In?</h1>
+                <p>Answer 12 honest questions and discover where you are on the path — Awakening, Alignment, Mastery, or Teaching. No right or wrong answers.</p>
+                <div class="phases-preview">
+                    <div class="phase-pip">🌅 Phase 1: Awakening</div>
+                    <div class="phase-pip">🌿 Phase 2: Alignment</div>
+                    <div class="phase-pip">⚡ Phase 3: Mastery</div>
+                    <div class="phase-pip">🌟 Phase 4: Teaching</div>
+                </div>
+                <button class="start-btn" onclick="startQuiz()">Begin Your Assessment →</button>
+            </div>
+        </div>
+
+        <!-- Quiz screen -->
+        <div id="quizScreen" class="hidden">
+            <div class="quiz-progress">
+                <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+                <div class="progress-label" id="progressLabel">1 of 12</div>
+            </div>
+            <div class="q-card">
+                <div class="q-num" id="qNum">Question 1</div>
+                <div class="q-text" id="qText"></div>
+            </div>
+            <div class="options" id="optsList"></div>
+            <button class="next-btn" id="nextBtn" onclick="nextQ()">Continue →</button>
+        </div>
+
+        <!-- Result screen -->
+        <div id="resultScreen" class="hidden">
+            <div class="result-card">
+                <div class="result-phase" id="rPhaseIcon"></div>
+                <div class="result-title" id="rTitle"></div>
+                <div class="result-subtitle" id="rSubtitle"></div>
+                <div class="result-desc" id="rDesc"></div>
+                <div class="result-traits" id="rTraits"></div>
+                <div class="phase-scores">
+                    <h4>Your Phase Profile</h4>
+                    <div class="ps-row"><span class="ps-label">🌅 Awakening</span><div class="ps-bar-wrap"><div class="ps-bar" id="bar1" style="background:#F59E0B;width:0%"></div></div></div>
+                    <div class="ps-row"><span class="ps-label">🌿 Alignment</span><div class="ps-bar-wrap"><div class="ps-bar" id="bar2" style="background:#8B5CF6;width:0%"></div></div></div>
+                    <div class="ps-row"><span class="ps-label">⚡ Mastery</span><div class="ps-bar-wrap"><div class="ps-bar" id="bar3" style="background:#3B82F6;width:0%"></div></div></div>
+                    <div class="ps-row"><span class="ps-label">🌟 Teaching</span><div class="ps-bar-wrap"><div class="ps-bar" id="bar4" style="background:#10B981;width:0%"></div></div></div>
+                </div>
+                <div class="result-cta">
+                    <a href="../pricing.html" class="cta-btn cta-primary">Start My Journey ✨</a>
+                    <button class="cta-btn cta-outline" onclick="restartQuiz()">Retake Quiz 🔄</button>
+                </div>
+                <div class="share-text">Share your result: copy the page URL and send it to a friend</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Questions: each option maps to a phase score: [p1, p2, p3, p4]
+    const QUESTIONS = [
+        {
+            q: "When you think about your life right now, what feels most true?",
+            opts: [
+                { t: "I feel like something is missing or needs to change, but I'm not sure what.", w: [4,1,0,0] },
+                { t: "I understand what needs to change — I'm working on aligning my life with that.", w: [0,4,1,0] },
+                { t: "I've done the inner work. My life reflects my values most of the time.", w: [0,1,4,1] },
+                { t: "I'm focused on how I can help others transform, not just myself.", w: [0,0,1,4] }
+            ]
+        },
+        {
+            q: "How do you relate to your emotions?",
+            opts: [
+                { t: "I often feel overwhelmed by my emotions or try to suppress them.", w: [4,0,0,0] },
+                { t: "I'm learning to observe my emotions without being controlled by them.", w: [1,4,1,0] },
+                { t: "I use my emotional intelligence as a compass and guide.", w: [0,1,4,1] },
+                { t: "I can hold space for others in their emotional storms with ease.", w: [0,0,1,4] }
+            ]
+        },
+        {
+            q: "Which statement resonates most with your spiritual practice?",
+            opts: [
+                { t: "I'm just starting to explore spirituality — it's all new to me.", w: [4,1,0,0] },
+                { t: "I have a regular practice, but I'm still learning to stay consistent.", w: [0,4,1,0] },
+                { t: "My spiritual practice is deeply integrated into my daily life.", w: [0,0,4,1] },
+                { t: "I guide or teach spiritual concepts to others in some capacity.", w: [0,0,1,4] }
+            ]
+        },
+        {
+            q: "How do you respond when things don't go your way?",
+            opts: [
+                { t: "I get frustrated or confused and struggle to find meaning in it.", w: [4,1,0,0] },
+                { t: "I try to see the lesson, though it can take me a while.", w: [1,4,1,0] },
+                { t: "I can usually stay grounded and see the bigger picture quickly.", w: [0,1,4,1] },
+                { t: "I experience it as part of the divine flow and move with it consciously.", w: [0,0,1,4] }
+            ]
+        },
+        {
+            q: "What is your primary motivation right now?",
+            opts: [
+                { t: "Figuring out who I am and why I feel this way.", w: [4,0,0,0] },
+                { t: "Healing old wounds and rebuilding my life with purpose.", w: [1,4,0,0] },
+                { t: "Deepening my understanding and living more authentically.", w: [0,1,4,1] },
+                { t: "Creating impact, serving others, and leaving a legacy.", w: [0,0,1,4] }
+            ]
+        },
+        {
+            q: "How do you feel about your sense of purpose?",
+            opts: [
+                { t: "I don't feel connected to a clear purpose yet.", w: [4,1,0,0] },
+                { t: "I have a sense of what my purpose might be, but I'm still finding it.", w: [0,4,1,0] },
+                { t: "I feel clear on my purpose and I'm actively living it.", w: [0,0,4,1] },
+                { t: "My purpose is in service to others' awakening and growth.", w: [0,0,1,4] }
+            ]
+        },
+        {
+            q: "How do you relate to the idea that you create your reality?",
+            opts: [
+                { t: "I've heard this but it doesn't feel real or true to me yet.", w: [4,1,0,0] },
+                { t: "I believe it intellectually but I'm still learning to embody it.", w: [1,4,1,0] },
+                { t: "I actively use this understanding to create my life consciously.", w: [0,1,4,1] },
+                { t: "I teach this principle and help others apply it.", w: [0,0,1,4] }
+            ]
+        },
+        {
+            q: "Which best describes your relationship with your past?",
+            opts: [
+                { t: "I'm still heavily affected by my past experiences and traumas.", w: [4,1,0,0] },
+                { t: "I'm in the process of healing and releasing the past.", w: [0,4,1,0] },
+                { t: "I've done significant healing work and found peace with my story.", w: [0,1,4,1] },
+                { t: "I use my past as a source of wisdom and strength for others.", w: [0,0,1,4] }
+            ]
+        },
+        {
+            q: "How would you describe your inner voice or intuition?",
+            opts: [
+                { t: "I struggle to hear or trust my intuition.", w: [4,1,0,0] },
+                { t: "I'm developing trust in my intuition but still doubt it sometimes.", w: [0,4,1,0] },
+                { t: "I have a strong, trusted connection with my intuition.", w: [0,1,4,1] },
+                { t: "My intuition is a refined spiritual tool I use to guide myself and others.", w: [0,0,1,4] }
+            ]
+        },
+        {
+            q: "How do you generally feel in relationships?",
+            opts: [
+                { t: "I often feel misunderstood or unable to express myself fully.", w: [4,1,0,0] },
+                { t: "I'm learning to communicate and set healthier boundaries.", w: [0,4,1,0] },
+                { t: "My relationships are generally conscious, honest, and supportive.", w: [0,1,4,1] },
+                { t: "I model and teach healthy, conscious relationships to others.", w: [0,0,1,4] }
+            ]
+        },
+        {
+            q: "When you think about the word 'Eden', what comes up for you?",
+            opts: [
+                { t: "A lost paradise I feel cut off from.", w: [4,1,0,0] },
+                { t: "Something beautiful I'm slowly reconnecting with.", w: [1,4,1,0] },
+                { t: "A state of being I'm increasingly living in.", w: [0,1,4,1] },
+                { t: "A truth I help others remember.", w: [0,0,1,4] }
+            ]
+        },
+        {
+            q: "What role do you see yourself playing in the world?",
+            opts: [
+                { t: "I'm still finding my place — I feel like I'm searching.", w: [4,1,0,0] },
+                { t: "A student of life, actively growing and transforming.", w: [1,4,1,0] },
+                { t: "An example of conscious, intentional living.", w: [0,1,4,1] },
+                { t: "A guide, teacher, or mentor for others on this path.", w: [0,0,1,4] }
+            ]
+        }
+    ];
+
+    const PHASES = [
+        {
+            id: 1, icon: '🌅', name: 'Phase 1: Awakening',
+            subtitle: 'THE SEEKER',
+            desc: 'You are at the beautiful beginning of your conscious journey. Something has stirred within you — a knowing that there\'s more to life than what you\'ve been shown. This phase is sacred. The questions you\'re asking now are the seeds of your transformation. You Never Left Eden. You\'re just remembering your way back.',
+            traits: ['Truth-seeking', 'Inner stirring', 'Open to change', 'Ready to discover', 'Courageous beginning'],
+            barColors: ['#F59E0B','#8B5CF6','#3B82F6','#10B981']
+        },
+        {
+            id: 2, icon: '🌿', name: 'Phase 2: Alignment',
+            subtitle: 'THE STUDENT',
+            desc: 'You\'ve awakened to deeper truths and you\'re actively reshaping your life around them. This is the phase of healing, learning, and courageous re-alignment. You\'re releasing old patterns and building a foundation of authentic truth. The work you\'re doing now will become the foundation for everything that follows.',
+            traits: ['Healing & releasing', 'Pattern recognition', 'Self-study', 'Rebuilding foundations', 'Growing consistency'],
+            barColors: ['#F59E0B','#8B5CF6','#3B82F6','#10B981']
+        },
+        {
+            id: 3, icon: '⚡', name: 'Phase 3: Mastery',
+            subtitle: 'THE PRACTITIONER',
+            desc: 'You\'ve done significant inner work and you\'re now living from a place of genuine wisdom. Your spiritual practices are integrated. Your awareness is sharp. You navigate life\'s challenges with grace. This phase is about deepening, refining, and allowing your mastery to flow naturally into everything you do.',
+            traits: ['Integrated practices', 'Emotional mastery', 'Conscious creation', 'Clear purpose', 'Inner authority'],
+            barColors: ['#F59E0B','#8B5CF6','#3B82F6','#10B981']
+        },
+        {
+            id: 4, icon: '🌟', name: 'Phase 4: Teaching',
+            subtitle: 'THE GUIDE',
+            desc: 'You have walked the path deeply and now you carry others. Your life is a living demonstration of the principles you embody. You feel called to guide, teach, and serve. This is the highest form of the journey — not because you\'ve arrived, but because you\'ve chosen to light the way for others. The world needs you.',
+            traits: ['Service-oriented', 'Wisdom carrier', 'Living example', 'Holds space for others', 'Legacy-minded'],
+            barColors: ['#F59E0B','#8B5CF6','#3B82F6','#10B981']
+        }
+    ];
+
+    let currentQ = 0;
+    let scores = [0, 0, 0, 0]; // p1, p2, p3, p4
+    let selectedOpt = null;
+
+    function startQuiz() {
+        document.getElementById('introScreen').classList.add('hidden');
+        document.getElementById('quizScreen').classList.remove('hidden');
+        renderQ();
+    }
+
+    function renderQ() {
+        const q = QUESTIONS[currentQ];
+        document.getElementById('qNum').textContent = 'Question ' + (currentQ + 1);
+        document.getElementById('qText').textContent = q.q;
+        document.getElementById('progressFill').style.width = (currentQ / QUESTIONS.length * 100) + '%';
+        document.getElementById('progressLabel').textContent = (currentQ + 1) + ' of ' + QUESTIONS.length;
+        document.getElementById('nextBtn').classList.remove('ready');
+        selectedOpt = null;
+
+        const list = document.getElementById('optsList');
+        list.innerHTML = '';
+        q.opts.forEach((o, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'opt';
+            btn.dataset.idx = i;
+            btn.innerHTML = `<span class="opt-dot"></span> ${o.t}`;
+            btn.onclick = () => selectOpt(i, btn);
+            list.appendChild(btn);
+        });
+    }
+
+    function selectOpt(idx, btn) {
+        document.querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedOpt = idx;
+        document.getElementById('nextBtn').classList.add('ready');
+    }
+
+    function nextQ() {
+        if (selectedOpt === null) return;
+        const weights = QUESTIONS[currentQ].opts[selectedOpt].w;
+        weights.forEach((w, i) => { scores[i] += w; });
+
+        currentQ++;
+        if (currentQ >= QUESTIONS.length) {
+            showResult();
+        } else {
+            renderQ();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quizScreen').classList.add('hidden');
+        const result = document.getElementById('resultScreen');
+        result.classList.remove('hidden');
+
+        // Find dominant phase
+        const maxScore = Math.max(...scores);
+        const phaseIdx = scores.indexOf(maxScore);
+        const phase = PHASES[phaseIdx];
+
+        document.getElementById('rPhaseIcon').textContent = phase.icon;
+        document.getElementById('rTitle').textContent = phase.name;
+        document.getElementById('rSubtitle').textContent = phase.subtitle;
+        document.getElementById('rDesc').textContent = phase.desc;
+
+        const traitsEl = document.getElementById('rTraits');
+        traitsEl.innerHTML = '';
+        phase.traits.forEach(t => {
+            const span = document.createElement('span');
+            span.className = 'trait';
+            span.textContent = t;
+            traitsEl.appendChild(span);
+        });
+
+        // Animate score bars
+        const total = scores.reduce((a, b) => a + b, 0) || 1;
+        setTimeout(() => {
+            ['bar1','bar2','bar3','bar4'].forEach((id, i) => {
+                document.getElementById(id).style.width = Math.round(scores[i] / total * 100) + '%';
+            });
+        }, 300);
+    }
+
+    function restartQuiz() {
+        currentQ = 0;
+        scores = [0, 0, 0, 0];
+        selectedOpt = null;
+        document.getElementById('resultScreen').classList.add('hidden');
+        document.getElementById('introScreen').classList.remove('hidden');
+    }
+    </script>
+</body>
+</html>

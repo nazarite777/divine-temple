@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sacred Word Scramble - Eden Consciousness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <style>
+        :root { --gold:#D4AF37; --purple:#8B5CF6; --green:#10B981; --rose:#F43F5E; --glass:rgba(255,255,255,0.05); }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Outfit',sans-serif; background:linear-gradient(135deg,#0a0e1b,#1a1630,#0f0a1a); color:#ddd; min-height:100vh; }
+        .nav-bar { position:fixed; top:20px; left:20px; z-index:999; display:flex; gap:10px; }
+        .nav-btn { background:rgba(139,92,246,0.85); color:white; padding:8px 18px; border-radius:25px; text-decoration:none; font-weight:600; font-size:0.85rem; backdrop-filter:blur(10px); }
+        .page { max-width:680px; margin:0 auto; padding:5rem 1.5rem 3rem; }
+
+        /* Header */
+        .hero { text-align:center; margin-bottom:2.5rem; }
+        .hero h1 { font-family:'Playfair Display',serif; font-size:2.4rem; color:var(--gold); margin-bottom:0.5rem; }
+        .hero p { color:#9EA3B0; font-size:0.95rem; }
+        .stats-row { display:flex; gap:1rem; justify-content:center; margin-top:1rem; flex-wrap:wrap; }
+        .stat-chip { background:rgba(212,175,55,0.1); border:1px solid rgba(212,175,55,0.25); border-radius:20px; padding:0.35rem 0.875rem; font-size:0.85rem; color:var(--gold); font-weight:600; }
+
+        /* Score panel */
+        .score-panel { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:2rem; }
+        .score-box { background:rgba(45,27,78,0.35); border:1px solid rgba(212,175,55,0.1); border-radius:14px; padding:1rem; text-align:center; }
+        .score-box .val { font-size:1.6rem; font-weight:700; color:var(--gold); }
+        .score-box .lbl { font-size:0.75rem; color:#777; text-transform:uppercase; letter-spacing:0.06em; margin-top:2px; }
+
+        /* Progress */
+        .round-progress { display:flex; gap:6px; justify-content:center; margin-bottom:2rem; }
+        .round-dot { width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); transition:all 0.3s; }
+        .round-dot.done { background:var(--green); border-color:var(--green); }
+        .round-dot.current { background:var(--gold); border-color:var(--gold); animation:pulse 1s infinite; }
+        .round-dot.wrong { background:var(--rose); border-color:var(--rose); }
+        @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+
+        /* Timer */
+        .timer-bar-wrap { height:6px; background:rgba(255,255,255,0.08); border-radius:3px; margin-bottom:2rem; overflow:hidden; }
+        .timer-bar { height:100%; border-radius:3px; background:var(--gold); transition:width 0.1s linear; }
+        .timer-bar.urgent { background:var(--rose); }
+
+        /* Category */
+        .category-tag { text-align:center; font-size:0.78rem; color:var(--purple); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.75rem; }
+
+        /* Hint */
+        .hint-text { text-align:center; color:#9EA3B0; font-size:0.92rem; margin-bottom:1.5rem; padding:0 1rem; min-height:1.5rem; font-style:italic; }
+
+        /* Scrambled letters */
+        .scrambled { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:2rem; }
+        .letter-tile { width:44px; height:52px; background:rgba(45,27,78,0.5); border:1px solid rgba(212,175,55,0.2); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:700; color:var(--gold); cursor:pointer; transition:all 0.18s; user-select:none; font-family:'Playfair Display',serif; }
+        .letter-tile:hover { background:rgba(139,92,246,0.25); border-color:var(--purple); transform:translateY(-3px); }
+        .letter-tile.used { opacity:0.25; pointer-events:none; }
+        .letter-tile.shake { animation:shake 0.4s; }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+        /* Answer slots */
+        .answer-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:1.5rem; min-height:64px; align-items:center; }
+        .answer-slot { width:44px; height:52px; background:rgba(255,255,255,0.04); border:2px dashed rgba(212,175,55,0.3); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:700; color:white; font-family:'Playfair Display',serif; cursor:pointer; transition:all 0.18s; }
+        .answer-slot.filled { background:rgba(45,27,78,0.6); border-style:solid; border-color:rgba(212,175,55,0.5); }
+        .answer-slot.correct { background:rgba(16,185,129,0.2); border-color:var(--green); color:var(--green); animation:pop 0.3s; }
+        .answer-slot.wrong-ans { background:rgba(244,63,94,0.2); border-color:var(--rose); }
+        @keyframes pop { 0%{transform:scale(0.9)} 50%{transform:scale(1.15)} 100%{transform:scale(1)} }
+
+        /* Controls */
+        .controls { display:flex; gap:0.75rem; justify-content:center; margin-bottom:1.5rem; flex-wrap:wrap; }
+        .ctrl-btn { padding:0.6rem 1.25rem; background:transparent; border:1px solid rgba(255,255,255,0.15); border-radius:25px; color:#aaa; font-family:'Outfit',sans-serif; font-size:0.85rem; cursor:pointer; transition:all 0.2s; }
+        .ctrl-btn:hover { border-color:rgba(212,175,55,0.4); color:var(--gold); }
+        .hint-btn { border-color:rgba(139,92,246,0.4); color:#C4B5FD; }
+        .hint-btn:disabled { opacity:0.4; cursor:default; }
+
+        /* Result overlay */
+        .word-result { text-align:center; padding:1.5rem; border-radius:18px; margin-bottom:1.5rem; display:none; }
+        .word-result.correct-res { background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); display:block; }
+        .word-result.wrong-res { background:rgba(244,63,94,0.08); border:1px solid rgba(244,63,94,0.25); display:block; }
+        .word-result .answer-reveal { font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--gold); margin-bottom:0.5rem; }
+        .word-result .definition { color:#aaa; font-size:0.9rem; line-height:1.55; }
+        .next-word-btn { display:none; width:100%; padding:1rem; background:linear-gradient(135deg,var(--gold),var(--purple)); border:none; border-radius:12px; color:white; font-family:'Outfit',sans-serif; font-weight:700; font-size:1rem; cursor:pointer; transition:transform 0.2s; }
+        .next-word-btn:hover { transform:translateY(-2px); }
+
+        /* Final results */
+        .final-screen { text-align:center; padding:2rem; display:none; }
+        .final-score { font-family:'Playfair Display',serif; font-size:4rem; color:var(--gold); }
+        .final-label { color:#aaa; margin-bottom:1.5rem; }
+        .final-msg { color:#C0B8D0; font-size:1rem; line-height:1.6; margin-bottom:2rem; max-width:420px; margin-left:auto; margin-right:auto; }
+        .xp-badge { display:inline-flex; align-items:center; gap:0.5rem; background:rgba(212,175,55,0.12); border:1px solid rgba(212,175,55,0.3); border-radius:20px; padding:0.5rem 1.25rem; color:var(--gold); font-weight:700; margin-bottom:2rem; }
+        .final-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+        .fa-btn { padding:0.85rem 1.75rem; border-radius:12px; font-weight:600; cursor:pointer; font-family:'Outfit',sans-serif; border:none; font-size:0.9rem; text-decoration:none; }
+        .fa-primary { background:linear-gradient(135deg,var(--gold),var(--purple)); color:white; }
+        .fa-outline { background:transparent; border:1px solid rgba(212,175,55,0.4); color:var(--gold); }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <a href="../members-new.html" class="nav-btn">← Portal</a>
+    </div>
+    <div class="page">
+        <div class="hero">
+            <h1>🔤 Sacred Word Scramble</h1>
+            <p>Unscramble 10 spiritual words against the clock. Each correct answer earns XP.</p>
+            <div class="stats-row">
+                <div class="stat-chip" id="highScoreChip">🏆 Best: —</div>
+                <div class="stat-chip" id="gamesChip">🎮 Played: —</div>
+            </div>
+        </div>
+
+        <div id="gameArea">
+            <div class="score-panel">
+                <div class="score-box"><div class="val" id="scoreDisplay">0</div><div class="lbl">Score</div></div>
+                <div class="score-box"><div class="val" id="wordNumDisplay">1/10</div><div class="lbl">Word</div></div>
+                <div class="score-box"><div class="val" id="timeDisplay">20</div><div class="lbl">Seconds</div></div>
+            </div>
+
+            <div class="round-progress" id="roundDots"></div>
+
+            <div class="timer-bar-wrap"><div class="timer-bar" id="timerBar"></div></div>
+
+            <div class="category-tag" id="categoryTag"></div>
+            <div class="hint-text" id="hintText">—</div>
+
+            <div class="scrambled" id="scrambledLetters"></div>
+            <div class="answer-row" id="answerSlots"></div>
+
+            <div class="controls">
+                <button class="ctrl-btn" onclick="clearAnswer()">⌫ Clear</button>
+                <button class="ctrl-btn hint-btn" id="hintBtn" onclick="useHint()">💡 Hint (-5 pts)</button>
+                <button class="ctrl-btn" onclick="skipWord()">⏭ Skip</button>
+            </div>
+
+            <div class="word-result" id="wordResult">
+                <div class="answer-reveal" id="answerReveal"></div>
+                <div class="definition" id="definitionText"></div>
+            </div>
+            <button class="next-word-btn" id="nextWordBtn" onclick="nextWord()">Next Word →</button>
+        </div>
+
+        <div class="final-screen" id="finalScreen">
+            <div class="final-score" id="finalScore"></div>
+            <div class="final-label">out of 1000 points</div>
+            <div class="final-msg" id="finalMsg"></div>
+            <div class="xp-badge" id="xpBadge">✨ +0 XP Earned</div>
+            <div class="final-actions">
+                <button class="fa-btn fa-primary" onclick="restartGame()">Play Again 🔄</button>
+                <a href="../leaderboard.html" class="fa-btn fa-outline">Leaderboard 🏆</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const firebaseConfig = {
+        apiKey:"AIzaSyCOyZPb4gfYE5q_RwmYaKG6cpTvrE-3LxI",
+        authDomain:"sacred-community.firebaseapp.com",
+        projectId:"sacred-community",
+        storageBucket:"sacred-community.firebasestorage.app",
+        messagingSenderId:"582271923489",
+        appId:"1:582271923489:web:aa46a8bb5ac0859fe83a60"
+    };
+    try { if(!firebase.apps.length) firebase.initializeApp(firebaseConfig); } catch(e){}
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    const WORDS = [
+        { word:'CHAKRA', category:'Chakras & Energy', hint:'Seven energy centers in the body', def:'Sanskrit word for "wheel" — the 7 energy centers that run along the spine, each governing different aspects of life.' },
+        { word:'DHARMA', category:'Sacred Knowledge', hint:'Your righteous duty in life', def:'From Sanskrit, meaning cosmic law, right way of living, and one\'s sacred purpose in harmony with the universe.' },
+        { word:'PRANA', category:'Life Force', hint:'Vital life force energy', def:'The universal life force energy that animates all living things — known as Chi in Chinese, Ki in Japanese traditions.' },
+        { word:'MANTRA', category:'Meditation', hint:'Sacred sound repeated in meditation', def:'A sacred word, syllable, or phrase repeatedly chanted during meditation to anchor the mind and elevate vibration.' },
+        { word:'KARMA', category:'Sacred Knowledge', hint:'The law of cause and effect', def:'From Sanskrit meaning "action" — the universal law that every action, thought, and intention creates corresponding results.' },
+        { word:'MUDRA', category:'Spiritual Practices', hint:'Sacred hand gesture used in yoga', def:'Symbolic hand gestures used in yoga, meditation, and ritual to direct energy and invoke specific states of consciousness.' },
+        { word:'AURA', category:'Energy Work', hint:'The energy field surrounding the body', def:'The electromagnetic energy field surrounding all living beings, visible to sensitives as layers of colored light.' },
+        { word:'NAMASTE', category:'Sacred Language', hint:'Traditional greeting honoring the divine', def:'Sanskrit greeting meaning "The divine light in me honors the divine light in you" — an acknowledgment of shared sacredness.' },
+        { word:'KUNDALINI', category:'Chakras & Energy', hint:'Dormant energy at the base of the spine', def:'The primordial spiritual energy coiled at the base of the spine that, when awakened, rises through the chakras to the crown.' },
+        { word:'MANDALAS', category:'Sacred Symbols', hint:'Sacred circular geometric designs', def:'Circular sacred geometric patterns representing the universe in Hindu, Buddhist, and indigenous traditions — used in meditation.' },
+        { word:'NIRVANA', category:'Sacred Knowledge', hint:'State of ultimate liberation in Buddhism', def:'Sanskrit for "extinguishing" — the Buddhist concept of liberation from suffering, desire, and the cycle of rebirth.' },
+        { word:'SAMSARA', category:'Sacred Knowledge', hint:'The cycle of birth, death, and rebirth', def:'The endless cycle of birth, life, death, and rebirth that all souls navigate until achieving liberation.' },
+        { word:'VISHNU', category:'Sacred Traditions', hint:'The Hindu preserver deity', def:'One of the three main deities of Hinduism — the preserver and protector of the universe, known for his compassion.' },
+        { word:'MERKABA', category:'Sacred Geometry', hint:'Star tetrahedron energy field', def:'An ancient sacred geometry symbol representing the divine light vehicle — two tetrahedra rotating in opposite directions around the body.' },
+        { word:'AKASHA', category:'Sacred Knowledge', hint:'The fifth element — the ether of all records', def:'Sanskrit for "space" or "ether" — the fifth element containing the vibrational records of all thoughts, words, and events.' },
+        { word:'SHAMAN', category:'Spiritual Practices', hint:'Indigenous spiritual guide', def:'A practitioner who uses altered states of consciousness to access spirit worlds, heal, and guide community members.' },
+        { word:'TANTRA', category:'Spiritual Practices', hint:'Ancient system weaving spiritual and physical', def:'From Sanskrit "to weave" — a spiritual system integrating all aspects of experience as sacred pathways to liberation.' },
+        { word:'ORACLE', category:'Divination', hint:'A channel for divine guidance', def:'A person, place, or tool through which divine wisdom and guidance is channeled — from the Latin "to speak."' },
+        { word:'SOLSTICE', category:'Sacred Calendar', hint:'When the sun reaches its highest or lowest point', def:'The two annual points when the sun reaches its highest or lowest position — celebrated as sacred turning points in many traditions.' },
+        { word:'SACRED', category:'Eden Philosophy', hint:'Set apart as holy or divine', def:'From Latin "sacer" meaning holy — something set apart, consecrated, and honored as connected to the divine.' }
+    ];
+
+    const TIME_PER_WORD = 20;
+    let words = [];
+    let currentWordIdx = 0;
+    let score = 0;
+    let answerLetters = [];
+    let tileIndices = []; // which original index each slot references
+    let timerInterval = null;
+    let timeLeft = TIME_PER_WORD;
+    let hintUsed = false;
+    let answered = false;
+    let roundResults = []; // 'correct','wrong','skip'
+    let currentUser = null;
+
+    function shuffle(arr, seed) {
+        const a = [...arr];
+        let s = seed || Date.now();
+        for (let i = a.length-1; i>0; i--) {
+            s = (s*1664525+1013904223)&0xFFFFFFFF;
+            const j = Math.abs(s)%(i+1);
+            [a[i],a[j]]=[a[j],a[i]];
+        }
+        return a;
+    }
+
+    function startGame() {
+        const seed = Date.now();
+        words = shuffle(WORDS, seed).slice(0, 10);
+        currentWordIdx = 0;
+        score = 0;
+        roundResults = [];
+        document.getElementById('gameArea').style.display = 'block';
+        document.getElementById('finalScreen').style.display = 'none';
+        buildDots();
+        loadWord();
+    }
+
+    function buildDots() {
+        const c = document.getElementById('roundDots');
+        c.innerHTML = '';
+        for (let i=0;i<10;i++) {
+            const d = document.createElement('div');
+            d.className='round-dot'+(i===0?' current':'');
+            d.id='dot'+i;
+            c.appendChild(d);
+        }
+    }
+
+    function updateDot(idx, state) {
+        const d = document.getElementById('dot'+idx);
+        if(d){d.className='round-dot '+state;}
+    }
+
+    function loadWord() {
+        const entry = words[currentWordIdx];
+        answered = false;
+        hintUsed = false;
+        document.getElementById('hintBtn').disabled = false;
+        document.getElementById('categoryTag').textContent = entry.category;
+        document.getElementById('hintText').textContent = entry.hint;
+        document.getElementById('wordNumDisplay').textContent = (currentWordIdx+1)+'/10';
+        document.getElementById('wordResult').className='word-result';
+        document.getElementById('nextWordBtn').style.display='none';
+
+        // Scramble letters
+        const letters = entry.word.split('');
+        let scrambled;
+        let attempts = 0;
+        do {
+            scrambled = shuffle(letters, Date.now()+attempts);
+            attempts++;
+        } while (scrambled.join('') === entry.word && attempts < 20);
+
+        // Build scrambled display
+        const sc = document.getElementById('scrambledLetters');
+        sc.innerHTML = '';
+        scrambled.forEach((l, i) => {
+            const tile = document.createElement('div');
+            tile.className = 'letter-tile';
+            tile.textContent = l;
+            tile.dataset.idx = i;
+            tile.onclick = () => selectLetter(i, l, tile);
+            sc.appendChild(tile);
+        });
+
+        // Build answer slots
+        const ar = document.getElementById('answerSlots');
+        ar.innerHTML = '';
+        for (let i=0;i<entry.word.length;i++) {
+            const slot = document.createElement('div');
+            slot.className = 'answer-slot';
+            slot.dataset.pos = i;
+            slot.onclick = () => removeFromSlot(i);
+            ar.appendChild(slot);
+        }
+
+        answerLetters = new Array(entry.word.length).fill(null);
+        tileIndices = new Array(entry.word.length).fill(-1);
+
+        updateDot(currentWordIdx, 'current');
+        startTimer();
+    }
+
+    function selectLetter(tileIdx, letter, tileEl) {
+        if (answered) return;
+        // Find first empty slot
+        const emptySlot = answerLetters.indexOf(null);
+        if (emptySlot === -1) return;
+
+        answerLetters[emptySlot] = letter;
+        tileIndices[emptySlot] = tileIdx;
+        tileEl.classList.add('used');
+
+        const slot = document.querySelector(`.answer-slot[data-pos="${emptySlot}"]`);
+        slot.textContent = letter;
+        slot.classList.add('filled');
+
+        // Auto-check when all filled
+        if (!answerLetters.includes(null)) {
+            checkAnswer();
+        }
+    }
+
+    function removeFromSlot(pos) {
+        if (answered) return;
+        if (answerLetters[pos] === null) return;
+        const tileIdx = tileIndices[pos];
+        answerLetters[pos] = null;
+        tileIndices[pos] = -1;
+
+        const slot = document.querySelector(`.answer-slot[data-pos="${pos}"]`);
+        slot.textContent = '';
+        slot.classList.remove('filled','correct');
+
+        const tile = document.querySelector(`.letter-tile[data-idx="${tileIdx}"]`);
+        if (tile) tile.classList.remove('used');
+    }
+
+    function clearAnswer() {
+        if (answered) return;
+        for (let i=0;i<answerLetters.length;i++) {
+            if (answerLetters[i] !== null) removeFromSlot(i);
+        }
+    }
+
+    function checkAnswer() {
+        if (answered) return;
+        answered = true;
+        clearInterval(timerInterval);
+
+        const attempt = answerLetters.join('');
+        const correct = words[currentWordIdx].word;
+
+        if (attempt === correct) {
+            // Points: base 100 + time bonus + no-hint bonus
+            const timeBonus = Math.round(timeLeft / TIME_PER_WORD * 50);
+            const hintPenalty = hintUsed ? 5 : 0;
+            const pts = 100 + timeBonus - hintPenalty;
+            score += pts;
+            document.getElementById('scoreDisplay').textContent = score;
+
+            document.querySelectorAll('.answer-slot').forEach(s => s.classList.add('correct'));
+            showWordResult(true, correct, words[currentWordIdx].def, '+' + pts + ' pts 🎉');
+            updateDot(currentWordIdx, 'done');
+            roundResults.push('correct');
+        } else {
+            document.querySelectorAll('.answer-slot').forEach(s => s.classList.add('wrong-ans'));
+            document.querySelectorAll('.letter-tile').forEach(t => t.classList.add('shake'));
+            showWordResult(false, correct, words[currentWordIdx].def, 'Not quite');
+            updateDot(currentWordIdx, 'wrong');
+            roundResults.push('wrong');
+        }
+
+        document.getElementById('nextWordBtn').style.display = 'block';
+    }
+
+    function handleTimeout() {
+        if (answered) return;
+        answered = true;
+        clearInterval(timerInterval);
+        const correct = words[currentWordIdx].word;
+        showWordResult(false, correct, words[currentWordIdx].def, '⏱ Time\'s up!');
+        updateDot(currentWordIdx, 'wrong');
+        roundResults.push('skip');
+        document.getElementById('nextWordBtn').style.display = 'block';
+    }
+
+    function showWordResult(isCorrect, word, def, pts) {
+        const el = document.getElementById('wordResult');
+        el.className = 'word-result ' + (isCorrect ? 'correct-res' : 'wrong-res');
+        document.getElementById('answerReveal').textContent = word;
+        document.getElementById('definitionText').textContent = def;
+    }
+
+    function useHint() {
+        if (answered || hintUsed) return;
+        hintUsed = true;
+        document.getElementById('hintBtn').disabled = true;
+        // Reveal first unfilled letter
+        const word = words[currentWordIdx].word;
+        const firstEmpty = answerLetters.indexOf(null);
+        if (firstEmpty === -1) return;
+
+        const correctLetter = word[firstEmpty];
+        // Find that letter in scramble that isn't used
+        const tiles = document.querySelectorAll('.letter-tile:not(.used)');
+        for (const tile of tiles) {
+            if (tile.textContent === correctLetter) {
+                tile.click();
+                break;
+            }
+        }
+    }
+
+    function skipWord() {
+        if (answered) return;
+        clearInterval(timerInterval);
+        answered = true;
+        const correct = words[currentWordIdx].word;
+        showWordResult(false, correct, words[currentWordIdx].def, 'Skipped');
+        updateDot(currentWordIdx, 'wrong');
+        roundResults.push('skip');
+        document.getElementById('nextWordBtn').style.display = 'block';
+    }
+
+    function nextWord() {
+        currentWordIdx++;
+        if (currentWordIdx >= words.length) {
+            showFinal();
+        } else {
+            loadWord();
+        }
+    }
+
+    function startTimer() {
+        timeLeft = TIME_PER_WORD;
+        updateTimerUI();
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            updateTimerUI();
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                handleTimeout();
+            }
+        }, 1000);
+    }
+
+    function updateTimerUI() {
+        const pct = timeLeft / TIME_PER_WORD * 100;
+        const bar = document.getElementById('timerBar');
+        bar.style.width = pct + '%';
+        bar.className = 'timer-bar' + (timeLeft <= 6 ? ' urgent' : '');
+        document.getElementById('timeDisplay').textContent = timeLeft;
+    }
+
+    async function showFinal() {
+        document.getElementById('gameArea').style.display = 'none';
+        const final = document.getElementById('finalScreen');
+        final.style.display = 'block';
+
+        const correct = roundResults.filter(r=>r==='correct').length;
+        const xp = Math.round(score / 10);
+        document.getElementById('finalScore').textContent = score;
+        document.getElementById('xpBadge').textContent = '✨ +' + xp + ' XP Earned';
+
+        let msg;
+        if (correct === 10) msg = '🌟 Perfect round! Your mastery of sacred language is divine.';
+        else if (correct >= 8) msg = '⭐ Excellent! The sacred vocabulary is flowing through you.';
+        else if (correct >= 6) msg = '✨ Solid performance! Keep building your sacred vocabulary.';
+        else if (correct >= 4) msg = '🌱 Good start! Each word is a doorway to deeper understanding.';
+        else msg = '💫 Every master was once a beginner. Play again and watch yourself grow.';
+        document.getElementById('finalMsg').textContent = msg;
+
+        if (currentUser) {
+            try {
+                const ref = db.collection('universalProgress').doc(currentUser.uid);
+                const doc = await ref.get();
+                const prevBest = doc.exists ? (doc.data()?.scrambleBestScore || 0) : 0;
+                const updates = {
+                    lastActive: new Date().toISOString(),
+                    totalXP: firebase.firestore.FieldValue.increment(xp),
+                    weeklyXP: firebase.firestore.FieldValue.increment(xp),
+                    monthlyXP: firebase.firestore.FieldValue.increment(xp),
+                    'stats.scrambleGamesPlayed': firebase.firestore.FieldValue.increment(1)
+                };
+                if (score > prevBest) updates.scrambleBestScore = score;
+                if (!doc.exists) {
+                    updates.displayName = currentUser.displayName || currentUser.email;
+                    updates.userId = currentUser.uid;
+                    updates.totalXP = xp;
+                    updates.weeklyXP = xp;
+                    updates.monthlyXP = xp;
+                    updates.scrambleBestScore = score;
+                    updates['stats.scrambleGamesPlayed'] = 1;
+                }
+                await ref.set(updates, { merge: true });
+                document.getElementById('highScoreChip').textContent = '🏆 Best: ' + Math.max(score, prevBest);
+            } catch(e) { console.error(e); }
+        }
+    }
+
+    function restartGame() {
+        startGame();
+    }
+
+    // Auth & init
+    auth.onAuthStateChanged(async user => {
+        currentUser = user;
+        if (user) {
+            try {
+                const doc = await db.collection('universalProgress').doc(user.uid).get();
+                if (doc.exists) {
+                    const best = doc.data().scrambleBestScore || 0;
+                    const played = doc.data()?.stats?.scrambleGamesPlayed || 0;
+                    document.getElementById('highScoreChip').textContent = '🏆 Best: ' + best;
+                    document.getElementById('gamesChip').textContent = '🎮 Played: ' + played;
+                }
+            } catch(e){}
+        }
+        startGame();
+    });
+    </script>
+</body>
+</html>

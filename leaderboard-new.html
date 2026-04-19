@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - Eden Consciousness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <style>
+        :root { --deep-purple: #2D1B4E; --gold: #D4AF37; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Outfit', sans-serif; background: linear-gradient(135deg, #0a0e1b 0%, #1a1630 50%, #0f0a1a 100%); color: #aaa; min-height: 100vh; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        header { background: rgba(10,14,27,0.85); padding: 1rem 2rem; border-bottom: 1px solid rgba(212,175,55,0.1); margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem; }
+        h1 { color: var(--gold); font-family: 'Cormorant Garamond', serif; margin-bottom: 2rem; font-size: 2.2rem; }
+        .filter-bar { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .filter-btn { background: transparent; border: 1px solid rgba(212,175,55,0.3); color: #aaa; padding: 0.5rem 1.5rem; border-radius: 20px; cursor: pointer; transition: all 0.3s; font-family: inherit; font-size: 0.9rem; }
+        .filter-btn.active { background: var(--gold); color: var(--deep-purple); border-color: var(--gold); font-weight: 600; }
+        .leaderboard { background: rgba(45,27,78,0.3); border-radius: 12px; overflow: hidden; border: 1px solid rgba(212,175,55,0.1); }
+        .lb-header { display: grid; grid-template-columns: 70px 1fr 130px 130px; gap: 1rem; padding: 1rem 1.5rem; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(212,175,55,0.1); font-weight: 600; color: var(--gold); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; }
+        .lb-row { display: grid; grid-template-columns: 70px 1fr 130px 130px; gap: 1rem; padding: 1rem 1.5rem; border-bottom: 1px solid rgba(212,175,55,0.05); align-items: center; transition: background 0.25s; }
+        .lb-row:last-child { border-bottom: none; }
+        .lb-row:hover { background: rgba(212,175,55,0.04); }
+        .lb-row.you { background: rgba(212,175,55,0.1); border-left: 3px solid var(--gold); }
+        .rank { text-align: center; font-weight: 700; font-size: 1rem; color: #777; }
+        .rank.r1 { color: #FFD700; font-size: 1.4rem; }
+        .rank.r2 { color: #C0C0C0; font-size: 1.2rem; }
+        .rank.r3 { color: #CD7F32; font-size: 1.1rem; }
+        .member-info { display: flex; align-items: center; gap: 0.875rem; }
+        .member-avatar { width: 38px; height: 38px; background: linear-gradient(135deg, var(--gold), #2d1b4e); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 700; color: white; flex-shrink: 0; }
+        .member-name { color: #ddd; font-weight: 500; }
+        .member-rank-label { color: #777; font-size: 0.78rem; margin-top: 2px; }
+        .member-xp { text-align: center; color: var(--gold); font-weight: 600; font-size: 0.95rem; }
+        .member-streak { text-align: center; color: #aaa; font-size: 0.9rem; }
+        .back-link { color: var(--gold); text-decoration: none; font-size: 0.9rem; white-space: nowrap; }
+        .skeleton { background: linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.09) 50%,rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 6px; height: 14px; }
+        @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+        .skeleton-row { padding: 1rem 1.5rem; border-bottom: 1px solid rgba(212,175,55,0.05); display: flex; gap: 1rem; align-items: center; }
+        .my-rank-banner { background: rgba(212,175,55,0.07); border: 1px solid rgba(212,175,55,0.2); border-radius: 10px; padding: 1rem 1.5rem; margin-top: 1.5rem; display: none; align-items: center; justify-content: space-between; }
+        .my-rank-banner.show { display: flex; }
+        .my-rank-banner .label { color: #aaa; font-size: 0.9rem; }
+        .my-rank-banner .value { color: var(--gold); font-weight: 700; font-size: 1.1rem; }
+        .empty-msg { text-align: center; padding: 3rem; color: #666; }
+        .sign-in-note { text-align: center; padding: 1rem; font-size: 0.85rem; color: #666; margin-top: 1rem; }
+        @media(max-width:600px){
+            .lb-header,.lb-row { grid-template-columns: 50px 1fr 90px; }
+            .member-streak, .lb-header>div:last-child { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="members-new.html" class="back-link">← Portal</a>
+        <span style="color:var(--gold);font-size:1rem;font-weight:600;">🏆 Consciousness Leaderboard</span>
+    </header>
+    <div class="container">
+        <h1>🏆 Consciousness Leaderboard</h1>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="setFilter('week', this)">This Week</button>
+            <button class="filter-btn" onclick="setFilter('month', this)">This Month</button>
+            <button class="filter-btn" onclick="setFilter('all', this)">All Time</button>
+        </div>
+
+        <div class="leaderboard">
+            <div class="lb-header">
+                <div>Rank</div>
+                <div>Member</div>
+                <div>XP Points</div>
+                <div>Streak</div>
+            </div>
+            <div id="lbBody">
+                <!-- skeleton rows -->
+                <div class="skeleton-row"><div class="skeleton" style="width:30px;height:30px;border-radius:50%;flex-shrink:0"></div><div style="flex:1"><div class="skeleton" style="width:60%;margin-bottom:6px"></div><div class="skeleton" style="width:35%"></div></div><div class="skeleton" style="width:80px"></div><div class="skeleton" style="width:60px"></div></div>
+                <div class="skeleton-row"><div class="skeleton" style="width:30px;height:30px;border-radius:50%;flex-shrink:0"></div><div style="flex:1"><div class="skeleton" style="width:55%;margin-bottom:6px"></div><div class="skeleton" style="width:30%"></div></div><div class="skeleton" style="width:80px"></div><div class="skeleton" style="width:60px"></div></div>
+                <div class="skeleton-row"><div class="skeleton" style="width:30px;height:30px;border-radius:50%;flex-shrink:0"></div><div style="flex:1"><div class="skeleton" style="width:65%;margin-bottom:6px"></div><div class="skeleton" style="width:40%"></div></div><div class="skeleton" style="width:80px"></div><div class="skeleton" style="width:60px"></div></div>
+            </div>
+        </div>
+
+        <div class="my-rank-banner" id="myRankBanner">
+            <div>
+                <div class="label">Your Position</div>
+                <div class="value" id="myRankText">—</div>
+            </div>
+            <div>
+                <div class="label">Your XP</div>
+                <div class="value" id="myXpText">—</div>
+            </div>
+            <div>
+                <div class="label">Your Streak</div>
+                <div class="value" id="myStreakText">—</div>
+            </div>
+        </div>
+        <div class="sign-in-note" id="signInNote" style="display:none;">Sign in to see your position on the leaderboard. <a href="members-new.html" style="color:var(--gold)">Sign In</a></div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div style="border-top:1px solid rgba(212,175,55,0.1);margin-top:3rem;padding:2rem;text-align:center;">
+            <p style="color:#555;font-size:0.85rem;">&copy; 2026 Eden Consciousness. You Never Left Eden.</p>
+        </div>
+    </footer>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOyZPb4gfYE5q_RwmYaKG6cpTvrE-3LxI",
+            authDomain: "sacred-community.firebaseapp.com",
+            projectId: "sacred-community",
+            storageBucket: "sacred-community.firebasestorage.app",
+            messagingSenderId: "582271923489",
+            appId: "1:582271923489:web:aa46a8bb5ac0859fe83a60"
+        };
+
+        let db, auth, currentUser = null, currentFilter = 'week';
+
+        try {
+            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            auth = firebase.auth();
+        } catch(e) { console.error('Firebase init error', e); }
+
+        const RANK_LABELS = ['Seeker', 'Initiate', 'Practitioner', 'Adept', 'Master', 'Sage', 'Enlightened'];
+        function rankLabel(xp) {
+            if (xp >= 50000) return 'Enlightened';
+            if (xp >= 20000) return 'Sage';
+            if (xp >= 10000) return 'Master';
+            if (xp >= 5000)  return 'Adept';
+            if (xp >= 2000)  return 'Practitioner';
+            if (xp >= 500)   return 'Initiate';
+            return 'Seeker';
+        }
+
+        function xpField() {
+            if (currentFilter === 'week')  return 'weeklyXP';
+            if (currentFilter === 'month') return 'monthlyXP';
+            return 'totalXP';
+        }
+
+        function rankIcon(i) {
+            if (i === 0) return '🥇';
+            if (i === 1) return '🥈';
+            if (i === 2) return '🥉';
+            return (i + 1).toString();
+        }
+
+        function rankClass(i) {
+            if (i === 0) return 'r1';
+            if (i === 1) return 'r2';
+            if (i === 2) return 'r3';
+            return '';
+        }
+
+        async function loadLeaderboard() {
+            const body = document.getElementById('lbBody');
+            body.innerHTML = `
+                <div class="skeleton-row"><div class="skeleton" style="width:30px;height:30px;border-radius:50%;flex-shrink:0"></div><div style="flex:1"><div class="skeleton" style="width:60%;margin-bottom:6px"></div><div class="skeleton" style="width:35%"></div></div><div class="skeleton" style="width:80px"></div><div class="skeleton" style="width:60px"></div></div>
+                <div class="skeleton-row"><div class="skeleton" style="width:30px;height:30px;border-radius:50%;flex-shrink:0"></div><div style="flex:1"><div class="skeleton" style="width:55%;margin-bottom:6px"></div><div class="skeleton" style="width:30%"></div></div><div class="skeleton" style="width:80px"></div><div class="skeleton" style="width:60px"></div></div>
+                <div class="skeleton-row"><div class="skeleton" style="width:30px;height:30px;border-radius:50%;flex-shrink:0"></div><div style="flex:1"><div class="skeleton" style="width:65%;margin-bottom:6px"></div><div class="skeleton" style="width:40%"></div></div><div class="skeleton" style="width:80px"></div><div class="skeleton" style="width:60px"></div></div>
+            `;
+
+            try {
+                const field = xpField();
+                const snap = await db.collection('universalProgress')
+                    .orderBy(field, 'desc')
+                    .limit(25)
+                    .get();
+
+                if (snap.empty) {
+                    body.innerHTML = '<div class="empty-msg">No rankings yet. Start earning XP to be the first!</div>';
+                    return;
+                }
+
+                body.innerHTML = '';
+                let myRank = null, myXP = null, myStreak = null;
+
+                snap.forEach((doc, i) => {
+                    const d = doc.data();
+                    const xp = d[field] || d.totalXP || 0;
+                    const name = d.displayName || 'Sacred Seeker';
+                    const streak = d.streaks?.daily?.count || 0;
+                    const initial = name.charAt(0).toUpperCase();
+                    const isYou = currentUser && doc.id === currentUser.uid;
+                    const idx = snap.docs.indexOf(doc);
+
+                    if (isYou) { myRank = idx + 1; myXP = xp; myStreak = streak; }
+
+                    const row = document.createElement('div');
+                    row.className = 'lb-row' + (isYou ? ' you' : '');
+                    row.innerHTML = `
+                        <div class="rank ${rankClass(idx)}">${rankIcon(idx)}</div>
+                        <div class="member-info">
+                            <div class="member-avatar">${initial}</div>
+                            <div>
+                                <div class="member-name">${escHtml(name)}${isYou ? ' <span style="color:var(--gold);font-size:0.75rem;">(You)</span>' : ''}</div>
+                                <div class="member-rank-label">${rankLabel(d.totalXP || 0)}</div>
+                            </div>
+                        </div>
+                        <div class="member-xp">${xp.toLocaleString()} XP</div>
+                        <div class="member-streak">${streak > 0 ? streak + ' days 🔥' : '—'}</div>
+                    `;
+                    body.appendChild(row);
+                });
+
+                // Show my rank banner if signed in
+                if (currentUser) {
+                    if (myRank) {
+                        document.getElementById('myRankText').textContent = '#' + myRank + ' of ' + snap.size;
+                        document.getElementById('myXpText').textContent = (myXP || 0).toLocaleString() + ' XP';
+                        document.getElementById('myStreakText').textContent = (myStreak || 0) + ' days 🔥';
+                        document.getElementById('myRankBanner').classList.add('show');
+                    } else {
+                        // User not in top 25 — fetch their own doc
+                        db.collection('universalProgress').doc(currentUser.uid).get().then(d => {
+                            if (d.exists) {
+                                const data = d.data();
+                                const xp = data[field] || data.totalXP || 0;
+                                const streak = data.streaks?.daily?.count || 0;
+                                document.getElementById('myRankText').textContent = 'Outside top 25';
+                                document.getElementById('myXpText').textContent = xp.toLocaleString() + ' XP';
+                                document.getElementById('myStreakText').textContent = streak + ' days 🔥';
+                                document.getElementById('myRankBanner').classList.add('show');
+                            }
+                        });
+                    }
+                } else {
+                    document.getElementById('signInNote').style.display = 'block';
+                }
+
+            } catch(e) {
+                console.error('Leaderboard load error:', e);
+                body.innerHTML = '<div class="empty-msg">Could not load rankings. Please refresh.</div>';
+            }
+        }
+
+        function setFilter(filter, btn) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('myRankBanner').classList.remove('show');
+            loadLeaderboard();
+        }
+
+        function escHtml(str) {
+            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        auth.onAuthStateChanged(user => {
+            currentUser = user;
+            loadLeaderboard();
+        });
+    </script>
+</body>
+</html>

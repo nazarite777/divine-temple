@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Challenge - Eden Consciousness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <style>
+        :root {
+            --gold: #D4AF37; --purple: #8B5CF6; --green: #10B981;
+            --rose: #F43F5E; --blue: #3B82F6;
+            --glass: rgba(255,255,255,0.05); --glass-border: rgba(255,255,255,0.1);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Outfit',sans-serif; background:linear-gradient(135deg,#0a0e1b,#1a1630,#0f0a1a); color:#ddd; min-height:100vh; }
+        .nav-bar { position:fixed; top:20px; left:20px; z-index:999; display:flex; gap:10px; }
+        .nav-btn { background:rgba(139,92,246,0.85); color:white; padding:8px 18px; border-radius:25px; text-decoration:none; font-weight:600; font-size:0.85rem; backdrop-filter:blur(10px); }
+        .nav-btn.gold { background:rgba(212,175,55,0.85); }
+        .page { max-width:760px; margin:0 auto; padding:5rem 1.5rem 3rem; }
+
+        /* Hero */
+        .hero { text-align:center; margin-bottom:2.5rem; }
+        .hero h1 { font-family:'Playfair Display',serif; font-size:2.6rem; color:var(--gold); margin-bottom:0.5rem; }
+        .hero p { color:#9EA3B0; font-size:1rem; }
+        .streak-badge { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(212,175,55,0.12); border:1px solid rgba(212,175,55,0.3); border-radius:20px; padding:0.35rem 1rem; color:var(--gold); font-weight:600; font-size:0.9rem; margin-top:0.75rem; }
+
+        /* Timer */
+        .timer-ring { position:relative; width:120px; height:120px; margin:0 auto 2rem; }
+        .timer-ring svg { transform:rotate(-90deg); }
+        .timer-ring .bg { fill:none; stroke:rgba(255,255,255,0.07); stroke-width:8; }
+        .timer-ring .progress { fill:none; stroke:var(--gold); stroke-width:8; stroke-linecap:round; transition:stroke-dashoffset 1s linear; }
+        .timer-ring .num { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:2rem; font-weight:700; color:var(--gold); }
+        .timer-ring.urgent .progress { stroke:var(--rose); }
+        .timer-ring.urgent .num { color:var(--rose); }
+
+        /* Progress bar */
+        .q-progress { display:flex; align-items:center; gap:0.75rem; margin-bottom:2rem; }
+        .q-progress-bar { flex:1; height:6px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden; }
+        .q-progress-fill { height:100%; background:linear-gradient(90deg,var(--purple),var(--gold)); border-radius:3px; transition:width 0.4s ease; }
+        .q-counter { color:#777; font-size:0.85rem; white-space:nowrap; }
+
+        /* Question card */
+        .q-card { background:rgba(45,27,78,0.35); border:1px solid rgba(212,175,55,0.12); border-radius:18px; padding:2rem; margin-bottom:1.5rem; }
+        .q-category { font-size:0.78rem; color:var(--purple); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.6rem; }
+        .q-text { font-family:'Playfair Display',serif; font-size:1.4rem; color:#E8E3D9; line-height:1.55; }
+
+        /* Options */
+        .options { display:grid; gap:0.75rem; }
+        .opt-btn { width:100%; padding:1rem 1.25rem; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:#ddd; font-family:'Outfit',sans-serif; font-size:0.95rem; text-align:left; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:0.75rem; }
+        .opt-btn:hover:not(:disabled) { background:rgba(139,92,246,0.15); border-color:rgba(139,92,246,0.4); color:white; }
+        .opt-btn.correct { background:rgba(16,185,129,0.2); border-color:var(--green); color:white; }
+        .opt-btn.wrong { background:rgba(244,63,94,0.2); border-color:var(--rose); color:white; }
+        .opt-btn:disabled { cursor:default; }
+        .opt-letter { width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,0.07); display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:600; flex-shrink:0; }
+        .opt-btn.correct .opt-letter { background:var(--green); }
+        .opt-btn.wrong .opt-letter { background:var(--rose); }
+
+        /* Explanation */
+        .explanation { background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:12px; padding:1rem 1.25rem; margin-top:1rem; color:#9EA3B0; font-size:0.9rem; line-height:1.55; display:none; }
+        .explanation.show { display:block; }
+        .explanation strong { color:var(--green); }
+
+        /* Next btn */
+        .next-btn { width:100%; padding:1rem; background:linear-gradient(135deg,var(--gold),var(--purple)); border:none; border-radius:12px; color:white; font-family:'Outfit',sans-serif; font-weight:700; font-size:1rem; cursor:pointer; margin-top:1.25rem; display:none; transition:transform 0.2s; }
+        .next-btn:hover { transform:translateY(-2px); }
+        .next-btn.show { display:block; }
+
+        /* Results */
+        .results { text-align:center; padding:2rem; display:none; }
+        .results.show { display:block; }
+        .results-score { font-family:'Playfair Display',serif; font-size:3.5rem; color:var(--gold); margin-bottom:0.5rem; }
+        .results-label { color:#9EA3B0; font-size:1rem; margin-bottom:1.5rem; }
+        .results-msg { font-size:1.15rem; color:#E8E3D9; margin-bottom:2rem; line-height:1.55; }
+        .xp-earned { display:inline-flex; align-items:center; gap:0.5rem; background:rgba(212,175,55,0.12); border:1px solid rgba(212,175,55,0.3); border-radius:20px; padding:0.5rem 1.25rem; color:var(--gold); font-weight:700; font-size:1rem; margin-bottom:2rem; }
+        .results-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+        .ra-btn { padding:0.85rem 2rem; border-radius:12px; font-weight:600; cursor:pointer; font-family:'Outfit',sans-serif; font-size:0.95rem; text-decoration:none; border:none; }
+        .ra-btn.primary { background:linear-gradient(135deg,var(--gold),var(--purple)); color:white; }
+        .ra-btn.outline { background:transparent; border:1px solid rgba(212,175,55,0.4); color:var(--gold); }
+
+        /* Already done today */
+        .done-card { background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:18px; padding:2.5rem; text-align:center; }
+        .done-card h2 { font-family:'Playfair Display',serif; color:var(--green); margin-bottom:0.5rem; font-size:1.8rem; }
+        .done-card p { color:#9EA3B0; margin-bottom:1.5rem; }
+        .countdown { font-size:1.3rem; color:var(--gold); font-weight:700; }
+
+        /* Loading */
+        .loading { text-align:center; padding:4rem; color:#666; }
+        .spinner { width:40px; height:40px; border:3px solid rgba(212,175,55,0.2); border-top:3px solid var(--gold); border-radius:50%; animation:spin 0.9s linear infinite; margin:0 auto 1rem; }
+        @keyframes spin { to{transform:rotate(360deg)} }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <a href="../members-new.html" class="nav-btn">← Portal</a>
+        <a href="../leaderboard.html" class="nav-btn gold">🏆 Leaderboard</a>
+    </div>
+
+    <div class="page">
+        <div class="hero">
+            <h1>⚡ Daily Challenge</h1>
+            <p>10 questions · 30 seconds each · earn up to 250 XP</p>
+            <div class="streak-badge" id="streakBadge">🔥 Loading streak...</div>
+        </div>
+
+        <div id="loadingState" class="loading">
+            <div class="spinner"></div>
+            <p>Preparing today's challenge…</p>
+        </div>
+
+        <div id="alreadyDone" style="display:none">
+            <div class="done-card">
+                <h2>✅ Challenge Complete!</h2>
+                <p>You've already conquered today's challenge. Come back tomorrow for a new set.</p>
+                <p>Next challenge in: <span class="countdown" id="countdown">--:--:--</span></p>
+                <br>
+                <a href="../leaderboard.html" class="ra-btn primary" style="display:inline-block">View Leaderboard 🏆</a>
+            </div>
+        </div>
+
+        <div id="gameArea" style="display:none">
+            <!-- Timer -->
+            <div class="timer-ring" id="timerRing">
+                <svg width="120" height="120" viewBox="0 0 120 120">
+                    <circle class="bg" cx="60" cy="60" r="52"/>
+                    <circle class="progress" id="timerCircle" cx="60" cy="60" r="52"
+                        stroke-dasharray="327" stroke-dashoffset="0"/>
+                </svg>
+                <div class="num" id="timerNum">30</div>
+            </div>
+
+            <!-- Progress -->
+            <div class="q-progress">
+                <div class="q-progress-bar">
+                    <div class="q-progress-fill" id="progressFill" style="width:0%"></div>
+                </div>
+                <div class="q-counter" id="qCounter">1 / 10</div>
+            </div>
+
+            <!-- Question card -->
+            <div class="q-card">
+                <div class="q-category" id="qCategory"></div>
+                <div class="q-text" id="qText"></div>
+            </div>
+
+            <!-- Options -->
+            <div class="options" id="optionsList"></div>
+
+            <!-- Explanation -->
+            <div class="explanation" id="explanation"></div>
+
+            <!-- Next -->
+            <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+        </div>
+
+        <!-- Results -->
+        <div class="results" id="results">
+            <div class="results-score" id="resultScore"></div>
+            <div class="results-label">out of 10 correct</div>
+            <div class="results-msg" id="resultMsg"></div>
+            <div class="xp-earned" id="xpEarned">✨ +0 XP Earned</div>
+            <div class="results-actions">
+                <a href="../leaderboard.html" class="ra-btn primary">View Leaderboard 🏆</a>
+                <a href="community.html" class="ra-btn outline">Share with Community 💬</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ——— Firebase ———
+    const firebaseConfig = {
+        apiKey:"AIzaSyCOyZPb4gfYE5q_RwmYaKG6cpTvrE-3LxI",
+        authDomain:"sacred-community.firebaseapp.com",
+        projectId:"sacred-community",
+        storageBucket:"sacred-community.firebasestorage.app",
+        messagingSenderId:"582271923489",
+        appId:"1:582271923489:web:aa46a8bb5ac0859fe83a60"
+    };
+    try { if(!firebase.apps.length) firebase.initializeApp(firebaseConfig); } catch(e){}
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // ——— Question bank (seeded daily, 10 drawn from 50) ———
+    const QUESTIONS = [
+        {q:"What does the word 'Eden' mean in its original context?",opts:["Pleasure / Delight","Garden of Testing","Sacred Mountain","Land of Plenty"],a:0,cat:"Eden Philosophy",exp:"Eden derives from the Hebrew root meaning delight or pleasure — a state of being, not merely a place."},
+        {q:"Which of the 7 Aligned Principles relates to taking full responsibility for your reality?",opts:["The Principle of Mentalism","The Principle of Cause & Effect","The Principle of Correspondence","The Principle of Polarity"],a:1,cat:"7 Aligned Principles",exp:"Cause & Effect teaches that every thought and action creates a corresponding result — you are the cause of your reality."},
+        {q:"In consciousness work, what is the 'shadow self'?",opts:["The higher self","Repressed aspects of the psyche","Your physical body at night","An astral projection"],a:1,cat:"Psychology & Consciousness",exp:"The shadow self, from Jungian psychology, refers to the unconscious parts of oneself that are denied or repressed."},
+        {q:"What frequency is commonly associated with the heart chakra (Anahata)?",opts:["396 Hz","528 Hz","639 Hz","741 Hz"],a:2,cat:"Chakras & Energy",exp:"639 Hz is the frequency associated with connection, relationships, and the heart chakra (Anahata)."},
+        {q:"What does 'Namaste' translate to in English?",opts:["Peace be with you","The divine in me honors the divine in you","Walk in light","I bow to you"],a:1,cat:"Sacred Language",exp:"Namaste is Sanskrit meaning 'The divine light in me recognizes and honors the divine light in you.'"},
+        {q:"Which ancient text contains the principle 'As Above, So Below'?",opts:["The Vedas","The Kybalion","The Bible","The Quran"],a:1,cat:"Sacred Knowledge",exp:"'As Above, So Below' originates from the Emerald Tablet and is explored in depth in The Kybalion."},
+        {q:"What is the root meaning of the word 'consciousness'?",opts:["To know together","To be aware","Inner vision","Light of the mind"],a:0,cat:"Eden Philosophy",exp:"Consciousness comes from Latin 'conscientia' — con (together) + scire (to know). Knowing together with all."},
+        {q:"In Phase 1 of the Eden journey, what is the primary focus?",opts:["Teaching others","Awakening to truth","Financial abundance","Physical fitness"],a:1,cat:"Eden Journey",exp:"Phase 1: Awakening — the phase of opening your eyes to who you truly are and the nature of reality."},
+        {q:"What is the Law of Vibration?",opts:["Everything moves and vibrates at a frequency","Like attracts like","Energy cannot be created","Matter is the only reality"],a:0,cat:"7 Aligned Principles",exp:"The Law of Vibration states that everything in the universe is in constant motion, vibrating at a specific frequency."},
+        {q:"Which chakra governs intuition and the 'third eye'?",opts:["Svadhisthana","Ajna","Vishuddha","Sahasrara"],a:1,cat:"Chakras & Energy",exp:"Ajna, the third eye chakra, governs intuition, inner wisdom, and the ability to see beyond the physical."},
+        {q:"What does the practice of 'grounding' refer to in spiritual work?",opts:["Burying crystals","Connecting your energy to the Earth","Removing all chakra blocks","Astral travel"],a:1,cat:"Spiritual Practices",exp:"Grounding reconnects your energy field to Earth's frequency, stabilizing and centering your consciousness."},
+        {q:"What ancient symbol represents the balance of masculine and feminine energies?",opts:["The Ankh","The Sri Yantra","The Yin-Yang","The Eye of Horus"],a:2,cat:"Sacred Symbols",exp:"The Yin-Yang (Taijitu) from Taoism symbolizes the complementary balance of opposing but interconnected forces."},
+        {q:"What is the significance of the number 432 in sacred sound?",opts:["The root frequency of the universe","Hertz of pure water","432 Hz is the natural tuning of the universe","The number of breaths per day"],a:2,cat:"Sacred Arts & Sound",exp:"432 Hz is believed to be the mathematically consistent frequency of nature, promoting harmony and healing."},
+        {q:"In meditation, what is a 'mantra'?",opts:["A breathing technique","A sacred sound or phrase repeated for focus","A body posture","A visualization"],a:1,cat:"Meditation",exp:"A mantra is a sacred word, sound, or phrase repeated during meditation to anchor the mind and elevate vibration."},
+        {q:"What does 'Sat Nam' mean in Kundalini yoga?",opts:["Truth is my name","I am light","Sacred breath","Divine mother"],a:0,cat:"Sacred Language",exp:"Sat Nam is a Gurmukhi mantra meaning 'Truth is my identity' — your true self is truth."},
+        {q:"Which principle states that the universe is mental in nature?",opts:["The Principle of Polarity","The Principle of Mentalism","The Principle of Gender","The Principle of Rhythm"],a:1,cat:"7 Aligned Principles",exp:"The Principle of Mentalism: 'The All is Mind; The Universe is Mental.' All reality begins as thought."},
+        {q:"What does the practice of 'shadow work' aim to achieve?",opts:["Developing psychic abilities","Integrating repressed parts of yourself","Communicating with the deceased","Lucid dreaming"],a:1,cat:"Psychology & Consciousness",exp:"Shadow work brings unconscious, repressed aspects into awareness so they can be integrated rather than projected."},
+        {q:"What color is associated with the crown chakra (Sahasrara)?",opts:["Green","Orange","Violet / White","Blue"],a:2,cat:"Chakras & Energy",exp:"The crown chakra (Sahasrara) is associated with violet or white light — representing pure consciousness and divine connection."},
+        {q:"What is the pineal gland often called in spiritual traditions?",opts:["The seat of the soul","The root of instinct","The center of emotion","The bridge to the body"],a:0,cat:"Sacred Anatomy",exp:"Descartes called the pineal gland 'the seat of the soul.' Many traditions associate it with the third eye and DMT production."},
+        {q:"Which crystal is most associated with protection and transmuting negative energy?",opts:["Rose Quartz","Citrine","Black Tourmaline","Moonstone"],a:2,cat:"Crystals & Elements",exp:"Black Tourmaline is renowned for its protective properties and its ability to transmute and neutralize negative energy."},
+        {q:"What does 'Dharma' mean in Eastern spiritual philosophy?",opts:["Spiritual law / right way of living","The cycle of rebirth","Divine punishment","Sacred text"],a:0,cat:"Sacred Knowledge",exp:"Dharma refers to one's righteous duty, moral order, and the path that is in harmony with cosmic law."},
+        {q:"In the 7 Aligned Principles, what does the Principle of Correspondence explain?",opts:["Like attracts like","As above, so below — patterns repeat at every scale","Everything vibrates","All opposites are the same"],a:1,cat:"7 Aligned Principles",exp:"Correspondence: patterns in the macrocosm mirror those in the microcosm. What's true universally is true personally."},
+        {q:"What is the primary benefit of a consistent morning meditation practice?",opts:["Increases physical strength","Sets the vibrational tone for the entire day","Eliminates the need for sleep","Develops psychic powers"],a:1,cat:"Meditation",exp:"A morning meditation practice consciously anchors your energy and intention before external influences shape your day."},
+        {q:"What is the 'Akashic Records' in spiritual tradition?",opts:["A physical library","An energetic archive of all souls' experiences across time","A Hindu scripture","A form of hypnosis"],a:1,cat:"Sacred Knowledge",exp:"The Akashic Records are believed to be an energetic database of every soul's journey, thoughts, and experiences."},
+        {q:"Which breathing pattern is central to the practice of pranayama?",opts:["Short rapid breaths","Controlled, conscious regulation of breath","Holding breath for extended periods","Breathing only through the mouth"],a:1,cat:"Spiritual Practices",exp:"Pranayama is the yogic science of breath control — regulating prana (life force) through conscious breathing patterns."},
+        {q:"What is the Law of Attraction rooted in, according to consciousness teachings?",opts:["Physical magnetism","The belief that like vibrations attract like experiences","Random chance","Universal punishment"],a:1,cat:"Eden Philosophy",exp:"The Law of Attraction reflects the Principle of Vibration — your dominant frequency draws matching experiences into your reality."},
+        {q:"What does 'Namaste' mean in practice when two people greet each other?",opts:["Good morning","I am better than you","I honor the divine in you","Goodbye"],a:2,cat:"Sacred Language",exp:"When exchanged in greeting, Namaste honors the divine essence within the other person as a reflection of the divine in yourself."},
+        {q:"In Eden Consciousness, what does Phase 4 represent?",opts:["Beginning the journey","Understanding the principles","Mastery and teaching","Financial success"],a:2,cat:"Eden Journey",exp:"Phase 4 is Mastery — the integration of all phases into living wisdom, and the calling to teach and serve others."},
+        {q:"Which ancient civilization is credited with the earliest recorded chakra system?",opts:["Ancient Egypt","Ancient Greece","Ancient India (Vedic culture)","Ancient China"],a:2,cat:"Chakras & Energy",exp:"The chakra system originates in ancient Vedic texts of India, dating back to 1500-1000 BCE in the Rigveda."},
+        {q:"What does the word 'yoga' literally mean in Sanskrit?",opts:["Flexibility","Union","Peace","Breath"],a:1,cat:"Spiritual Practices",exp:"Yoga comes from the Sanskrit root 'yuj' meaning to yoke or unite — the union of individual consciousness with universal consciousness."},
+        {q:"What is the significance of the 528 Hz frequency?",opts:["Induces sleep","Associated with DNA repair and transformation","Used for grounding","Related to the root chakra"],a:1,cat:"Sacred Arts & Sound",exp:"528 Hz, the 'Love Frequency,' is associated with DNA repair, transformation, and resonates at the heart of nature's geometry."},
+        {q:"In Jungian psychology, what is 'individuation'?",opts:["Becoming isolated from society","The process of becoming a fully integrated self","Developing a dominant personality","Ignoring the unconscious mind"],a:1,cat:"Psychology & Consciousness",exp:"Individuation is Jung's term for the lifelong process of integrating all parts of the psyche into a unified, authentic self."},
+        {q:"What is the primary purpose of incense in spiritual practice?",opts:["Decoration only","Clearing energy, raising vibration, and setting intention","Creating pleasant scent for visitors","Attracting good luck"],a:1,cat:"Spiritual Practices",exp:"Incense has been used across cultures for thousands of years to clear stagnant energy, elevate consciousness, and sanctify space."},
+        {q:"What does the ouroboros (snake eating its tail) symbolize?",opts:["Danger and poison","Eternal cyclical renewal","Financial abundance","The lower chakras"],a:1,cat:"Sacred Symbols",exp:"The ouroboros represents the eternal cycle of death and rebirth, infinity, and the self-sustaining nature of the universe."},
+        {q:"Which of these is NOT one of the 7 Hermetic Principles?",opts:["The Principle of Mentalism","The Principle of Manifestation","The Principle of Cause & Effect","The Principle of Gender"],a:1,cat:"7 Aligned Principles",exp:"The 7 Hermetic Principles are: Mentalism, Correspondence, Vibration, Polarity, Rhythm, Cause & Effect, and Gender. Manifestation is not one."},
+        {q:"What is the practice of 'earthing' or 'grounding' scientifically shown to do?",opts:["Increase blood pressure","Reduce inflammation and stress by connecting to Earth's electrons","Develop psychic abilities","Alter DNA"],a:1,cat:"Spiritual Practices",exp:"Studies show direct contact with Earth's surface transfers free electrons, reducing inflammation, improving sleep, and reducing cortisol."},
+        {q:"What does the term 'samsara' refer to in Eastern spirituality?",opts:["Eternal bliss","The cycle of birth, death, and rebirth","Sacred scripture","A meditation technique"],a:1,cat:"Sacred Knowledge",exp:"Samsara is the cycle of repeated birth, suffering, death, and rebirth that consciousness moves through until liberation (moksha/nirvana)."},
+        {q:"What does the color violet represent in spiritual traditions?",opts:["Passion and desire","Transformation, spiritual awareness, and high vibration","Physical strength","Financial prosperity"],a:1,cat:"Chakras & Energy",exp:"Violet represents the highest visible frequency of light, symbolizing spiritual transformation, crown chakra activation, and divine awareness."},
+        {q:"In the practice of visualization, what is the most important element for effectiveness?",opts:["Duration","Emotional feeling and sensory detail","Speed of the visualization","Doing it in total darkness"],a:1,cat:"Meditation",exp:"The emotional resonance and sensory vividness of a visualization is what activates the subconscious mind and aligns vibration with the desired reality."},
+        {q:"What ancient Egyptian symbol represents life, eternal energy, and divine protection?",opts:["The Eye of Horus","The Ankh","The Djed Pillar","The Was Scepter"],a:1,cat:"Sacred Symbols",exp:"The Ankh is the ancient Egyptian symbol of life, combining the cross (Earth) and circle (eternity) to represent divine eternal life."},
+        {q:"Which concept refers to the universal intelligence that flows through all living things?",opts:["Entropy","Prana / Chi / Life Force","Ego","The Subconscious"],a:1,cat:"Eden Philosophy",exp:"Prana (Sanskrit), Chi (Chinese), Ki (Japanese), and Ruach (Hebrew) all refer to the universal life force energy animating all living beings."},
+        {q:"What is the purpose of a vision board in manifestation practice?",opts:["Artistic expression only","Anchoring conscious focus and emotional resonance on desired realities","Impressing others","Making wishes come true automatically"],a:1,cat:"Eden Journey",exp:"A vision board creates a visual anchor that trains the reticular activating system (RAS) to notice opportunities aligned with your intentions."},
+        {q:"What does 'Moksha' represent in Hindu and yogic philosophy?",opts:["A form of meditation","Liberation from the cycle of rebirth","Sacred text","A yoga posture"],a:1,cat:"Sacred Knowledge",exp:"Moksha is the ultimate goal of Hindu spiritual practice — liberation from samsara (the cycle of rebirth) through union with the divine."},
+        {q:"What is 'sacred geometry'?",opts:["Architecture using gold paint","The mathematical patterns underlying all creation","A type of crystal grid","A drawing technique"],a:1,cat:"Sacred Knowledge",exp:"Sacred geometry studies the mathematical ratios and patterns found throughout nature and the cosmos — such as the Fibonacci spiral and the Flower of Life."},
+        {q:"What chakra is associated with personal power, will, and self-esteem?",opts:["Root chakra","Sacral chakra","Solar Plexus chakra","Heart chakra"],a:2,cat:"Chakras & Energy",exp:"The Solar Plexus chakra (Manipura) governs personal power, confidence, will, and self-determination — your inner fire."},
+        {q:"In the context of Eden Consciousness, what does 'You Never Left Eden' mean?",opts:["You were born in a garden","Heaven is a physical place","Your true nature has always been perfect — separation is an illusion","You should not travel far from home"],a:2,cat:"Eden Philosophy",exp:"'You Never Left Eden' is the central teaching of Eden Consciousness — your true divine nature was never lost, only forgotten. Awakening is remembering."},
+        {q:"What is the difference between the 'ego' and the 'higher self'?",opts:["They are the same thing","The ego is the constructed identity; the higher self is the eternal soul","The ego is divine; the higher self is limited","There is no higher self"],a:1,cat:"Psychology & Consciousness",exp:"The ego is the identity constructed from experiences, conditioning, and fear. The higher self is the eternal, soul-level consciousness beyond ego."},
+        {q:"What does the practice of 'non-attachment' (vairagya) teach?",opts:["Owning nothing","Being cold and emotionless","Experiencing life fully without clinging or aversion","Avoiding relationships"],a:2,cat:"Spiritual Practices",exp:"Vairagya (non-attachment) means engaging fully with life while releasing the need to control outcomes — presence without clinging."},
+        {q:"Which sacred sound is known as the 'primordial vibration' of the universe?",opts:["AUM (OM)","Amen","Allah","Hallelujah"],a:0,cat:"Sacred Arts & Sound",exp:"AUM (OM) is considered the primordial sound of creation in Hindu, Buddhist, and yogic traditions — the vibration from which all else arises."},
+        {q:"What does it mean to 'raise your vibration'?",opts:["Speak louder","Elevate your dominant emotional and energetic frequency","Eat more protein","Exercise more intensely"],a:1,cat:"Eden Philosophy",exp:"Raising your vibration means shifting your dominant emotional, mental, and energetic state toward higher frequencies like love, gratitude, and joy."}
+    ];
+
+    // ——— Game state ———
+    let questions = [];
+    let currentQ = 0;
+    let score = 0;
+    let answered = false;
+    let timerInterval = null;
+    let timeLeft = 30;
+    let currentUser = null;
+    const TOTAL_Q = 10;
+    const TIME_PER_Q = 30;
+    const CIRCUMFERENCE = 2 * Math.PI * 52; // ≈ 327
+
+    // ——— Utilities ———
+    function todayStr() {
+        return new Date().toISOString().slice(0, 10);
+    }
+
+    function escHtml(s) {
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function seededShuffle(arr, seed) {
+        const a = [...arr];
+        let s = seed;
+        for (let i = a.length - 1; i > 0; i--) {
+            s = (s * 1664525 + 1013904223) & 0xFFFFFFFF;
+            const j = Math.abs(s) % (i + 1);
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function getDailyQuestions() {
+        const date = new Date();
+        const seed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
+        return seededShuffle(QUESTIONS, seed).slice(0, TOTAL_Q);
+    }
+
+    // ——— Timer ———
+    function startTimer() {
+        timeLeft = TIME_PER_Q;
+        updateTimerUI();
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            updateTimerUI();
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                handleTimeout();
+            }
+        }, 1000);
+    }
+
+    function updateTimerUI() {
+        const ring = document.getElementById('timerRing');
+        const num = document.getElementById('timerNum');
+        const circle = document.getElementById('timerCircle');
+        num.textContent = timeLeft;
+        const offset = CIRCUMFERENCE * (1 - timeLeft / TIME_PER_Q);
+        circle.style.strokeDashoffset = offset;
+        if (timeLeft <= 8) ring.classList.add('urgent');
+        else ring.classList.remove('urgent');
+    }
+
+    function handleTimeout() {
+        if (answered) return;
+        answered = true;
+        // Mark correct answer
+        const opts = document.querySelectorAll('.opt-btn');
+        opts.forEach(b => {
+            b.disabled = true;
+            if (parseInt(b.dataset.idx) === questions[currentQ].a) b.classList.add('correct');
+        });
+        showExplanation();
+        document.getElementById('nextBtn').classList.add('show');
+    }
+
+    // ——— Render question ———
+    function renderQuestion() {
+        answered = false;
+        const q = questions[currentQ];
+
+        document.getElementById('qCategory').textContent = q.cat;
+        document.getElementById('qText').textContent = q.q;
+        document.getElementById('explanation').classList.remove('show');
+        document.getElementById('nextBtn').classList.remove('show');
+
+        // Progress
+        document.getElementById('progressFill').style.width = (currentQ / TOTAL_Q * 100) + '%';
+        document.getElementById('qCounter').textContent = (currentQ + 1) + ' / ' + TOTAL_Q;
+
+        // Options
+        const letters = ['A','B','C','D'];
+        const container = document.getElementById('optionsList');
+        container.innerHTML = '';
+
+        // Shuffle option order daily
+        const date = new Date();
+        const seed = (date.getFullYear() * 10000 + (date.getMonth()+1)*100 + date.getDate()) ^ (currentQ * 31337);
+        const indices = seededShuffle([0,1,2,3], seed);
+
+        indices.forEach((origIdx, displayIdx) => {
+            const btn = document.createElement('button');
+            btn.className = 'opt-btn';
+            btn.dataset.idx = origIdx;
+            btn.innerHTML = `<span class="opt-letter">${letters[displayIdx]}</span> ${escHtml(q.opts[origIdx])}`;
+            btn.onclick = () => selectAnswer(origIdx, btn);
+            container.appendChild(btn);
+        });
+
+        startTimer();
+    }
+
+    function selectAnswer(idx, btn) {
+        if (answered) return;
+        answered = true;
+        clearInterval(timerInterval);
+
+        const q = questions[currentQ];
+        const allBtns = document.querySelectorAll('.opt-btn');
+        allBtns.forEach(b => {
+            b.disabled = true;
+            if (parseInt(b.dataset.idx) === q.a) b.classList.add('correct');
+        });
+
+        if (idx === q.a) {
+            score++;
+        } else {
+            btn.classList.add('wrong');
+        }
+
+        showExplanation();
+        document.getElementById('nextBtn').classList.add('show');
+    }
+
+    function showExplanation() {
+        const q = questions[currentQ];
+        const el = document.getElementById('explanation');
+        el.innerHTML = `<strong>💡 Insight:</strong> ${escHtml(q.exp)}`;
+        el.classList.add('show');
+    }
+
+    function nextQuestion() {
+        currentQ++;
+        if (currentQ >= TOTAL_Q) {
+            showResults();
+        } else {
+            renderQuestion();
+        }
+    }
+
+    // ——— Results ———
+    async function showResults() {
+        document.getElementById('gameArea').style.display = 'none';
+        const resultsEl = document.getElementById('results');
+        resultsEl.classList.add('show');
+
+        const xp = score * 25; // 0–250 XP
+        document.getElementById('resultScore').textContent = score;
+        document.getElementById('xpEarned').textContent = '✨ +' + xp + ' XP Earned';
+
+        let msg;
+        if (score === 10) msg = '🌟 Perfect score! You are a true Master of Consciousness. Your wisdom shines bright.';
+        else if (score >= 8) msg = '⭐ Outstanding! Your understanding of the sacred path is deep and growing.';
+        else if (score >= 6) msg = '✨ Well done! You are firmly on the path of awakening. Keep studying.';
+        else if (score >= 4) msg = '🌱 Good effort! Every challenge is a teacher. Review today\'s insights and return stronger.';
+        else msg = '💫 Every seeker starts somewhere. The fact that you showed up is the first victory. Try again tomorrow.';
+        document.getElementById('resultMsg').textContent = msg;
+
+        // Save to Firestore
+        if (currentUser) {
+            const today = todayStr();
+            try {
+                const ref = db.collection('universalProgress').doc(currentUser.uid);
+                const doc = await ref.get();
+
+                const updates = {
+                    lastActive: new Date().toISOString(),
+                    [`dailyChallenge.${today}`]: { score, xp, completedAt: new Date().toISOString() }
+                };
+
+                if (doc.exists) {
+                    const data = doc.data();
+                    const totalXP = (data.totalXP || 0) + xp;
+                    const weeklyXP = (data.weeklyXP || 0) + xp;
+                    const monthlyXP = (data.monthlyXP || 0) + xp;
+                    updates.totalXP = totalXP;
+                    updates.weeklyXP = weeklyXP;
+                    updates.monthlyXP = monthlyXP;
+                    updates['stats.dailyChallengesCompleted'] = firebase.firestore.FieldValue.increment(1);
+                } else {
+                    updates.totalXP = xp;
+                    updates.weeklyXP = xp;
+                    updates.monthlyXP = xp;
+                    updates.displayName = currentUser.displayName || currentUser.email;
+                    updates.userId = currentUser.uid;
+                    updates['stats.dailyChallengesCompleted'] = 1;
+                }
+
+                await ref.set(updates, { merge: true });
+            } catch(e) { console.error('Save error', e); }
+        }
+    }
+
+    // ——— Countdown to midnight ———
+    function startCountdown() {
+        function tick() {
+            const now = new Date();
+            const midnight = new Date();
+            midnight.setHours(24, 0, 0, 0);
+            const diff = midnight - now;
+            const h = String(Math.floor(diff / 3600000)).padStart(2,'0');
+            const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
+            const s = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');
+            const el = document.getElementById('countdown');
+            if (el) el.textContent = `${h}:${m}:${s}`;
+        }
+        tick();
+        setInterval(tick, 1000);
+    }
+
+    // ——— Init ———
+    auth.onAuthStateChanged(async user => {
+        currentUser = user;
+        document.getElementById('loadingState').style.display = 'none';
+
+        if (user) {
+            // Check streak
+            try {
+                const doc = await db.collection('universalProgress').doc(user.uid).get();
+                const streak = doc.exists ? (doc.data()?.streaks?.daily?.count || 0) : 0;
+                document.getElementById('streakBadge').textContent = streak > 0 ? `🔥 ${streak} day streak` : '🔥 Start your streak!';
+
+                // Check if already done today
+                const today = todayStr();
+                const alreadyDone = doc.exists && doc.data()?.dailyChallenge?.[today];
+                if (alreadyDone) {
+                    document.getElementById('alreadyDone').style.display = 'block';
+                    startCountdown();
+                    return;
+                }
+            } catch(e) {
+                document.getElementById('streakBadge').textContent = '🔥 Start your streak!';
+            }
+        } else {
+            document.getElementById('streakBadge').textContent = '🔥 Sign in to track streak';
+        }
+
+        // Start game
+        questions = getDailyQuestions();
+        document.getElementById('gameArea').style.display = 'block';
+        renderQuestion();
+    });
+    </script>
+</body>
+</html>
