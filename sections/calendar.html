@@ -829,8 +829,8 @@
             <div class="calendar-logo">📅</div>
             <h1 class="calendar-title">Sacred Calendar</h1>
             <p class="calendar-subtitle">
-                Enochian Calendar (364 days, 52 perfect weeks) with Gregorian reference<br>
-                <span style="font-size: 0.9rem; opacity: 0.8;">Hebrew months aligned with divine timing • Spring Equinox foundation</span>
+                Enochian Calendar (364 days, 52 perfect weeks) aligned with the Book of Enoch<br>
+                <span style="font-size: 0.9rem; opacity: 0.8;">Year began April 17, 2026 • Sun Gates • Moon Phases • Daily Enochian Teachings</span>
             </p>
         </div>
 
@@ -850,6 +850,9 @@
             </button>
             <button class="tab-btn" onclick="switchTab('achievements')" id="tab-achievements">
                 🏆 Achievements
+            </button>
+            <button class="tab-btn" onclick="switchTab('teachings')" id="tab-teachings">
+                📖 Teachings
             </button>
         </div>
 
@@ -914,6 +917,14 @@
                             <div class="loading">Loading...</div>
                         </div>
                     </div>
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">☀️ Active Sun Gate</h4>
+                        <div id="sun-gate-sidebar"><div class="loading">Loading...</div></div>
+                    </div>
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">🌙 Moon Phase</h4>
+                        <div id="moon-phase-sidebar"><div class="loading">Loading...</div></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -953,6 +964,21 @@
                 
                 <div class="achievements-grid" id="achievements-list">
                     <div class="loading">Loading achievements...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEACHINGS TAB -->
+        <div class="tab-content" id="content-teachings">
+            <div class="calendar-view-panel">
+                <h2 style="font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:0.4rem;">📖 Enochian Teachings</h2>
+                <p style="color:var(--text-muted);margin-bottom:2rem;font-size:0.9rem;">Daily wisdom from the Books of Enoch — 30 teachings seeded across the 364-day sacred cycle.</p>
+                <div id="todays-teaching-panel"></div>
+                <div id="sun-gate-full-panel"></div>
+                <div id="moon-phase-full-panel"></div>
+                <div style="margin-top:1rem;">
+                    <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--primary-gold);margin-bottom:1.25rem;">All 30 Teachings</h3>
+                    <div id="all-teachings-list" style="display:flex;flex-direction:column;gap:1rem;"></div>
                 </div>
             </div>
         </div>
@@ -1080,6 +1106,99 @@
             { month: 12, day: 31, name: "Winter Solstice Quarter", description: "Return of light from darkness" }
         ];
 
+        // Sun Gates from the Book of Enoch (1 Enoch 72-82)
+        // The sun rises through 6 gates across the sacred year
+        const SUN_GATES = [
+            {
+                gate: 1, months: [1, 2], emoji: '🌅',
+                name: 'Gate of Spring Rising',
+                hebrewName: "Sha'ar HaAviv",
+                element: 'Fire of Life', direction: 'East-Northeast', daylight: 'Increasing',
+                enochVerse: '1 Enoch 72:6',
+                teaching: 'The Great Light rises from the first gate at the season of renewal. All creation awakens from its winter sleep. Enoch declared this season sacred for new beginnings — plant the seeds of your intentions now, for the luminaries favor growth.',
+                practice: 'Rise with the sun for 7 days. Stand facing east and declare your intentions for the year aloud under the open sky.'
+            },
+            {
+                gate: 2, months: [3, 4], emoji: '☀️',
+                name: 'Gate of Ascending Flame',
+                hebrewName: "Sha'ar HaOr HaOleh",
+                element: 'Radiant Wisdom', direction: 'East', daylight: 'Long',
+                enochVerse: '1 Enoch 72:8',
+                teaching: 'Uriel showed Enoch the second gate, from which the sun rises in the season of great heat. The light is at its most revealing. Nothing hidden can remain in the full blaze of the ascending sun. This is the time for truth and the exposure of all that was concealed.',
+                practice: 'Write what you are hiding from yourself. Burn the page as a sacred release. Step into the full light without apology.'
+            },
+            {
+                gate: 3, months: [5, 6], emoji: '🌾',
+                name: 'Gate of Summer Harvest',
+                hebrewName: "Sha'ar HaKatzir",
+                element: 'Golden Abundance', direction: 'East-Southeast', daylight: 'Decreasing',
+                enochVerse: '1 Enoch 72:10',
+                teaching: 'At the third gate the sun begins its descent from the heights of summer. Enoch was taught that this is the season of harvest — you are now reaping what was planted in spring. Give thanks for what has grown, and complete what you started.',
+                practice: 'List 7 things you have accomplished since the New Year. Celebrate each one with gratitude before moving into the descent.'
+            },
+            {
+                gate: 4, months: [7, 8], emoji: '🍂',
+                name: 'Gate of Autumn Return',
+                hebrewName: "Sha'ar HaTeshuvah",
+                element: 'Sacred Balance', direction: 'West-Southeast', daylight: 'Balanced',
+                enochVerse: '1 Enoch 72:13',
+                teaching: 'The fourth gate governs the season of the great return. Enoch saw that at this gate, day and night are measured equally — the divine lesson of balance. The scales of heaven are adjusted here. Examine where you are out of alignment with your highest self.',
+                practice: 'Spend one hour in silence reviewing your actions from the past half-year. Seek reconciliation where needed. Write three commitments for the second half.'
+            },
+            {
+                gate: 5, months: [9, 10], emoji: '⭐',
+                name: 'Gate of Winter Watch',
+                hebrewName: "Sha'ar HaMishmar",
+                element: 'Deep Wisdom', direction: 'West-Northeast', daylight: 'Short',
+                enochVerse: '1 Enoch 72:15',
+                teaching: 'Through the fifth gate the sun travels its shortest path. Enoch was taken to see the treasuries of snow and the storehouses of the wind. This is the season of the watchers — those who remain awake when the world sleeps. The depth of winter reveals the depth of the soul.',
+                practice: 'Keep a night vigil. In the quiet of midnight, listen for what your soul has been trying to tell you all year. Write what you hear.'
+            },
+            {
+                gate: 6, months: [11, 12], emoji: '🔥',
+                name: 'Gate of Hidden Fire',
+                hebrewName: "Sha'ar HaEsh HaNe'elam",
+                element: 'Primordial Light', direction: 'West', daylight: 'Lengthening',
+                enochVerse: '1 Enoch 72:17',
+                teaching: 'The sixth and final gate holds the mystery of the returning light. Enoch saw that beneath the darkest days, a fire is being prepared that cannot be extinguished. What appears to be ending is preparing to be born again. The seed of the next year forms in the darkness.',
+                practice: 'In the final month, prepare yourself for rebirth. Cleanse your living space, resolve unfinished matters, and write your vision for the coming New Year.'
+            }
+        ];
+
+        // Daily Teachings from the Books of Enoch (30 teachings, seeded by day index)
+        const ENOCH_TEACHINGS = [
+            { reference:'1 Enoch 1:2',   theme:'The Divine Presence',    text:'The Holy Great One will come forth from His dwelling, and the eternal God will tread upon the earth. He will appear in the strength of His might from the height of heaven.',                                                                                                reflection:'The divine does not wait to be found — it approaches. Open your awareness to receive what is already coming toward you.' },
+            { reference:'1 Enoch 2:1',   theme:'Divine Order',            text:'Observe all the works in the heavens, how they do not change their orbits; and the luminaries of heaven, how they all rise and set in order each in its season.',                                                                                                             reflection:'Nature does not rush. The sun does not skip a day. The moon does not forget its cycle. Let sacred order guide your life the way it guides the stars.' },
+            { reference:'1 Enoch 5:7',   theme:'Wisdom and Humility',     text:'And then there shall be bestowed upon the elect wisdom, and they shall all live and never again sin, either through ungodliness or through pride; but they who are wise shall be humble.',                                                                                     reflection:'True wisdom always brings humility. The more you genuinely understand, the more you realize how much you do not know. This is the mark of the enlightened.' },
+            { reference:'1 Enoch 10:16', theme:'Renewal of the Earth',    text:'Destroy all wrong, and every wicked deed shall be abolished; and the tree of righteousness and truth shall be planted in joy for ever.',                                                                                                                                       reflection:'You carry a seed of righteousness within you. When you live with integrity, you plant something that will outlast your lifetime. What are you growing today?' },
+            { reference:'1 Enoch 17:1',  theme:'Angelic Nature',          text:'They took me to a place in which those who were there were like flaming fire, and when they wished, they appeared as men.',                                                                                                                                                       reflection:'You are a spiritual being having a human experience. Behind the form you wear is a luminous self that is pure fire. Remember who you are beneath your circumstances.' },
+            { reference:'1 Enoch 22:9',  theme:'The Nature of the Soul',  text:'These hollow places have been created for this very purpose, that the spirits of the souls of the dead should assemble therein, till the day of their judgement.',                                                                                                               reflection:'Every soul is held in a sacred place until its time comes. Your soul is not lost — it is being prepared. Trust the process you cannot yet see.' },
+            { reference:'1 Enoch 38:2',  theme:'Light of the Righteous',  text:'When the Righteous One shall appear before the eyes of the righteous, whose elect works hang upon the Lord of Spirits, and light shall appear to the righteous and the elect.',                                                                                                  reflection:'When you align yourself fully with truth, your righteousness becomes light to others. You do not have to announce it — it simply radiates.' },
+            { reference:'1 Enoch 41:1',  theme:'Divine Accounting',       text:'And after that I saw all the secrets of the heavens, and how the kingdom is divided, and how the actions of men are weighed in the balance.',                                                                                                                                    reflection:'Every action carries weight. In the heavenly books, nothing goes unrecorded. Live knowing that what you do today is written into the permanent record of your soul.' },
+            { reference:'1 Enoch 46:3',  theme:'The Anointed',            text:'This is the Son of Man to whom belongs righteousness, and with whom righteousness has dwelt; he will reveal all the treasures of that which is hidden.',                                                                                                                          reflection:'Every human being carries a portion of the anointed consciousness. The treasures hidden within you are waiting to be revealed. Your awakening is not selfish — it reveals light to the world.' },
+            { reference:'1 Enoch 48:1',  theme:'Fountain of Wisdom',      text:'In that place I saw the fountain of righteousness, which was inexhaustible; and around it were many fountains of wisdom, and all the thirsty drank of them, and were filled with wisdom.',                                                                                       reflection:'Wisdom is not scarce. There is an inexhaustible source available to all who seek it sincerely. Drink deeply today through study, stillness, and sacred conversation.' },
+            { reference:'1 Enoch 51:4',  theme:'Inheritance of the Earth', text:'And the earth shall rejoice, and the righteous shall dwell upon it, and the elect shall walk thereon.',                                                                                                                                                                          reflection:'This earth was created to be inhabited by the conscious and the just. You are here to steward it. How you treat the earth reflects how you treat yourself and your Creator.' },
+            { reference:'1 Enoch 58:3',  theme:'Inner Light',             text:'How great a light and how great a glory shall be for them in whom dwells the spirit of righteousness, in whom there is no work of unrighteousness, and with whom rests the light.',                                                                                                reflection:'The light of the righteous is not borrowed — it is generated from within. When you remove what is false from your life, the inner light shines through automatically.' },
+            { reference:'1 Enoch 61:11', theme:'Universal Praise',        text:'The voice of the Lord of Spirits was heard, and the angels gave a shout of praise with one voice; and all the people of the earth bowed down before Him.',                                                                                                                       reflection:'There is a frequency of worship that all creation participates in constantly. When you align with gratitude and reverence, you join the greatest chorus in existence.' },
+            { reference:'1 Enoch 69:14', theme:'Sacred Rest',             text:'The day of their toil was accomplished and they rested; and after this I saw that Enoch had written down all the secrets of the luminaries in their appointed order.',                                                                                                            reflection:'The Sabbath is the sacred art of receiving. You can only hold what you are still enough to receive. Rest is not idleness — it is sacred labor.' },
+            { reference:'1 Enoch 72:1',  theme:'Book of the Luminaries',  text:'The book of the courses of the luminaries of the heaven, the relations of each, according to their classes, their dominion and their seasons, according to their names and places of origin.',                                                                                    reflection:'The sun, moon, and stars are living witnesses to divine order. Enoch was shown their courses so humanity would understand that above all chaos, a perfect order presides.' },
+            { reference:'1 Enoch 72:3',  theme:'The Sun as Teacher',      text:'This first luminary whose name means the Great Light is the greatest of all the luminaries of the earth and is the one that governs its course.',                                                                                                                                  reflection:'The sun rises every morning as a living sermon on faithfulness. It does not withhold its warmth based on what you did yesterday. Begin each day renewed, like the sun.' },
+            { reference:'1 Enoch 73:1',  theme:"The Moon's Teaching",    text:'After this law I saw another law dealing with the smaller luminary, which is named the Moon. The Moon renews its monthly cycle through the six portals through which the sun rises.',                                                                                           reflection:'The moon teaches that light waxes and wanes by divine design. Your seasons of fullness and your seasons of darkness are both sacred. You are never truly empty — you are always in a phase.' },
+            { reference:'1 Enoch 74:2',  theme:'The Perfect Year',        text:'In 364 days is the year completed. And the account thereof is accurate and the computed number of the days is exact.',                                                                                                                                                           reflection:'364 days — 52 perfect weeks of 7. The Enochian calendar reveals that time itself is divinely designed. You are not lost in time; you are held within it.' },
+            { reference:'1 Enoch 75:3',  theme:'Angelic Stewardship',     text:'These are the four intercalary days which are not counted among the days of the year. They stand at the portals of the four seasons as sacred transitions ordained by heaven.',                                                                                                    reflection:'The heavens operate with perfect structure. Every transition has an angelic overseer. Likewise, every season of your life has a guardian working on your behalf.' },
+            { reference:'1 Enoch 80:2',  theme:'Covenant with Creation',  text:'In the days of the sinners the years shall be shortened; their seed shall be tardy on their land; everything on the earth shall alter, and shall not appear in their time.',                                                                                                       reflection:'When humanity loses its sacred relationship with the earth, nature responds. You are in covenant with creation. Honor the seasons, honor the soil, honor the sacred cycles.' },
+            { reference:'1 Enoch 82:4',  theme:'The Blessed Walk',        text:'Blessed are all the righteous, blessed are all those who walk in the way of righteousness and sin not, in the reckoning of all their days in the light of the sun.',                                                                                                              reflection:'Blessing is not a reward you wait for — it is the natural atmosphere of a righteous life. Each day you walk in integrity, you are walking inside a blessing.' },
+            { reference:'1 Enoch 93:10', theme:'Sevenfold Wisdom',        text:'At its close shall be elected the elect righteous of the eternal plant of righteousness, to receive sevenfold instruction concerning all His creation.',                                                                                                                           reflection:'There are seven layers to every truth. Do not be satisfied with the surface understanding of any sacred teaching. Go deeper. Ask again. The seventh layer is the treasure.' },
+            { reference:'1 Enoch 96:3',  theme:'Hope of the Righteous',   text:'Have hope, you righteous; for suddenly shall the sinners perish before you, and you shall have lordship over them according to your desires.',                                                                                                                                    reflection:'Do not abandon your path because righteousness seems to be losing. Every sacred tradition confirms: truth outlasts falsehood. Hold your position. The dawn always follows the darkest night.' },
+            { reference:'1 Enoch 103:2', theme:'The Heavenly Record',     text:'I know this mystery; I have read the heavenly tablets, and have seen the holy writings, and have found written therein and inscribed regarding them.',                                                                                                                             reflection:'Your name is written in the heavenly tablets. Your potential, your purpose, your path — all recorded. You are not an accident. You were inscribed before the foundation of the world.' },
+            { reference:'2 Enoch 30:8',  theme:'Sacred Human Body',       text:'On the sixth day I commanded my wisdom to create man from seven consistencies: flesh from the earth, blood from the dew, eyes from the sun, bones from stone, intelligence from the swiftness of angels, soul from my breath.',                                                    reflection:'Your body is a divine masterpiece assembled from the elements of creation. Treat it as sacred. You are not merely human — you are a microcosm of the entire universe.' },
+            { reference:'2 Enoch 40:1',  theme:'The Prepared Place',      text:'This place is prepared for the righteous, who endure all manner of offense from those that exasperate their souls, who avert their eyes from iniquity, and make righteous judgment.',                                                                                          reflection:'There is a prepared place for those who endure with righteousness. Your suffering is not wasted. Every moment of patient endurance is building something that outlasts your circumstances.' },
+            { reference:'2 Enoch 42:5',  theme:'Love of Justice',         text:'Hear, my children: in truth I swear to you, love justice and walk in it, since justice is ordained by the Lord, and every righteous man the Lord loves.',                                                                                                                        reflection:'Justice is not just a legal concept — it is the divine order of the universe. When you live justly, you align yourself with the deepest current in all of creation.' },
+            { reference:'2 Enoch 44:2',  theme:'The Divine Image',        text:'The Lord with his own two hands created mankind in a facsimile of his own face. Whoever insults a person face insults the face of the Lord.',                                                                                                                                       reflection:'Every face you see carries the image of the divine. How you treat another human being is how you treat the Most High. Let this awareness transform every encounter today.' },
+            { reference:'2 Enoch 61:4',  theme:'Power of the Tongue',     text:'Accursed is he who opens his mouth to the injury of his neighbor, to provoke disdain in him, because it is truly God himself whom he provokes.',                                                                                                                                   reflection:'Your words carry the weight of the divine within them. Every harsh word against a soul is an act against the Creator. Guard your tongue as a sacred instrument.' },
+            { reference:'2 Enoch 66:7',  theme:'Sacred Service',          text:'Blessed is the man who does not direct his heart with malice against any man, and helps the injured and condemned, and raises the broken down, and shall do charity to the needy.',                                                                                               reflection:'The highest spiritual practice is not meditation in a tower — it is lifting a fallen human being. This was the final wisdom Enoch gave before his ascension.' }
+        ];
+
         // Achievements
         const ACHIEVEMENTS = [
             { id: 'first-journal', icon: '📝', name: 'First Entry', description: 'Write your first journal entry', requirement: 1, type: 'journal' },
@@ -1096,8 +1215,9 @@
         // ==================== ENOCH CALENDAR SYSTEM ====================
         class EnochCalendarSystem {
             constructor() {
-                // Spring Equinox 2025 as Year 1, Day 1 (March 20, 2025)
-                this.REFERENCE_DATE = new Date(2025, 2, 20); // Month is 0-indexed (2 = March)
+                // Enochian New Year — Year began April 17, 2026 (1 Nisan, Year 1)
+                // Aligns with the new moon of Nisan as prescribed in the Book of Enoch
+                this.REFERENCE_DATE = new Date(2026, 3, 17); // April 17, 2026 (month 0-indexed: 3 = April)
                 
                 this.currentUser = null;
                 this.todayIndex = this.getEnochDayIndex();
@@ -1456,13 +1576,13 @@
 
                 div.onclick = () => this.openDayModal(month, day, globalIndex, isQuarterDay);
 
-                const lunarPhase = this.getLunarPhase(day);
                 const gregorianDate = this.getGregorianDate(globalIndex);
                 const gregorianStr = this.formatGregorianShort(gregorianDate);
+                const lunarPhase = this.getMoonPhase(gregorianDate);
 
                 div.innerHTML = `
                     <div class="day-number" ${isSabbath ? 'style="color:var(--primary-gold)"' : ''}>${isQuarterDay ? 'Q' : day}</div>
-                    <div class="day-lunar">${lunarPhase}</div>
+                    <div class="day-lunar" title="${lunarPhase.name}">${lunarPhase.emoji}</div>
                     <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-top: 0.25rem;">${gregorianStr}</div>
                     <div class="day-events">
                         ${hasJournal ? '<span class="event-dot event-journal"></span>' : ''}
@@ -1474,13 +1594,32 @@
                 return div;
             }
 
-            getLunarPhase(day) {
-                // Simplified lunar phase visualization
-                if (day <= 7) return '🌑';
-                if (day <= 14) return '🌓';
-                if (day <= 21) return '🌕';
-                if (day <= 28) return '🌗';
-                return '🌑';
+            getMoonPhase(gregorianDate) {
+                const SYNODIC_MONTH = 29.53058867;
+                const REF_NEW_MOON = new Date(2000, 0, 6, 18, 14, 0); // Jan 6, 2000 known new moon
+                const daysSinceRef = (gregorianDate - REF_NEW_MOON) / (1000 * 60 * 60 * 24);
+                const phase = ((daysSinceRef % SYNODIC_MONTH) + SYNODIC_MONTH) % SYNODIC_MONTH;
+                const MOON_DATA = [
+                    { emoji:'🌑', name:'New Moon',         meaning:'Set sacred intentions and plant seeds of consciousness. The veil is thinnest tonight.' },
+                    { emoji:'🌒', name:'Waxing Crescent',  meaning:'Your intentions are taking root. Nurture them with prayer and focused action.' },
+                    { emoji:'🌓', name:'First Quarter',     meaning:'Push through resistance. Take decisive action toward your sacred goals.' },
+                    { emoji:'🌔', name:'Waxing Gibbous',   meaning:'Refine and adjust your path. The fullness of manifestation draws near.' },
+                    { emoji:'🌕', name:'Full Moon',         meaning:'Maximum light illuminates all things. Give thanks and release what no longer serves.' },
+                    { emoji:'🌖', name:'Waning Gibbous',   meaning:'Share your wisdom and abundance with others. This is the season to give.' },
+                    { emoji:'🌗', name:'Last Quarter',      meaning:'Release old patterns, forgive, and clear space for what is coming.' },
+                    { emoji:'🌘', name:'Waning Crescent',  meaning:'Rest, reflect, and surrender. Prepare your soul for the coming rebirth.' }
+                ];
+                const idx = Math.min(Math.floor(phase / (SYNODIC_MONTH / 8)), 7);
+                return { ...MOON_DATA[idx], days: phase.toFixed(1) };
+            }
+
+            getSunGate(month) {
+                const gateIndex = Math.min(Math.floor((month - 1) / 2), 5);
+                return SUN_GATES[gateIndex];
+            }
+
+            getDailyTeaching(dayIndex) {
+                return ENOCH_TEACHINGS[dayIndex % ENOCH_TEACHINGS.length];
             }
 
             hasActivityOnDay(month, day) {
@@ -1790,6 +1929,128 @@
             }
 
             // ==================== VIEW UPDATES ====================
+            updateSunGateSidebar() {
+                const container = document.getElementById('sun-gate-sidebar');
+                if (!container) return;
+                const month = this.getMonthFromIndex(this.todayIndex);
+                const gate = this.getSunGate(month);
+                container.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:0.875rem;margin-bottom:0.75rem;">
+                        <span style="font-size:2.2rem;">${gate.emoji}</span>
+                        <div>
+                            <div style="font-weight:600;color:var(--primary-gold);font-size:0.92rem;">${gate.name}</div>
+                            <div style="font-size:0.78rem;color:var(--text-muted);">Gate ${gate.gate} of 6 • ${gate.element}</div>
+                        </div>
+                    </div>
+                    <p style="font-size:0.83rem;color:var(--text-secondary);line-height:1.55;">${gate.teaching.substring(0, 120)}&hellip;</p>
+                    <button onclick="switchTab('teachings')" style="margin-top:0.75rem;background:transparent;border:1px solid rgba(212,175,55,0.3);color:var(--primary-gold);padding:0.4rem 0.875rem;border-radius:20px;cursor:pointer;font-size:0.78rem;">Full Teaching →</button>
+                `;
+            }
+
+            updateMoonPhaseSidebar() {
+                const container = document.getElementById('moon-phase-sidebar');
+                if (!container) return;
+                const gregorianToday = this.getGregorianDate(this.todayIndex);
+                const phase = this.getMoonPhase(gregorianToday);
+                container.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:0.875rem;margin-bottom:0.5rem;">
+                        <span style="font-size:2.5rem;">${phase.emoji}</span>
+                        <div>
+                            <div style="font-weight:600;color:#C4B5FD;">${phase.name}</div>
+                            <div style="font-size:0.78rem;color:var(--text-muted);">Day ${phase.days} of lunar cycle</div>
+                        </div>
+                    </div>
+                    <p style="font-size:0.83rem;color:var(--text-secondary);line-height:1.55;">${phase.meaning}</p>
+                `;
+            }
+
+            updateTeachingsView() {
+                const teaching = this.getDailyTeaching(this.todayIndex);
+                const month = this.getMonthFromIndex(this.todayIndex);
+                const gate = this.getSunGate(month);
+                const gregorianToday = this.getGregorianDate(this.todayIndex);
+                const moonPhase = this.getMoonPhase(gregorianToday);
+
+                const teachingPanel = document.getElementById('todays-teaching-panel');
+                if (teachingPanel) {
+                    teachingPanel.innerHTML = `
+                        <div style="background:linear-gradient(135deg,rgba(212,175,55,0.1),rgba(139,92,246,0.1));border:1px solid rgba(212,175,55,0.25);border-radius:18px;padding:2rem;margin-bottom:2rem;">
+                            <div style="font-size:0.72rem;color:var(--primary-gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;">Today's Sacred Teaching — Day ${this.todayIndex + 1} of 364</div>
+                            <div style="display:inline-block;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);border-radius:20px;padding:0.2rem 0.75rem;font-size:0.78rem;color:#C4B5FD;margin-bottom:1rem;">${teaching.theme}</div>
+                            <blockquote style="font-family:'Playfair Display',serif;font-size:1.05rem;color:white;line-height:1.75;font-style:italic;border-left:3px solid var(--primary-gold);padding-left:1.25rem;margin:0 0 1rem 0;">&ldquo;${teaching.text}&rdquo;</blockquote>
+                            <div style="font-size:0.82rem;color:var(--primary-gold);margin-bottom:1rem;">— ${teaching.reference}</div>
+                            <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:1rem;">
+                                <div style="font-size:0.75rem;color:var(--accent-cyan);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Reflection</div>
+                                <div style="font-size:0.9rem;color:var(--text-secondary);line-height:1.65;">${teaching.reflection}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const gatePanel = document.getElementById('sun-gate-full-panel');
+                if (gatePanel) {
+                    gatePanel.innerHTML = `
+                        <div style="background:linear-gradient(135deg,rgba(212,175,55,0.07),rgba(245,158,11,0.04));border:1px solid rgba(212,175,55,0.18);border-radius:18px;padding:2rem;margin-bottom:2rem;">
+                            <div style="font-size:0.72rem;color:var(--primary-gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;">Active Sun Gate • 1 Enoch 72</div>
+                            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+                                <span style="font-size:3rem;">${gate.emoji}</span>
+                                <div>
+                                    <div style="font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--primary-gold);">${gate.name}</div>
+                                    <div style="font-size:0.82rem;color:var(--text-muted);">Gate ${gate.gate} of 6 • ${gate.hebrewName}</div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+                                <span style="background:rgba(255,255,255,0.06);border-radius:20px;padding:0.3rem 0.75rem;font-size:0.78rem;color:#aaa;">🌬 ${gate.direction}</span>
+                                <span style="background:rgba(255,255,255,0.06);border-radius:20px;padding:0.3rem 0.75rem;font-size:0.78rem;color:#aaa;">🔆 Daylight ${gate.daylight}</span>
+                                <span style="background:rgba(255,255,255,0.06);border-radius:20px;padding:0.3rem 0.75rem;font-size:0.78rem;color:#aaa;">✨ ${gate.element}</span>
+                            </div>
+                            <p style="color:var(--text-secondary);line-height:1.65;font-size:0.93rem;margin-bottom:1.25rem;">${gate.teaching}</p>
+                            <div style="background:rgba(212,175,55,0.07);border-radius:10px;padding:1rem;border-left:3px solid var(--primary-gold);">
+                                <div style="font-size:0.78rem;color:var(--primary-gold);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Sacred Practice for This Gate</div>
+                                <div style="font-size:0.88rem;color:var(--text-secondary);">${gate.practice}</div>
+                            </div>
+                            <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.75rem;">Reference: ${gate.enochVerse}</div>
+                        </div>
+                    `;
+                }
+
+                const moonPanel = document.getElementById('moon-phase-full-panel');
+                if (moonPanel) {
+                    moonPanel.innerHTML = `
+                        <div style="background:linear-gradient(135deg,rgba(139,92,246,0.09),rgba(59,130,246,0.05));border:1px solid rgba(139,92,246,0.18);border-radius:18px;padding:2rem;margin-bottom:2rem;">
+                            <div style="font-size:0.72rem;color:#C4B5FD;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;">Current Moon Phase</div>
+                            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+                                <span style="font-size:3.5rem;">${moonPhase.emoji}</span>
+                                <div>
+                                    <div style="font-family:'Playfair Display',serif;font-size:1.35rem;color:#C4B5FD;">${moonPhase.name}</div>
+                                    <div style="font-size:0.82rem;color:var(--text-muted);">Day ${moonPhase.days} of lunar cycle (29.53 days)</div>
+                                </div>
+                            </div>
+                            <p style="color:var(--text-secondary);line-height:1.65;font-size:0.93rem;margin-bottom:1.25rem;">${moonPhase.meaning}</p>
+                            <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:1rem;">
+                                <div style="font-size:0.78rem;color:#C4B5FD;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Enochian Moon Wisdom</div>
+                                <div style="font-size:0.88rem;color:var(--text-secondary);line-height:1.6;font-style:italic;">&ldquo;After this law I saw another law dealing with the smaller luminary, which is named the Moon. The Moon renews its monthly cycle through the six portals through which the sun rises.&rdquo; &mdash; 1 Enoch 73:1</div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const allTeachings = document.getElementById('all-teachings-list');
+                if (allTeachings) {
+                    const todayIdx = this.todayIndex % ENOCH_TEACHINGS.length;
+                    allTeachings.innerHTML = ENOCH_TEACHINGS.map((t, i) => `
+                        <div style="background:${i === todayIdx ? 'rgba(212,175,55,0.05)' : 'rgba(255,255,255,0.03)'};border:1px solid ${i === todayIdx ? 'rgba(212,175,55,0.35)' : 'rgba(255,255,255,0.07)'};border-radius:14px;padding:1.25rem;">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:0.75rem;">
+                                <span style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.25);border-radius:20px;padding:0.2rem 0.7rem;font-size:0.75rem;color:#C4B5FD;">${t.theme}</span>
+                                <span style="font-size:0.75rem;color:var(--primary-gold);white-space:nowrap;">${i === todayIdx ? '⭐ Today • ' : ''}${t.reference}</span>
+                            </div>
+                            <p style="font-style:italic;color:var(--text-secondary);font-size:0.88rem;line-height:1.6;margin-bottom:0.5rem;">&ldquo;${t.text.length > 160 ? t.text.substring(0, 160) + '&hellip;' : t.text}&rdquo;</p>
+                            <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;">${t.reflection}</p>
+                        </div>
+                    `).join('');
+                }
+            }
+
             updateAllViews() {
                 this.updateTodaysEvents();
                 this.updateUpcomingHolidays();
@@ -1797,6 +2058,9 @@
                 this.updateGoalsView();
                 this.updateJournalView();
                 this.updateAchievementsView();
+                this.updateTeachingsView();
+                this.updateSunGateSidebar();
+                this.updateMoonPhaseSidebar();
             }
 
             updateTodaysEvents() {
@@ -1804,7 +2068,7 @@
                 const month = this.getMonthFromIndex(this.todayIndex);
                 const day = this.getDayInMonth(this.todayIndex);
                 const monthData = HEBREW_MONTHS[month - 1];
-                
+
                 const isQuarterDay = [3, 6, 9, 12].includes(month) && day === 31;
                 const journals = this.userData.journal.filter(j => j.month === month && j.day === day);
 
@@ -1833,6 +2097,15 @@
                         </div>
                     `;
                 }
+
+                // Daily teaching snippet
+                const teaching = this.getDailyTeaching(this.todayIndex);
+                html += `
+                    <div class="event-item" style="border-color:rgba(139,92,246,0.4);">
+                        <div class="event-title">📖 ${teaching.theme}</div>
+                        <div class="event-description" style="font-style:italic;">&ldquo;${teaching.text.substring(0, 72)}&hellip;&rdquo; &mdash; ${teaching.reference}</div>
+                    </div>
+                `;
 
                 container.innerHTML = html;
             }
