@@ -45,15 +45,24 @@ function initializeFirebase() {
             console.log('💾 Firebase Storage initialized');
         }
         
-        // Configure Firestore settings
+        // Configure Firestore settings (merge:true prevents host override warning)
         db.settings({
-            cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
+            cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
+            merge: true
         });
         
-        // Enable offline persistence
-        db.enablePersistence({ synchronizeTabs: true })
+        // Enable offline persistence (multi-tab)
+        db.enableMultiTabIndexedDbPersistence()
             .then(() => console.log('✅ Firestore offline persistence enabled'))
-            .catch(err => console.log('⚠️ Offline persistence failed:', err));
+            .catch(err => {
+                if (err.code === 'failed-precondition') {
+                    console.log('⚠️ Multiple tabs open; persistence enabled in first tab only');
+                } else if (err.code === 'unimplemented') {
+                    console.log('⚠️ Browser does not support offline persistence');
+                } else {
+                    console.log('⚠️ Offline persistence failed:', err);
+                }
+            });
             
         return true;
     } catch (error) {

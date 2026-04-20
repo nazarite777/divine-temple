@@ -14,6 +14,41 @@ class AccessibilityManager {
         this.init();
     }
 
+    setupAccessibilityFeatures() {
+        // Set page language if not already set
+        if (!document.documentElement.lang) {
+            document.documentElement.lang = 'en';
+        }
+
+        // Ensure viewport meta for zoom accessibility
+        let viewportMeta = document.querySelector('meta[name="viewport"]');
+        if (viewportMeta) {
+            const content = viewportMeta.getAttribute('content') || '';
+            if (!content.includes('user-scalable')) {
+                viewportMeta.setAttribute('content', content + ', user-scalable=yes');
+            }
+        }
+
+        // Add role to main landmark if missing
+        const body = document.body;
+        if (!body.getAttribute('role')) {
+            // Mark the body as an application region for SPA
+            body.setAttribute('role', 'application');
+        }
+
+        // Ensure all images have alt attributes
+        document.querySelectorAll('img:not([alt])').forEach(img => {
+            img.setAttribute('alt', '');
+        });
+
+        // Ensure interactive elements have accessible names
+        document.querySelectorAll('a[href]:not([aria-label]):not([aria-labelledby])').forEach(link => {
+            if (!link.textContent.trim()) {
+                link.setAttribute('aria-label', 'Link');
+            }
+        });
+    }
+
     init() {
         this.setupAccessibilityFeatures();
         this.setupKeyboardNavigation();

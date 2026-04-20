@@ -117,6 +117,19 @@ self.addEventListener('fetch', event => {
     if (request.method !== 'GET') {
         return;
     }
+
+    // Skip Firebase / Firestore / Google APIs — must go directly to network
+    const isFirebaseRequest = 
+        url.hostname.includes('firestore.googleapis.com') ||
+        url.hostname.includes('firebase.googleapis.com') ||
+        url.hostname.includes('firebaseapp.com') ||
+        url.hostname.includes('firebaseinstallations.googleapis.com') ||
+        url.hostname.includes('securetoken.googleapis.com') ||
+        url.hostname.includes('identitytoolkit.googleapis.com') ||
+        url.hostname.includes('googleapis.com');
+    if (isFirebaseRequest) {
+        return;
+    }
     
     // Handle different types of requests
     if (isStaticAsset(request.url)) {

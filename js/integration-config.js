@@ -12,7 +12,7 @@
 window.INTEGRATION_CONFIG = {
     // Spotify Music Integration
     spotify: {
-        clientId: process.env.SPOTIFY_CLIENT_ID || 'YOUR_SPOTIFY_CLIENT_ID',
+        clientId: (typeof process !== 'undefined' && process.env && process.env.SPOTIFY_CLIENT_ID) || 'YOUR_SPOTIFY_CLIENT_ID',
         scopes: [
             'user-read-private',
             'user-read-email', 
@@ -27,8 +27,8 @@ window.INTEGRATION_CONFIG = {
 
     // Google OAuth (for YouTube and Calendar)
     google: {
-        clientId: process.env.GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID',
-        apiKey: process.env.GOOGLE_API_KEY || 'YOUR_GOOGLE_API_KEY',
+        clientId: (typeof process !== 'undefined' && process.env && process.env.GOOGLE_CLIENT_ID) || 'YOUR_GOOGLE_CLIENT_ID',
+        apiKey: (typeof process !== 'undefined' && process.env && process.env.GOOGLE_API_KEY) || 'YOUR_GOOGLE_API_KEY',
         scopes: [
             'https://www.googleapis.com/auth/youtube.readonly',
             'https://www.googleapis.com/auth/calendar.events'
@@ -37,7 +37,7 @@ window.INTEGRATION_CONFIG = {
 
     // YouTube Data API
     youtube: {
-        apiKey: process.env.YOUTUBE_API_KEY || 'YOUR_YOUTUBE_API_KEY',
+        apiKey: (typeof process !== 'undefined' && process.env && process.env.YOUTUBE_API_KEY) || 'YOUR_YOUTUBE_API_KEY',
         channelId: 'YOUR_YOUTUBE_CHANNEL_ID', // Divine Temple channel
         apiUrl: 'https://www.googleapis.com/youtube/v3'
     },
