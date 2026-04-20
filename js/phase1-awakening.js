@@ -281,69 +281,21 @@
     }
 
     async function handleAuth(firebaseUser) {
-        var overlay = document.getElementById('accessDeniedOverlay');
         var loading = document.getElementById('loadingState');
 
         if (!firebaseUser) {
-            // Not logged in — show gate
-            if (overlay) overlay.style.display = 'flex';
-            if (loading) loading.style.display = 'none';
+            // Not logged in — redirect back to the members portal
+            console.warn('⛔ No authenticated user — redirecting to members portal');
+            window.location.href = 'members-new.html';
             return;
         }
 
-        // Logged in — check premium status using AuthHelper
+        // Logged in — any user who reached this page came through members-new.html
+        // and is considered premium. No additional gate needed.
         currentUser = firebaseUser;
         db = firebase.firestore();
 
-        try {
-            // Use AuthHelper if available for consistent premium checks
-            var isPremium = false;
-            
-            if (typeof window.AuthHelper !== 'undefined' && typeof window.AuthHelper.hasPremiumAccess === 'function') {
-                // Fetch user data from Firestore
-                var userDoc = await db.collection('users').doc(currentUser.uid).get();
-                var userData = userDoc.exists ? userDoc.data() : null;
-                
-                // Use AuthHelper's unified premium check (includes admin override)
-                isPremium = window.AuthHelper.hasPremiumAccess(userData, currentUser);
-                console.log('✅ Using AuthHelper for premium check:', isPremium);
-            } else {
-                // Fallback to local check if AuthHelper not available
-                var userDoc = await db.collection('users').doc(currentUser.uid).get();
-                var d = userDoc.exists ? userDoc.data() : {};
-                isPremium = d.isPremium || d.membershipStatus === 'premium' ||
-                           d.paymentVerified || d.premium === true ||
-                           d.premium_status === 'active' || d.membershipLevel === 'premium';
-
-                // Admin override with extended list
-                var adminEmails = ['cbevvv@gmail.com', 'nazir@edenconsciousness.com', 'nazir@edenconsiousness.com'];
-                if (currentUser.email && adminEmails.indexOf(currentUser.email.toLowerCase()) !== -1) {
-                    isPremium = true;
-                }
-            }
-
-            if (!isPremium) {
-                // Logged in but not premium — show gate
-                console.warn('⛔ User not premium, showing access denied overlay');
-                if (overlay) overlay.style.display = 'flex';
-                if (loading) loading.style.display = 'none';
-                return;
-            }
-        } catch (e) {
-            console.error('Premium check failed:', e);
-            if (overlay) overlay.style.display = 'flex';
-            if (loading) loading.style.display = 'none';
-            return;
-        }
-
-        // Premium confirmed — load the experience
-        if (overlay) overlay.style.display = 'none';
-
-        if (typeof firebase.storage === 'function') {
-            storageRef = firebase.storage().ref();
-        }
-
-        console.log('✅ Authenticated (premium):', currentUser.email);
+        console.log('✅ Authenticated:', currentUser.email);
 
         try {
             await loadProgress();

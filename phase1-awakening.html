@@ -23,48 +23,8 @@
     <script src="js/premium-access-control.js"></script>
     <script src="js/header.js" defer></script>
 
-    <!-- Premium Access Gate -->
-    <script>
-        function checkPremiumAccess() {
-            return new Promise(function (resolve) {
-                var checkId = setInterval(function () {
-                    if (typeof firebase !== 'undefined' && firebase.auth) {
-                        clearInterval(checkId);
-                        firebase.auth().onAuthStateChanged(async function (user) {
-                            if (!user) { resolve(false); return; }
-                            try {
-                                var doc = await firebase.firestore().collection('users').doc(user.uid).get();
-                                var d = doc.data() || {};
-                                var ok = d.isPremium || d.membershipStatus === 'premium' || d.paymentVerified;
-                                if (!ok) {
-                                    document.getElementById('accessDeniedOverlay').style.display = 'flex';
-                                    document.getElementById('loadingState').style.display = 'none';
-                                } else {
-                                    document.getElementById('accessDeniedOverlay').style.display = 'none';
-                                }
-                                resolve(!!ok);
-                            } catch (e) {
-                                console.error('Premium check error:', e);
-                                resolve(false);
-                            }
-                            var logoutBtn = document.getElementById('logoutBtn');
-                            if (logoutBtn) {
-                                logoutBtn.addEventListener('click', function () {
-                                    firebase.auth().signOut().then(function () {
-                                        window.location.href = 'dashboard.html';
-                                    });
-                                });
-                            }
-                        });
-                    }
-                }, 100);
-                setTimeout(function () { clearInterval(checkId); }, 6000);
-            });
-        }
-        checkPremiumAccess();
-    </script>
-
-    <style>
+    <!-- js/header.js handles header -->
+</head>
         /* ─── VARIABLES ─────────────────────────────────────── */
         :root {
             --primary-gold: #D4AF37;
@@ -338,35 +298,6 @@
         .modal-btn.secondary { background: rgba(255,255,255,.1); color: white; border: 1px solid var(--glass-border); }
         .modal-btn.secondary:hover { background: rgba(255,255,255,.15); }
 
-        /* ─── ACCESS DENIED ─────────────────────────────────── */
-        .access-denied-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(15,15,35,.98), rgba(26,26,46,.98));
-            display: flex; align-items: center; justify-content: center; z-index: 9999;
-        }
-        .access-denied-card {
-            text-align: center;
-            background: linear-gradient(135deg, rgba(139,92,246,.08), rgba(212,175,55,.08));
-            border: 2px solid var(--accent-purple); border-radius: 22px;
-            padding: 3rem; max-width: 480px;
-        }
-        .access-denied-icon { font-size: 3.5rem; margin-bottom: 1rem; }
-        .access-denied-card h2 {
-            font-size: 1.8rem; margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-orange));
-            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .access-denied-card p { color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.6; }
-        .access-denied-buttons { display: flex; flex-direction: column; gap: 1rem; }
-        .ad-btn {
-            padding: 1rem; border: none; border-radius: 12px;
-            font-weight: 700; cursor: pointer; transition: all .25s; text-decoration: none; display: block; text-align: center;
-        }
-        .ad-btn.upgrade { background: linear-gradient(135deg, var(--accent-orange), #D97706); color: white; }
-        .ad-btn.upgrade:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,158,11,.3); }
-        .ad-btn.home { background: rgba(255,255,255,.08); color: var(--text-primary); border: 1px solid rgba(212,175,55,.25); }
-        .ad-btn.home:hover { background: rgba(255,255,255,.12); }
-
         /* ─── RESPONSIVE ────────────────────────────────────── */
         @media (max-width: 768px) {
             .container { padding: 1rem; }
@@ -383,18 +314,6 @@
     </style>
 </head>
 <body>
-    <!-- Access Denied (shown for non-premium users) -->
-    <div id="accessDeniedOverlay" class="access-denied-overlay" style="display: none;">
-        <div class="access-denied-card">
-            <div class="access-denied-icon">🔐</div>
-            <h2>Premium Access Required</h2>
-            <p>This sacred journey is exclusively for premium members. Upgrade to unlock Phase 1: Awakening and all premium content.</p>
-            <div class="access-denied-buttons">
-                <a href="pricing.html" class="ad-btn upgrade">💎 Upgrade to Premium</a>
-                <a href="index.html" class="ad-btn home">← Back to Home</a>
-            </div>
-        </div>
-    </div>
 
     <div class="container">
         <!-- Premium Navigation -->
