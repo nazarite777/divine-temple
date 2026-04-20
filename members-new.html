@@ -947,6 +947,227 @@
     
     <!-- PWA Button Debug CSS -->
     <link rel="stylesheet" href="css/pwa-button-force-show.css">
+
+    <!-- Sacred Tools Section Styles -->
+    <style>
+    /* ── Sacred Tools section wrapper ── */
+    .sacred-tools-section {
+      max-width: 1340px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+    .sacred-tools-heading {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 600;
+      color: var(--accent-gold, #D4AF37);
+      letter-spacing: 0.08em;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+    .sacred-tools-sub {
+      font-family: 'Crimson Pro', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--text-secondary, #7A7A9A);
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    /* ── Tools grid ── */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    /* ── Base card shell ── */
+    .tool-card {
+      position: relative;
+      background: rgba(20,18,45,0.92);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 2rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      overflow: hidden;
+      transition: border-color 0.28s cubic-bezier(0.4,0,0.2,1),
+                  transform 0.28s cubic-bezier(0.4,0,0.2,1),
+                  box-shadow 0.28s cubic-bezier(0.4,0,0.2,1);
+      cursor: pointer;
+      min-height: 240px;
+      text-decoration: none;
+    }
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      opacity: 0;
+      transition: opacity 0.28s cubic-bezier(0.4,0,0.2,1);
+      background: radial-gradient(ellipse at 30% 20%, rgba(212,175,55,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .tool-card:hover::before { opacity: 1; }
+    .tool-card:hover {
+      border-color: rgba(212,175,55,0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(212,175,55,0.12);
+    }
+    /* Free card accent */
+    .tool-card.is-free { border-color: rgba(16,185,129,0.2); }
+    .tool-card.is-free:hover {
+      border-color: rgba(16,185,129,0.4);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(16,185,129,0.15);
+    }
+    /* Card internals */
+    .card-visible {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      flex: 1;
+      transition: opacity 0.28s ease, filter 0.28s ease;
+    }
+    .card-icon { font-size: 2.2rem; line-height: 1; margin-bottom: 0.25rem; }
+    .card-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #E8E4FF;
+      letter-spacing: 0.04em;
+    }
+    .card-desc {
+      font-family: 'Crimson Pro', serif;
+      font-size: 1rem;
+      line-height: 1.55;
+      color: #7A7A9A;
+      flex: 1;
+    }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: auto; }
+    .card-tags .tag {
+      font-family: 'Crimson Pro', serif;
+      font-size: 0.78rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: 30px;
+      border: 1px solid rgba(139,92,246,0.4);
+      background: rgba(139,92,246,0.15);
+      color: #B09EE8;
+      white-space: nowrap;
+    }
+    .card-tags .tag.tag-free {
+      border-color: rgba(16,185,129,0.4);
+      background: rgba(16,185,129,0.1);
+      color: #6EE7B7;
+    }
+    .card-tags .tag.tag-gold {
+      border-color: rgba(212,175,55,0.35);
+      background: rgba(212,175,55,0.18);
+      color: #D4AF37;
+    }
+    /* Free badge top-right */
+    .free-badge {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+      border-radius: 20px;
+      background: rgba(16,185,129,0.15);
+      border: 1px solid rgba(16,185,129,0.4);
+      color: #6EE7B7;
+    }
+    /* ── Lock overlay — CSS-first, visible by default ── */
+    .lock-overlay {
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      background: rgba(10,8,28,0.97);
+      border: 1px solid rgba(212,175,55,0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 2rem;
+      text-align: center;
+      opacity: 1;
+      pointer-events: all;
+      transition: opacity 0.4s ease;
+      z-index: 10;
+    }
+    .lock-overlay::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(212,175,55,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .lock-icon {
+      font-size: 2.4rem;
+      animation: st-pulse-glow 2.8s ease-in-out infinite;
+    }
+    @keyframes st-pulse-glow {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(212,175,55,0.5)); }
+      50%       { filter: drop-shadow(0 0 20px rgba(212,175,55,0.9)); }
+    }
+    .lock-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #F0CC5A;
+      letter-spacing: 0.06em;
+    }
+    .lock-sub {
+      font-family: 'Crimson Pro', serif;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: #7A7A9A;
+      line-height: 1.5;
+    }
+    .upgrade-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.65rem 1.4rem;
+      background: linear-gradient(135deg, #D4AF37 0%, #C49A20 100%);
+      color: #0F0F23;
+      font-family: 'Cinzel', serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 16px rgba(212,175,55,0.35);
+      margin-top: 0.25rem;
+    }
+    .upgrade-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 6px 24px rgba(212,175,55,0.55);
+    }
+    .upgrade-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+    /* Premium confirmed — hide lock overlay */
+    .tool-card:not(.is-locked) .lock-overlay { opacity: 0; pointer-events: none; }
+    /* Locked — blur card content underneath */
+    .tool-card.is-locked .card-visible {
+      filter: blur(2px);
+      opacity: 0.35;
+      user-select: none;
+      pointer-events: none;
+    }
+    /* Mobile */
+    @media (max-width: 680px) {
+      .tools-grid { grid-template-columns: 1fr; gap: 1rem; }
+      .tool-card { padding: 1.5rem 1.25rem; min-height: 200px; }
+    }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -1298,90 +1519,6 @@
                     </div>
                 </div>
 
-                <!-- Daily Challenge -->
-                <a href="sections/daily-challenge.html" class="nav-card" style="text-decoration: none;">
-                    <span class="nav-icon">🔥</span>
-                    <h4 class="nav-title">Daily Challenge</h4>
-                    <p class="nav-description">
-                        10 fresh questions every day, seeded to the date. Same challenge for all members — 30s timer, XP save, and streak tracking.
-                    </p>
-                    <div class="nav-features">
-                        <span class="feature-tag">Daily Reset</span>
-                        <span class="feature-tag">XP + Streaks</span>
-                        <span class="feature-tag">30s Timer</span>
-                    </div>
-                </a>
-
-                <!-- Sacred Word Scramble -->
-                <a href="sections/word-scramble.html" class="nav-card" style="text-decoration: none;">
-                    <span class="nav-icon">🔤</span>
-                    <h4 class="nav-title">Sacred Word Scramble</h4>
-                    <p class="nav-description">
-                        Unscramble 10 sacred spiritual terms against the clock. 20 seconds per word, XP saved to your profile.
-                    </p>
-                    <div class="nav-features">
-                        <span class="feature-tag">20 Sacred Terms</span>
-                        <span class="feature-tag">Timed Rounds</span>
-                        <span class="feature-tag">XP Rewards</span>
-                    </div>
-                </a>
-
-                <!-- Sacred Breathing -->
-                <a href="sections/breathing-game.html" class="nav-card" style="text-decoration: none;">
-                    <span class="nav-icon">🌬</span>
-                    <h4 class="nav-title">Sacred Breathing</h4>
-                    <p class="nav-description">
-                        Follow animated breathing patterns — Box, 4-7-8, Coherent, and Energizing. Complete cycles to earn XP and calm your nervous system.
-                    </p>
-                    <div class="nav-features">
-                        <span class="feature-tag">4 Patterns</span>
-                        <span class="feature-tag">Animated Guide</span>
-                        <span class="feature-tag">XP Per Cycle</span>
-                    </div>
-                </a>
-
-                <!-- Vision Board -->
-                <a href="sections/vision-board.html" class="nav-card" style="text-decoration: none; background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(139,92,246,0.08)); border-color: rgba(212,175,55,0.3);">
-                    <span class="nav-icon">✨</span>
-                    <h4 class="nav-title">Manifestation Vision Board</h4>
-                    <p class="nav-description">
-                        Build your personal vision board from 36 intention cards across 6 life areas. Saved to your sacred space. Premium members only.
-                    </p>
-                    <div class="nav-features">
-                        <span class="feature-tag" style="background:rgba(212,175,55,0.2);border-color:rgba(212,175,55,0.4);color:#D4AF37;">Premium</span>
-                        <span class="feature-tag">36 Cards</span>
-                        <span class="feature-tag">Cloud Saved</span>
-                    </div>
-                </a>
-
-                <!-- Consciousness Quiz -->
-                <a href="consciousness-quiz.html" class="nav-card" style="text-decoration: none;">
-                    <span class="nav-icon">🧭</span>
-                    <h4 class="nav-title">Consciousness Phase Quiz</h4>
-                    <p class="nav-description">
-                        12-question assessment to discover which Phase of the Eden Journey you're currently in. Free, shareable result.
-                    </p>
-                    <div class="nav-features">
-                        <span class="feature-tag">12 Questions</span>
-                        <span class="feature-tag">4 Phase Results</span>
-                        <span class="feature-tag">Free</span>
-                    </div>
-                </a>
-
-                <!-- Leaderboard -->
-                <a href="leaderboard-new.html" class="nav-card" style="text-decoration: none;">
-                    <span class="nav-icon">🏆</span>
-                    <h4 class="nav-title">Live Leaderboard</h4>
-                    <p class="nav-description">
-                        See the top 25 members ranked by XP — this week, this month, or all time. Real-time data, your rank highlighted.
-                    </p>
-                    <div class="nav-features">
-                        <span class="feature-tag">Real-time</span>
-                        <span class="feature-tag">Week / Month / All Time</span>
-                        <span class="feature-tag">Your Rank</span>
-                    </div>
-                </a>
-
                 <!-- ADMIN PANEL (Only visible to admin) -->
                 <div class="nav-card admin-only" onclick="showAdminPanel()" style="display: none; background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1)); border: 2px solid #F59E0B; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);">
                     <span class="nav-icon">??</span>
@@ -1397,6 +1534,137 @@
                     </div>
                 </div>
             </div>
+        </section>
+
+        <!-- Sacred Tools -->
+        <section id="sacred-tools" class="sacred-tools-section">
+            <h2 class="sacred-tools-heading">Sacred Tools</h2>
+            <p class="sacred-tools-sub">Practices forged for the journey home</p>
+            <div class="tools-grid">
+
+                <!-- ① DAILY CHALLENGE — FREE -->
+                <a href="sections/daily-challenge.html" class="tool-card is-free" style="text-decoration:none;">
+                    <span class="free-badge">Free</span>
+                    <div class="card-visible">
+                        <div class="card-icon">🔥</div>
+                        <div class="card-title">Daily Challenge</div>
+                        <p class="card-desc">10 fresh questions every day, seeded to the date. Same challenge for all members — 30s timer, XP save, and streak tracking.</p>
+                        <div class="card-tags">
+                            <span class="tag tag-free">Daily Reset</span>
+                            <span class="tag tag-free">XP + Streaks</span>
+                            <span class="tag tag-free">30s Timer</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- ② SACRED WORD SCRAMBLE — LOCKED -->
+                <div class="tool-card is-locked" id="card-word-scramble" data-href="sections/word-scramble.html" data-section="word-scramble">
+                    <div class="card-visible">
+                        <div class="card-icon">🔤</div>
+                        <div class="card-title">Sacred Word Scramble</div>
+                        <p class="card-desc">Unscramble 10 sacred spiritual terms against the clock. 20 seconds per word, XP saved to your profile.</p>
+                        <div class="card-tags">
+                            <span class="tag">20 Sacred Terms</span>
+                            <span class="tag">Timed Rounds</span>
+                            <span class="tag">XP Rewards</span>
+                        </div>
+                    </div>
+                    <div class="lock-overlay">
+                        <div class="lock-icon">🔒</div>
+                        <div class="lock-title">Sacred Word Scramble</div>
+                        <p class="lock-sub">Unlock with a Premium membership to access this sacred practice.</p>
+                        <a href="pricing.html" class="upgrade-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            Upgrade to Premium
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ③ SACRED BREATHING — LOCKED -->
+                <div class="tool-card is-locked" id="card-breathing" data-href="sections/breathing-game.html" data-section="breathing-game">
+                    <div class="card-visible">
+                        <div class="card-icon">🌬️</div>
+                        <div class="card-title">Sacred Breathing</div>
+                        <p class="card-desc">Follow animated breathing patterns — Box, 4-7-8, Coherent, and Energizing. Complete cycles to earn XP and calm your nervous system.</p>
+                        <div class="card-tags">
+                            <span class="tag">4 Patterns</span>
+                            <span class="tag">Animated Guide</span>
+                            <span class="tag">XP Per Cycle</span>
+                        </div>
+                    </div>
+                    <div class="lock-overlay">
+                        <div class="lock-icon">🔒</div>
+                        <div class="lock-title">Sacred Breathing</div>
+                        <p class="lock-sub">Unlock with a Premium membership to access this sacred practice.</p>
+                        <a href="pricing.html" class="upgrade-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            Upgrade to Premium
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ④ MANIFESTATION VISION BOARD — LOCKED -->
+                <div class="tool-card is-locked" id="card-vision-board" data-href="sections/vision-board.html" data-section="vision-board">
+                    <div class="card-visible">
+                        <div class="card-icon">✨</div>
+                        <div class="card-title">Manifestation Vision Board</div>
+                        <p class="card-desc">Build your personal vision board from 36 intention cards across 6 life areas. Saved to your sacred space.</p>
+                        <div class="card-tags">
+                            <span class="tag tag-gold">Premium</span>
+                            <span class="tag">36 Cards</span>
+                            <span class="tag">Cloud Saved</span>
+                        </div>
+                    </div>
+                    <div class="lock-overlay">
+                        <div class="lock-icon">🔒</div>
+                        <div class="lock-title">Manifestation Vision Board</div>
+                        <p class="lock-sub">Unlock with a Premium membership to access this sacred practice.</p>
+                        <a href="pricing.html" class="upgrade-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            Upgrade to Premium
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ⑤ CONSCIOUSNESS PHASE QUIZ — FREE -->
+                <a href="consciousness-quiz.html" class="tool-card is-free" style="text-decoration:none;">
+                    <span class="free-badge">Free</span>
+                    <div class="card-visible">
+                        <div class="card-icon">🧭</div>
+                        <div class="card-title">Consciousness Phase Quiz</div>
+                        <p class="card-desc">12-question assessment to discover which Phase of the Eden Journey you're currently in. Free, shareable result.</p>
+                        <div class="card-tags">
+                            <span class="tag tag-free">12 Questions</span>
+                            <span class="tag tag-free">4 Phase Results</span>
+                            <span class="tag tag-free">Free</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- ⑥ LIVE LEADERBOARD — LOCKED -->
+                <div class="tool-card is-locked" id="card-leaderboard" data-href="leaderboard-new.html" data-section="leaderboard">
+                    <div class="card-visible">
+                        <div class="card-icon">🏆</div>
+                        <div class="card-title">Live Leaderboard</div>
+                        <p class="card-desc">See the top 25 members ranked by XP — this week, this month, or all time. Real-time data, your rank highlighted.</p>
+                        <div class="card-tags">
+                            <span class="tag">Real-time</span>
+                            <span class="tag">Week / Month / All Time</span>
+                            <span class="tag">Your Rank</span>
+                        </div>
+                    </div>
+                    <div class="lock-overlay">
+                        <div class="lock-icon">🔒</div>
+                        <div class="lock-title">Live Leaderboard</div>
+                        <p class="lock-sub">Unlock with a Premium membership to access this sacred practice.</p>
+                        <a href="pricing.html" class="upgrade-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            Upgrade to Premium
+                        </a>
+                    </div>
+                </div>
+
+            </div><!-- /.tools-grid -->
         </section>
     </div>
 
@@ -3353,6 +3621,88 @@
             <p>&copy; 2025 Eden Consciousness. You Never Left Eden.</p>
         </div>
     </footer>
+
+    <!-- Sacred Tools Gating Script -->
+    <script>
+    (function() {
+      'use strict';
+
+      var PREMIUM_LEVELS = ['premium','elite','founding','admin','student','monthly','divine'];
+      var ADMIN_EMAILS   = ['cbevvv@gmail.com','nazir@edenconsciousness.com','nazir@edenconsiousness.com'];
+      var LOCKED_CARD_IDS = ['card-word-scramble','card-breathing','card-vision-board','card-leaderboard'];
+
+      function unlockPremiumCards() {
+        LOCKED_CARD_IDS.forEach(function(id) {
+          var card = document.getElementById(id);
+          if (!card) return;
+          card.classList.remove('is-locked');
+          var href    = card.dataset.href;
+          var section = card.dataset.section;
+          if (href) {
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', function() {
+              if (typeof showSection === 'function' && section) {
+                showSection(section);
+              } else {
+                window.location.href = href;
+              }
+            });
+          }
+        });
+        console.log('[SacredTools] Premium cards unlocked ✓');
+      }
+
+      function checkAndUnlock(user, membershipLevel) {
+        var email     = (user.email || '').toLowerCase();
+        var isAdmin   = ADMIN_EMAILS.indexOf(email) !== -1;
+        var isPremium = isAdmin || PREMIUM_LEVELS.indexOf(membershipLevel) !== -1;
+        if (!isPremium) {
+          isPremium = sessionStorage.getItem('adminAuth') === 'true';
+        }
+        if (isPremium) {
+          unlockPremiumCards();
+        } else {
+          console.log('[SacredTools] Free tier — locked cards remain locked');
+        }
+      }
+
+      // Wait for Firebase Auth (initialized by firebase-config.js)
+      var attempts = 0;
+      var interval = setInterval(function() {
+        attempts++;
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+          clearInterval(interval);
+          firebase.auth().onAuthStateChanged(async function(user) {
+            if (!user) return; // not logged in — CSS default keeps locks visible
+            var membershipLevel = 'basic';
+            try {
+              if (typeof firebase.firestore === 'function') {
+                var doc = await firebase.firestore().collection('users').doc(user.uid).get();
+                if (doc.exists) membershipLevel = doc.data().membershipLevel || 'basic';
+              }
+            } catch(e) {
+              console.warn('[SacredTools] Firestore unavailable, using sessionStorage fallback');
+              try {
+                var stored = JSON.parse(sessionStorage.getItem('memberData') || '{}');
+                membershipLevel = stored.membershipLevel || 'basic';
+              } catch(e2) {}
+            }
+            checkAndUnlock(user, membershipLevel);
+          });
+        } else if (attempts >= 60) {
+          clearInterval(interval);
+          console.warn('[SacredTools] Firebase unavailable — sessionStorage fallback');
+          try {
+            var stored  = JSON.parse(sessionStorage.getItem('memberData') || '{}');
+            var isAdmin = sessionStorage.getItem('adminAuth') === 'true';
+            if (isAdmin || PREMIUM_LEVELS.indexOf(stored.membershipLevel) !== -1) {
+              unlockPremiumCards();
+            }
+          } catch(e) {}
+        }
+      }, 100);
+    })();
+    </script>
 </body>
 </html>
 
