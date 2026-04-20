@@ -52,7 +52,15 @@ function initializeFirebase() {
         });
         
         // Enable offline persistence (multi-tab)
-        db.enableMultiTabIndexedDbPersistence()
+        // enableMultiTabIndexedDbPersistence was removed in Firebase SDK v10;
+        // fall back to enablePersistence({ synchronizeTabs: true }) for compat mode.
+        const enablePersistence = typeof db.enableMultiTabIndexedDbPersistence === 'function'
+            ? db.enableMultiTabIndexedDbPersistence()
+            : typeof db.enablePersistence === 'function'
+                ? db.enablePersistence({ synchronizeTabs: true })
+                : Promise.resolve();
+
+        enablePersistence
             .then(() => console.log('✅ Firestore offline persistence enabled'))
             .catch(err => {
                 if (err.code === 'failed-precondition') {

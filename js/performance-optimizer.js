@@ -405,13 +405,17 @@ class PerformanceOptimizer {
     setupPerformanceMonitoring() {
         // Monitor load times
         window.addEventListener('load', () => {
-            const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
-            console.log(`⏱️ Page load time: ${loadTime}ms`);
+            // loadEventEnd may be 0 if read before the event fully completes;
+            // use setTimeout to ensure the value is populated.
+            setTimeout(() => {
+                const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                console.log(`⏱️ Page load time: ${loadTime}ms`);
             
-            if (loadTime > 3000) {
-                console.warn('🐌 Slow page load detected');
-                this.optimizeForSlowLoad();
-            }
+                if (loadTime > 3000) {
+                    console.warn('🐌 Slow page load detected');
+                    this.optimizeForSlowLoad();
+                }
+            }, 0);
         });
 
         // Monitor frame rate
