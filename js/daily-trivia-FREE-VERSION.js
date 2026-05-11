@@ -902,7 +902,25 @@ class DailyTriviaFreeEdition {
 
     async updateTriviaStats(xpEarned) {
         try {
-            const userId = this.currentUser.uid;
+            if (window.progressSystem && typeof window.progressSystem.awardXP === 'function') {
+                await window.progressSystem.awardXP(
+                    xpEarned,
+                    'Daily Trivia Free',
+                    'sacred-knowledge'
+                );
+            }
+        } catch (error) {
+            console.warn('Unable to award universal XP for trivia:', error);
+        }
+
+        try {
+            const activeUser = this.currentUser || (firebase.auth && firebase.auth().currentUser);
+            if (!activeUser || !activeUser.uid) {
+                return;
+            }
+
+            const userId = activeUser.uid;
+            const existingTriviaData = this.triviaData || {};
             const triviaRef = firebase.firestore()
                 .collection('users')
                 .doc(userId)
@@ -910,16 +928,17 @@ class DailyTriviaFreeEdition {
                 .doc('trivia');
 
             const updates = {
-                totalQuizzes: (this.triviaData.totalQuizzes || 0) + 1,
-                totalXPEarned: (this.triviaData.totalXPEarned || 0) + xpEarned,
+                totalQuizzes: (existingTriviaData.totalQuizzes || 0) + 1,
+                totalXPEarned: (existingTriviaData.totalXPEarned || 0) + xpEarned,
                 lastPlayedDate: new Date().toDateString()
             };
 
             if (this.correctAnswers === 3) {
-                updates.perfectScores = (this.triviaData.perfectScores || 0) + 1;
+                updates.perfectScores = (existingTriviaData.perfectScores || 0) + 1;
             }
 
-            await triviaRef.update(updates);
+            await triviaRef.set(updates, { merge: true });
+            this.triviaData = { ...existingTriviaData, ...updates };
             this.log('Updated trivia stats', updates);
         } catch (error) {
             this.error('Failed to update stats', error);

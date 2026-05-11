@@ -104,6 +104,72 @@ const AUTHORIZED_ADMIN_USERS = [
     'nazir23'
 ];
 
+const LOGIN_IDENTIFIER_ALIASES = {
+    nazir23: 'test@edenconsciousness.com'
+};
+
+function normalizeUsername(value) {
+    return (value || '')
+        .toString()
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '')
+        .slice(0, 32);
+}
+
+async function resolveLoginEmail(loginIdentifier) {
+    const trimmedIdentifier = (loginIdentifier || '').trim();
+    if (!trimmedIdentifier) {
+        return '';
+    }
+
+    if (trimmedIdentifier.includes('@')) {
+        return trimmedIdentifier;
+    }
+
+    const normalizedIdentifier = normalizeUsername(trimmedIdentifier);
+    if (!normalizedIdentifier) {
+        return trimmedIdentifier;
+    }
+
+    if (LOGIN_IDENTIFIER_ALIASES[normalizedIdentifier]) {
+        return LOGIN_IDENTIFIER_ALIASES[normalizedIdentifier];
+    }
+
+    try {
+        const exactUsernameSnapshot = await db.collection('users')
+            .where('usernameLower', '==', normalizedIdentifier)
+            .limit(1)
+            .get();
+
+        if (!exactUsernameSnapshot.empty) {
+            return exactUsernameSnapshot.docs[0].data().email || trimmedIdentifier;
+        }
+
+        const legacyUsernameSnapshot = await db.collection('users')
+            .where('username', '==', trimmedIdentifier)
+            .limit(1)
+            .get();
+
+        if (!legacyUsernameSnapshot.empty) {
+            return legacyUsernameSnapshot.docs[0].data().email || trimmedIdentifier;
+        }
+
+        const usersSnapshot = await db.collection('users').limit(200).get();
+        const matchingUserDoc = usersSnapshot.docs.find((doc) => {
+            const userData = doc.data();
+            return normalizeUsername(userData.username) === normalizedIdentifier ||
+                normalizeUsername(userData.displayName) === normalizedIdentifier ||
+                normalizeUsername(userData.name) === normalizedIdentifier;
+        });
+
+        return matchingUserDoc?.data()?.email || trimmedIdentifier;
+    } catch (error) {
+        console.warn('⚠️ Username lookup failed:', error.message);
+        return trimmedIdentifier;
+    }
+}
+
 // User management functions
 const FirebaseAuth = {
     // Check if email belongs to admin
@@ -188,11 +254,23 @@ const FirebaseAuth = {
         return auth.currentUser;
     },
 
+    // Send password reset email
+    async resetPassword(email) {
+        try {
+            await auth.sendPasswordResetEmail(email);
+            return { success: true };
+        } catch (error) {
+            console.error('❌ Password reset failed:', error);
+            return { success: false, error: error.message };
+        }
+    },
+
     // Sign up new user
     async createUser(email, password, displayName) {
         try {
             const userCredential = await auth.createUserWithEmailAndPassword(email, password);
             const user = userCredential.user;
+            const normalizedUsername = normalizeUsername(displayName);
             
             // Update display name
             await user.updateProfile({ displayName });
@@ -201,6 +279,8 @@ const FirebaseAuth = {
             await db.collection('users').doc(user.uid).set({
                 email: user.email,
                 displayName: displayName,
+                username: normalizedUsername || displayName,
+                usernameLower: normalizedUsername,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 membershipLevel: 'basic',
                 preferences: {
@@ -215,6 +295,15 @@ const FirebaseAuth = {
             });
             
             console.log('✅ User created successfully:', user.uid);
+
+            // Send email verification (non-fatal if it fails)
+            try {
+                await user.sendEmailVerification();
+                console.log('📧 Verification email sent to:', user.email);
+            } catch (verifyErr) {
+                console.warn('⚠️ Could not send verification email:', verifyErr.message);
+            }
+
             return { success: true, user };
         } catch (error) {
             console.error('❌ User creation failed:', error);
@@ -223,15 +312,22 @@ const FirebaseAuth = {
     },
     
     // Sign in user
-    async signIn(email, password) {
+    async signIn(loginIdentifier, password) {
         try {
-            const userCredential = await auth.signInWithEmailAndPassword(email, password);
+            const resolvedEmail = await resolveLoginEmail(loginIdentifier);
+            const userCredential = await auth.signInWithEmailAndPassword(resolvedEmail, password);
             const user = userCredential.user;
+
+            const normalizedUsername = normalizeUsername(user.displayName);
             
             // Update last active timestamp — use set+merge so it works even if doc/field is missing
             try {
                 await db.collection('users').doc(user.uid).set({
-                    'lastActive': firebase.firestore.FieldValue.serverTimestamp()
+                    lastActive: firebase.firestore.FieldValue.serverTimestamp(),
+                    email: user.email,
+                    displayName: user.displayName || null,
+                    username: normalizedUsername || user.displayName || null,
+                    usernameLower: normalizedUsername || null
                 }, { merge: true });
             } catch (firestoreErr) {
                 // Non-fatal — don't block login if Firestore update fails

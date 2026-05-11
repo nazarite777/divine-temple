@@ -168,6 +168,17 @@ class UniversalProgressSystem {
                 .collection('universalProgress')
                 .doc(this.currentUser.uid)
                 .set(this.userData, { merge: true });
+
+            // Mirror core progression fields to users profile for cross-dashboard continuity.
+            await firebase.firestore()
+                .collection('users')
+                .doc(this.currentUser.uid)
+                .set({
+                    totalXP: this.userData.totalXP || 0,
+                    progressLevel: this.userData.level || 1,
+                    spiritualRank: this.userData.spiritualRank || 'Seeker',
+                    lastActiveDate: new Date().toISOString()
+                }, { merge: true });
         } catch (error) {
             console.error('❌ Error saving user data:', error);
         }

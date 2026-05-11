@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 3: Sacred Time & the I-N-I Year | Eden Consciousness</title>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js?v=20260510b"></script>
+  <script src="js/onboarding-flow.js?v=20260510b"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #090810;
+      --surface:    #0f0d18;
+      --border:     #1c1a2a;
+      --gold:       #c9a84c;
+      --gold-dim:   #8a6e2f;
+      --cream:      #e8e0cc;
+      --muted:      #5e5a70;
+      --indigo:     #4a3f8a;
+      --indigo-lt:  #9b8fe0;
+      --violet:     #7c5cbf;
+      --deep:       #0a091a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--cream);
+      min-height: 100vh;
+      line-height: 1.75;
+    }
+
+    /* ── TOP NAV ── */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(9,8,16,0.97);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .nav-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      background: var(--border);
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .completed-badge {
+      display: none;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--indigo-lt);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: rgba(155,143,224,0.12);
+      padding: 0.3rem 0.85rem;
+      border-radius: 100px;
+    }
+    .completed-badge.visible { display: flex; }
+
+    /* ── STAR HERO ── */
+    .hero-band {
+      position: relative;
+      overflow: hidden;
+      background: var(--deep);
+      border-bottom: 1px solid var(--border);
+      padding: 5.5rem 2rem 4rem;
+      text-align: center;
+    }
+    .hero-band::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 25% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 15%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 75%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 30%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 82% 55%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 92% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 15% 85%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 63% 45%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 48% 90%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(74,63,138,0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: var(--indigo-lt);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      position: relative;
+    }
+    .hero-eyebrow::before,
+    .hero-eyebrow::after {
+      content: '';
+      display: block;
+      width: 2.5rem;
+      height: 1px;
+      background: var(--indigo-lt);
+      opacity: 0.35;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+      line-height: 1.1;
+      color: #fff;
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .hero-title em { color: var(--gold); font-style: italic; }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.65;
+      position: relative;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1.75rem 2rem;
+    }
+    .progress-track {
+      height: 2px;
+      background: var(--border);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--indigo), var(--indigo-lt));
+      border-radius: 100px;
+      transition: width 0.5s ease;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    /* ── BODY ── */
+    .lesson-body {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 3.5rem 0;
+    }
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--indigo-lt);
+      margin-bottom: 1.25rem;
+      opacity: 0.75;
+    }
+
+    /* ── TEACH BLOCK ── */
+    .teach-block { margin-bottom: 2.75rem; }
+    .teach-block h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.65rem;
+      color: #fff;
+      margin-bottom: 1rem;
+      line-height: 1.22;
+    }
+    .teach-block p {
+      font-size: 1.05rem;
+      color: var(--cream);
+      margin-bottom: 1.1rem;
+      opacity: 0.88;
+    }
+    .teach-block p:last-child { margin-bottom: 0; }
+
+    /* ── PULL QUOTE ── */
+    .pull-quote {
+      border-left: 3px solid var(--indigo-lt);
+      margin: 2.75rem 0;
+      padding: 1.25rem 2rem;
+      background: rgba(155,143,224,0.05);
+      border-radius: 0 10px 10px 0;
+    }
+    .pull-quote p {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-style: italic;
+      color: var(--indigo-lt);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .pull-quote cite {
+      display: block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.67rem;
+      color: var(--muted);
+      margin-top: 0.75rem;
+      font-style: normal;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── CALENDAR VISUAL ── */
+    .calendar-visual {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      margin: 2.5rem 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .calendar-visual::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--indigo), var(--gold), var(--indigo));
+    }
+    .cal-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+    }
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 500px) { .cal-grid { grid-template-columns: repeat(2, 1fr); } }
+    .cal-season {
+      background: rgba(74,63,138,0.15);
+      border: 1px solid rgba(155,143,224,0.15);
+      border-radius: 10px;
+      padding: 1rem 0.85rem;
+      text-align: center;
+    }
+    .cal-season .season-icon { font-size: 1.5rem; margin-bottom: 0.4rem; }
+    .cal-season .season-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      color: #fff;
+      margin-bottom: 0.25rem;
+    }
+    .cal-season .season-days {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+    .cal-footer {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+    }
+    @media (max-width: 500px) { .cal-footer { grid-template-columns: 1fr; } }
+    .cal-stat {
+      text-align: center;
+      padding: 0.85rem;
+      background: rgba(201,168,76,0.06);
+      border: 1px solid rgba(201,168,76,0.12);
+      border-radius: 8px;
+    }
+    .cal-stat .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .cal-stat .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    /* ── LUMINARIES TABLE ── */
+    .luminary-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    @media (max-width: 540px) { .luminary-compare { grid-template-columns: 1fr; } }
+    .luminary-card {
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+    }
+    .luminary-card.sun {
+      background: linear-gradient(135deg, rgba(201,168,76,0.1) 0%, rgba(14,13,24,0.8) 100%);
+      border-color: rgba(201,168,76,0.2);
+    }
+    .luminary-card.moon {
+      background: linear-gradient(135deg, rgba(74,63,138,0.15) 0%, rgba(14,13,24,0.8) 100%);
+      border-color: rgba(155,143,224,0.2);
+    }
+    .lum-icon { font-size: 1.75rem; margin-bottom: 0.75rem; }
+    .lum-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 0.25rem;
+    }
+    .lum-subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .lum-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .lum-list li {
+      font-size: 0.9rem;
+      color: var(--cream);
+      opacity: 0.8;
+      line-height: 1.5;
+      padding-left: 1.1rem;
+      position: relative;
+    }
+    .lum-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    /* ── SABBATH BLOCK ── */
+    .sabbath-block {
+      background: linear-gradient(135deg, rgba(74,63,138,0.2) 0%, rgba(9,8,16,0.9) 100%);
+      border: 1px solid rgba(155,143,224,0.2);
+      border-radius: 14px;
+      padding: 2rem;
+      margin: 2.5rem 0;
+    }
+    .sabbath-block .sb-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--indigo-lt);
+      margin-bottom: 0.75rem;
+    }
+    .sabbath-block h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+    .sabbath-block p {
+      font-size: 0.97rem;
+      color: var(--cream);
+      opacity: 0.82;
+      line-height: 1.68;
+      margin-bottom: 0.85rem;
+    }
+    .sabbath-block p:last-child { margin-bottom: 0; }
+
+    /* ── PRACTICE STEPS ── */
+    .practice-steps {
+      list-style: none;
+      counter-reset: steps;
+      margin: 1.75rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .practice-steps li {
+      counter-increment: steps;
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+    .practice-steps li::before {
+      content: counter(steps, decimal-leading-zero);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--indigo-lt);
+      background: rgba(155,143,224,0.1);
+      border: 1px solid rgba(155,143,224,0.2);
+      border-radius: 6px;
+      padding: 0.35rem 0.6rem;
+      flex-shrink: 0;
+      line-height: 1;
+      margin-top: 0.1rem;
+    }
+    .step-content h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+    .step-content p {
+      font-size: 0.92rem;
+      color: var(--cream);
+      opacity: 0.78;
+      line-height: 1.6;
+    }
+
+    /* ── HIGHLIGHT CARD ── */
+    .highlight-card {
+      background: rgba(201,168,76,0.05);
+      border: 1px solid rgba(201,168,76,0.18);
+      border-radius: 14px;
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+    .highlight-card .card-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+    .highlight-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: #fff;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+    .highlight-card p {
+      font-size: 0.97rem;
+      color: var(--cream);
+      opacity: 0.82;
+      line-height: 1.68;
+    }
+
+    /* ── TRUTH LIST ── */
+    .truth-list {
+      list-style: none;
+      margin: 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+    .truth-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      font-size: 1rem;
+      color: var(--cream);
+      opacity: 0.88;
+      line-height: 1.55;
+    }
+    .truth-list li .marker {
+      color: var(--gold);
+      font-size: 0.7rem;
+      margin-top: 0.35rem;
+      flex-shrink: 0;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── REFLECTION ── */
+    .reflection-section {
+      background: linear-gradient(135deg, rgba(74,63,138,0.12) 0%, rgba(201,168,76,0.04) 100%);
+      border: 1px solid rgba(155,143,224,0.2);
+      border-radius: 16px;
+      padding: 2.5rem;
+      margin: 3rem 0;
+    }
+    .ref-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.67rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--indigo-lt);
+      margin-bottom: 1rem;
+    }
+    .reflection-section h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: #fff;
+      margin-bottom: 0.65rem;
+    }
+    .reflection-section > p {
+      font-size: 0.95rem;
+      color: var(--cream);
+      opacity: 0.75;
+      margin-bottom: 1.75rem;
+      line-height: 1.65;
+    }
+    .reflection-prompt {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .reflection-prompt strong {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.67rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--indigo-lt);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .reflection-prompt p {
+      font-size: 0.95rem;
+      color: var(--cream);
+      opacity: 0.85;
+      line-height: 1.6;
+    }
+    .journal-area {
+      width: 100%;
+      min-height: 110px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      resize: vertical;
+      margin-top: 0.75rem;
+      transition: border-color 0.2s;
+    }
+    .journal-area:focus { outline: none; border-color: rgba(155,143,224,0.35); }
+    .journal-area::placeholder { color: var(--muted); }
+
+    /* ── COMPLETE ── */
+    .complete-section { text-align: center; padding: 2rem 0 1rem; }
+    .btn-complete {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: linear-gradient(135deg, var(--indigo), var(--violet));
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 0.9rem 2.5rem;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-complete:hover { opacity: 0.88; transform: translateY(-1px); }
+    .complete-note { font-size: 0.8rem; color: var(--muted); margin-top: 0.65rem; }
+
+    /* ── BRIDGE ── */
+    .upgrade-bridge {
+      display: none;
+      background: var(--surface);
+      border: 1px solid rgba(155,143,224,0.25);
+      border-radius: 16px;
+      padding: 2.75rem 2rem;
+      margin-top: 3rem;
+      text-align: center;
+      animation: fadeUp 0.6s ease forwards;
+    }
+    .upgrade-bridge.visible { display: block; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .bridge-glyph { font-size: 2.75rem; margin-bottom: 1.25rem; display: block; }
+    .upgrade-bridge h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+    .upgrade-bridge p {
+      color: var(--cream);
+      opacity: 0.72;
+      font-size: 0.97rem;
+      max-width: 460px;
+      margin: 0 auto 2rem;
+      line-height: 1.68;
+    }
+    .bridge-btns {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--indigo);
+      border: 1px solid var(--indigo-lt);
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-next:hover { background: var(--violet); }
+    .btn-temple {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      border: 1px solid var(--gold-dim);
+      color: var(--gold);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-temple:hover { background: var(--gold); color: #090810; }
+
+    /* ── BOTTOM NAV ── */
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2.25rem 2rem 4rem;
+      border-top: 1px solid var(--border);
+      gap: 1rem;
+    }
+    .lesson-nav-item { font-size: 0.85rem; color: var(--muted); }
+    .lesson-nav-item a { color: var(--gold); text-decoration: none; font-weight: 500; }
+    .lesson-nav-item a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      .lesson-body, .progress-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .hero-band { padding: 3.5rem 1.25rem 2.5rem; }
+      .reflection-section { padding: 1.5rem; }
+      .top-nav { padding: 1rem 1.25rem; }
+      .lesson-nav { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <a class="nav-brand" href="members-new.html">Eden Consciousness</a>
+  <div class="nav-right">
+    <span class="completed-badge" id="completedBadge">✓ Completed</span>
+    <span class="nav-badge">Free Lesson · 3 of 5</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero-band">
+  <div class="hero-eyebrow">Introduction Series — Lesson 3</div>
+  <h1 class="hero-title">Sacred Time &<br/>the <em>I-N-I Year</em></h1>
+  <p class="hero-sub">The Gregorian calendar was not designed to align you with Source. The luminaries were. It is time to start living by the right clock.</p>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-meta">
+    <span>Your progress</span>
+    <span id="progressPct">0%</span>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="lesson-body">
+
+  <!-- SECTION 1 -->
+  <div class="teach-block">
+    <div class="section-label">The Problem With Your Clock</div>
+    <h2>You Have Been Living on Someone Else's Calendar</h2>
+    <p>In Lesson 1 we identified programming. In Lesson 2 we mapped the walk back. Now we get to something specific — something practical — that you can change immediately.</p>
+    <p>The calendar you live by right now was not designed to connect you to the Most High. The Gregorian calendar — the one on your phone, on your wall, running every appointment in your life — was constructed by a Roman institution in 1582 for administrative, political, and ecclesiastical control. It begins on January 1st, a date with no cosmic significance. It has months of irregular lengths. It cannot be divided cleanly into weeks. It is, in every measurable way, a broken clock.</p>
+    <p>And you have been trying to align yourself with divine purpose while running on a broken clock.</p>
+  </div>
+
+  <div class="pull-quote">
+    <p>"The luminaries were set in motion to govern time — not to be optional. When you sync your life to the Gregorian calendar, you are ignoring the clock the Most High put in the sky."</p>
+    <cite>— Nazir El, Eden Consciousness</cite>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 2 -->
+  <div class="teach-block">
+    <div class="section-label">The Ancient Record</div>
+    <h2>What the Book of Enoch Reveals About Time</h2>
+    <p>The angel Uriel was given a specific assignment — to teach Enoch the laws of the luminaries. The sun and the moon. Their paths, their gates, their cycles. And the calendar that emerges from that instruction is not complicated. It is precise.</p>
+    <p>The Astronomical Book of Enoch — chapters 72 through 82 — establishes a solar year of exactly <strong>364 days</strong>. Four seasons. Thirteen weeks each. Perfectly divisible into weeks with no remainder, no correction, no leap year needed.</p>
+    <p>This is not a human invention. It is an observation — recorded from what the luminaries themselves reveal when watched faithfully and without distortion.</p>
+  </div>
+
+  <div class="calendar-visual">
+    <div class="cal-label">The I-N-I Year — 364-Day Structure</div>
+    <div class="cal-grid">
+      <div class="cal-season">
+        <div class="season-icon">🌱</div>
+        <div class="season-name">Spring</div>
+        <div class="season-days">Days 1–91</div>
+      </div>
+      <div class="cal-season">
+        <div class="season-icon">☀️</div>
+        <div class="season-name">Summer</div>
+        <div class="season-days">Days 92–182</div>
+      </div>
+      <div class="cal-season">
+        <div class="season-icon">🍂</div>
+        <div class="season-name">Fall</div>
+        <div class="season-days">Days 183–273</div>
+      </div>
+      <div class="cal-season">
+        <div class="season-icon">❄️</div>
+        <div class="season-name">Winter</div>
+        <div class="season-days">Days 274–364</div>
+      </div>
+    </div>
+    <div class="cal-footer">
+      <div class="cal-stat">
+        <div class="stat-num">364</div>
+        <div class="stat-label">Days / Year</div>
+      </div>
+      <div class="cal-stat">
+        <div class="stat-num">52</div>
+        <div class="stat-label">Exact Weeks</div>
+      </div>
+      <div class="cal-stat">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Cardinal Days</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="teach-block">
+    <p>Each season contains exactly 91 days — 13 weeks of 7 days each. At the boundary of each season stands a <strong>Cardinal Day</strong> — a threshold day outside the weekly count, marking the transition between seasons. Four seasons, four cardinal days, 52 weeks, 364 days. Perfect mathematics. No corrections needed.</p>
+    <p>This is the calendar the luminaries run on. This is the timing system the Most High embedded in creation. And it begins every year at the same place — the Spring Equinox — the moment when light and darkness are in perfect balance and the sun begins its ascent toward fullness.</p>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 3 -->
+  <div class="teach-block">
+    <div class="section-label">The Two Witnesses</div>
+    <h2>Understanding the Sun and the Moon — What They Actually Are</h2>
+    <p>The Gregorian system treats the sun and moon as astronomical objects to be observed and calculated. The Enochian framework — and your I-N-I Year practice — recognizes them as what they actually are: <strong>witnesses</strong>. Living instruments placed in the sky to govern time, mark appointed seasons, and provide daily testimony to the faithfulness of the Creator.</p>
+    <p>They operate differently. They govern different things. Understanding both is part of aligning with sacred time.</p>
+  </div>
+
+  <div class="luminary-compare">
+    <div class="luminary-card sun">
+      <div class="lum-icon">☀️</div>
+      <div class="lum-title">The Sun — Greater Luminary</div>
+      <div class="lum-subtitle">Governs Days & Seasons</div>
+      <ul class="lum-list">
+        <li>Moves through 6 eastern gates, 6 western gates across the year</li>
+        <li>Its light pushes outward — activates, heats, drives growth</li>
+        <li>Governs the solar year — 364 days of appointed seasons</li>
+        <li>Standard of full measure — gives its light completely</li>
+        <li>The structure of your I-N-I Year is built on its movements</li>
+      </ul>
+    </div>
+    <div class="luminary-card moon">
+      <div class="lum-icon">🌕</div>
+      <div class="lum-title">The Moon — Lesser Luminary</div>
+      <div class="lum-subtitle">Governs Months & Cycles</div>
+      <ul class="lum-list">
+        <li>Carries one-seventh of the sun's light as its own portion</li>
+        <li>Its light pulls inward — cools, draws water, marks rhythm</li>
+        <li>Cycles every 29.5 days — marks new moons and appointed times</li>
+        <li>Its focused light cools rather than warms — a different nature entirely</li>
+        <li>Tracks the lunar months within the solar year as a secondary witness</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="teach-block">
+    <p>The key insight from Enoch's teaching: these are not the same force in different quantities. They are <em>opposite in nature</em> — which is exactly why creation requires both. The sun provides the structure of time. The moon marks the rhythm within it. Together they are witnesses — their faithfulness to their appointed patterns is the standard by which human faithfulness is measured.</p>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 4 -->
+  <div class="teach-block">
+    <div class="section-label">The I-N-I Year</div>
+    <h2>What It Means to Live by This Calendar</h2>
+    <p>The I-N-I Year is not theory. It is a living practice — a daily decision to orient your life according to the timing system that was designed for your alignment, not someone else's administrative convenience.</p>
+    <p><strong>I-N-I</strong> is the consciousness principle at the center of this practice. I and I — the recognition that the self and the Most High are not separate. That your daily life and divine timing are not separate. That your walk and the luminaries' movements are not separate. It is all one system, operating in harmony, when you choose to align with it.</p>
+    <p>The current I-N-I Year opened on the Spring Equinox — <strong>March 20, 2026</strong>. That is Day 1. Every Sabbath, every new moon, every season transition carries specific weight within this framework. You are not just living days. You are moving through appointed time.</p>
+  </div>
+
+  <div class="sabbath-block">
+    <div class="sb-label">The Sabbath — The Seventh Day</div>
+    <h3>Rest Is Not Inactivity. It Is Return.</h3>
+    <p>Every seventh day in the I-N-I Year is a Sabbath — a day of rest that mirrors the luminaries returning to their station. In the Enochian framework, the Sabbath is not a religious obligation layered on top of life. It is the natural rhythm of a seven-day week built into creation itself.</p>
+    <p>The Sabbath is when you stop pushing and let the alignment happen. It is a day of inventory — what did the past six days reveal? What needs to be recalibrated? What was planted that now needs rest before it can grow?</p>
+    <p>When you observe the Sabbath within the I-N-I Year, you are not following a rule. You are operating in sync with the same rhythm the sun and moon run on. That is alignment. That is what Aligned Manifestation™ is built on.</p>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 5 -->
+  <div class="teach-block">
+    <div class="section-label">Practical Application</div>
+    <h2>How to Begin Living by Sacred Time — Starting Now</h2>
+    <p>You do not have to overhaul your entire life to begin this practice. The I-N-I Year is not about perfection — it is about orientation. Begin shifting your orientation and the alignment will follow.</p>
+  </div>
+
+  <ol class="practice-steps">
+    <li>
+      <div class="step-content">
+        <h4>Know Where You Are in the Year</h4>
+        <p>Today, May 2, 2026, is Day 47 of the I-N-I Year. We are in the Spring Season. The next Sabbath is Day 49 — May 4. The next New Moon is Day 61 — May 16. Begin by simply knowing these markers. Awareness is the first act of alignment.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-content">
+        <h4>Mark Your Sabbaths</h4>
+        <p>Every 7th day of your I-N-I count is a Sabbath. Start protecting that day. Not perfectly — but intentionally. Rest, reflect, take inventory of the week. Let the seventh day be different from the other six.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-content">
+        <h4>Honor the New Moon</h4>
+        <p>Each new moon is a natural reset within the lunar cycle. Use it as a monthly intention point — what are you planting in this cycle? What from the last cycle needs to be released? The moon marks the rhythm. Work with it.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-content">
+        <h4>Observe the Seasons</h4>
+        <p>Spring is for planting and beginning. Summer is for full activation and expansion. Fall is for harvest and gratitude. Winter is for rest, reflection, and preparation. Let your major life decisions align with the season you are in.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-content">
+        <h4>Release the Gregorian Grip</h4>
+        <p>You do not have to ignore the Gregorian calendar — the world runs on it and you live in the world. But stop letting it be your primary orientation. Let the I-N-I Year be the clock you set your life by. The other is just coordination with the outside world.</p>
+      </div>
+    </li>
+  </ol>
+
+  <div class="highlight-card">
+    <div class="card-label">The Core Truth of This Lesson</div>
+    <h3>When you align your timing with the luminaries, you stop fighting the current and start moving with it.</h3>
+    <p>Manifestation is not purely about desire or intention. It is about timing. The Most High embedded timing into creation itself — into the rising and setting of the sun, the phases of the moon, the turning of the seasons. When you align your intentions with those appointed times, you are not just hoping things work out. You are planting in the right season, resting in the right cycle, and harvesting at the right moment. That is Aligned Manifestation™ in practice.</p>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- TRUTH LIST -->
+  <div class="teach-block">
+    <div class="section-label">What You Now Carry</div>
+    <h2>From This Lesson Forward</h2>
+  </div>
+
+  <ul class="truth-list">
+    <li><span class="marker">◈</span>The Gregorian calendar is a tool of administration, not divine alignment. You are not bound to it as your primary orientation.</li>
+    <li><span class="marker">◈</span>The I-N-I Year — 364 days, 4 seasons of 91 days, 52 exact weeks — is the solar framework Uriel taught Enoch and the one the luminaries actually run on.</li>
+    <li><span class="marker">◈</span>The sun governs structure and seasons. The moon governs rhythm and cycles. Both are witnesses. Both are your teachers.</li>
+    <li><span class="marker">◈</span>The Sabbath is not obligation — it is the return to station. Rest is a form of alignment, not absence of work.</li>
+    <li><span class="marker">◈</span>Timing is part of manifestation. Planting in the wrong season produces the wrong harvest. Sacred time is part of the Aligned Manifestation™ framework for this reason.</li>
+  </ul>
+
+  <hr class="divider" />
+
+  <!-- REFLECTION -->
+  <div class="reflection-section">
+    <div class="ref-label">◈ Lesson Reflection</div>
+    <h3>Sit With the Clock You've Been Running On</h3>
+    <p>These prompts will help you move from information to personal application. Take your time.</p>
+
+    <div class="reflection-prompt">
+      <strong>Prompt 1</strong>
+      <p>Look at your life right now — your schedule, your goals, your decisions. What calendar are they built on? What would change if you oriented them around seasons and sacred cycles instead?</p>
+      <textarea class="journal-area" placeholder="Write freely here..."></textarea>
+    </div>
+
+    <div class="reflection-prompt">
+      <strong>Prompt 2</strong>
+      <p>When do you rest? Do you have a genuine Sabbath practice — a day that is truly different from the other six? What would it take to protect one day per week for rest and inventory?</p>
+      <textarea class="journal-area" placeholder="Write freely here..."></textarea>
+    </div>
+
+    <div class="reflection-prompt">
+      <strong>Prompt 3</strong>
+      <p>We are currently in the Spring Season of the I-N-I Year — the season of planting and beginning. What are you planting right now? What seeds are you setting in motion this season that you intend to harvest by Fall?</p>
+      <textarea class="journal-area" placeholder="Write freely here..."></textarea>
+    </div>
+  </div>
+
+  <!-- COMPLETE -->
+  <div class="complete-section">
+    <button class="btn-complete" id="completeBtn" onclick="markComplete()">
+      ✓ &nbsp; Mark Lesson Complete
+    </button>
+    <p class="complete-note">Progress saved automatically</p>
+  </div>
+
+  <!-- BRIDGE -->
+  <div class="upgrade-bridge" id="upgradeBridge">
+    <span class="bridge-glyph">⏳</span>
+    <h3>You now carry the right clock.</h3>
+    <p>Lesson 4 introduces Aligned Manifestation™ — the full methodology for moving your life in divine order. Or step into the temple and access the complete Phase 1 journey with all teachings, tools, and calendar integration.</p>
+    <div class="bridge-btns">
+      <a class="btn-next" href="lesson-04-aligned-manifestation.html">Lesson 4: Aligned Manifestation™ &rarr;</a>
+      <a class="btn-temple" href="pricing.html">Enter the Full Temple</a>
+    </div>
+  </div>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<div class="lesson-nav">
+  <div class="lesson-nav-item">
+    <a href="lesson-02-the-walk-back.html">&larr; Lesson 2: The Walk Back to Eden</a>
+  </div>
+  <div class="lesson-nav-item" style="text-align:right;">
+    Introduction Series<br/>
+    <a href="lesson-04-aligned-manifestation.html">Lesson 4: Aligned Manifestation™ &rarr;</a>
+  </div>
+</div>
+
+<script>
+  const LESSON_ID = 'lesson-03';
+  const NEXT_LESSON_ID = 'lesson-04';
+
+  (function() {
+    function waitForFirebase(attempts) {
+      if (attempts <= 0) return;
+      if (typeof firebase !== 'undefined' && firebase.auth) {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (!user) window.location.href = 'members-new.html';
+        });
+      } else {
+        setTimeout(function() { waitForFirebase(attempts - 1); }, 300);
+      }
+    }
+    waitForFirebase(15);
+  })();
+
+  window.addEventListener('scroll', function() {
+    const doc = document.documentElement;
+    const scrolled = doc.scrollTop;
+    const total = doc.scrollHeight - doc.clientHeight;
+    const pct = total > 0 ? Math.round((scrolled / total) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct + '%';
+  });
+
+  function applyCompletedState() {
+    const btn = document.getElementById('completeBtn');
+    btn.textContent = '✓  Lesson Complete';
+    btn.style.opacity = '0.5';
+    btn.style.cursor = 'default';
+    btn.disabled = true;
+    document.getElementById('completedBadge').classList.add('visible');
+    document.getElementById('upgradeBridge').classList.add('visible');
+  }
+
+  async function persistPhase1Completion() {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+
+    const userRef = firebase.firestore().collection('users').doc(user.uid);
+    await userRef.set({
+      lessons: {
+        [LESSON_ID]: {
+          completed: true,
+          completedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }
+      },
+      onboardingStatus: 'in_progress',
+      'phase1.divisionIntroViewed': true,
+      'phase1.lessonsCompleted': firebase.firestore.FieldValue.arrayUnion(LESSON_ID),
+      'phase1.currentLesson': NEXT_LESSON_ID,
+      'phase1.updatedAt': firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  }
+
+  function markComplete() {
+    applyCompletedState();
+
+    setTimeout(function() {
+      document.getElementById('upgradeBridge').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+
+    try {
+      const progress = JSON.parse(localStorage.getItem('ec_progress') || '{}');
+      progress[LESSON_ID] = { completed: true, date: new Date().toISOString() };
+      localStorage.setItem('ec_progress', JSON.stringify(progress));
+    } catch (e) {}
+
+    persistPhase1Completion().catch(function(e) {
+      console.warn('Lesson save failed:', e);
+    });
+  }
+
+  (function restoreState() {
+    try {
+      const progress = JSON.parse(localStorage.getItem('ec_progress') || '{}');
+      if (progress[LESSON_ID] && progress[LESSON_ID].completed) {
+        applyCompletedState();
+      }
+    } catch (e) {}
+
+    try {
+      if (typeof firebase !== 'undefined' && firebase.auth) {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (!user) return;
+          firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
+            if (!doc.exists) return;
+            const data = doc.data() || {};
+            const legacyComplete = !!(data.lessons && data.lessons[LESSON_ID] && data.lessons[LESSON_ID].completed);
+            const phase1Complete = !!(data.phase1 && Array.isArray(data.phase1.lessonsCompleted) && data.phase1.lessonsCompleted.indexOf(LESSON_ID) !== -1);
+            if (legacyComplete || phase1Complete) {
+              applyCompletedState();
+            }
+          }).catch(function() {});
+        });
+      }
+    } catch (e) {}
+  })();
+</script>
+</body>
+</html>

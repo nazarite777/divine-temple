@@ -95,20 +95,7 @@ class EnhancedPWAInstaller {
     }
     
     async registerServiceWorker() {
-        if ('serviceWorker' in navigator) {
-            try {
-                const registration = await navigator.serviceWorker.register('/sw.js');
-                console.log('✅ Service Worker registered:', registration);
-                
-                // Listen for updates
-                registration.addEventListener('updatefound', () => {
-                    console.log('🔄 Service Worker update found');
-                });
-                
-            } catch (error) {
-                console.error('❌ Service Worker registration failed:', error);
-            }
-        }
+        return null;
     }
     
     updateInstallButtons() {

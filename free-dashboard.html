@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divine Temple - Free Access</title>
+    <title>Divine Temple - Sacred Members</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <!-- Firebase SDKs - LOAD FIRST -->
@@ -95,6 +95,17 @@
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .logo img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid rgba(212, 175, 55, 0.4);
         }
 
         .free-badge {
@@ -991,9 +1002,47 @@
                 height: 600px;
             }
         }
+
+        /* Email verification banner */
+        #verify-banner {
+            display: none;
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(202, 138, 4, 0.1));
+            border-bottom: 1px solid rgba(234, 179, 8, 0.4);
+            padding: 0.65rem 1.5rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: #fde68a;
+            position: relative;
+            z-index: 200;
+        }
+        #verify-banner a {
+            color: var(--primary-gold);
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-left: 0.4rem;
+        }
+        #verify-banner button.dismiss-verify {
+            background: none;
+            border: none;
+            color: rgba(253, 230, 138, 0.6);
+            cursor: pointer;
+            font-size: 1rem;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
     </style>
 </head>
 <body>
+    <!-- Email Verification Banner -->
+    <div id="verify-banner">
+        📧 Please verify your email to keep full access. Check your inbox.
+        <a onclick="resendVerificationEmail()" href="#">Resend email</a>
+        <button class="dismiss-verify" onclick="document.getElementById('verify-banner').style.display='none'" title="Dismiss">✕</button>
+    </div>
+
     <!-- Loading Screen -->
     <div class="auth-loading" id="authLoading">
         <div class="spinner"></div>
@@ -1002,7 +1051,7 @@
 
     <!-- Header -->
     <div class="header">
-        <div class="logo">🛕 Divine Temple</div>
+        <div class="logo"><img src="images/branding/logoyogabg.png" alt="Eden Consciousness Logo"> Divine Temple</div>
         <div class="user-info">
             <a href="https://medium.com/@edenconsciousnesssdt" target="_blank" rel="noopener noreferrer"
                style="text-decoration: none; color: var(--primary-gold); font-weight: 600; padding: 0.5rem 1rem;
@@ -1010,7 +1059,7 @@
                margin-right: 1rem; transition: all 0.3s ease;">
                 📝 Blog
             </a>
-            <span class="free-badge">✨ Free Access</span>
+            <span class="free-badge">✨ Sacred Members</span>
             <span id="userEmail" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;"></span>
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
@@ -1344,7 +1393,7 @@
     <div class="container">
         <!-- Welcome Banner -->
         <div class="welcome-banner">
-            <h1>🌟 Welcome to Divine Temple Free Access</h1>
+            <h1>🌟 Welcome<span id="userGreeting"></span> to Divine Temple</h1>
             <p>Explore the sacred Enochian calendar and discover cosmic timing for your spiritual journey</p>
         </div>
 
@@ -1354,6 +1403,65 @@
                 "The soul always knows what to do to heal itself. The challenge is to silence the mind."
             </div>
             <div class="quote-author" id="quoteAuthor">— Caroline Myss</div>
+        </div>
+
+        <!-- Introduction Series Lessons -->
+        <div class="calendar-section" id="lessons-section">
+            <h2 class="section-title">📖 Introduction Series</h2>
+            <p style="text-align:center; color:rgba(255,255,255,0.65); margin-bottom:2rem; font-size:0.95rem;">5 free lessons on consciousness, programming, and the walk back to Eden.</p>
+            <div style="display:flex; flex-direction:column; gap:0.85rem;" id="lessonList">
+
+                <a href="lesson-01-what-is-programming.html" style="display:flex; align-items:center; gap:1.25rem; background:rgba(255,255,255,0.04); border:1px solid rgba(212,175,55,0.25); border-radius:14px; padding:1.1rem 1.4rem; text-decoration:none; transition:border-color 0.2s, background 0.2s;" onmouseover="this.style.background='rgba(212,175,55,0.07)'; this.style.borderColor='rgba(212,175,55,0.55)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='rgba(212,175,55,0.25)'">
+                    <div id="l1-icon" style="width:2.2rem;height:2.2rem;border-radius:50%;background:rgba(212,175,55,0.15);border:1px solid rgba(212,175,55,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem;color:#c9a84c;font-family:monospace;">01</div>
+                    <div style="flex:1;">
+                        <div style="color:#fff;font-weight:500;font-size:0.95rem;margin-bottom:0.2rem;">What Is Programming? And Why It's Keeping You Asleep</div>
+                        <div style="color:rgba(255,255,255,0.45);font-size:0.8rem;">The Foundation · ~18 min read</div>
+                    </div>
+                    <div id="l1-badge" style="display:none;font-size:0.7rem;color:#52b788;background:rgba(82,183,136,0.12);padding:0.3rem 0.8rem;border-radius:100px;font-family:monospace;white-space:nowrap;">✓ Done</div>
+                    <div style="color:rgba(212,175,55,0.5);font-size:1rem;">→</div>
+                </a>
+
+                <a href="lesson-02-the-walk-back.html" style="display:flex; align-items:center; gap:1.25rem; background:rgba(255,255,255,0.04); border:1px solid rgba(212,175,55,0.25); border-radius:14px; padding:1.1rem 1.4rem; text-decoration:none; transition:border-color 0.2s, background 0.2s;" onmouseover="this.style.background='rgba(212,175,55,0.07)'; this.style.borderColor='rgba(212,175,55,0.55)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='rgba(212,175,55,0.25)'">
+                    <div id="l2-icon" style="width:2.2rem;height:2.2rem;border-radius:50%;background:rgba(212,175,55,0.15);border:1px solid rgba(212,175,55,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem;color:#c9a84c;font-family:monospace;">02</div>
+                    <div style="flex:1;">
+                        <div style="color:#fff;font-weight:500;font-size:0.95rem;margin-bottom:0.2rem;">The Walk Back to Eden</div>
+                        <div style="color:rgba(255,255,255,0.45);font-size:0.8rem;">The Pattern &middot; ~16 min read</div>
+                    </div>
+                    <div id="l2-badge" style="display:none;font-size:0.7rem;color:#52b788;background:rgba(82,183,136,0.12);padding:0.3rem 0.8rem;border-radius:100px;font-family:monospace;white-space:nowrap;">✓ Done</div>
+                    <div style="color:rgba(212,175,55,0.5);font-size:1rem;">→</div>
+                </a>
+
+                <a href="lesson-03-ini-year.html" style="display:flex; align-items:center; gap:1.25rem; background:rgba(255,255,255,0.04); border:1px solid rgba(212,175,55,0.25); border-radius:14px; padding:1.1rem 1.4rem; text-decoration:none; transition:border-color 0.2s, background 0.2s;" onmouseover="this.style.background='rgba(212,175,55,0.07)'; this.style.borderColor='rgba(212,175,55,0.55)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='rgba(212,175,55,0.25)'">
+                    <div id="l3-icon" style="width:2.2rem;height:2.2rem;border-radius:50%;background:rgba(212,175,55,0.15);border:1px solid rgba(212,175,55,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem;color:#c9a84c;font-family:monospace;">03</div>
+                    <div style="flex:1;">
+                        <div style="color:#fff;font-weight:500;font-size:0.95rem;margin-bottom:0.2rem;">Sacred Time & the I-N-I Year</div>
+                        <div style="color:rgba(255,255,255,0.45);font-size:0.8rem;">Sacred Time · ~20 min read</div>
+                    </div>
+                    <div id="l3-badge" style="display:none;font-size:0.7rem;color:#52b788;background:rgba(82,183,136,0.12);padding:0.3rem 0.8rem;border-radius:100px;font-family:monospace;white-space:nowrap;">✓ Done</div>
+                    <div style="color:rgba(212,175,55,0.5);font-size:1rem;">→</div>
+                </a>
+
+                <a href="lesson-04-aligned-manifestation.html" style="display:flex; align-items:center; gap:1.25rem; background:rgba(255,255,255,0.04); border:1px solid rgba(212,175,55,0.25); border-radius:14px; padding:1.1rem 1.4rem; text-decoration:none; transition:border-color 0.2s, background 0.2s;" onmouseover="this.style.background='rgba(212,175,55,0.07)'; this.style.borderColor='rgba(212,175,55,0.55)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='rgba(212,175,55,0.25)'">
+                    <div id="l4-icon" style="width:2.2rem;height:2.2rem;border-radius:50%;background:rgba(212,175,55,0.15);border:1px solid rgba(212,175,55,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem;color:#c9a84c;font-family:monospace;">04</div>
+                    <div style="flex:1;">
+                        <div style="color:#fff;font-weight:500;font-size:0.95rem;margin-bottom:0.2rem;">Aligned Manifestation</div>
+                        <div style="color:rgba(255,255,255,0.45);font-size:0.8rem;">Methodology · ~17 min read</div>
+                    </div>
+                    <div id="l4-badge" style="display:none;font-size:0.7rem;color:#52b788;background:rgba(82,183,136,0.12);padding:0.3rem 0.8rem;border-radius:100px;font-family:monospace;white-space:nowrap;">✓ Done</div>
+                    <div style="color:rgba(212,175,55,0.5);font-size:1rem;">→</div>
+                </a>
+
+                <a href="lesson-05-first-decision.html" style="display:flex; align-items:center; gap:1.25rem; background:rgba(255,255,255,0.04); border:1px solid rgba(212,175,55,0.25); border-radius:14px; padding:1.1rem 1.4rem; text-decoration:none; transition:border-color 0.2s, background 0.2s;" onmouseover="this.style.background='rgba(212,175,55,0.07)'; this.style.borderColor='rgba(212,175,55,0.55)'" onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='rgba(212,175,55,0.25)'">
+                    <div id="l5-icon" style="width:2.2rem;height:2.2rem;border-radius:50%;background:rgba(212,175,55,0.15);border:1px solid rgba(212,175,55,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem;color:#c9a84c;font-family:monospace;">05</div>
+                    <div style="flex:1;">
+                        <div style="color:#fff;font-weight:500;font-size:0.95rem;margin-bottom:0.2rem;">Your Assignment</div>
+                        <div style="color:rgba(255,255,255,0.45);font-size:0.8rem;">Integration · ~18 min read</div>
+                    </div>
+                    <div id="l5-badge" style="display:none;font-size:0.7rem;color:#52b788;background:rgba(82,183,136,0.12);padding:0.3rem 0.8rem;border-radius:100px;font-family:monospace;white-space:nowrap;">✓ Done</div>
+                    <div style="color:rgba(212,175,55,0.5);font-size:1rem;">→</div>
+                </a>
+
+            </div>
         </div>
 
         <!-- User Progress Dashboard -->
@@ -1403,7 +1511,7 @@
         </div>
 
         <!-- Free Bonus Resources -->
-        <div class="calendar-section">
+        <div class="calendar-section" id="games-section">
             <h2 class="section-title">🌟 Your Free Access Features</h2>
             <p style="text-align: center; color: rgba(255,255,255,0.7); margin-bottom: 2rem;">
                 Powerful spiritual tools available now — click to explore!
@@ -1467,7 +1575,7 @@
         </div>
 
         <!-- Calendar Section -->
-        <div class="calendar-section">
+        <div class="calendar-section" id="calendar-section">
             <h2 class="section-title">📅 Sacred Enochian Calendar</h2>
             <p style="text-align: center; color: rgba(255,255,255,0.7); margin-bottom: 1rem;">
                 Track your spiritual journey with the ancient Enochian calendar system
@@ -1489,7 +1597,7 @@
         </div>
 
         <!-- Chapter 1 Audio & Affiliate Section -->
-        <div style="max-width: 900px; margin: 3rem auto; background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(139, 92, 246, 0.15)); backdrop-filter: blur(20px); border: 2px solid var(--primary-gold); border-radius: 25px; padding: 2.5rem; box-shadow: 0 20px 60px rgba(245, 158, 11, 0.3);">
+        <div id="audiobook-section" style="max-width: 900px; margin: 3rem auto; background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(139, 92, 246, 0.15)); backdrop-filter: blur(20px); border: 2px solid var(--primary-gold); border-radius: 25px; padding: 2.5rem; box-shadow: 0 20px 60px rgba(245, 158, 11, 0.3);">
             <div style="text-align: center; margin-bottom: 2rem;">
                 <h2 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--primary-gold); margin-bottom: 0.5rem;">🎧 Listen to Chapter 1 Free</h2>
                 <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; margin-bottom: 1rem;">Experience "The Garden Within" - Chapter 1 of You Never Left Eden</p>
@@ -1637,6 +1745,21 @@
         </div>
     </div>
 
+    <!-- Quick Journal Modal -->
+    <div id="journalModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:2000; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+        <div style="background:linear-gradient(135deg,#1a1a2e,#16213e); border:1px solid rgba(212,175,55,0.35); border-radius:20px; padding:2rem; width:90%; max-width:540px; position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.6);">
+            <button onclick="closeJournalModal()" style="position:absolute;top:1rem;right:1.2rem;background:none;border:none;color:rgba(255,255,255,0.45);font-size:1.6rem;cursor:pointer;line-height:1;">&#x2715;</button>
+            <h2 style="color:var(--primary-gold);font-family:'Playfair Display',serif;margin:0 0 0.4rem;">📝 Sacred Journal</h2>
+            <p id="journalDate" style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin:0 0 1.2rem;"></p>
+            <textarea id="journalText" placeholder="Pour your heart here — what are you feeling, learning, or releasing today?" style="width:100%;height:180px;background:rgba(255,255,255,0.05);border:1px solid rgba(212,175,55,0.3);border-radius:12px;padding:1rem;color:white;font-size:1rem;resize:vertical;outline:none;font-family:inherit;box-sizing:border-box;"></textarea>
+            <div id="journalStatus" style="margin:0.5rem 0;font-size:0.85rem;color:rgba(255,255,255,0.5);min-height:1.2em;"></div>
+            <div style="display:flex;gap:1rem;margin-top:0.4rem;">
+                <button id="journalSaveBtn" onclick="saveJournalEntry()" style="flex:1;padding:0.85rem;background:linear-gradient(135deg,var(--primary-gold),#d4a017);border:none;border-radius:25px;font-weight:700;color:#0f0f1e;font-size:1rem;cursor:pointer;">Save Entry ✨</button>
+                <button onclick="closeJournalModal()" style="padding:0.85rem 1.5rem;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:25px;color:rgba(255,255,255,0.65);cursor:pointer;font-size:0.95rem;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Oracle Card Modal -->
     <div class="modal" id="oracleModal">
         <div class="modal-content">
@@ -1735,6 +1858,38 @@
             });
         }
 
+        function showGuestPreview() {
+            const loading = document.getElementById('authLoading');
+            if (!loading) {
+                return;
+            }
+
+            loading.innerHTML = `
+                <div style="max-width: 540px; padding: 1.5rem; text-align: center;">
+                    <h3 style="color: var(--primary-gold); margin-bottom: 0.75rem;">Explore the Sacred Members Free Portal</h3>
+                    <p style="color: rgba(255,255,255,0.85); margin-bottom: 1.25rem; line-height: 1.6;">
+                        You are viewing guest preview mode. Sign in to save XP, quizzes, and sacred calendar progress.
+                    </p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center;">
+                        <a href="members-new.html" style="text-decoration: none; padding: 0.7rem 1.1rem; border-radius: 8px; background: var(--primary-gold); color: #0f0f1e; font-weight: 700;">Login</a>
+                        <a href="register.html" style="text-decoration: none; padding: 0.7rem 1.1rem; border-radius: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-weight: 600;">Create Free Account</a>
+                    </div>
+                </div>
+            `;
+            loading.classList.remove('hidden');
+
+            const emailEl = document.getElementById('userEmail');
+            if (emailEl) {
+                emailEl.textContent = 'Guest Preview';
+            }
+
+            const logoutBtn = document.querySelector('.logout-btn');
+            if (logoutBtn) {
+                logoutBtn.textContent = 'Login';
+                logoutBtn.onclick = () => { window.location.href = 'members-new.html'; };
+            }
+        }
+
         // Initialize authentication
         async function initializeAuth() {
             console.log('🔥 Initializing authentication...');
@@ -1780,14 +1935,14 @@
             }
 
             if (!user) {
-                // NO USER - redirect to login after a brief delay (allow Firebase to restore session)
+                // NO USER - keep visitor on page and show clear guest preview actions
                 console.log('   No user detected, waiting 500ms to confirm...');
                 
                 redirectTimeout = setTimeout(() => {
                     const currentUser = firebase.auth().currentUser;
                     if (!currentUser) {
-                        console.log('❌ Confirmed no user - redirecting to login');
-                        window.location.href = 'members-new.html';
+                        console.log('ℹ️ Confirmed no user - showing guest preview');
+                        showGuestPreview();
                     } else {
                         console.log('✅ User appeared during delay, staying');
                     }
@@ -1819,7 +1974,15 @@
             try {
                 const userEmailEl = document.getElementById('userEmail');
                 if (userEmailEl) {
-                    userEmailEl.textContent = user.email;
+                    // Show display name if available, otherwise email
+                    const displayName = user.displayName || '';
+                    userEmailEl.textContent = displayName || user.email;
+                }
+                // Personalize welcome banner greeting
+                const greetingEl = document.getElementById('userGreeting');
+                if (greetingEl) {
+                    const firstName = (user.displayName || '').split(' ')[0] || '';
+                    greetingEl.textContent = firstName ? `, ${firstName},` : ',';
                 }
             } catch (e) {
                 console.warn('Could not update userEmail element:', e);
@@ -1897,14 +2060,18 @@
                 } else {
                     console.error('❌ Could not find authLoading element!');
                 }
+
+                // Load real stats from Firestore and track daily streak
+                loadUserStatsFromFirestore(user.uid);
+                trackDailyStreak(user.uid);
             }
             });
 
-            // Failsafe #1 - if no auth state after 8 seconds, redirect to login
+            // Failsafe #1 - if no auth state after 8 seconds, show guest preview
             setTimeout(() => {
                 if (!authReady && !checkAdminSession()) {
                     console.error('⏱️  TIMEOUT: No auth state received in 8 seconds');
-                    window.location.href = 'members-new.html';
+                    showGuestPreview();
                 }
             }, 8000);
 
@@ -3442,6 +3609,83 @@
             document.getElementById('quoteAuthor').textContent = `— ${quote.author}`;
         }
 
+        // ==================== FIRESTORE STATS ====================
+
+        async function loadUserStatsFromFirestore(uid) {
+            try {
+                const userDoc = await firebase.firestore().collection('users').doc(uid).get();
+                if (!userDoc.exists) { updateUserStats(); return; }
+                const data = userDoc.data();
+
+                // Oracle cards (Firestore wins over localStorage)
+                const oracleCount = data.oracleCardsDrawn !== undefined
+                    ? data.oracleCardsDrawn
+                    : parseInt(localStorage.getItem('oracleCardsDrawn') || '0');
+                document.getElementById('statOracleCards').textContent = oracleCount;
+                localStorage.setItem('oracleCardsDrawn', oracleCount);
+
+                // Journal entries
+                const journalCount = data.journalCount !== undefined
+                    ? data.journalCount
+                    : parseInt(localStorage.getItem('cachedJournalCount') || '0');
+                document.getElementById('statJournals').textContent = journalCount;
+                localStorage.setItem('cachedJournalCount', journalCount);
+
+                // Streak (will be updated by trackDailyStreak)
+                const streak = data.streak || 0;
+                document.getElementById('statStreak').textContent = streak;
+                localStorage.setItem('cachedStreakCount', streak);
+
+                // Days active (from Firestore createdAt)
+                if (data.createdAt) {
+                    const created = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
+                    const days = Math.max(1, Math.floor((new Date() - created) / 86400000) + 1);
+                    document.getElementById('statDaysActive').textContent = days;
+                } else {
+                    // Fallback: use localStorage firstLoginDate
+                    const firstLogin = localStorage.getItem('firstLoginDate');
+                    if (firstLogin) {
+                        const days = Math.max(1, Math.floor((new Date() - new Date(firstLogin)) / 86400000) + 1);
+                        document.getElementById('statDaysActive').textContent = days;
+                    } else {
+                        localStorage.setItem('firstLoginDate', new Date().toISOString());
+                        document.getElementById('statDaysActive').textContent = '1';
+                    }
+                }
+            } catch (err) {
+                console.warn('Could not load Firestore stats, falling back:', err);
+                updateUserStats();
+            }
+        }
+
+        async function trackDailyStreak(uid) {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const userRef = firebase.firestore().collection('users').doc(uid);
+                const userDoc = await userRef.get();
+                if (!userDoc.exists) return;
+
+                const data = userDoc.data();
+                const lastActive = data.lastActiveDate || '';
+                if (lastActive === today) return; // Already tracked today
+
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+                const currentStreak = data.streak || 0;
+                const newStreak = (lastActive === yesterdayStr) ? currentStreak + 1 : 1;
+
+                await userRef.set({ lastActiveDate: today, streak: newStreak }, { merge: true });
+
+                document.getElementById('statStreak').textContent = newStreak;
+                localStorage.setItem('cachedStreakCount', newStreak);
+                console.log(`🔥 Streak updated: ${newStreak} day(s)`);
+            } catch (err) {
+                console.warn('Could not track daily streak:', err);
+            }
+        }
+
         // ==================== USER STATS ====================
         function updateUserStats() {
             // Get stats from calendar iframe or localStorage
@@ -3472,14 +3716,78 @@
 
         // ==================== HELPER FUNCTIONS ====================
         function openCalendarNewJournal() {
-            const calendarIframe = document.getElementById('calendar-iframe');
-            if (calendarIframe) {
-                // Scroll to calendar
-                calendarIframe.scrollIntoView({ behavior: 'smooth' });
-                // Open calendar in new tab with journal tab active
-                window.open('sections/calendar.html?tab=journal', '_blank');
+            const modal = document.getElementById('journalModal');
+            const today = new Date();
+            document.getElementById('journalDate').textContent = today.toLocaleDateString('en-US', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+            document.getElementById('journalText').value = '';
+            document.getElementById('journalStatus').textContent = '';
+            const saveBtn = document.getElementById('journalSaveBtn');
+            if (saveBtn) saveBtn.disabled = false;
+            modal.style.display = 'flex';
+            setTimeout(() => document.getElementById('journalText').focus(), 100);
+        }
+
+        function closeJournalModal() {
+            document.getElementById('journalModal').style.display = 'none';
+        }
+
+        async function saveJournalEntry() {
+            const text = document.getElementById('journalText').value.trim();
+            const statusEl = document.getElementById('journalStatus');
+            const saveBtn = document.getElementById('journalSaveBtn');
+
+            if (!text) {
+                statusEl.style.color = 'rgba(239,68,68,0.9)';
+                statusEl.textContent = 'Please write something before saving.';
+                return;
+            }
+            const uid = localStorage.getItem('userId') || (firebase.auth().currentUser || {}).uid;
+            if (!uid) {
+                statusEl.style.color = 'rgba(239,68,68,0.9)';
+                statusEl.textContent = 'Not signed in — please refresh.';
+                return;
+            }
+
+            saveBtn.disabled = true;
+            statusEl.style.color = 'rgba(255,255,255,0.5)';
+            statusEl.textContent = 'Saving…';
+
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                await firebase.firestore().collection('journalEntries').add({
+                    userId: uid,
+                    text,
+                    date: today,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                await firebase.firestore().collection('users').doc(uid).set({
+                    journalCount: firebase.firestore.FieldValue.increment(1)
+                }, { merge: true });
+
+                // Update stat counter live
+                const statEl = document.getElementById('statJournals');
+                const current = parseInt(statEl.textContent) || 0;
+                statEl.textContent = current + 1;
+                localStorage.setItem('cachedJournalCount', current + 1);
+
+                statusEl.style.color = 'rgba(16,185,129,0.9)';
+                statusEl.textContent = '✓ Entry saved to your sacred journal!';
+                setTimeout(() => closeJournalModal(), 1500);
+            } catch (err) {
+                console.error('Journal save error:', err);
+                statusEl.style.color = 'rgba(239,68,68,0.9)';
+                statusEl.textContent = 'Could not save. Please try again.';
+                saveBtn.disabled = false;
             }
         }
+
+        // Close journal modal when clicking outside
+        document.addEventListener('click', (e) => {
+            const jModal = document.getElementById('journalModal');
+            if (e.target === jModal) closeJournalModal();
+        });
 
         function scrollToCalendar() {
             const calendarSection = document.querySelector('.calendar-frame');
@@ -3488,7 +3796,7 @@
             }
         }
 
-        // Update oracle card count when drawn
+        // Update oracle card count when drawn — localStorage + Firestore
         const originalDrawOracleCard = drawOracleCard;
         drawOracleCard = function() {
             originalDrawOracleCard();
@@ -3496,12 +3804,21 @@
             count++;
             localStorage.setItem('oracleCardsDrawn', count);
             document.getElementById('statOracleCards').textContent = count;
+
+            // Persist to Firestore (non-blocking)
+            const uid = localStorage.getItem('userId') || (firebase.auth().currentUser || {}).uid;
+            if (uid) {
+                firebase.firestore().collection('users').doc(uid).set({
+                    oracleCardsDrawn: firebase.firestore.FieldValue.increment(1)
+                }, { merge: true }).catch(err => console.warn('Oracle Firestore save failed:', err));
+            }
         };
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', () => {
             setDailyQuote();
             updateUserStats();
+            restoreLessonProgress();
 
             // Listen for stats updates from calendar iframe
             window.addEventListener('message', (event) => {
@@ -3514,6 +3831,42 @@
                 }
             });
         });
+
+        // ==================== LESSON PROGRESS ====================
+        function restoreLessonProgress() {
+            try {
+                const p = JSON.parse(localStorage.getItem('ec_progress') || '{}');
+                if (p['lesson-01'] && p['lesson-01'].completed) markLessonDone('l1');
+                if (p['lesson-02'] && p['lesson-02'].completed) markLessonDone('l2');
+                if (p['lesson-03'] && p['lesson-03'].completed) markLessonDone('l3');
+                if (p['lesson-04'] && p['lesson-04'].completed) markLessonDone('l4');
+                if (p['lesson-05'] && p['lesson-05'].completed) markLessonDone('l5');
+            } catch(e) {}
+            const uid = localStorage.getItem('userId');
+            if (uid && typeof firebase !== 'undefined') {
+                firebase.firestore().collection('users').doc(uid).get().then(function(doc) {
+                    if (!doc.exists || !doc.data() || !doc.data().lessons) return;
+                    const lessons = doc.data().lessons;
+                    if (lessons['lesson-01'] && lessons['lesson-01'].completed) markLessonDone('l1');
+                    if (lessons['lesson-02'] && lessons['lesson-02'].completed) markLessonDone('l2');
+                    if (lessons['lesson-03'] && lessons['lesson-03'].completed) markLessonDone('l3');
+                    if (lessons['lesson-04'] && lessons['lesson-04'].completed) markLessonDone('l4');
+                    if (lessons['lesson-05'] && lessons['lesson-05'].completed) markLessonDone('l5');
+                }).catch(function() {});
+            }
+        }
+
+        function markLessonDone(id) {
+            const icon = document.getElementById(id + '-icon');
+            const badge = document.getElementById(id + '-badge');
+            if (icon) {
+                icon.textContent = '✓';
+                icon.style.background = 'rgba(82,183,136,0.15)';
+                icon.style.borderColor = 'rgba(82,183,136,0.5)';
+                icon.style.color = '#52b788';
+            }
+            if (badge) badge.style.display = 'block';
+        }
 
         // Calendar iframe initialization and error handling
         document.addEventListener('DOMContentLoaded', () => {
@@ -3633,6 +3986,138 @@
                 }, 10000);
             }
         });
+    </script>
+
+    <script>
+        // Show email verification banner if user's email is not verified
+        (function checkEmailVerification() {
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user && !user.emailVerified) {
+                    const banner = document.getElementById('verify-banner');
+                    if (banner) banner.style.display = 'block';
+                }
+            });
+        })();
+
+        async function resendVerificationEmail() {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+            try {
+                await user.sendEmailVerification();
+                const banner = document.getElementById('verify-banner');
+                if (banner) banner.innerHTML = '✅ Verification email sent! Check your inbox. <button class="dismiss-verify" onclick="this.parentElement.style.display=\'none\'" title="Dismiss">✕</button>';
+            } catch (e) {
+                alert('Could not resend verification email. Please try again in a few minutes.');
+            }
+        }
+    </script>
+
+    <!-- First-Visit Onboarding Modal -->
+    <div id="onboarding-modal" style="display:none; position:fixed; inset:0; z-index:9000; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); justify-content:center; align-items:center; padding:1rem;">
+        <div style="background:linear-gradient(135deg,#0f0f1e,#1a1a2e); border:1px solid rgba(212,175,55,0.4); border-radius:20px; max-width:520px; width:100%; padding:2.5rem 2rem; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+            <div style="text-align:center; margin-bottom:1.5rem;">
+                <div style="font-size:3.5rem; margin-bottom:0.5rem;">🛕</div>
+                <h2 style="font-family:'Playfair Display',serif; font-size:1.8rem; color:#d4af37; margin-bottom:0.5rem;">Welcome to the Temple</h2>
+                <p style="color:rgba(255,255,255,0.65); font-size:0.95rem; line-height:1.5;">You've taken the first step on your sacred journey. Here's where to begin:</p>
+            </div>
+
+            <div id="onboarding-steps" style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1.75rem;">
+                <div class="ob-step" data-step="0" style="display:flex; align-items:flex-start; gap:1rem; background:rgba(255,255,255,0.04); border:1px solid rgba(212,175,55,0.2); border-radius:12px; padding:0.9rem 1rem; cursor:pointer;">
+                    <span style="font-size:1.5rem;">📅</span>
+                    <div>
+                        <div style="font-weight:600; color:#e8e3d9; margin-bottom:0.15rem;">Sacred Calendar</div>
+                        <div style="font-size:0.82rem; color:rgba(255,255,255,0.5);">Explore the Enochian Calendar and align with sacred time.</div>
+                    </div>
+                    <span style="margin-left:auto; color:rgba(212,175,55,0.7); font-size:1.1rem;">→</span>
+                </div>
+                <div class="ob-step" data-step="1" style="display:flex; align-items:flex-start; gap:1rem; background:rgba(255,255,255,0.04); border:1px solid rgba(212,175,55,0.2); border-radius:12px; padding:0.9rem 1rem; cursor:pointer;">
+                    <span style="font-size:1.5rem;">📖</span>
+                    <div>
+                        <div style="font-weight:600; color:#e8e3d9; margin-bottom:0.15rem;">Read Chapter 1</div>
+                        <div style="font-size:0.82rem; color:rgba(255,255,255,0.5);">Your free preview of "You Never Left Eden."</div>
+                    </div>
+                    <span style="margin-left:auto; color:rgba(212,175,55,0.7); font-size:1.1rem;">→</span>
+                </div>
+                <div class="ob-step" data-step="2" style="display:flex; align-items:flex-start; gap:1rem; background:rgba(255,255,255,0.04); border:1px solid rgba(212,175,55,0.2); border-radius:12px; padding:0.9rem 1rem; cursor:pointer;">
+                    <span style="font-size:1.5rem;">🎮</span>
+                    <div>
+                        <div style="font-weight:600; color:#e8e3d9; margin-bottom:0.15rem;">Play a Sacred Game</div>
+                        <div style="font-size:0.82rem; color:rgba(255,255,255,0.5);">Test your spiritual knowledge with an intro quiz.</div>
+                    </div>
+                    <span style="margin-left:auto; color:rgba(212,175,55,0.7); font-size:1.1rem;">→</span>
+                </div>
+                <div class="ob-step" data-step="3" style="display:flex; align-items:flex-start; gap:1rem; background:rgba(255,255,255,0.04); border:1px solid rgba(212,175,55,0.2); border-radius:12px; padding:0.9rem 1rem; cursor:pointer;">
+                    <span style="font-size:1.5rem;">💎</span>
+                    <div>
+                        <div style="font-weight:600; color:#d4af37; margin-bottom:0.15rem;">Upgrade to Premium</div>
+                        <div style="font-size:0.82rem; color:rgba(255,255,255,0.5);">Unlock the full 4-phase consciousness journey.</div>
+                    </div>
+                    <span style="margin-left:auto; color:rgba(212,175,55,0.7); font-size:1.1rem;">→</span>
+                </div>
+            </div>
+
+            <div style="text-align:center; display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+                <button onclick="closeOnboarding()" style="padding:0.7rem 1.8rem; background:linear-gradient(135deg,#d4af37,#b8960c); border:none; border-radius:10px; color:#0f0f1e; font-weight:700; font-size:0.95rem; cursor:pointer;">✨ Begin Journey</button>
+                <button onclick="closeOnboarding(true)" style="padding:0.7rem 1.4rem; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:10px; color:rgba(255,255,255,0.5); font-size:0.85rem; cursor:pointer;">Don't show again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Onboarding step links
+        const onboardingLinks = [
+            '#calendar-section',
+            '#audiobook-section',
+            '#games-section',
+            'pricing.html'
+        ];
+
+        document.querySelectorAll('.ob-step').forEach(function(el) {
+            el.addEventListener('click', function() {
+                const step = parseInt(el.getAttribute('data-step'));
+                closeOnboarding();
+                const target = onboardingLinks[step];
+                if (target && target.startsWith('#')) {
+                    const sec = document.querySelector(target);
+                    if (sec) { sec.scrollIntoView({ behavior: 'smooth' }); return; }
+                }
+                if (target) window.location.href = target;
+            });
+        });
+
+        function closeOnboarding(permanent) {
+            const modal = document.getElementById('onboarding-modal');
+            if (modal) modal.style.display = 'none';
+            if (permanent) localStorage.setItem('eden_onboarding_done', '1');
+            else sessionStorage.setItem('eden_onboarding_seen', '1');
+        }
+
+        // Show onboarding only on first visit (not if dismissed permanently or seen this session)
+        (function showOnboarding() {
+            if (localStorage.getItem('eden_onboarding_done') || sessionStorage.getItem('eden_onboarding_seen')) return;
+            // Show after auth loading is hidden (user is confirmed free member)
+            const observer = new MutationObserver(function() {
+                const loading = document.getElementById('authLoading');
+                if (loading && loading.classList.contains('hidden')) {
+                    observer.disconnect();
+                    setTimeout(function() {
+                        const modal = document.getElementById('onboarding-modal');
+                        if (modal) modal.style.display = 'flex';
+                    }, 800);
+                }
+            });
+            const loading = document.getElementById('authLoading');
+            if (loading) {
+                if (loading.classList.contains('hidden')) {
+                    setTimeout(function() {
+                        const modal = document.getElementById('onboarding-modal');
+                        if (modal) modal.style.display = 'flex';
+                    }, 800);
+                } else {
+                    observer.observe(loading, { attributes: true });
+                }
+            }
+        })();
     </script>
 </body>
 </html>

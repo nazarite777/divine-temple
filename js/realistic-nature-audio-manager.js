@@ -168,7 +168,14 @@ class RealisticNatureAudioManager {
             }, { once: true });
 
             audio.addEventListener('error', (e) => {
-                reject(new Error(`Failed to load ${soundName}: ${e.message}`));
+                console.warn(`⚠️ Audio file not found for "${soundName}" — using Web Audio synthesis fallback`);
+                const synth = this.createSynthesizedAudio(soundName);
+                if (synth) {
+                    this.sounds[soundName] = synth;
+                    resolve(synth);
+                } else {
+                    reject(new Error(`Failed to load ${soundName} and Web Audio synthesis unavailable`));
+                }
             });
 
             audio.load();
@@ -409,6 +416,106 @@ class RealisticNatureAudioManager {
      */
     getActiveSounds() {
         return Object.keys(this.activeAudio);
+    }
+
+    /**
+     * Get or create a shared Web Audio context
+     */
+    _getAudioContext() {
+        if (!this._audioCtx) {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (!AC) return null;
+            this._audioCtx = new AC();
+        }
+        if (this._audioCtx.state === 'suspended') {
+            this._audioCtx.resume().catch(() => {});
+        }
+        return this._audioCtx;
+    }
+
+    /**
+     * Create a synthesized looping ambient sound via Web Audio API.
+     * Returns an object with an HTMLAudioElement-compatible interface so it
+     * can be stored in this.sounds and used by playSound() / fadeIn() / etc.
+     */
+    createSynthesizedAudio(soundName) {
+        const ctx = this._getAudioContext();
+        if (!ctx) return null;
+
+        // Per-sound filter configuration
+        const synCfg = {
+            rain:     { filterType: 'lowpass',  freq: 1200, q: 1.0 },
+            thunder:  { filterType: 'lowpass',  freq: 150,  q: 0.5 },
+            wind:     { filterType: 'bandpass', freq: 400,  q: 0.5 },
+            crickets: { filterType: 'bandpass', freq: 5000, q: 3.0 },
+            owl:      { filterType: 'bandpass', freq: 800,  q: 3.0 },
+            frogs:    { filterType: 'bandpass', freq: 600,  q: 2.0 },
+            cicadas:  { filterType: 'bandpass', freq: 4000, q: 2.0 },
+            birds:    { filterType: 'bandpass', freq: 2000, q: 1.5 },
+            wolf:     { filterType: 'lowpass',  freq: 500,  q: 1.0 },
+            ocean:    { filterType: 'lowpass',  freq: 300,  q: 1.0 },
+            stream:   { filterType: 'lowpass',  freq: 1800, q: 0.8 },
+            fire:     { filterType: 'lowpass',  freq: 900,  q: 0.7 },
+            leaves:   { filterType: 'highpass', freq: 2000, q: 0.5 },
+        };
+
+        const cfg = synCfg[soundName] || { filterType: 'lowpass', freq: 800, q: 1.0 };
+
+        // 4-second white noise buffer (loops seamlessly)
+        const duration = 4;
+        const bufSize = Math.floor(ctx.sampleRate * duration);
+        const buffer = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * 0.8;
+        }
+
+        const selfMgr = this;
+
+        function buildChain() {
+            const src = ctx.createBufferSource();
+            src.buffer = buffer;
+            src.loop = true;
+
+            const filter = ctx.createBiquadFilter();
+            filter.type = cfg.filterType;
+            filter.frequency.value = cfg.freq;
+            filter.Q.value = cfg.q;
+
+            const gain = ctx.createGain();
+            gain.gain.value = 0;
+
+            src.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+
+            return { src, gain };
+        }
+
+        function makeProxy() {
+            let chain = buildChain();
+            let started = false;
+
+            return {
+                loop: true,
+                get volume() { return chain.gain.gain.value; },
+                set volume(v) { chain.gain.gain.value = Math.max(0, Math.min(1, v)); },
+                play() {
+                    if (!started) {
+                        chain.src.start(0);
+                        started = true;
+                    }
+                    return Promise.resolve();
+                },
+                pause() { /* gain already handles volume-based mute */ },
+                cloneNode() { return makeProxy(); },
+                addEventListener(type, fn) {
+                    if (type === 'canplaythrough') setTimeout(fn, 0);
+                }
+            };
+        }
+
+        return makeProxy();
     }
 
     /**

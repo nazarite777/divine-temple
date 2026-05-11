@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 1: What Is Programming? | Eden Consciousness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Space+Mono:wght@400;700&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Firebase Compat SDK (matches your existing site) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+  <script src="js/firebase-config.js?v=20260510b"></script>
+  <script src="js/onboarding-flow.js?v=20260510b"></script>
+
+<style>
+/* ═══════════════════════════════════
+   ROOT & RESET
+═══════════════════════════════════ */
+:root {
+  --bg:          #080C08;
+  --bg-2:        #0A100A;
+  --surface:     #0E160E;
+  --panel:       #111A11;
+  --border:      #1C2E1C;
+  --border-2:    #264226;
+  --gold:        #C9A84C;
+  --gold-dim:    #7A5F2A;
+  --gold-pale:   #F0DC9A;
+  --gold-glow:   rgba(201,168,76,0.08);
+  --text:        #EDE8DB;
+  --text-2:      #B0A890;
+  --text-3:      #6B6250;
+  --text-4:      #3D3828;
+  --green-lt:    #4CAF7D;
+  --serif:       'Cormorant Garamond', Georgia, serif;
+  --mono:        'Space Mono', monospace;
+  --display:     'Cinzel', serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--serif);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.75;
+  overflow-x: hidden;
+  font-size: 17px;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  pointer-events: none; z-index: 0; opacity: 0.6;
+}
+
+/* ═══════════════════════════════════
+   TOP NAV
+═══════════════════════════════════ */
+.top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 36px;
+  height: 60px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,12,8,0.92);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0; z-index: 100;
+}
+
+.nav-brand {
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-badge {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-3);
+  border: 1px solid var(--border);
+  padding: 5px 12px;
+  text-transform: uppercase;
+}
+
+.nav-badge.gold { color: var(--gold-dim); border-color: var(--gold-dim); }
+
+.completed-badge {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--green-lt);
+  text-transform: uppercase;
+  border: 1px solid rgba(76,175,125,0.4);
+  padding: 5px 12px;
+}
+.completed-badge.visible { display: flex; }
+
+/* ═══════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════ */
+.progress-bar {
+  height: 2px;
+  background: var(--border);
+  position: sticky;
+  top: 60px;
+  z-index: 99;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+  transition: width 0.1s linear;
+}
+
+/* ═══════════════════════════════════
+   LESSON WRAP
+═══════════════════════════════════ */
+.lesson-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 60px 32px 100px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════
+   LESSON HEADER
+═══════════════════════════════════ */
+.lesson-eyebrow {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.lesson-eyebrow::before { content:''; width:24px; height:1px; background:var(--gold-dim); }
+
+.lesson-h1 {
+  font-family: var(--display);
+  font-size: clamp(30px, 5vw, 56px);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+.lesson-h1 em {
+  font-style: italic;
+  color: var(--gold);
+  font-family: var(--serif);
+  font-weight: 300;
+}
+
+.lesson-sub {
+  font-size: 17px;
+  font-style: italic;
+  color: var(--text-2);
+  line-height: 1.65;
+  max-width: 560px;
+  margin-bottom: 28px;
+}
+
+.lesson-meta {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+.lm-item {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  margin-right: -1px;
+}
+
+/* ═══════════════════════════════════
+   DIVIDERS
+═══════════════════════════════════ */
+.rule {
+  width: 100%; height: 1px;
+  background: linear-gradient(to right, var(--gold-dim), transparent 70%);
+  margin: 44px 0;
+}
+.rule-center {
+  width: 100%; height: 1px;
+  background: linear-gradient(to right, transparent, var(--border) 30%, var(--border) 70%, transparent);
+  margin: 44px 0;
+}
+
+/* ═══════════════════════════════════
+   SECTION LABELS
+═══════════════════════════════════ */
+.section-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-label::before { content:''; width:16px; height:1px; background:var(--gold-dim); }
+
+/* ═══════════════════════════════════
+   TEACHING CONTENT
+═══════════════════════════════════ */
+.lesson-wrap h2 {
+  font-family: var(--display);
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--text);
+  margin: 36px 0 14px;
+  line-height: 1.15;
+}
+.lesson-wrap h2 em {
+  font-style: italic;
+  color: var(--gold);
+  font-family: var(--serif);
+  font-weight: 300;
+}
+
+.lesson-wrap p {
+  font-size: 17px;
+  color: var(--text-2);
+  line-height: 1.85;
+  margin-bottom: 18px;
+}
+.lesson-wrap p strong { color: var(--text); font-weight: 600; }
+
+/* PULL QUOTE */
+.pull-quote {
+  border-left: 2px solid var(--gold);
+  margin: 36px 0;
+  padding: 8px 0 8px 28px;
+}
+.pull-quote p {
+  font-family: var(--serif);
+  font-size: clamp(19px, 2.5vw, 27px);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--text);
+  line-height: 1.4;
+  margin: 0 0 8px;
+}
+.pull-quote cite {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  font-style: normal;
+}
+
+/* CALLOUT */
+.callout {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold-dim);
+  padding: 22px 26px;
+  margin: 28px 0;
+}
+.callout-label {
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 3px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.callout p { font-size: 15px; color: var(--text-2); margin: 0; }
+
+/* TEACHING LIST */
+.truth-list {
+  list-style: none;
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.truth-list li {
+  font-size: 16px;
+  color: var(--text-2);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  line-height: 1.6;
+}
+.truth-list li::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--gold-dim);
+  flex-shrink: 0;
+  margin-top: 9px;
+}
+.truth-list li strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+/* ═══════════════════════════════════
+   TESTIMONY BLOCK — BATON ROUGE
+═══════════════════════════════════ */
+.testimony-block {
+  background: var(--panel);
+  border: 1px solid var(--gold-dim);
+  padding: 36px 36px 32px;
+  margin: 44px 0;
+  position: relative;
+  overflow: hidden;
+}
+.testimony-block::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.tb-eyebrow {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.tb-eyebrow::before { content:''; width:20px; height:1px; background:var(--gold-dim); }
+.tb-eyebrow::after  { content:''; flex:1; height:1px; background:var(--border); }
+
+.tb-text {
+  font-size: 17px;
+  color: var(--text-2);
+  line-height: 1.85;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+.tb-text strong { color: var(--text); font-style: normal; font-weight: 600; }
+
+.ya-heard-me {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-top: 12px;
+}
+
+/* ═══════════════════════════════════
+   CHAPTER 1 AUDIO PLAYER
+═══════════════════════════════════ */
+.audio-section {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 32px;
+  margin: 44px 0;
+}
+
+.audio-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.ah-left {}
+.audio-eyebrow {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.audio-title {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.audio-author {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-3);
+  text-transform: uppercase;
+}
+
+/* Part selector */
+.part-tabs {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.part-tab {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-3);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-right: -1px;
+  background: transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.part-tab:hover { color: var(--gold); border-color: var(--gold-dim); z-index: 1; }
+.part-tab.active {
+  color: var(--gold);
+  border-color: var(--gold-dim);
+  background: var(--gold-glow);
+  z-index: 2;
+}
+
+/* Loading state */
+.audio-loading {
+  display: none;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  text-align: center;
+  padding: 20px;
+}
+.audio-loading.visible { display: block; }
+
+/* Custom audio player */
+.custom-player {
+  display: none;
+}
+.custom-player.visible { display: block; }
+
+.player-track-info {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* waveform / progress */
+.player-progress-wrap {
+  width: 100%;
+  height: 3px;
+  background: var(--border);
+  cursor: pointer;
+  margin-bottom: 12px;
+  position: relative;
+}
+.player-progress-fill {
+  height: 100%;
+  background: var(--gold);
+  width: 0%;
+  pointer-events: none;
+  transition: width 0.1s linear;
+}
+
+/* controls row */
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ctrl-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.ctrl-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+.ctrl-btn.play-btn {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--bg);
+  font-weight: 700;
+  padding: 10px 24px;
+}
+.ctrl-btn.play-btn:hover { background: var(--gold-pale); }
+
+.player-time {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-4);
+  letter-spacing: 1px;
+  margin-left: auto;
+}
+
+/* speed / volume */
+.player-extras {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.speed-btn {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: var(--text-4);
+  background: none;
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.speed-btn.active { color: var(--gold-dim); border-color: var(--gold-dim); }
+.speed-btn:hover  { color: var(--gold); border-color: var(--gold-dim); }
+.speed-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-4);
+  text-transform: uppercase;
+}
+
+/* next part auto-play notice */
+.next-part-notice {
+  display: none;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 12px 18px;
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.next-part-btn {
+  background: none;
+  border: 1px solid var(--gold-dim);
+  color: var(--gold);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.next-part-btn:hover { background: var(--gold); color: var(--bg); }
+
+/* Spotify fallback link */
+.spotify-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  margin-top: 14px;
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+.spotify-link:hover { border-color: var(--gold-dim); }
+.sl-icon { font-size: 18px; }
+.sl-text {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+.sl-text span { color: var(--gold); display: block; }
+
+/* hidden native audio */
+#native-audio { display: none; }
+
+/* ═══════════════════════════════════
+   WHAT'S IN THE BOOK SECTION
+═══════════════════════════════════ */
+.book-draw {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  margin: 44px 0;
+  overflow: hidden;
+}
+
+.book-draw-header {
+  padding: 28px 32px 20px;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
+}
+
+.bd-eyebrow {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.bd-title {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+.bd-sub {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text-3);
+  margin-top: 4px;
+}
+
+.book-cover-mini {
+  background: var(--surface);
+  border: 1px solid var(--gold-dim);
+  width: 80px;
+  padding: 14px 10px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.bcm-title {
+  font-family: var(--display);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.bcm-author {
+  font-family: var(--mono);
+  font-size: 6px;
+  letter-spacing: 1px;
+  color: var(--text-4);
+  text-transform: uppercase;
+}
+
+.chapter-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.chapter-item {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.chapter-item:last-child { border-bottom: none; }
+.chapter-item:hover { background: rgba(201,168,76,0.03); }
+.chapter-item.active-chapter { background: rgba(201,168,76,0.05); }
+
+.ch-num {
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold-dim);
+  padding: 16px 0 16px 24px;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid var(--border);
+}
+.chapter-item.active-chapter .ch-num { color: var(--gold); }
+
+.ch-body {
+  padding: 14px 24px;
+}
+.ch-title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+.chapter-item.active-chapter .ch-title { color: var(--gold); }
+.ch-desc {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+.ch-badge {
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 2px;
+  color: var(--green-lt);
+  border: 1px solid rgba(76,175,125,0.4);
+  padding: 2px 7px;
+  display: inline-block;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+.book-draw-footer {
+  padding: 22px 32px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.bdf-text {
+  font-size: 14px;
+  font-style: italic;
+  color: var(--text-2);
+  max-width: 380px;
+  line-height: 1.5;
+}
+.book-btns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gold);
+  color: var(--bg);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 12px 22px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-gold:hover { background: var(--gold-pale); }
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 12px 22px;
+  border: 1px solid var(--border-2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-outline:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+/* ═══════════════════════════════════
+   REFLECTION SECTION
+═══════════════════════════════════ */
+.reflection-section {
+  background: var(--panel);
+  border: 1px solid var(--gold-dim);
+  padding: 36px;
+  margin: 44px 0;
+}
+.ref-eyebrow {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ref-eyebrow::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.ref-title {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.ref-desc {
+  font-size: 15px;
+  font-style: italic;
+  color: var(--text-2);
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+
+.prompt-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+  margin-bottom: 2px;
+}
+.prompt-num {
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 3px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.prompt-q {
+  font-size: 16px;
+  color: var(--text);
+  font-style: italic;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.prompt-ta {
+  width: 100%;
+  min-height: 90px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.65;
+  padding: 12px 16px;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+.prompt-ta:focus { outline: none; border-color: var(--gold-dim); }
+.prompt-ta::placeholder { color: var(--text-4); font-style: italic; }
+
+/* ═══════════════════════════════════
+   COMPLETE + BRIDGE
+═══════════════════════════════════ */
+.complete-wrap {
+  text-align: center;
+  padding: 36px 0 24px;
+}
+.complete-btn {
+  background: var(--gold);
+  color: var(--bg);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border: none;
+  padding: 18px 44px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 420px;
+  transition: background 0.2s, transform 0.15s;
+}
+.complete-btn:hover { background: var(--gold-pale); transform: translateY(-1px); }
+.complete-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+.complete-note {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  margin-top: 12px;
+}
+
+/* Upgrade bridge */
+.upgrade-bridge {
+  display: none;
+  background: var(--panel);
+  border: 1px solid var(--gold-dim);
+  padding: 40px 36px;
+  margin-top: 32px;
+  text-align: center;
+  animation: fadeUp 0.6s ease forwards;
+}
+.upgrade-bridge.visible { display: block; }
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.bridge-eyebrow {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.bridge-title {
+  font-family: var(--display);
+  font-size: clamp(22px, 3vw, 36px);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+.bridge-title em { font-style: italic; color: var(--gold); font-family: var(--serif); font-weight: 300; }
+.bridge-body {
+  font-size: 16px;
+  font-style: italic;
+  color: var(--text-2);
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 auto 32px;
+}
+
+.bridge-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  max-width: 560px;
+  margin: 0 auto 20px;
+}
+.bridge-opt {
+  border: 1px solid var(--border);
+  padding: 20px 18px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s;
+  display: block;
+}
+.bridge-opt:hover { border-color: var(--gold-dim); }
+.bridge-opt.primary { border-color: var(--gold-dim); }
+.bo-label {
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 2px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.bo-title {
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 5px;
+}
+.bridge-opt.primary .bo-title { color: var(--gold); }
+.bo-desc {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+
+.bridge-note {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-4);
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════
+   BOTTOM NAV
+═══════════════════════════════════ */
+.lesson-bottom-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0 0;
+  border-top: 1px solid var(--border);
+  margin-top: 44px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.nav-btn {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 12px 20px;
+  border: 1px solid var(--border);
+  color: var(--text-3);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+.nav-btn.next-btn {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--bg);
+  font-weight: 700;
+}
+.nav-btn.next-btn:hover { background: var(--gold-pale); }
+
+/* ═══════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════ */
+@media (max-width: 640px) {
+  .top-nav { padding: 0 20px; }
+  .lesson-wrap { padding: 40px 20px 80px; }
+  .testimony-block { padding: 24px 20px; }
+  .audio-section { padding: 22px 20px; }
+  .reflection-section { padding: 24px 20px; }
+  .book-draw-header { grid-template-columns: 1fr; }
+  .book-cover-mini { display: none; }
+  .book-draw-footer { flex-direction: column; align-items: flex-start; }
+  .bridge-options { grid-template-columns: 1fr; }
+  .player-controls { gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top-nav">
+  <a class="nav-brand" href="members-new.html">Eden Consciousness</a>
+  <div class="nav-right">
+    <span class="completed-badge" id="completedBadge">✓ Completed</span>
+    <span class="nav-badge">Free · Lesson 1 of 5</span>
+  </div>
+</nav>
+
+<!-- SCROLL PROGRESS -->
+<div class="progress-bar">
+  <div class="progress-fill" id="progressFill"></div>
+</div>
+
+<!-- LESSON WRAP -->
+<div class="lesson-wrap">
+
+  <!-- HEADER -->
+  <div class="lesson-eyebrow">Introduction Series — Lesson 1 of 5</div>
+  <h1 class="lesson-h1">
+    What Is the<br/><em>Programming?</em>
+  </h1>
+  <p class="lesson-sub">Before you can walk back to Eden, you have to understand what pulled you away from it — and who benefited from the distance. This is where the walk begins.</p>
+  <div class="lesson-meta">
+    <span class="lm-item">Teaching · Reflection</span>
+    <span class="lm-item">Chapter 1 Audio Included</span>
+    <span class="lm-item">Ya Heard Me Foundation</span>
+  </div>
+
+  <!-- ── SECTION 1 ── -->
+  <div class="section-label">The Foundation</div>
+  <h2>You Were Born <em>Awake.</em></h2>
+
+  <p>When you came into this world, you were a pure receiver. No filters. No labels. No story about who you were or what you were capable of. You felt the sun and knew it was warm. You cried when something was wrong and laughed when something was right. That knowing — that direct connection to Source — was fully intact.</p>
+
+  <p>Then the world got to work.</p>
+
+  <p>Before you could speak in full sentences, systems were already in place to shape how you would think, what you would believe, what you would accept as normal, and most importantly — <strong>who you would believe you were.</strong> That process is what we call programming.</p>
+
+  <div class="pull-quote">
+    <p>"Programming isn't something they did to you once. It's something that runs every day — until you decide to look at the code."</p>
+    <cite>— Nazir El, Ya Heard Me</cite>
+  </div>
+
+  <div class="rule-center"></div>
+
+  <!-- ── SECTION 2 ── -->
+  <div class="section-label">Breaking It Down</div>
+  <h2>What Programming <em>Actually Is.</em></h2>
+
+  <p>Programming is not a conspiracy theory. It is not abstract. It is a documented, deliberate process of installing beliefs, behaviors, and limitations into a person from birth — so that person operates inside a defined boundary without ever questioning the fence.</p>
+
+  <p>It comes through multiple channels, running simultaneously:</p>
+
+  <ul class="truth-list">
+    <li><strong>Education</strong> You were taught a version of history, science, and reality designed by institutions with specific interests. Not truth. A version of it.</li>
+    <li><strong>Religion as Institution</strong> Spiritual authority was placed outside of you. You were taught to seek the Most High through intermediaries, rituals, and buildings — not within yourself, where the connection actually lives.</li>
+    <li><strong>Media</strong> What is beautiful, successful, and worthy was defined for you through images, stories, and sound — most of which had nothing to do with your divine design.</li>
+    <li><strong>Family</strong> The people who loved you most passed down their programming to you. Unconsciously. Because it was passed to them first. This is how cycles persist across generations.</li>
+    <li><strong>Language</strong> The very words you use to think shape the limits of what you can conceive. Certain words carry histories that program your relationship to power, identity, and worth.</li>
+  </ul>
+
+  <div class="callout">
+    <div class="callout-label">Key Insight</div>
+    <p>Programming works because it starts <strong>before you have the tools to question it.</strong> A child cannot evaluate the curriculum before accepting it. The installation happens first. The questioning — if it ever comes — has to fight through years of reinforcement to get a word in. That is not an accident. That is the design.</p>
+  </div>
+
+  <p>Research in developmental psychology consistently shows that by age seven, the core beliefs shaping adult behavior, self-worth, and worldview are already formed. Seven years old — before you could multiply, before you could read a contract, before you had any capacity to consent. The installation was complete before you had the tools to evaluate it.</p>
+
+  <div class="rule-center"></div>
+
+  <!-- ── SECTION 3 — TESTIMONY ── -->
+  <div class="section-label">The Personal Testimony</div>
+  <h2>The Moment That <em>Changed Everything.</em></h2>
+
+  <p>This is not theory. What follows is Nazir El's own testimony — the moment in Baton Rouge that started the entire walk back to Eden. This is Chapter 1 of <em>Ya Heard Me</em> in his words.</p>
+
+  <div class="testimony-block">
+    <div class="tb-eyebrow">From Ya Heard Me — Chapter 1 · The Foundation of Truth</div>
+
+    <p class="tb-text">I've always had a fascination with the rays of the sun, especially how they break through the clouds. You can see the distinct lines of light as it cuts through, shining down left, right, and center. This is one of the scenes I constantly catch on my camera phone.</p>
+
+    <p class="tb-text">Then one day I was standing outside in Baton Rouge, feeling the warmth on my skin, watching those familiar rays cut through the clouds — and it hit me like lightning. A divine download shook me to my core. Everything I had been taught about where I was living transformed in that instant.</p>
+
+    <p class="tb-text">My whole body went electric. I felt this rush of energy from my head to my feet, like every cell in my body was waking up at the same time. It wasn't just an intellectual understanding — <strong>it was a spiritual transmission.</strong></p>
+
+    <p class="tb-text">What came next was something deeper than amazement — it was divine anger. Why would they tell us that lie? What was the gain from deceiving divine beings about their true environment?</p>
+
+    <p class="tb-text">I begin to see many lies told to who is known as the "mass" in society. People like you and I — we work a 9-5, we pay taxes, our kids go to public schools, we go to church, we abide by the law. We're the ones who follow the rules, who trust the system, who believe what we're told.</p>
+
+    <p class="tb-text">And that's exactly what makes us the perfect targets for this kind of spiritual deception.</p>
+
+    <p class="tb-text">I remember digging into the questions that wouldn't leave me alone. This is when the Most High led me to ask the ultimate question. As I was observing all the wrong on earth, I asked the Lord: <em>"What did you put on earth to fight against all these wrongs?"</em></p>
+
+    <p class="tb-text">The answer that came back was immediate and clear.</p>
+
+    <p class="tb-text"><strong>'You son.'</strong></p>
+
+    <p class="tb-text">The words hit me so deep I had to sit down. At that moment, time stopped. I wasn't just hearing words — I was receiving a divine commission directly into my spirit. I had been sent here specifically to break the chain of deception — not just for myself, but for all who are ready for truth.</p>
+
+    <div class="ya-heard-me">"Ya Heard Me."</div>
+  </div>
+
+  <!-- ── CHAPTER 1 AUDIO ── -->
+  <div class="section-label">Chapter 1 Audio — Ya Heard Me</div>
+
+  <div class="audio-section">
+    <div class="audio-header">
+      <div class="ah-left">
+        <div class="audio-eyebrow">Listen — Full Chapter 1</div>
+        <div class="audio-title">The Foundation of Truth</div>
+        <div class="audio-author">Nazir El · Ya Heard Me Audiobook</div>
+      </div>
+    </div>
+
+    <!-- Part selector -->
+    <div class="part-tabs" id="partTabs">
+      <button class="part-tab active" data-part="0">Part 1</button>
+      <button class="part-tab" data-part="1">Part 2</button>
+      <button class="part-tab" data-part="2">Part 3</button>
+      <button class="part-tab" data-part="3">Part 4</button>
+    </div>
+
+    <!-- Loading -->
+    <div class="audio-loading" id="audioLoading">Loading audio from the vault...</div>
+
+    <!-- Custom player -->
+    <div class="custom-player" id="customPlayer">
+      <div class="player-track-info" id="trackInfo">Chapter 1 · Part 1 of 4</div>
+
+      <!-- Seekbar -->
+      <div class="player-progress-wrap" id="seekBar">
+        <div class="player-progress-fill" id="seekFill"></div>
+      </div>
+
+      <!-- Controls -->
+      <div class="player-controls">
+        <button class="ctrl-btn" id="rewindBtn">⟵ 15s</button>
+        <button class="ctrl-btn play-btn" id="playBtn">▶ Play</button>
+        <button class="ctrl-btn" id="forwardBtn">15s ⟶</button>
+        <div class="player-time" id="timeDisplay">0:00 / 0:00</div>
+      </div>
+
+      <!-- Speed -->
+      <div class="player-extras">
+        <span class="speed-label">Speed:</span>
+        <button class="speed-btn" data-speed="0.75">0.75×</button>
+        <button class="speed-btn active" data-speed="1">1×</button>
+        <button class="speed-btn" data-speed="1.25">1.25×</button>
+        <button class="speed-btn" data-speed="1.5">1.5×</button>
+        <button class="speed-btn" data-speed="2">2×</button>
+      </div>
+
+      <!-- Next part -->
+      <div class="next-part-notice" id="nextPartNotice">
+        <span id="nextPartText">Part 1 complete — ready for Part 2</span>
+        <button class="next-part-btn" id="nextPartBtn">Play Next Part →</button>
+      </div>
+    </div>
+
+    <!-- Native audio element -->
+    <audio id="native-audio" preload="metadata"></audio>
+
+    <!-- Spotify fallback -->
+    <a class="spotify-link" href="https://open.spotify.com/show/YOUR_SHOW_ID" target="_blank" rel="noopener">
+      <span class="sl-icon">🎵</span>
+      <div class="sl-text">
+        <span>Listen on Spotify</span>
+        Full Ya Heard Me Audiobook · All chapters available
+      </div>
+    </a>
+  </div>
+
+  <div class="rule-center"></div>
+
+  <!-- ── SECTION 4 ── -->
+  <div class="section-label">What This Means for You</div>
+  <h2>You Are Not Broken —<br/><em>You Are Programmed.</em></h2>
+
+  <p>This is one of the most important distinctions in this entire journey. Many people who come to this work carry shame — about their past choices, their patterns, their failures, the ways they have repeated cycles they swore they would break.</p>
+
+  <p>That shame is misplaced. You were not weak. You were not lacking. You were operating from installed software that was not written for your benefit. A computer running bad code does not need to feel ashamed of the output. It needs the code examined and rewritten.</p>
+
+  <ul class="truth-list">
+    <li>Your capacity for divine connection was not damaged by the programming. It was buried under it.</li>
+    <li>Your ability to manifest and align with Source was not removed. It was redirected — toward systems and authorities that needed your energy more than you did.</li>
+    <li>Your identity — your true one — exists underneath everything that was installed. The Walk Back to Eden is the process of uncovering what was always there.</li>
+  </ul>
+
+  <p><strong>The first step is this:</strong> stop interpreting your limitations as evidence of who you are. They are not. They are evidence of what you were taught. And that is a critical difference — because what was taught can be unlearned. What is original cannot be destroyed.</p>
+
+  <div class="rule-center"></div>
+
+  <!-- ── SECTION 5 ── -->
+  <div class="section-label">The First Practice</div>
+  <h2>Start <em>Noticing.</em></h2>
+
+  <p>Understanding programming intellectually is the first move. But this work is not academic — it requires practice. And the first practice is the simplest one: noticing.</p>
+  <p>For the next 24 hours, pay attention to every time you catch yourself thinking or saying any of these:</p>
+
+  <ul class="truth-list">
+    <li>"That's just how it is."</li>
+    <li>"I'm not the kind of person who..."</li>
+    <li>"I could never..."</li>
+    <li>"People like me don't..."</li>
+    <li>"That's not realistic."</li>
+  </ul>
+
+  <p>Every time one of those comes up — pause. Don't judge it. Just ask two questions: <em>Where did I learn this?</em> And <em>who does it serve for me to believe it?</em></p>
+
+  <p>That pause — the space between a programmed response and your conscious awareness of it — is where your freedom lives. Everything starts there.</p>
+
+  <div class="rule-center"></div>
+
+  <!-- ── WHAT'S IN THE BOOK ── -->
+  <div class="section-label">The Book</div>
+  <h2>That Was <em>Chapter 1.</em><br/>There Are 8 More.</h2>
+
+  <p>What you just read and heard is one chapter of a nine-chapter spiritual memoir. Each chapter is a revelation — a testimony of what Nazir El discovered when he stopped trusting institutions and started trusting divine guidance. Here is the full map of what's inside <em>Ya Heard Me.</em></p>
+
+  <div class="book-draw">
+    <div class="book-draw-header">
+      <div>
+        <div class="bd-eyebrow">Ya Heard Me · Eden Consciousness Publishing House</div>
+        <div class="bd-title">A Journey From Programming to Divine Truth</div>
+        <div class="bd-sub">By Nazir El · 9 chapters · 32,000+ words · Audiobook live on Spotify</div>
+      </div>
+      <div class="book-cover-mini">
+        <div class="bcm-title">Ya Heard Me</div>
+        <div class="bcm-author">Nazir El</div>
+      </div>
+    </div>
+
+    <div class="chapter-list">
+      <div class="chapter-item active-chapter">
+        <div class="ch-num">01</div>
+        <div class="ch-body">
+          <div class="ch-title">The Foundation of Truth</div>
+          <div class="ch-desc">The Baton Rouge moment. The divine download. The assignment revealed. Where the entire awakening begins.</div>
+          <span class="ch-badge">You are here · Audio above</span>
+        </div>
+      </div>
+      <div class="chapter-item">
+        <div class="ch-num">02</div>
+        <div class="ch-body">
+          <div class="ch-title">The Cosmic Chess Board</div>
+          <div class="ch-desc">The structure of the plane we live on. The five elements. The living land. What Enoch revealed about the playing field of consciousness.</div>
+        </div>
+      </div>
+      <div class="chapter-item">
+        <div class="ch-num">03</div>
+        <div class="ch-body">
+          <div class="ch-title">How the Lord Revealed the Sun as Divine Communication</div>
+          <div class="ch-desc">The sun is not just a light source — it is a divine messaging system broadcasting daily guidance. How to read it.</div>
+        </div>
+      </div>
+      <div class="chapter-item">
+        <div class="ch-num">04</div>
+        <div class="ch-body">
+          <div class="ch-title">My Awakening to Divine Creative Power</div>
+          <div class="ch-desc">The 12-year-old Christmas testimony. The 7-day car wash manifestation. The mechanics of how consciousness creates physical reality.</div>
+        </div>
+      </div>
+      <div class="chapter-item">
+        <div class="ch-num">05</div>
+        <div class="ch-body">
+          <div class="ch-title">How the Lord Revealed Sacred Rhythm to Me</div>
+          <div class="ch-desc">The Enoch calendar. 364 days of perfect mathematical order. The artificial time programming — and what happens when you leave it.</div>
+        </div>
+      </div>
+      <div class="chapter-item">
+        <div class="ch-num">06</div>
+        <div class="ch-body">
+          <div class="ch-title">My Year Living in Divine Sacred Rhythm</div>
+          <div class="ch-desc">What it actually looks like to live by cosmic timing for a full year. Gate energies. Seasonal manifestation. Real decisions, real results.</div>
+        </div>
+      </div>
+      <div class="chapter-item">
+        <div class="ch-num">07</div>
+        <div class="ch-body">
+          <div class="ch-title">My Journey Walking Divine Truth in a Programmed World</div>
+          <div class="ch-desc">Family rejection. Spiritual loneliness. The unbothered state of mind. How to maintain divine authority when everyone around you is still asleep.</div>
+        </div>
+      </div>
+      <div class="chapter-item">
+        <div class="ch-num">08</div>
+        <div class="ch-body">
+          <div class="ch-title">The Intertwining of Flesh and Spirit</div>
+          <div class="ch-desc">Our dual nature as spiritual beings in physical form. Conscious sleep. Developing spiritual senses. Moses. Yeshua. What becomes possible when flesh and spirit integrate.</div>
+        </div>
+      </div>
+      <div class="chapter-item">
+        <div class="ch-num">09</div>
+        <div class="ch-body">
+          <div class="ch-title">The Mind of Generational Wealth</div>
+          <div class="ch-desc">True wealth is not what you accumulate. It is your capacity to make others wealthy. The 300-year vision. Building systems that outlast the builder.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="book-draw-footer">
+      <p class="bdf-text">The complete book is available in print and as an audiobook. Premium members get full curriculum access — all 9 chapters as guided lessons inside the Inner Temple.</p>
+      <div class="book-btns">
+        <a href="#" class="btn-gold">Get the Book</a>
+        <a href="https://open.spotify.com/show/YOUR_SHOW_ID" target="_blank" class="btn-outline">Listen on Spotify</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule-center"></div>
+
+  <!-- ── REFLECTION ── -->
+  <div class="reflection-section">
+    <div class="ref-eyebrow">Reflection · Lesson 1</div>
+    <div class="ref-title">Sit With This</div>
+    <p class="ref-desc">Real learning requires real honesty. Take a few minutes with these prompts. There are no right answers — only your truth. Your answers are private. Write as much or as little as you need.</p>
+
+    <div class="prompt-item">
+      <div class="prompt-num">Prompt 01</div>
+      <p class="prompt-q">Where in your life do you feel a ceiling — a limit on what's possible for you — that you've never fully questioned? Where did that belief come from?</p>
+      <textarea class="prompt-ta" placeholder="Write your thoughts here..."></textarea>
+    </div>
+
+    <div class="prompt-item">
+      <div class="prompt-num">Prompt 02</div>
+      <p class="prompt-q">Think of one belief about yourself — your worth, your ability, your identity — that you accepted from someone else. A parent, a teacher, a system. What was it?</p>
+      <textarea class="prompt-ta" placeholder="Write your thoughts here..."></textarea>
+    </div>
+
+    <div class="prompt-item">
+      <div class="prompt-num">Prompt 03</div>
+      <p class="prompt-q">Apply the question Nazir El asked: <em>"Who benefits from me believing this?"</em> to that belief. What do you notice?</p>
+      <textarea class="prompt-ta" placeholder="Write your thoughts here..."></textarea>
+    </div>
+
+    <div class="prompt-item">
+      <div class="prompt-num">Prompt 04 — After Your 24 Hours</div>
+      <p class="prompt-q">Which phrase from the First Practice came up most? "I can't," "that's just how it is," something else? What does that pattern tell you about where your programming runs deepest?</p>
+      <textarea class="prompt-ta" placeholder="Come back and write here after your 24-hour practice..."></textarea>
+    </div>
+  </div>
+
+  <!-- ── COMPLETE ── -->
+  <div class="complete-wrap">
+    <button class="complete-btn" id="completeBtn">✓ &nbsp; Mark Lesson Complete</button>
+    <div class="complete-note">Your progress is saved automatically</div>
+  </div>
+
+  <!-- ── UPGRADE BRIDGE ── -->
+  <div class="upgrade-bridge" id="upgradeBridge">
+    <div class="bridge-eyebrow">You looked at the code.</div>
+    <h3 class="bridge-title">That's not a small thing.<br/><em>Most people never do.</em></h3>
+    <p class="bridge-body">The next lesson goes deeper — we'll walk The Walk Back to Eden and understand exactly what this journey requires. Or go deeper right now with the full book and the Inner Temple curriculum.</p>
+
+    <div class="bridge-options">
+      <a href="lesson-02-the-walk-back.html" class="bridge-opt primary">
+        <div class="bo-label">Free · Next Lesson</div>
+        <div class="bo-title">Lesson 2 →</div>
+        <div class="bo-desc">The Walk Back to Eden — what this journey actually requires</div>
+      </a>
+      <a href="members-new.html" class="bridge-opt">
+        <div class="bo-label">Premium · Full Access</div>
+        <div class="bo-title">Enter the Temple</div>
+        <div class="bo-desc">All 9 chapters as guided curriculum · 4-Phase Journey · Music Vault</div>
+      </a>
+    </div>
+
+    <div class="bridge-note">118+ members walking · Ya Heard Me audiobook live on Spotify</div>
+  </div>
+
+  <!-- ── BOTTOM NAV ── -->
+  <div class="lesson-bottom-nav">
+    <a href="members-new.html" class="nav-btn">← Back to Portal</a>
+    <a href="lesson-02-the-walk-back.html" class="nav-btn next-btn">Lesson 2 →</a>
+  </div>
+
+</div><!-- /lesson-wrap -->
+
+<!-- ═══════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════ -->
+<script>
+/* ── SCROLL PROGRESS ── */
+window.addEventListener('scroll', () => {
+  const doc   = document.documentElement;
+  const pct   = doc.scrollTop / (doc.scrollHeight - doc.clientHeight) * 100;
+  document.getElementById('progressFill').style.width = Math.min(pct, 100) + '%';
+});
+
+/* ── AUDIO PLAYER ── */
+const STORAGE_BASE = 'gs://sacred-community.firebasestorage.app/audiobook/ya-heard-me';
+
+// Chapter 1 has 4 parts — update these filenames to match your actual files
+const PARTS = [
+  { label: 'Part 1 of 4', file: 'Chapter 1 ( Part 1).mp3' },
+  { label: 'Part 2 of 4', file: 'Chapter 1 (part 2).mp3' },
+  { label: 'Part 3 of 4', file: 'Chapter 1 (Part 3).mp3' },
+  { label: 'Part 4 of 4', file: 'Chapter 1 (Part 4).mp3' },
+];
+
+let currentPart   = 0;
+let audioReady    = false;
+let isPlaying     = false;
+let playbackSpeed = 1;
+
+const audio       = document.getElementById('native-audio');
+const playBtn     = document.getElementById('playBtn');
+const rewindBtn   = document.getElementById('rewindBtn');
+const forwardBtn  = document.getElementById('forwardBtn');
+const seekBar     = document.getElementById('seekBar');
+const seekFill    = document.getElementById('seekFill');
+const timeDisplay = document.getElementById('timeDisplay');
+const trackInfo   = document.getElementById('trackInfo');
+const loadingEl   = document.getElementById('audioLoading');
+const playerEl    = document.getElementById('customPlayer');
+const nextNotice  = document.getElementById('nextPartNotice');
+const nextText    = document.getElementById('nextPartText');
+const nextPartBtn = document.getElementById('nextPartBtn');
+
+function formatTime(s) {
+  if (isNaN(s)) return '0:00';
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2,'0')}`;
+}
+
+function updatePlayBtn() {
+  playBtn.textContent = isPlaying ? '⏸ Pause' : '▶ Play';
+}
+
+function loadPart(index) {
+  if (index >= PARTS.length) return;
+  currentPart = index;
+  audioReady  = false;
+  isPlaying   = false;
+  updatePlayBtn();
+  nextNotice.style.display = 'none';
+  seekFill.style.width = '0%';
+  timeDisplay.textContent  = '0:00 / 0:00';
+  trackInfo.textContent    = `Chapter 1 · ${PARTS[index].label}`;
+
+  // Update tab active state
+  document.querySelectorAll('.part-tab').forEach((t, i) => {
+    t.classList.toggle('active', i === index);
+  });
+
+  // Show loading
+  loadingEl.classList.add('visible');
+  playerEl.classList.remove('visible');
+
+  // Get download URL from Firebase Storage
+  const ref = firebase.storage().refFromURL(`${STORAGE_BASE}/${PARTS[index].file}`);
+  ref.getDownloadURL().then(url => {
+    audio.src = url;
+    audio.load();
+    loadingEl.classList.remove('visible');
+    playerEl.classList.add('visible');
+    audioReady = true;
+  }).catch(err => {
+    console.error('Audio load error:', err);
+    loadingEl.classList.remove('visible');
+    playerEl.classList.add('visible');
+    trackInfo.textContent = 'Audio unavailable — listen on Spotify below';
+  });
+}
+
+// Tab clicks
+document.querySelectorAll('.part-tab').forEach((tab, i) => {
+  tab.addEventListener('click', () => loadPart(i));
+});
+
+// Play / Pause
+playBtn.addEventListener('click', () => {
+  if (!audioReady) return;
+  if (isPlaying) {
+    audio.pause();
+    isPlaying = false;
+  } else {
+    audio.play();
+    isPlaying = true;
+  }
+  updatePlayBtn();
+});
+
+// Rewind / Forward
+rewindBtn.addEventListener('click',  () => { if (audioReady) audio.currentTime = Math.max(0, audio.currentTime - 15); });
+forwardBtn.addEventListener('click', () => { if (audioReady) audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 15); });
+
+// Seek bar
+seekBar.addEventListener('click', (e) => {
+  if (!audioReady || !audio.duration) return;
+  const rect = seekBar.getBoundingClientRect();
+  const pct  = (e.clientX - rect.left) / rect.width;
+  audio.currentTime = pct * audio.duration;
+});
+
+// Time update
+audio.addEventListener('timeupdate', () => {
+  if (!audio.duration) return;
+  const pct = (audio.currentTime / audio.duration) * 100;
+  seekFill.style.width = pct + '%';
+  timeDisplay.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+});
+
+// Part ended
+audio.addEventListener('ended', () => {
+  isPlaying = false;
+  updatePlayBtn();
+  if (currentPart < PARTS.length - 1) {
+    nextText.textContent = `Part ${currentPart + 1} complete — ready for Part ${currentPart + 2}`;
+    nextNotice.style.display = 'flex';
+  }
+});
+
+// Next part button
+nextPartBtn.addEventListener('click', () => {
+  loadPart(currentPart + 1);
+  setTimeout(() => {
+    if (audioReady) { audio.play(); isPlaying = true; updatePlayBtn(); }
+  }, 1200);
+});
+
+// Speed buttons
+document.querySelectorAll('.speed-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    playbackSpeed = parseFloat(btn.dataset.speed);
+    audio.playbackRate = playbackSpeed;
+    document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// Load Part 1 on page ready (after Firebase init)
+window.addEventListener('load', () => {
+  const tryLoad = (attempts) => {
+    if (typeof firebase !== 'undefined' && firebase.storage) {
+      loadPart(0);
+    } else if (attempts > 0) {
+      setTimeout(() => tryLoad(attempts - 1), 400);
+    }
+  };
+  tryLoad(15);
+});
+
+/* ── LESSON COMPLETE ── */
+const LESSON_ID      = 'lesson-01';
+const NEXT_LESSON_ID = 'lesson-02';
+
+function applyCompletedState() {
+  const btn = document.getElementById('completeBtn');
+  btn.textContent = '✓  Lesson Complete';
+  btn.disabled = true;
+  document.getElementById('completedBadge').classList.add('visible');
+  document.getElementById('upgradeBridge').classList.add('visible');
+}
+
+async function persistCompletion() {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+  const userRef = firebase.firestore().collection('users').doc(user.uid);
+  await userRef.set({
+    lessons: {
+      [LESSON_ID]: {
+        completed: true,
+        completedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }
+    },
+    onboardingStatus: 'in_progress',
+    'phase1.lessonsCompleted': firebase.firestore.FieldValue.arrayUnion(LESSON_ID),
+    'phase1.currentLesson': NEXT_LESSON_ID,
+    'phase1.updatedAt': firebase.firestore.FieldValue.serverTimestamp(),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+}
+
+document.getElementById('completeBtn').addEventListener('click', () => {
+  applyCompletedState();
+  setTimeout(() => {
+    document.getElementById('upgradeBridge').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 300);
+  try {
+    const progress = JSON.parse(localStorage.getItem('ec_progress') || '{}');
+    progress[LESSON_ID] = { completed: true, date: new Date().toISOString() };
+    localStorage.setItem('ec_progress', JSON.stringify(progress));
+  } catch(e) {}
+  persistCompletion().catch(e => console.warn('Save failed:', e));
+});
+
+/* ── RESTORE STATE ── */
+(function restoreState() {
+  try {
+    const progress = JSON.parse(localStorage.getItem('ec_progress') || '{}');
+    if (progress[LESSON_ID]?.completed) applyCompletedState();
+  } catch(e) {}
+
+  const tryRestore = (attempts) => {
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+      firebase.auth().onAuthStateChanged(user => {
+        if (!user) return;
+        firebase.firestore().collection('users').doc(user.uid).get().then(doc => {
+          if (!doc.exists) return;
+          const data = doc.data() || {};
+          const done = !!(
+            (data.lessons?.[LESSON_ID]?.completed) ||
+            (data.phase1?.lessonsCompleted?.includes(LESSON_ID))
+          );
+          if (done) applyCompletedState();
+        }).catch(() => {});
+      });
+    } else if (attempts > 0) {
+      setTimeout(() => tryRestore(attempts - 1), 300);
+    }
+  };
+  tryRestore(15);
+})();
+
+/* ── AUTH GATE ── */
+(function authGate() {
+  const tryAuth = (attempts) => {
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+      firebase.auth().onAuthStateChanged(user => {
+        if (!user) window.location.href = 'members-new.html';
+      });
+    } else if (attempts > 0) {
+      setTimeout(() => tryAuth(attempts - 1), 300);
+    }
+  };
+  tryAuth(15);
+})();
+</script>
+
+</body>
+</html>
