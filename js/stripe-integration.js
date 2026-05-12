@@ -8,7 +8,7 @@ const STRIPE_CONFIG = {
   productName: 'Eden Consciousness Premium',
   productDescription: 'Unlimited access to 4-phase transformation journey',
   successUrl: 'https://edenconsciousnesssdt.com/premium-success.html',
-  cancelUrl: 'https://edenconsciousnesssdt.com/pricing.html',
+  cancelUrl: 'https://edenconsciousnesssdt.com/premium-cancel.html',
   currency: 'usd',
   amount: 999, // $9.99 in cents
 };

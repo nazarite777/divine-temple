@@ -91,7 +91,7 @@
 
                 const result = await createCheckout({
                     successUrl: window.location.origin + '/premium-success.html',
-                    cancelUrl: window.location.origin + '/free-dashboard.html'
+                    cancelUrl: window.location.origin + '/premium-cancel.html'
                 });
 
                 console.log('Checkout session created:', result.data.sessionId);
