@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Who Told You That? — A deprogramming game by Eden Consciousness. Sort your beliefs. See the source. Walk back to Eden." />
+<meta property="og:title" content="Who Told You That? | Eden Consciousness" />
+<meta property="og:description" content="15 beliefs. 4 buckets. How many did you actually choose? Find out — then share your results." />
+<title>Who Told You That? | Eden Consciousness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Space+Mono:wght@400;700&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet" />
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+
+<style>
+/* ═══════════════════════════════════
+   ROOT & RESET
+════════════════════════════════════ */
+:root {
+  --bg:        #070C07;
+  --bg-2:      #090E09;
+  --surface:   #0D150D;
+  --panel:     #101A10;
+  --border:    #1A301A;
+  --border-2:  #244024;
+  --gold:      #C9A84C;
+  --gold-dim:  #7A5F2A;
+  --gold-pale: #F0DC9A;
+  --gold-glow: rgba(201,168,76,0.09);
+  --text:      #EDE8DB;
+  --text-2:    #B0A890;
+  --text-3:    #6B6250;
+  --text-4:    #3D3828;
+
+  /* Bucket colors */
+  --b1: #5BA3E0;   /* I Chose This — blue */
+  --b2: #C9A84C;   /* Family — gold */
+  --b3: #9B7DB8;   /* Institution — purple */
+  --b4: #6B9E6B;   /* Don't Know — muted green */
+
+  --serif:   'Cormorant Garamond', Georgia, serif;
+  --mono:    'Space Mono', monospace;
+  --display: 'Cinzel', serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  pointer-events: none; z-index: 0; opacity: 0.6;
+}
+
+/* ═══════════════════════════════════
+   NAV
+════════════════════════════════════ */
+.top-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 56px;
+  background: rgba(7,12,7,0.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+}
+.nav-brand {
+  font-family: var(--display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.nav-badge {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-3);
+  border: 1px solid var(--border);
+  padding: 5px 12px;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════
+   SCREENS
+════════════════════════════════════ */
+.screen {
+  display: none;
+  position: relative;
+  z-index: 1;
+}
+.screen.active { display: block; }
+
+/* ═══════════════════════════════════
+   SCREEN 0 — INTRO
+════════════════════════════════════ */
+#screen-intro {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 32px 60px;
+  text-align: center;
+}
+#screen-intro.active { display: flex; }
+
+.intro-eyebrow {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 5px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.intro-eyebrow::before,
+.intro-eyebrow::after { content:''; flex: 0 0 32px; height:1px; background:var(--border); }
+
+.intro-title {
+  font-family: var(--display);
+  font-size: clamp(36px, 7vw, 80px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.intro-title em {
+  display: block;
+  font-style: italic;
+  color: var(--gold);
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 0.75em;
+  letter-spacing: 0.03em;
+}
+
+.intro-sub {
+  font-size: clamp(16px, 2vw, 20px);
+  font-style: italic;
+  color: var(--text-2);
+  max-width: 520px;
+  line-height: 1.65;
+  margin: 20px auto 40px;
+}
+
+.intro-rules {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto 44px;
+  text-align: left;
+}
+.rule-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 16px 18px;
+}
+.rc-num {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold-dim);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.rc-text {
+  font-size: 13px;
+  color: var(--text-2);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.bucket-preview {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto 44px;
+}
+.bp-item {
+  padding: 10px 14px;
+  border: 1px solid;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bp-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+.start-btn {
+  background: var(--gold);
+  color: var(--bg);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border: none;
+  padding: 18px 52px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.start-btn:hover { background: var(--gold-pale); transform: translateY(-1px); }
+
+.intro-note {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  margin-top: 18px;
+}
+
+/* ═══════════════════════════════════
+   SCREEN 1 — GAME
+════════════════════════════════════ */
+#screen-game {
+  min-height: 100vh;
+  padding: 72px 0 60px;
+}
+#screen-game.active { display: block; }
+
+/* GAME HEADER */
+.game-header {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 32px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.gh-left {}
+.gh-count {
+  font-family: var(--display);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.gh-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.gh-right {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  text-align: right;
+}
+
+/* Progress dots */
+.progress-dots {
+  max-width: 900px;
+  margin: 14px auto 0;
+  padding: 0 32px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.prog-dot {
+  width: 24px; height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  transition: background 0.3s;
+}
+.prog-dot.sorted-b1 { background: var(--b1); }
+.prog-dot.sorted-b2 { background: var(--b2); }
+.prog-dot.sorted-b3 { background: var(--b3); }
+.prog-dot.sorted-b4 { background: var(--b4); }
+
+/* CARD ARENA */
+.card-arena {
+  max-width: 900px;
+  margin: 32px auto 0;
+  padding: 0 32px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* Belief card */
+.belief-card {
+  background: var(--panel);
+  border: 1px solid var(--border-2);
+  width: 100%;
+  max-width: 560px;
+  padding: 40px 40px 36px;
+  cursor: grab;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+  touch-action: none;
+}
+.belief-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--gold-dim);
+}
+.belief-card:active { cursor: grabbing; }
+.belief-card.dragging {
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  z-index: 50;
+  transition: none;
+}
+
+.bc-num {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.bc-belief {
+  font-family: var(--serif);
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 24px;
+}
+.bc-instruction {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-4);
+  text-transform: uppercase;
+}
+
+/* Drop highlight on card */
+.belief-card.highlight-b1 { border-color: var(--b1); box-shadow: 0 0 0 2px var(--b1); }
+.belief-card.highlight-b2 { border-color: var(--b2); box-shadow: 0 0 0 2px var(--b2); }
+.belief-card.highlight-b3 { border-color: var(--b3); box-shadow: 0 0 0 2px var(--b3); }
+.belief-card.highlight-b4 { border-color: var(--b4); box-shadow: 0 0 0 2px var(--b4); }
+
+/* Sorted animation */
+@keyframes cardExit {
+  to { opacity: 0; transform: scale(0.85) translateY(-20px); }
+}
+.belief-card.exiting { animation: cardExit 0.3s ease forwards; }
+
+/* BUCKETS */
+.buckets {
+  max-width: 900px;
+  margin: 28px auto 0;
+  padding: 0 32px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+
+.bucket {
+  border: 1px solid var(--border);
+  padding: 16px 14px;
+  text-align: center;
+  position: relative;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  cursor: pointer;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.bucket.drag-over {
+  transform: scale(1.03);
+}
+.bucket[data-bucket="1"].drag-over { border-color: var(--b1); background: rgba(91,163,224,0.08); }
+.bucket[data-bucket="2"].drag-over { border-color: var(--b2); background: rgba(201,168,76,0.08); }
+.bucket[data-bucket="3"].drag-over { border-color: var(--b3); background: rgba(155,125,184,0.08); }
+.bucket[data-bucket="4"].drag-over { border-color: var(--b4); background: rgba(107,158,107,0.08); }
+
+/* Tap pulse animation */
+@keyframes tapPulse {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+.bucket.tapped { animation: tapPulse 0.25s ease; }
+
+.bucket-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.bucket[data-bucket="1"] .bucket-dot { background: var(--b1); }
+.bucket[data-bucket="2"] .bucket-dot { background: var(--b2); }
+.bucket[data-bucket="3"] .bucket-dot { background: var(--b3); }
+.bucket[data-bucket="4"] .bucket-dot { background: var(--b4); }
+
+.bucket-name {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+.bucket[data-bucket="1"] .bucket-name { color: var(--b1); }
+.bucket[data-bucket="2"] .bucket-name { color: var(--b2); }
+.bucket[data-bucket="3"] .bucket-name { color: var(--b3); }
+.bucket[data-bucket="4"] .bucket-name { color: var(--b4); }
+
+.bucket-count {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-4);
+}
+.bucket[data-bucket="1"] .bucket-count { color: var(--b1); }
+.bucket[data-bucket="2"] .bucket-count { color: var(--b2); }
+.bucket[data-bucket="3"] .bucket-count { color: var(--b3); }
+.bucket[data-bucket="4"] .bucket-count { color: var(--b4); }
+
+/* MOBILE TAP BUTTONS */
+.tap-buttons {
+  display: none;
+  max-width: 900px;
+  margin: 16px auto 0;
+  padding: 0 32px;
+  gap: 8px;
+  flex-direction: column;
+}
+.tap-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.tap-btn {
+  border: 1px solid;
+  padding: 14px 12px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s;
+  text-align: left;
+}
+.tap-btn:active { opacity: 0.7; transform: scale(0.97); }
+.tap-btn[data-bucket="1"] { color: var(--b1); border-color: rgba(91,163,224,0.4); }
+.tap-btn[data-bucket="2"] { color: var(--b2); border-color: rgba(201,168,76,0.4); }
+.tap-btn[data-bucket="3"] { color: var(--b3); border-color: rgba(155,125,184,0.4); }
+.tap-btn[data-bucket="4"] { color: var(--b4); border-color: rgba(107,158,107,0.4); }
+.tap-btn:hover { opacity: 0.85; }
+
+.tb-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+/* REVELATION FLASH */
+.revelation-flash {
+  position: fixed;
+  inset: 0;
+  background: rgba(7,12,7,0.92);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.revelation-flash.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+.rf-inner {
+  max-width: 500px;
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--border-2);
+  padding: 40px 36px;
+  text-align: center;
+  position: relative;
+}
+.rf-inner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.rf-inner.b1::before { background: var(--b1); }
+.rf-inner.b2::before { background: var(--b2); }
+.rf-inner.b3::before { background: var(--b3); }
+.rf-inner.b4::before { background: var(--b4); }
+
+.rf-source {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.rf-inner.b1 .rf-source { color: var(--b1); }
+.rf-inner.b2 .rf-source { color: var(--b2); }
+.rf-inner.b3 .rf-source { color: var(--b3); }
+.rf-inner.b4 .rf-source { color: var(--b4); }
+
+.rf-belief {
+  font-family: var(--serif);
+  font-size: clamp(16px, 2vw, 22px);
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 20px;
+}
+
+.rf-truth {
+  font-size: 15px;
+  color: var(--text-2);
+  font-style: italic;
+  line-height: 1.65;
+  margin-bottom: 24px;
+  padding: 14px 18px;
+  border-left: 2px solid var(--gold-dim);
+  text-align: left;
+}
+
+.rf-next {
+  background: var(--gold);
+  color: var(--bg);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border: none;
+  padding: 14px 32px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+.rf-next:hover { background: var(--gold-pale); }
+
+.rf-remaining {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  margin-top: 12px;
+}
+
+/* ═══════════════════════════════════
+   SCREEN 2 — RESULTS
+════════════════════════════════════ */
+#screen-results {
+  min-height: 100vh;
+  padding: 80px 32px 80px;
+}
+#screen-results.active { display: block; }
+
+.results-inner {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.results-eyebrow {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.results-eyebrow::before { content:''; width:24px; height:1px; background:var(--gold-dim); }
+
+.results-headline {
+  font-family: var(--display);
+  font-size: clamp(28px, 4.5vw, 52px);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.results-headline em {
+  font-style: italic;
+  color: var(--gold);
+  font-family: var(--serif);
+  font-weight: 300;
+}
+
+.results-sub {
+  font-size: 17px;
+  font-style: italic;
+  color: var(--text-2);
+  line-height: 1.65;
+  margin-bottom: 44px;
+  max-width: 540px;
+}
+
+/* BIG STAT */
+.results-stat {
+  background: var(--panel);
+  border: 1px solid var(--gold-dim);
+  padding: 36px 40px;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.rs-num {
+  font-family: var(--display);
+  font-size: 80px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  flex-shrink: 0;
+}
+.rs-text {}
+.rs-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.rs-desc {
+  font-size: 17px;
+  font-style: italic;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+/* BREAKDOWN */
+.breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 40px;
+}
+
+.breakdown-row {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 16px 20px;
+  display: grid;
+  grid-template-columns: 14px 1fr auto auto;
+  gap: 14px;
+  align-items: center;
+}
+.br-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.br-name {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.br-bar-wrap {
+  width: 100%;
+  height: 3px;
+  background: var(--border);
+  grid-column: 1 / -1;
+  margin-top: -8px;
+}
+.br-bar { height: 100%; transition: width 1s ease; }
+.br-count {
+  font-family: var(--display);
+  font-size: 24px;
+  font-weight: 700;
+  min-width: 28px;
+  text-align: right;
+  line-height: 1;
+}
+
+/* Bucket color mappings */
+.br-dot.b1, .br-bar.b1 { background: var(--b1); }
+.br-dot.b2, .br-bar.b2 { background: var(--b2); }
+.br-dot.b3, .br-bar.b3 { background: var(--b3); }
+.br-dot.b4, .br-bar.b4 { background: var(--b4); }
+.br-name.b1, .br-count.b1 { color: var(--b1); }
+.br-name.b2, .br-count.b2 { color: var(--b2); }
+.br-name.b3, .br-count.b3 { color: var(--b3); }
+.br-name.b4, .br-count.b4 { color: var(--b4); }
+
+/* TRUTH REVEALS */
+.truth-reveals {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 40px;
+}
+.tr-item {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  align-items: start;
+}
+.tr-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
+.tr-content {}
+.tr-belief {
+  font-size: 14px;
+  font-style: italic;
+  color: var(--text);
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+.tr-source {
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 2px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.tr-truth {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+/* SHARE CARD */
+.share-section {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 28px 28px 24px;
+  margin-bottom: 40px;
+}
+.share-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.share-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* Canvas share card */
+#shareCanvas {
+  width: 100%;
+  max-width: 540px;
+  height: auto;
+  display: block;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+}
+
+.share-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.share-btn {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.share-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+.share-btn.primary { background: var(--gold); border-color: var(--gold); color: var(--bg); font-weight: 700; }
+.share-btn.primary:hover { background: var(--gold-pale); }
+
+/* CTA */
+.results-cta {
+  background: var(--surface);
+  border: 1px solid var(--gold-dim);
+  padding: 40px 36px;
+  text-align: center;
+  margin-bottom: 2px;
+}
+.rcta-eyebrow {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.rcta-title {
+  font-family: var(--display);
+  font-size: clamp(22px, 3vw, 38px);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.rcta-title em { font-style: italic; color: var(--gold); font-family: var(--serif); font-weight: 300; }
+.rcta-body {
+  font-size: 16px;
+  font-style: italic;
+  color: var(--text-2);
+  line-height: 1.7;
+  max-width: 460px;
+  margin: 0 auto 32px;
+}
+.rcta-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-gold {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold); color: var(--bg);
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase;
+  text-decoration: none; padding: 14px 28px; border: none;
+  cursor: pointer; transition: background 0.2s;
+}
+.btn-gold:hover { background: var(--gold-pale); }
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--text-2);
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 3px; text-transform: uppercase;
+  text-decoration: none; padding: 14px 28px;
+  border: 1px solid var(--border-2);
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-outline:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+.play-again {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: 24px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  display: block;
+  width: 100%;
+  transition: color 0.2s;
+}
+.play-again:hover { color: var(--gold); }
+
+/* ═══════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════ */
+@media (max-width: 700px) {
+  .buckets { grid-template-columns: repeat(2, 1fr); }
+  .bucket { min-height: 70px; padding: 12px 10px; }
+  .tap-buttons { display: flex; }
+  .bc-instruction { display: none; }
+  .belief-card { padding: 28px 24px 24px; cursor: default; }
+  .intro-rules { grid-template-columns: 1fr; }
+  .bucket-preview { grid-template-columns: 1fr; }
+  .results-stat { padding: 24px; }
+  .rs-num { font-size: 56px; }
+  .breakdown-row { grid-template-columns: 10px 1fr auto; }
+  .breakdown-row .br-bar-wrap { display: none; }
+  .top-nav { padding: 0 20px; }
+  .game-header { padding: 16px 20px 0; }
+  .progress-dots { padding: 0 20px; }
+  .card-arena { padding: 0 20px; }
+  .buckets { padding: 0 20px; }
+  .tap-buttons { padding: 0 20px; }
+  #screen-results { padding: 72px 20px 60px; }
+}
+@media (min-width: 701px) {
+  .tap-buttons { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top-nav">
+  <a class="nav-brand" href="home.html">Eden Consciousness</a>
+  <span class="nav-badge">Stage 1 · Who Told You That?</span>
+</nav>
+
+<!-- ═══════════════════════════════════
+     SCREEN 0 — INTRO
+════════════════════════════════════ -->
+<div id="screen-intro" class="screen active">
+  <div class="intro-eyebrow">A Deprogramming Experience</div>
+
+  <div class="intro-title">
+    Who Told You<br/>
+    <em>That?</em>
+  </div>
+
+  <p class="intro-sub">15 beliefs are about to flash on your screen. Some will feel like yours. Some will feel obvious. Some will hit harder than you expect. Your job is simple — sort them into where they actually came from.</p>
+
+  <div class="intro-rules">
+    <div class="rule-card">
+      <div class="rc-num">15</div>
+      <div class="rc-text">beliefs — one at a time. No skipping. No going back.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rc-num">4</div>
+      <div class="rc-text">buckets. Drag on desktop. Tap on mobile. Be honest.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rc-num">1</div>
+      <div class="rc-text">truth revealed after each sort. From the book Ya Heard Me.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rc-num">∞</div>
+      <div class="rc-text">This is not a quiz. There are no wrong answers. Only honest ones.</div>
+    </div>
+  </div>
+
+  <div class="bucket-preview">
+    <div class="bp-item" style="color:var(--b1);border-color:rgba(91,163,224,0.4);">
+      <div class="bp-dot" style="background:var(--b1)"></div>I Chose This
+    </div>
+    <div class="bp-item" style="color:var(--b2);border-color:rgba(201,168,76,0.4);">
+      <div class="bp-dot" style="background:var(--b2)"></div>Family Installed This
+    </div>
+    <div class="bp-item" style="color:var(--b3);border-color:rgba(155,125,184,0.4);">
+      <div class="bp-dot" style="background:var(--b3)"></div>Institution Installed This
+    </div>
+    <div class="bp-item" style="color:var(--b4);border-color:rgba(107,158,107,0.4);">
+      <div class="bp-dot" style="background:var(--b4)"></div>I Don't Know Where This Came From
+    </div>
+  </div>
+
+  <button class="start-btn" onclick="startGame()">Begin the Sort →</button>
+  <div class="intro-note">No login required · Takes about 5 minutes</div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SCREEN 1 — GAME
+════════════════════════════════════ -->
+<div id="screen-game" class="screen">
+
+  <div class="game-header">
+    <div class="gh-left">
+      <div class="gh-count" id="ghCount">1</div>
+      <div class="gh-label">of 15 beliefs</div>
+    </div>
+    <div class="gh-right" id="ghRight">Drag to a bucket<br/>or tap a button below</div>
+  </div>
+
+  <div class="progress-dots" id="progressDots"></div>
+
+  <div class="card-arena" id="cardArena">
+    <div class="belief-card" id="beliefCard">
+      <div class="bc-num" id="bcNum">Belief 01 of 15</div>
+      <div class="bc-belief" id="bcBelief">"Loading..."</div>
+      <div class="bc-instruction">Drag this card to a bucket ↓</div>
+    </div>
+  </div>
+
+  <!-- Buckets — desktop drop targets -->
+  <div class="buckets" id="buckets">
+    <div class="bucket" data-bucket="1">
+      <div class="bucket-dot"></div>
+      <div class="bucket-name">I Chose<br/>This</div>
+      <div class="bucket-count" id="count-1">0</div>
+    </div>
+    <div class="bucket" data-bucket="2">
+      <div class="bucket-dot"></div>
+      <div class="bucket-name">Family<br/>Installed</div>
+      <div class="bucket-count" id="count-2">0</div>
+    </div>
+    <div class="bucket" data-bucket="3">
+      <div class="bucket-dot"></div>
+      <div class="bucket-name">Institution<br/>Installed</div>
+      <div class="bucket-count" id="count-3">0</div>
+    </div>
+    <div class="bucket" data-bucket="4">
+      <div class="bucket-dot"></div>
+      <div class="bucket-name">Don't<br/>Know</div>
+      <div class="bucket-count" id="count-4">0</div>
+    </div>
+  </div>
+
+  <!-- Tap buttons — mobile -->
+  <div class="tap-buttons" id="tapButtons">
+    <div class="tap-row">
+      <button class="tap-btn" data-bucket="1">
+        <div class="tb-dot"></div>I Chose This
+      </button>
+      <button class="tap-btn" data-bucket="2">
+        <div class="tb-dot"></div>Family Installed
+      </button>
+    </div>
+    <div class="tap-row">
+      <button class="tap-btn" data-bucket="3">
+        <div class="tb-dot"></div>Institution Installed
+      </button>
+      <button class="tap-btn" data-bucket="4">
+        <div class="tb-dot"></div>Don't Know
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- REVELATION FLASH OVERLAY -->
+<div class="revelation-flash" id="revelationFlash">
+  <div class="rf-inner" id="rfInner">
+    <div class="rf-source" id="rfSource">Sorted</div>
+    <div class="rf-belief" id="rfBelief"></div>
+    <div class="rf-truth" id="rfTruth"></div>
+    <button class="rf-next" id="rfNext">Next Belief →</button>
+    <div class="rf-remaining" id="rfRemaining"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SCREEN 2 — RESULTS
+════════════════════════════════════ -->
+<div id="screen-results" class="screen">
+  <div class="results-inner">
+
+    <div class="results-eyebrow">Your Results · Who Told You That?</div>
+
+    <h1 class="results-headline" id="resultsHeadline">
+      Now you can<br/><em>see the code.</em>
+    </h1>
+    <p class="results-sub" id="resultsSub">Here is where your 15 beliefs actually came from. Look at the breakdown — then ask yourself: which ones are you keeping by choice?</p>
+
+    <!-- BIG STAT -->
+    <div class="results-stat">
+      <div class="rs-num" id="rsNum">—</div>
+      <div class="rs-text">
+        <div class="rs-label">Beliefs installed from outside you</div>
+        <div class="rs-desc" id="rsDesc">Loading...</div>
+      </div>
+    </div>
+
+    <!-- BREAKDOWN -->
+    <div class="breakdown" id="breakdown"></div>
+
+    <!-- TRUTH REVEALS -->
+    <div class="truth-reveals" id="truthReveals"></div>
+
+    <!-- SHARE CARD -->
+    <div class="share-section">
+      <div class="share-label">Your Shareable Result</div>
+      <canvas id="shareCanvas" width="1080" height="608"></canvas>
+      <div class="share-buttons">
+        <button class="share-btn primary" id="downloadBtn">↓ Download Card</button>
+        <button class="share-btn" id="copyBtn">Copy Result Text</button>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="results-cta">
+      <div class="rcta-eyebrow">The Walk Continues</div>
+      <h2 class="rcta-title">You just saw the code.<br/><em>Now walk back.</em></h2>
+      <p class="rcta-body" id="rctaBody">Stage 2 — The Walk Back — is waiting. Ten choice points. One path. How far will you walk back to Eden?</p>
+      <div class="rcta-buttons">
+        <a href="lesson-01-what-is-programming.html" class="btn-gold">Start Lesson 1 →</a>
+        <a href="free-dashboard.html" class="btn-outline">Enter the Portal</a>
+      </div>
+    </div>
+
+    <button class="play-again" onclick="resetGame()">↺ Play again with fresh eyes</button>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     JAVASCRIPT — FULL GAME ENGINE
+════════════════════════════════════ -->
+<script>
+/* ══════════════════════════════
+   DATA
+══════════════════════════════ */
+const BELIEFS = [
+  {
+    id: 1,
+    text: '"I\'m not the kind of person who builds wealth."',
+    truth: 'Wealth limitation is the most successfully installed program on earth. Nazir El: "You were not weak. You were operating from installed software that was not written for your benefit."',
+    bucketHint: 3
+  },
+  {
+    id: 2,
+    text: '"You have to work yourself to exhaustion to deserve good things."',
+    truth: 'Exhaustion-as-virtue is an institution\'s tool. It keeps divine beings too tired to question. Ya Heard Me teaches: consciousness aligned with cosmic timing creates more than grinding ever will.',
+    bucketHint: 3
+  },
+  {
+    id: 3,
+    text: '"Spiritual people don\'t focus on money."',
+    truth: 'This program keeps awakening people broke. Chapter 9 of Ya Heard Me: "True wealth is the capacity to make others wealthy." Generational wealth IS a spiritual principle.',
+    bucketHint: 2
+  },
+  {
+    id: 4,
+    text: '"The experts know more about reality than I do."',
+    truth: '"Who gave them authority over your direct experience?" The institutions that taught cosmology, history, and science had specific interests. Nazir El learned to trust divine knowing over institutional authority.',
+    bucketHint: 3
+  },
+  {
+    id: 5,
+    text: '"I need a degree or credential to be taken seriously."',
+    truth: 'Credential dependency is a control mechanism. Nazir El self-taught HTML, CSS, JavaScript, and Firebase — built an entire corporation\'s digital infrastructure with zero prior experience.',
+    bucketHint: 3
+  },
+  {
+    id: 6,
+    text: '"That\'s just how the world works."',
+    truth: 'The most dangerous program — because it shuts down questioning before it starts. Every system that has ever been changed was changed by someone who refused to accept this sentence.',
+    bucketHint: 4
+  },
+  {
+    id: 7,
+    text: '"My family has always struggled financially."',
+    truth: 'Generational financial patterns are programs — not prophecies. They repeat because they are passed down, not because they are true. The 300-year vision begins with refusing to inherit the ceiling.',
+    bucketHint: 2
+  },
+  {
+    id: 8,
+    text: '"God is somewhere far away and hard to reach."',
+    truth: 'Spiritual distance is the church\'s most profitable program. When the Creator felt distant, Nazir El asked directly: "What did you put on earth to fight these wrongs?" The answer came immediately: "You son."',
+    bucketHint: 3
+  },
+  {
+    id: 9,
+    text: '"I\'m too old / too late / too far behind."',
+    truth: 'Artificial time programming. The Enoch calendar operates on cosmic timing — not the Gregorian urgency machine. You are not behind. You are exactly where divine timing has placed you.',
+    bucketHint: 3
+  },
+  {
+    id: 10,
+    text: '"Questioning authority is dangerous or disrespectful."',
+    truth: 'This program protects the program. Nazir El: "I had to recognize my heavenly Father over my earthly institutions." Discernment is not disrespect. It is divine responsibility.',
+    bucketHint: 2
+  },
+  {
+    id: 11,
+    text: '"I don\'t have what it takes."',
+    truth: '"Your capacity was not damaged by the programming. It was buried under it." — Ya Heard Me. Everything required for your divine assignment is already within you. It was there before the installation.',
+    bucketHint: 4
+  },
+  {
+    id: 12,
+    text: '"People like me don\'t do things like that."',
+    truth: 'This is inherited identity — who your neighborhood, your family, or your country said you were. Your true identity exists underneath everything that was installed. It cannot be destroyed.',
+    bucketHint: 2
+  },
+  {
+    id: 13,
+    text: '"The news tells me what\'s really happening in the world."',
+    truth: 'Information control is one of the five pillars of institutional power. Nazir El: "If they would lie about something as fundamental as where we live, what other lies had I accepted without question?"',
+    bucketHint: 3
+  },
+  {
+    id: 14,
+    text: '"My limitations are just who I am."',
+    truth: 'The final program — making installed software feel like identity. Ya Heard Me draws a critical line: "They are not evidence of who you are. They are evidence of what you were taught."',
+    bucketHint: 4
+  },
+  {
+    id: 15,
+    text: '"Success means having more than the people around me."',
+    truth: 'Competitive scarcity thinking keeps divine beings fighting each other instead of building together. Chapter 9: "You are not considered wealthy until you can make others wealthy." That is the real standard.',
+    bucketHint: 3
+  }
+];
+
+const BUCKET_NAMES = {
+  1: 'I Chose This',
+  2: 'Family Installed',
+  3: 'Institution Installed',
+  4: "Don't Know"
+};
+
+const BUCKET_COLORS = {
+  1: '#5BA3E0',
+  2: '#C9A84C',
+  3: '#9B7DB8',
+  4: '#6B9E6B'
+};
+
+/* ══════════════════════════════
+   GAME STATE
+══════════════════════════════ */
+let current     = 0;
+let answers     = []; // { beliefId, bucket }
+let counts      = { 1: 0, 2: 0, 3: 0, 4: 0 };
+let gameActive  = false;
+let isDragging  = false;
+let hoveredBucket = null;
+let dragInitialized = false;
+let tapInitialized = false;
+
+/* ══════════════════════════════
+   SCREEN MANAGER
+══════════════════════════════ */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/* ══════════════════════════════
+   GAME INIT
+══════════════════════════════ */
+function startGame() {
+  current   = 0;
+  answers   = [];
+  counts    = { 1: 0, 2: 0, 3: 0, 4: 0 };
+  gameActive = true;
+
+  // Reset bucket counters UI
+  [1, 2, 3, 4].forEach(b => {
+    const el = document.getElementById(`count-${b}`);
+    if (el) el.textContent = '0';
+  });
+
+  // Build progress dots
+  const dotsEl = document.getElementById('progressDots');
+  dotsEl.innerHTML = '';
+  BELIEFS.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'prog-dot';
+    d.id = `dot-${i}`;
+    dotsEl.appendChild(d);
+  });
+
+  showScreen('screen-game');
+  renderBelief();
+  initDrag();
+  initTap();
+}
+
+/* ══════════════════════════════
+   RENDER CURRENT BELIEF
+══════════════════════════════ */
+function renderBelief() {
+  if (current >= BELIEFS.length) {
+    showResults();
+    return;
+  }
+  const b = BELIEFS[current];
+  document.getElementById('bcNum').textContent    = `Belief ${String(current + 1).padStart(2,'0')} of ${BELIEFS.length}`;
+  document.getElementById('bcBelief').textContent = b.text;
+  document.getElementById('ghCount').textContent  = current + 1;
+  document.getElementById('ghRight').innerHTML    = window.innerWidth > 700
+    ? 'Drag to a bucket ↓'
+    : 'Tap a button below';
+
+  // Reset card position
+  const card = document.getElementById('beliefCard');
+  card.style.transform = '';
+  card.style.opacity   = '1';
+  card.className = 'belief-card';
+
+  // Animate in
+  card.style.animation = 'none';
+  card.offsetHeight; // reflow
+  card.style.animation = 'cardIn 0.35s ease forwards';
+}
+
+/* ══════════════════════════════
+   DRAG — DESKTOP
+══════════════════════════════ */
+function initDrag() {
+  if (dragInitialized) return;
+  dragInitialized = true;
+
+  const card = document.getElementById('beliefCard');
+
+  // Pointer events work on both mouse and touch with touch-action:none
+  card.addEventListener('pointerdown', onDragStart);
+
+  function onDragStart(e) {
+    if (!gameActive) return;
+    if (window.innerWidth <= 700) return; // mobile uses tap
+    isDragging = true;
+    card.classList.add('dragging');
+    card.setPointerCapture(e.pointerId);
+
+    document.addEventListener('pointermove', onDragMove);
+    document.addEventListener('pointerup', onDragEnd);
+  }
+
+  function onDragMove(e) {
+    if (!isDragging) return;
+    const rect = card.getBoundingClientRect();
+    const dx = e.clientX - (rect.left + rect.width / 2);
+    const dy = e.clientY - (rect.top + rect.height / 2);
+    const rot = dx * 0.04;
+
+    card.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg)`;
+
+    // Highlight bucket under cursor
+    let found = null;
+    document.querySelectorAll('.bucket').forEach(b => {
+      const r = b.getBoundingClientRect();
+      if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
+        found = b;
+      }
+      b.classList.remove('drag-over');
+    });
+
+    if (found) {
+      found.classList.add('drag-over');
+      hoveredBucket = parseInt(found.dataset.bucket, 10);
+      card.className = `belief-card dragging highlight-b${hoveredBucket}`;
+    } else {
+      hoveredBucket = null;
+      card.className = 'belief-card dragging';
+    }
+  }
+
+  function onDragEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    document.removeEventListener('pointermove', onDragMove);
+    document.removeEventListener('pointerup', onDragEnd);
+
+    document.querySelectorAll('.bucket').forEach(b => b.classList.remove('drag-over'));
+
+    if (hoveredBucket) {
+      sortBelief(hoveredBucket);
+      hoveredBucket = null;
+    } else {
+      // Snap back
+      card.style.transform = '';
+      card.className = 'belief-card';
+    }
+  }
+}
+
+/* ══════════════════════════════
+   TAP — MOBILE
+══════════════════════════════ */
+function initTap() {
+  if (tapInitialized) return;
+  tapInitialized = true;
+
+  document.querySelectorAll('.tap-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!gameActive) return;
+      const bucket = parseInt(btn.dataset.bucket, 10);
+      sortBelief(bucket);
+    });
+  });
+}
+
+/* ══════════════════════════════
+   SORT A BELIEF
+══════════════════════════════ */
+function sortBelief(bucket) {
+  if (!gameActive) return;
+  gameActive = false;
+
+  const belief = BELIEFS[current];
+  answers.push({ beliefId: belief.id, bucket, text: belief.text, truth: belief.truth });
+  counts[bucket]++;
+
+  // Update bucket count
+  document.getElementById(`count-${bucket}`).textContent = counts[bucket];
+
+  // Update progress dot
+  document.getElementById(`dot-${current}`).classList.add(`sorted-b${bucket}`);
+
+  // Exit animation on card
+  const card = document.getElementById('beliefCard');
+  card.classList.add('exiting');
+
+  // Show revelation
+  setTimeout(() => showRevelation(belief, bucket), 280);
+}
+
+/* ══════════════════════════════
+   REVELATION FLASH
+══════════════════════════════ */
+function showRevelation(belief, bucket) {
+  const flash  = document.getElementById('revelationFlash');
+  const inner  = document.getElementById('rfInner');
+  const src    = document.getElementById('rfSource');
+  const bel    = document.getElementById('rfBelief');
+  const tr     = document.getElementById('rfTruth');
+  const rem    = document.getElementById('rfRemaining');
+
+  inner.className = `rf-inner b${bucket}`;
+  src.textContent = `Sorted → ${BUCKET_NAMES[bucket]}`;
+  bel.textContent = belief.text;
+  tr.textContent  = belief.truth;
+
+  const remaining = BELIEFS.length - current - 1;
+  rem.textContent = remaining > 0
+    ? `${remaining} belief${remaining !== 1 ? 's' : ''} remaining`
+    : 'Last belief — results are ready';
+
+  // Update next button text
+  const nextBtn = document.getElementById('rfNext');
+  nextBtn.textContent = remaining > 0 ? 'Next Belief →' : 'See My Results →';
+
+  flash.classList.add('visible');
+
+  nextBtn.onclick = () => {
+    flash.classList.remove('visible');
+    current++;
+    gameActive = true;
+    if (current < BELIEFS.length) {
+      renderBelief();
+    } else {
+      showResults();
+    }
+  };
+}
+
+/* ══════════════════════════════
+   RESULTS
+══════════════════════════════ */
+function showResults() {
+  showScreen('screen-results');
+
+  const outside = counts[2] + counts[3] + counts[4];
+  const total   = BELIEFS.length;
+  const pct     = Math.round((outside / total) * 100);
+
+  // Headline + stat
+  document.getElementById('rsNum').textContent = outside;
+
+  const headlines = [
+    { max: 5,  h: 'You held your ground.', s: 'Most of your beliefs are ones you consciously chose. The programming did not get as deep — or you have already done real work to clear it.' },
+    { max: 10, h: 'The code is visible now.', s: `${outside} of your 15 beliefs came from somewhere outside you. That is not weakness. That is information. Now you can choose which ones you keep.` },
+    { max: 15, h: 'Now you can see the code.', s: `${outside} of your 15 beliefs were installed without your full consent. You accepted them before you had the tools to question them. That ends now.` }
+  ];
+
+  let hl = headlines[2];
+  if (outside <= 5) hl = headlines[0];
+  if (outside <= 10) hl = headlines[1];
+
+  document.getElementById('resultsHeadline').innerHTML =
+    `Now you can<br/><em>${hl.h}</em>`;
+  document.getElementById('resultsSub').textContent = hl.s;
+  document.getElementById('rsDesc').textContent =
+    `Out of 15 beliefs, ${outside} came from outside you — ${pct}% of what you thought was yours was installed by someone else.`;
+
+  // Breakdown
+  const breakdownEl = document.getElementById('breakdown');
+  breakdownEl.innerHTML = '';
+  [1, 2, 3, 4].forEach(b => {
+    const n   = counts[b];
+    const pctEach = Math.round((n / total) * 100);
+    const row = document.createElement('div');
+    row.className = 'breakdown-row';
+    row.innerHTML = `
+      <div class="br-dot b${b}"></div>
+      <div class="br-name b${b}">${BUCKET_NAMES[b]}</div>
+      <div class="br-count b${b}">${n}</div>
+      <div class="br-bar-wrap" style="grid-column:1/-1">
+        <div class="br-bar b${b}" style="width:0%" data-pct="${pctEach}"></div>
+      </div>`;
+    breakdownEl.appendChild(row);
+  });
+
+  // Animate bars
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.br-bar').forEach(bar => {
+        bar.style.width = bar.dataset.pct + '%';
+      });
+    });
+  });
+
+  // Truth reveals — show all sorted beliefs
+  const truthEl = document.getElementById('truthReveals');
+  truthEl.innerHTML = '';
+  answers.forEach(a => {
+    const item = document.createElement('div');
+    item.className = 'tr-item';
+    item.innerHTML = `
+      <div class="tr-dot" style="background:${BUCKET_COLORS[a.bucket]}"></div>
+      <div class="tr-content">
+        <div class="tr-belief">${a.text}</div>
+        <div class="tr-source">You sorted → ${BUCKET_NAMES[a.bucket]}</div>
+        <div class="tr-truth">${a.truth}</div>
+      </div>`;
+    truthEl.appendChild(item);
+  });
+
+  // CTA body
+  const ctaLines = [
+    'Stage 2 — The Walk Back — is unlocked after Lesson 1. Ten choice points. One path toward Eden.',
+    'You have seen where your beliefs came from. Now start the lesson that shows you the walk back.',
+    `${outside} of 15 beliefs came from outside you. The free lesson series is where you begin removing them — one truth at a time.`
+  ];
+  document.getElementById('rctaBody').textContent =
+    outside <= 5 ? ctaLines[0] : outside <= 10 ? ctaLines[1] : ctaLines[2];
+
+  // Draw share card
+  drawShareCard(outside, total, pct);
+
+  // Save to Firebase if logged in
+  saveResults(outside, pct);
+}
+
+/* ══════════════════════════════
+   SHARE CARD — CANVAS
+══════════════════════════════ */
+function drawShareCard(outside, total, pct) {
+  const canvas = document.getElementById('shareCanvas');
+  const ctx    = canvas.getContext('2d');
+  const W      = 1080;
+  const H      = 608;
+  canvas.width  = W;
+  canvas.height = H;
+
+  // Background
+  ctx.fillStyle = '#070C07';
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle grid lines
+  ctx.strokeStyle = 'rgba(26,48,26,0.6)';
+  ctx.lineWidth   = 1;
+  for (let x = 0; x <= W; x += 72) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 0; y <= H; y += 72) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  // Gold top line
+  ctx.fillStyle = '#C9A84C';
+  ctx.fillRect(0, 0, W, 3);
+
+  // Brand
+  ctx.fillStyle = '#7A5F2A';
+  ctx.font = '600 22px Georgia';
+  ctx.fillText('EDEN CONSCIOUSNESS', 64, 64);
+
+  // Game label
+  ctx.fillStyle = '#3D3828';
+  ctx.font = '400 16px Georgia';
+  ctx.fillText('Who Told You That? · Stage 1', 64, 96);
+
+  // Big number
+  ctx.fillStyle = '#C9A84C';
+  ctx.font      = '700 180px Georgia';
+  ctx.fillText(outside, 64, 320);
+
+  // Label
+  ctx.fillStyle = '#B0A890';
+  ctx.font      = '400 italic 28px Georgia';
+  ctx.fillText('of my beliefs came from outside me.', 64, 370);
+
+  // Pct
+  ctx.fillStyle = '#6B6250';
+  ctx.font      = '400 20px Georgia';
+  ctx.fillText(`${pct}% of what I thought was mine was installed without my consent.`, 64, 414);
+
+  // Divider
+  ctx.strokeStyle = '#1A301A';
+  ctx.lineWidth   = 1;
+  ctx.beginPath();
+  ctx.moveTo(64, 452);
+  ctx.lineTo(W - 64, 452);
+  ctx.stroke();
+
+  // Quote
+  ctx.fillStyle = '#6B6250';
+  ctx.font      = '400 italic 18px Georgia';
+  const quote   = '"Programming is not something they did to you once. It runs every day — until you decide to look at the code."';
+  wrapText(ctx, quote, 64, 488, W - 128, 26);
+
+  // Attribution
+  ctx.fillStyle = '#3D3828';
+  ctx.font      = '400 16px Georgia';
+  ctx.fillText('— Nazir El, Ya Heard Me', 64, 556);
+
+  // URL
+  ctx.fillStyle = '#1A301A';
+  ctx.font      = '400 16px Georgia';
+  ctx.textAlign = 'right';
+  ctx.fillText('edenconsciousnesssdt.com', W - 64, 556);
+  ctx.textAlign = 'left';
+}
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(' ');
+  let line = '';
+  let curY = y;
+  words.forEach((word, i) => {
+    const test = line + word + ' ';
+    const w = ctx.measureText(test).width;
+    if (w > maxWidth && i > 0) {
+      ctx.fillText(line, x, curY);
+      line = word + ' ';
+      curY += lineHeight;
+    } else {
+      line = test;
+    }
+  });
+  ctx.fillText(line, x, curY);
+}
+
+/* ══════════════════════════════
+   SHARE BUTTONS
+══════════════════════════════ */
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  const canvas = document.getElementById('shareCanvas');
+  const link   = document.createElement('a');
+  link.download = 'who-told-you-that-eden-consciousness.png';
+  link.href     = canvas.toDataURL('image/png');
+  link.click();
+});
+
+document.getElementById('copyBtn').addEventListener('click', () => {
+  const outside = counts[2] + counts[3] + counts[4];
+  const pct     = Math.round((outside / 15) * 100);
+  const text    = `${outside} of my 15 beliefs came from outside me. ${pct}% of what I thought was mine was installed without my consent. Find out where yours came from → edenconsciousnesssdt.com #YaHeardMe #EdenConsciousness`;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ Copied';
+    setTimeout(() => { btn.textContent = 'Copy Result Text'; }, 2000);
+  }).catch(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copy failed';
+    setTimeout(() => { btn.textContent = 'Copy Result Text'; }, 2000);
+  });
+});
+
+/* ══════════════════════════════
+   FIREBASE SAVE
+══════════════════════════════ */
+function saveResults(outside, pct) {
+  const tryFB = (attempts) => {
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+      firebase.auth().onAuthStateChanged(user => {
+        if (!user) return;
+        firebase.firestore().collection('users').doc(user.uid).set({
+          games: {
+            whoToldYouThat: {
+              completedAt: firebase.firestore.FieldValue.serverTimestamp(),
+              outsideBeliefs: outside,
+              pct,
+              counts,
+              answers: answers.map(a => ({ id: a.beliefId, bucket: a.bucket }))
+            }
+          },
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true }).catch(e => console.warn('Game save error:', e));
+      });
+    } else if (attempts > 0) {
+      setTimeout(() => tryFB(attempts - 1), 400);
+    }
+  };
+  tryFB(10);
+
+  // Also save to localStorage
+  try {
+    localStorage.setItem('ec_game_wty', JSON.stringify({
+      date: new Date().toISOString(),
+      outside,
+      pct,
+      counts
+    }));
+  } catch (e) {
+    // no-op for private browsing/storage restrictions
+  }
+}
+
+/* ══════════════════════════════
+   RESET
+══════════════════════════════ */
+function resetGame() {
+  showScreen('screen-intro');
+}
+
+/* ══════════════════════════════
+   CARD ENTRY ANIMATION
+══════════════════════════════ */
+const style = document.createElement('style');
+style.textContent = `
+@keyframes cardIn {
+  from { opacity:0; transform:translateY(16px) scale(0.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}`;
+document.head.appendChild(style);
+</script>
+
+</body>
+</html>
