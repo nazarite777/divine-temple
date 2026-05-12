@@ -60,12 +60,12 @@
 
     const style = document.createElement('style');
     style.id = 'eden-global-audio-style';
-    style.textContent = '\n      #eden-global-audio-ui {\n        position: fixed;\n        right: 16px;\n        bottom: 16px;\n        z-index: 2147483000;\n        display: flex;\n        align-items: center;\n        gap: 10px;\n        padding: 10px 12px;\n        border: 1px solid rgba(201,168,76,0.45);\n        background: rgba(6,12,8,0.94);\n        color: #f5edd7;\n        backdrop-filter: blur(8px);\n        box-shadow: 0 8px 24px rgba(0,0,0,0.35);\n        font-family: Georgia, serif;\n      }\n      #eden-global-audio-ui .ega-dot {\n        width: 8px;\n        height: 8px;\n        border-radius: 999px;\n        background: #c9a84c;\n        opacity: 0.9;\n      }\n      #eden-global-audio-ui .ega-title {\n        font-size: 12px;\n        letter-spacing: 0.03em;\n        white-space: nowrap;\n        max-width: 180px;\n        overflow: hidden;\n        text-overflow: ellipsis;\n      }\n      #eden-global-audio-ui .ega-btn {\n        border: 1px solid rgba(201,168,76,0.45);\n        background: rgba(201,168,76,0.1);\n        color: #f5edd7;\n        font-size: 11px;\n        letter-spacing: 0.08em;\n        text-transform: uppercase;\n        padding: 6px 10px;\n        cursor: pointer;\n      }\n      #eden-global-audio-ui .ega-btn:hover {\n        background: rgba(201,168,76,0.22);\n      }\n      @media (max-width: 720px) {\n        #eden-global-audio-ui {\n          left: 10px;\n          right: 10px;\n          bottom: 10px;\n          justify-content: space-between;\n        }\n        #eden-global-audio-ui .ega-title {\n          max-width: 56vw;\n        }\n      }\n    ';
+    style.textContent = '\n      #eden-global-audio-ui {\n        position: fixed;\n        right: 16px;\n        bottom: 16px;\n        z-index: 2147483000;\n      }\n      #eden-global-audio-ui .ega-btn {\n        width: 52px;\n        height: 52px;\n        border-radius: 999px;\n        border: 1px solid rgba(201,168,76,0.6);\n        background: rgba(6,12,8,0.94);\n        color: #f5edd7;\n        font-size: 20px;\n        line-height: 1;\n        display: grid;\n        place-items: center;\n        cursor: pointer;\n        box-shadow: 0 10px 28px rgba(0,0,0,0.45);\n        backdrop-filter: blur(8px);\n        padding: 0;\n      }\n      #eden-global-audio-ui .ega-btn:hover {\n        background: rgba(201,168,76,0.16);\n      }\n      @media (max-width: 720px) {\n        #eden-global-audio-ui {\n          right: 12px;\n          bottom: 12px;\n        }\n        #eden-global-audio-ui .ega-btn {\n          width: 48px;\n          height: 48px;\n          font-size: 18px;\n        }\n      }\n    ';
     document.head.appendChild(style);
 
     const ui = document.createElement('div');
     ui.id = 'eden-global-audio-ui';
-    ui.innerHTML = '<span class="ega-dot"></span><span class="ega-title"></span><button type="button" class="ega-btn">Play</button>';
+    ui.innerHTML = '<button type="button" class="ega-btn" aria-label="Play audio" title="Play audio">▶</button>';
     document.body.appendChild(ui);
     return ui;
   }
@@ -77,7 +77,6 @@
     const ui = injectUI();
     if (!ui) return;
 
-    const titleEl = ui.querySelector('.ega-title');
     const btnEl = ui.querySelector('.ega-btn');
 
     const audio = document.createElement('audio');
@@ -90,8 +89,9 @@
 
     function render(nextState) {
       const s = nextState || getState();
-      titleEl.textContent = s.title || DEFAULT_TITLE;
-      btnEl.textContent = s.isPlaying ? 'Stop' : 'Play';
+      btnEl.textContent = s.isPlaying ? '■' : '▶';
+      btnEl.setAttribute('aria-label', s.isPlaying ? 'Stop audio' : 'Play audio');
+      btnEl.setAttribute('title', s.isPlaying ? 'Stop audio' : 'Play audio');
     }
 
     function playWithState(next) {
