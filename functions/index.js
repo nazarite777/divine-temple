@@ -1,5 +1,10 @@
-const functions = require('firebase-functions');
+const functions = require('firebase-functions/v1');
+const { defineSecret } = require('firebase-functions/params');
 const admin = require('firebase-admin');
+
+// Firebase Secrets (replaces deprecated functions.config())
+const stripeSecret = defineSecret('STRIPE_SECRET');
+const stripeWebhookSecret = defineSecret('STRIPE_WEBHOOK_SECRET');
 
 // Import the payment success handler
 const { grantPremiumAccessAfterPayment, findUserByCustomerId, findUserByEmail, findUserBySubscriptionId } = require('./handle-payment-success');
@@ -138,7 +143,7 @@ exports.grantPremiumAccess = functions.https.onCall(async (data, context) => {
 /**
  * Create Stripe Checkout Session - $9.99/month Premium Membership
  */
-exports.createCheckoutSession = functions.https.onCall(async (data, context) => {
+exports.createCheckoutSession = functions.runWith({ secrets: [stripeSecret] }).https.onCall(async (data, context) => {
   // Check if user is authenticated
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
@@ -154,13 +159,12 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
   }
 
   try {
-    const stripeConfig = functions.config().stripe;
-
-    if (!stripeConfig || !stripeConfig.secret) {
-      throw new functions.https.HttpsError('failed-precondition', 'Stripe configuration is missing');
+    const secretValue = stripeSecret.value();
+    if (!secretValue) {
+      throw new functions.https.HttpsError('failed-precondition', 'Stripe secret is not configured. Set STRIPE_SECRET via firebase functions:secrets:set STRIPE_SECRET');
     }
 
-    const stripe = require('stripe')(stripeConfig.secret);
+    const stripe = require('stripe')(secretValue);
 
     // Create Stripe Checkout Session for SUBSCRIPTION
     const session = await stripe.checkout.sessions.create({
@@ -209,29 +213,30 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
  * Stripe Webhook Handler
  * Listens for Stripe events and updates user membership status in Firestore
  */
-exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
+exports.stripeWebhook = functions.runWith({ secrets: [stripeSecret, stripeWebhookSecret] }).https.onRequest(async (req, res) => {
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
   }
 
-  const stripeConfig = functions.config().stripe;
+  const secretValue = stripeSecret.value();
+  const webhookSecretValue = stripeWebhookSecret.value();
 
   // Check if Stripe is configured
-  if (!stripeConfig || !stripeConfig.secret || !stripeConfig.webhook_secret) {
-    console.error('❌ Stripe configuration is missing');
-    console.error('Run: firebase functions:config:set stripe.secret="sk_xxx" stripe.webhook_secret="whsec_xxx"');
+  if (!secretValue || !webhookSecretValue) {
+    console.error('❌ Stripe secrets are missing');
+    console.error('Run: firebase functions:secrets:set STRIPE_SECRET and STRIPE_WEBHOOK_SECRET');
     return res.status(500).send('Stripe configuration error');
   }
 
-  const stripe = require('stripe')(stripeConfig.secret);
+  const stripe = require('stripe')(secretValue);
   const sig = req.headers['stripe-signature'];
 
   let event;
 
   // Verify webhook signature
   try {
-    event = stripe.webhooks.constructEvent(req.rawBody, sig, stripeConfig.webhook_secret);
+    event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecretValue);
     console.log('✅ Webhook signature verified. Event type:', event.type);
   } catch (err) {
     console.error(`❌ Webhook signature verification failed: ${err.message}`);

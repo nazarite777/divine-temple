@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create your free Eden Consciousness account and begin your sacred journey.">
+    <meta name="theme-color" content="#d4af37">
+    <title>Create Account – Eden Consciousness</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    <script src="js/firebase-config.js?v=20260510b"></script>
+    <script src="js/onboarding-flow.js?v=20260510b"></script>
+
+    <style>
+        :root {
+            --deep-purple: #1a0a2e;
+            --gold: #d4af37;
+            --gold-light: #f0c842;
+            --cream: #f5f1e8;
+            --text-primary: #e8e3d9;
+            --text-secondary: #9ea3b0;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(212, 175, 55, 0.25);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0d0320 0%, #1a0a2e 40%, #0d1a2e 100%);
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        /* Starfield */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 60% 15%, rgba(255,255,255,0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 80% 65%, rgba(255,255,255,0.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 10% 70%, rgba(255,255,255,0.3) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .page-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        /* Back link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--gold); }
+
+        /* Card */
+        .register-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        }
+
+        /* Header */
+        .card-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+        .card-header h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.9rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 0.4rem;
+        }
+        .card-header p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Free badge */
+        .free-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.2));
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #6ee7b7;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            margin-top: 0.5rem;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 1.1rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .form-group input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-group input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+        }
+        .form-group input::placeholder { color: rgba(158, 163, 176, 0.6); }
+
+        /* Password strength bar */
+        .strength-bar-wrap {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin-top: 0.4rem;
+            overflow: hidden;
+        }
+        .strength-bar {
+            height: 100%;
+            border-radius: 2px;
+            width: 0;
+            transition: width 0.3s, background-color 0.3s;
+        }
+
+        /* Submit button */
+        .btn-register {
+            width: 100%;
+            padding: 0.9rem 1.5rem;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+            margin-top: 0.5rem;
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+        }
+        .btn-register:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 28px rgba(34, 197, 94, 0.5);
+        }
+        .btn-register:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* Messages */
+        .msg {
+            display: none;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .msg.error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+        }
+        .msg.success {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.35);
+            color: #86efac;
+        }
+
+        /* Divider */
+        .divider {
+            text-align: center;
+            position: relative;
+            margin: 1.5rem 0 1rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 42%;
+            height: 1px;
+            background: var(--border-color);
+        }
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        /* Footer links */
+        .footer-links {
+            text-align: center;
+            margin-top: 1.25rem;
+            font-size: 0.83rem;
+            color: var(--text-secondary);
+        }
+        .footer-links a {
+            color: var(--gold);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--gold-light); }
+
+        /* What you get */
+        .perks {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .perk {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            padding: 0.4rem 0.6rem;
+        }
+        .perk-icon { font-size: 1rem; }
+
+        /* Terms checkbox */
+        .terms-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        .terms-row input[type="checkbox"] {
+            flex-shrink: 0;
+            margin-top: 0.15rem;
+            accent-color: var(--gold);
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+        }
+        .terms-row a { color: var(--gold); text-decoration: none; }
+        .terms-row a:hover { text-decoration: underline; }
+
+        @media (max-width: 480px) {
+            .register-card { padding: 2rem 1.25rem; }
+            .perks { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <a class="back-link" href="members-new.html">← Back to Login</a>
+
+        <div class="register-card">
+            <div class="card-header">
+                <span class="card-icon">🌱</span>
+                <h1>Begin Your Journey</h1>
+                <p>Create your sacred account and take your first step toward divine remembrance.</p>
+                <span class="free-badge">✦ Always Free</span>
+            </div>
+
+            <!-- What you get -->
+            <div class="perks">
+                <div class="perk"><span class="perk-icon">📅</span> Sacred Calendar</div>
+                <div class="perk"><span class="perk-icon">📖</span> Free Book Chapter</div>
+                <div class="perk"><span class="perk-icon">🎮</span> Spiritual Games</div>
+                <div class="perk"><span class="perk-icon">🧘</span> Intro Meditations</div>
+            </div>
+
+            <form id="register-form" novalidate>
+                <div class="form-group">
+                    <label for="reg-name">Your Sacred Name</label>
+                    <input type="text" id="reg-name" required placeholder="How shall we call you?" autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email Address</label>
+                    <input type="email" id="reg-email" required placeholder="your@email.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <input type="password" id="reg-password" required placeholder="Min. 6 characters" autocomplete="new-password">
+                    <div class="strength-bar-wrap">
+                        <div class="strength-bar" id="strength-bar"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="reg-confirm">Confirm Password</label>
+                    <input type="password" id="reg-confirm" required placeholder="Repeat password" autocomplete="new-password">
+                </div>
+
+                <div class="terms-row">
+                    <input type="checkbox" id="terms-check">
+                    <label for="terms-check">
+                        I agree to the <a href="affiliate-disclosure.html" target="_blank">Terms</a> and understand this is a spiritual platform focused on personal growth.
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-register" id="submit-btn">
+                    🌿 Create My Free Account
+                </button>
+
+                <div class="msg error" id="error-msg"></div>
+                <div class="msg success" id="success-msg"></div>
+            </form>
+
+            <div class="divider">already have an account?</div>
+
+            <div class="footer-links">
+                <a href="members-new.html">Sign In to Your Portal</a>
+                &nbsp;·&nbsp;
+                <a href="home.html">Explore the Temple</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Password strength indicator
+        document.getElementById('reg-password').addEventListener('input', function() {
+            const val = this.value;
+            const bar = document.getElementById('strength-bar');
+            let strength = 0;
+            if (val.length >= 6) strength += 25;
+            if (val.length >= 10) strength += 25;
+            if (/[A-Z]/.test(val)) strength += 25;
+            if (/[0-9!@#$%^&*]/.test(val)) strength += 25;
+            bar.style.width = strength + '%';
+            bar.style.backgroundColor =
+                strength <= 25 ? '#ef4444' :
+                strength <= 50 ? '#f97316' :
+                strength <= 75 ? '#eab308' : '#22c55e';
+        });
+
+        document.getElementById('register-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const name     = document.getElementById('reg-name').value.trim();
+            const email    = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirm  = document.getElementById('reg-confirm').value;
+            const terms    = document.getElementById('terms-check').checked;
+            const btn      = document.getElementById('submit-btn');
+            const errorDiv = document.getElementById('error-msg');
+            const successDiv = document.getElementById('success-msg');
+
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            if (!name || !email || !password || !confirm) {
+                errorDiv.textContent = '⚠️ Please fill in all fields.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            if (password.length < 6) {
+                errorDiv.textContent = '⚠️ Password must be at least 6 characters.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            if (password !== confirm) {
+                errorDiv.textContent = '⚠️ Passwords do not match.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            if (!terms) {
+                errorDiv.textContent = '⚠️ Please agree to the terms to continue.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Wait for FirebaseConfig to be ready (up to 5 s)
+            let waited = 0;
+            while (!window.FirebaseConfig && waited < 5000) {
+                await new Promise(r => setTimeout(r, 100));
+                waited += 100;
+            }
+            if (!window.FirebaseConfig) {
+                errorDiv.textContent = '⚠️ System not ready. Please refresh and try again.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '✨ Creating your account…';
+
+            const result = await FirebaseConfig.auth.createUser(email, password, name);
+
+            if (result.success) {
+                let nextRoute = 'division-i.html';
+
+                if (window.OnboardingFlow && typeof window.OnboardingFlow.ensurePhase1Record === 'function') {
+                    const userData = await window.OnboardingFlow.ensurePhase1Record(result.user, {
+                        displayName: name,
+                        membershipLevel: 'basic'
+                    });
+                    nextRoute = window.OnboardingFlow.resolvePostAuthRedirect(userData);
+                }
+
+                successDiv.textContent = '✅ Account created! Redirecting to your Phase 1 path…';
+                successDiv.style.display = 'block';
+
+                const memberData = {
+                    uid: result.user.uid,
+                    email: result.user.email,
+                    displayName: name,
+                    loginTime: new Date().toISOString(),
+                    membershipLevel: 'basic'
+                };
+                sessionStorage.setItem('divineAuth', 'true');
+                sessionStorage.setItem('memberData', JSON.stringify(memberData));
+                sessionStorage.setItem('portalType', 'free');
+
+                setTimeout(() => { window.location.href = nextRoute; }, 1800);
+            } else {
+                let msg = result.error || 'Registration failed. Please try again.';
+                if (msg.includes('email-already-in-use')) {
+                    msg = '⚠️ An account with this email already exists. <a href="members-new.html" style="color:var(--gold)">Sign in instead?</a>';
+                    errorDiv.innerHTML = msg;
+                } else if (msg.includes('invalid-email')) {
+                    errorDiv.textContent = '⚠️ Please enter a valid email address.';
+                } else if (msg.includes('weak-password')) {
+                    errorDiv.textContent = '⚠️ Password is too weak. Use at least 6 characters.';
+                } else {
+                    errorDiv.textContent = msg;
+                }
+                errorDiv.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = '🌿 Create My Free Account';
+            }
+        });
+    </script>
+</body>
+</html>

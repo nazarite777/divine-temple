@@ -1,0 +1,92 @@
+/**
+ * PWA Button Debug & Force Show
+ * Ensures PWA install buttons are visible with proper styling
+ */
+
+/* Force PWA buttons to be visible by default */
+.pwa-install-btn,
+.pwa-manual-btn,
+.manual-install-btn,
+#pwaInstallBtn,
+#pwaManualBtn,
+#manualInstallBtn {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 9999 !important;
+}
+
+/* Override hidden class temporarily for debugging */
+.pwa-install-btn.hidden,
+.pwa-manual-btn.hidden,
+.manual-install-btn.hidden {
+    opacity: 0.5 !important;
+    display: flex !important;
+}
+
+/* Ensure buttons are positioned correctly */
+.pwa-install-btn,
+.pwa-manual-btn,
+.manual-install-btn {
+    position: fixed;
+    top: 50%;
+    right: -80px;
+    transform: translateY(-50%) rotate(-90deg);
+    transform-origin: center;
+    background: linear-gradient(135deg, #d4af37, #8b5cf6);
+    border: none;
+    color: white;
+    padding: 1rem 0.75rem;
+    border-radius: 15px 0 0 15px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    box-shadow: -5px 0 15px rgba(212, 175, 55, 0.3);
+    transition: all 0.4s ease;
+    writing-mode: vertical-lr;
+    text-orientation: mixed;
+    width: 120px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hover effects */
+.pwa-install-btn:hover,
+.pwa-manual-btn:hover,
+.manual-install-btn:hover {
+    right: -40px;
+    box-shadow: -8px 0 25px rgba(212, 175, 55, 0.5);
+    background: linear-gradient(135deg, #f4c430, #9d6bfc);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .pwa-install-btn,
+    .pwa-manual-btn,
+    .manual-install-btn {
+        top: 60%;
+        right: -70px;
+        width: 100px;
+        height: 35px;
+        font-size: 0.75rem;
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .pwa-install-btn:hover,
+    .pwa-manual-btn:hover,
+    .manual-install-btn:hover {
+        right: -30px;
+    }
+}
+
+/* Debug border to see button positioning */
+.debug-pwa-buttons .pwa-install-btn,
+.debug-pwa-buttons .pwa-manual-btn,
+.debug-pwa-buttons .manual-install-btn {
+    border: 2px solid red !important;
+    background: rgba(255, 0, 0, 0.3) !important;
+}
+
+console.log('🛠️ PWA Button Force Show CSS loaded');

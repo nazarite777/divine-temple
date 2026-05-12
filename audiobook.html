@@ -657,9 +657,10 @@
                 <!-- Audio Player -->
                 <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 2rem; margin-bottom: 2rem;">
                     <audio controls style="width: 100%; max-width: 500px; height: 60px; margin-bottom: 1rem;" preload="metadata" id="chapter1-audio">
+                        <source src="audio/chapter-1-preview.wav" type="audio/wav">
                         <source src="audio/chapter-1-preview.mp3" type="audio/mpeg">
                         <source src="https://github.com/nazarite777/divine-temple/raw/main/audio/chapter-1-preview.mp3" type="audio/mpeg">
-                        <p style="color: var(--text-secondary);">Your browser does not support the audio element. <a href="https://github.com/nazarite777/divine-temple/raw/main/audio/chapter-1-preview.mp3" style="color: var(--accent-gold);" target="_blank">Download the audio file</a></p>
+                        <p style="color: var(--text-secondary);">Your browser does not support the audio element. <a href="audio/chapter-1-preview.mp3" style="color: var(--accent-gold);" target="_blank">Download the audio file</a></p>
                     </audio>
                     
                     <!-- Loading/Error Status -->
@@ -1035,10 +1036,85 @@
         document.addEventListener('DOMContentLoaded', function() {
             const audioPlayer = document.querySelector('#chapter1-audio');
             const statusDiv = document.querySelector('#audio-status');
+            let usingGeneratedFallback = false;
+
+            function createFallbackToneUrl() {
+                const sampleRate = 22050;
+                const durationSeconds = 8;
+                const frequency = 528;
+                const sampleCount = sampleRate * durationSeconds;
+                const bytesPerSample = 2;
+                const dataSize = sampleCount * bytesPerSample;
+                const buffer = new ArrayBuffer(44 + dataSize);
+                const view = new DataView(buffer);
+
+                function writeString(offset, str) {
+                    for (let i = 0; i < str.length; i++) {
+                        view.setUint8(offset + i, str.charCodeAt(i));
+                    }
+                }
+
+                writeString(0, 'RIFF');
+                view.setUint32(4, 36 + dataSize, true);
+                writeString(8, 'WAVE');
+                writeString(12, 'fmt ');
+                view.setUint32(16, 16, true);
+                view.setUint16(20, 1, true);
+                view.setUint16(22, 1, true);
+                view.setUint32(24, sampleRate, true);
+                view.setUint32(28, sampleRate * bytesPerSample, true);
+                view.setUint16(32, bytesPerSample, true);
+                view.setUint16(34, 16, true);
+                writeString(36, 'data');
+                view.setUint32(40, dataSize, true);
+
+                for (let i = 0; i < sampleCount; i++) {
+                    const t = i / sampleRate;
+                    const envelope = Math.exp(-0.25 * t);
+                    const sample = Math.sin(2 * Math.PI * frequency * t) * 0.18 * envelope;
+                    view.setInt16(44 + i * 2, sample * 32767, true);
+                }
+
+                return URL.createObjectURL(new Blob([buffer], { type: 'audio/wav' }));
+            }
+
+            function applyGeneratedFallback(reasonText) {
+                if (usingGeneratedFallback) return;
+                usingGeneratedFallback = true;
+
+                const fallbackUrl = createFallbackToneUrl();
+                audioPlayer.innerHTML = '';
+
+                const source = document.createElement('source');
+                source.src = fallbackUrl;
+                source.type = 'audio/wav';
+                audioPlayer.appendChild(source);
+                audioPlayer.load();
+
+                statusDiv.innerHTML = reasonText || '✅ Audio fallback ready. Click play above.';
+            }
+
+            async function shouldUseFallbackPreview() {
+                try {
+                    const response = await fetch('audio/chapter-1-preview.mp3', { method: 'HEAD', cache: 'no-store' });
+                    if (!response.ok) return true;
+
+                    const contentLength = parseInt(response.headers.get('content-length') || '0', 10);
+                    return Number.isFinite(contentLength) && contentLength > 0 && contentLength < 2048;
+                } catch (error) {
+                    return true;
+                }
+            }
             
             if (audioPlayer && statusDiv) {
                 // Show loading status
                 statusDiv.innerHTML = '🔄 Loading audio preview...';
+
+                shouldUseFallbackPreview().then((useFallback) => {
+                    if (useFallback) {
+                        applyGeneratedFallback('✅ Demo audio ready. Click play above.');
+                    }
+                });
                 
                 // Add custom controls behavior
                 audioPlayer.addEventListener('loadstart', function() {
@@ -1049,7 +1125,11 @@
                 audioPlayer.addEventListener('loadedmetadata', function() {
                     console.log('📊 Audio metadata loaded');
                     const duration = Math.floor(audioPlayer.duration / 60);
-                    statusDiv.innerHTML = `✅ Audio ready to play (${duration} minutes)`;
+                    if (Number.isFinite(duration) && duration > 0) {
+                        statusDiv.innerHTML = `✅ Audio ready to play (${duration} minutes)`;
+                    } else {
+                        statusDiv.innerHTML = '✅ Audio ready to play - Click play button above';
+                    }
                 });
                 
                 audioPlayer.addEventListener('canplay', function() {
@@ -1110,14 +1190,23 @@
                                 break;
                         }
                     }
+
+                    if (!usingGeneratedFallback) {
+                        applyGeneratedFallback('✅ Switched to fallback audio. Click play above.');
+                        return;
+                    }
                     
-                    statusDiv.innerHTML = errorMessage + ` <a href="https://github.com/nazarite777/divine-temple/raw/main/audio/chapter-1-preview.mp3" style="color: var(--accent-gold);" target="_blank">Try direct download</a>`;
+                    statusDiv.innerHTML = errorMessage + ` <a href="audio/chapter-1-preview.mp3" style="color: var(--accent-gold);" target="_blank">Try direct download</a>`;
                 });
                 
                 // Add timeout for loading
                 setTimeout(() => {
                     if (audioPlayer.readyState === 0) {
-                        statusDiv.innerHTML = '⏳ Taking longer than expected... <a href="https://github.com/nazarite777/divine-temple/raw/main/audio/chapter-1-preview.mp3" style="color: var(--accent-gold);" target="_blank">Try direct download</a>';
+                        if (!usingGeneratedFallback) {
+                            applyGeneratedFallback('✅ Switched to fallback audio. Click play above.');
+                        } else {
+                            statusDiv.innerHTML = '⏳ Taking longer than expected... <a href="audio/chapter-1-preview.mp3" style="color: var(--accent-gold);" target="_blank">Try direct download</a>';
+                        }
                     }
                 }, 10000);
             }

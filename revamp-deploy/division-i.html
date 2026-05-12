@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Division I is the introduction to Eden Consciousness lessons 1 through 5. Learn what each lesson is designed to provide and how to move from free lessons into Sacred Member access." />
+<title>Division I - Lesson Introduction | Eden Consciousness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Space+Mono:wght@400;700&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet" />
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js?v=20260510b"></script>
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-dim: #7A5F2A;
+  --gold-pale: #F0DC9A;
+  --bg: #050B06;
+  --bg-2: #080F08;
+  --bg-3: #0A1409;
+  --green-panel: #142E16;
+  --border: #1B3D1E;
+  --border-2: #254E28;
+  --text: #EDE8DB;
+  --text-2: #B0A890;
+  --text-3: #6B6250;
+  --text-4: #3D3828;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --mono: 'Space Mono', monospace;
+  --display: 'Cinzel', serif;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 64px;
+  background: rgba(5,11,6,0.88);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.nav-links { display: flex; gap: 32px; list-style: none; }
+
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-3);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active { color: var(--gold); }
+
+.nav-cta {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  padding: 8px 18px;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-cta:hover { background: var(--gold); color: var(--bg); }
+
+.nav-mobile-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-3);
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.page-hero {
+  position: relative;
+  padding: 140px 40px 90px;
+  overflow: hidden;
+  background: linear-gradient(160deg, var(--bg) 0%, var(--bg-3) 100%);
+}
+
+.page-hero::before {
+  content: '';
+  position: absolute;
+  top: -120px; right: -120px;
+  width: 620px; height: 620px;
+  background: radial-gradient(circle, rgba(201,168,76,0.05) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-rule {
+  position: absolute;
+  left: 40px; top: 100px; bottom: 60px;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--border) 15%, var(--border) 85%, transparent);
+}
+
+.hero-inner {
+  position: relative;
+  padding-left: 40px;
+  max-width: 900px;
+}
+
+.hero-stamp {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.1s forwards;
+}
+
+.hero-stamp::before { content: ''; width: 28px; height: 1px; background: var(--gold-dim); }
+
+.hero-h1 {
+  font-family: var(--display);
+  font-size: clamp(36px, 6.2vw, 84px);
+  font-weight: 700;
+  line-height: 0.94;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-bottom: 18px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.2s forwards;
+}
+
+.hero-h1 em {
+  font-style: italic;
+  color: var(--gold);
+  font-family: var(--serif);
+  font-weight: 300;
+  display: block;
+  font-size: 0.8em;
+}
+
+.hero-sub {
+  font-size: clamp(16px, 1.9vw, 20px);
+  font-style: italic;
+  color: var(--text-2);
+  max-width: 650px;
+  line-height: 1.65;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.35s forwards;
+}
+
+.hero-tags {
+  margin-top: 26px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.5s forwards;
+}
+
+.tag {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-3);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  text-transform: uppercase;
+}
+
+.tag.gold { color: var(--gold-dim); border-color: var(--gold-dim); }
+
+section { position: relative; z-index: 1; }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border) 20%, var(--border) 80%, transparent);
+}
+
+.intro-section {
+  padding: 100px 0;
+  background: var(--bg-2);
+}
+
+.stamp {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.stamp::before { content: ''; width: 24px; height: 1px; background: var(--gold-dim); }
+
+.sec-title {
+  font-family: var(--display);
+  font-size: clamp(24px, 3.5vw, 44px);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  margin-bottom: 14px;
+}
+
+.sec-title em {
+  font-style: italic;
+  color: var(--gold);
+  font-family: var(--serif);
+  font-weight: 300;
+}
+
+.body-text {
+  font-size: 16px;
+  color: var(--text-2);
+  line-height: 1.8;
+  max-width: 760px;
+}
+
+.phase-progress {
+  margin-top: 28px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.2);
+}
+
+.phase-progress-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.phase-progress-title {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+}
+
+.phase-progress-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-3);
+  text-transform: uppercase;
+}
+
+.phase-progress-track {
+  width: 100%;
+  height: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  overflow: hidden;
+}
+
+.phase-progress-fill {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+  transition: width 0.4s ease;
+}
+
+.phase-progress-note {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+.phase-progress-actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.phase-btn {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 10px 14px;
+  border: 1px solid var(--gold-dim);
+  color: var(--gold);
+}
+
+.phase-btn:hover {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+.phase-btn.ghost {
+  border-color: var(--border);
+  color: var(--text-3);
+}
+
+.phase-btn.ghost:hover {
+  border-color: var(--gold-dim);
+  color: var(--gold);
+  background: transparent;
+}
+
+.lesson-section {
+  padding: 100px 0;
+  background: linear-gradient(to bottom, var(--bg-2), var(--bg-3));
+}
+
+.lesson-list {
+  margin-top: 46px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lesson-row {
+  background: var(--green-panel);
+  border: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  overflow: hidden;
+  align-items: stretch;
+  transition: border-color 0.2s;
+}
+
+.lesson-row:hover { border-color: var(--border-2); }
+
+.lesson-row.is-complete {
+  border-color: var(--gold-dim);
+  box-shadow: inset 0 0 0 1px rgba(201,168,76,0.25);
+}
+
+.lesson-row.is-current {
+  border-color: var(--border-2);
+  box-shadow: inset 0 0 0 1px rgba(37,78,40,0.8);
+}
+
+.lesson-index {
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 20px 12px;
+  background: rgba(0,0,0,0.18);
+}
+
+.li-num {
+  font-family: var(--display);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--gold-dim);
+}
+
+.li-label {
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 2px;
+  color: var(--text-4);
+  text-transform: uppercase;
+}
+
+.lesson-main {
+  padding: 22px 24px;
+}
+
+.lesson-title {
+  font-family: var(--display);
+  font-size: clamp(16px, 2vw, 22px);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.lesson-purpose {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.65;
+  margin-bottom: 12px;
+}
+
+.lesson-outcomes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.outcome {
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 1.5px;
+  color: var(--text-3);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  text-transform: uppercase;
+}
+
+.lesson-cta {
+  border-left: 1px solid var(--border);
+  min-width: 130px;
+  padding: 20px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lesson-btn {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--gold-dim);
+  padding: 10px 14px;
+  text-align: center;
+}
+
+.lesson-btn:hover { background: var(--gold); color: var(--bg); }
+
+.lesson-status {
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-3);
+  text-transform: uppercase;
+}
+
+.lesson-status.complete { color: var(--gold); }
+
+.lesson-status.current { color: var(--gold-pale); }
+
+.results-section {
+  padding: 100px 0;
+  background: var(--bg-3);
+}
+
+.result-grid {
+  margin-top: 44px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+
+.result-card {
+  background: var(--green-panel);
+  border: 1px solid var(--border);
+  padding: 22px 20px;
+}
+
+.r-num {
+  font-family: var(--display);
+  font-size: 38px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.r-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.r-text {
+  font-size: 13px;
+  color: var(--text-2);
+  font-style: italic;
+  line-height: 1.55;
+}
+
+.next-section {
+  padding: 80px 0;
+  background: var(--green-panel);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+
+.next-inner { max-width: 760px; margin: 0 auto; padding: 0 40px; }
+
+.next-eyebrow {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.next-title {
+  font-family: var(--display);
+  font-size: clamp(26px, 3.8vw, 46px);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+
+.next-title em {
+  color: var(--gold);
+  font-style: italic;
+  font-family: var(--serif);
+  font-weight: 300;
+}
+
+.next-desc {
+  font-size: 16px;
+  color: var(--text-2);
+  font-style: italic;
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+.next-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--gold);
+  color: var(--bg);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 15px 30px;
+}
+
+.btn-primary:hover { background: var(--gold-pale); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 15px 30px;
+  border: 1px solid var(--border-2);
+}
+
+.btn-secondary:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+footer {
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+  padding: 60px 40px 40px;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 40px;
+}
+
+.fb-logo {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.fb-mission {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text-3);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.fb-corp {
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 2px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  line-height: 2;
+}
+
+.footer-col h4 {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+.footer-col ul a {
+  font-size: 13px;
+  color: var(--text-3);
+  text-decoration: none;
+}
+
+.footer-col ul a:hover { color: var(--gold); }
+
+.footer-bottom {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.fb-copy {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  line-height: 1.8;
+}
+
+.fb-mark {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--border-2);
+  letter-spacing: -1px;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 980px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .nav-mobile-btn { display: block; }
+  .page-hero { padding: 110px 20px 70px; }
+  .hero-rule { left: 20px; }
+  .hero-inner { padding-left: 20px; }
+  .wrap { padding: 0 20px; }
+  .lesson-row { grid-template-columns: 70px 1fr; }
+  .lesson-cta { border-left: none; border-top: 1px solid var(--border); grid-column: 1 / -1; }
+  .result-grid { grid-template-columns: 1fr 1fr; }
+  .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+
+@media (max-width: 620px) {
+  .result-grid { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="home.html" class="nav-logo">Eden Consciousness</a>
+  <ul class="nav-links">
+    <li><a href="about.html">About</a></li>
+    <li><a href="books.html">Books</a></li>
+    <li><a href="music.html">Music</a></li>
+    <li><a href="division-i.html" class="active">Division I</a></li>
+    <li><a href="members-new.html">Member Portal</a></li>
+  </ul>
+  <a href="members-new.html" class="nav-cta">Enter the Temple</a>
+  <button class="nav-mobile-btn" onclick="document.querySelector('.nav-links').style.cssText='display:flex;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:rgba(5,11,6,0.98);padding:24px;border-bottom:1px solid #1B3D1E;z-index:99;gap:0;';">☰</button>
+</nav>
+
+<div class="page-hero">
+  <div class="hero-rule"></div>
+  <div class="hero-inner">
+    <div class="hero-stamp">Division I · Lesson Gateway</div>
+    <h1 class="hero-h1">Start The Walk.<br/><em>Lesson By Lesson.</em></h1>
+    <p class="hero-sub">Division I is the introduction to Lessons 1 through 5. Each lesson is designed to move you from programming to awareness, from awareness to alignment, and from alignment to assignment.</p>
+    <div class="hero-tags">
+      <span class="tag gold">5 Foundational Lessons</span>
+      <span class="tag">Free Member Entry</span>
+      <span class="tag">Path to Sacred Member Access</span>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<section class="intro-section">
+  <div class="wrap">
+    <div class="stamp reveal">What Division I Provides</div>
+    <h2 class="sec-title reveal">A Structured Introduction.<br/><em>Not Random Content.</em></h2>
+    <p class="body-text reveal">Division I is designed to establish a clear internal foundation before deeper chambers open. These lessons are not entertainment and not theory-only. Each one is built to produce a specific shift in how you think, speak, choose, and build. By Lesson 5, you should understand your next move and why Sacred Member access matters.</p>
+    <div class="phase-progress reveal" id="phaseProgressCard">
+      <div class="phase-progress-head">
+        <div class="phase-progress-title">Your Phase 1 Tracker</div>
+        <div class="phase-progress-label" id="phaseProgressLabel">0 / 5 Lessons</div>
+      </div>
+      <div class="phase-progress-track">
+        <div class="phase-progress-fill" id="phaseProgressFill"></div>
+      </div>
+      <p class="phase-progress-note" id="phaseProgressNote">Sign in to save progress and resume exactly where you left off.</p>
+      <div class="phase-progress-actions">
+        <a id="resumeLessonBtn" class="phase-btn" href="lesson-01-what-is-programming.html">Start Lesson 1</a>
+        <a id="phaseAuthBtn" class="phase-btn ghost" href="members-new.html">Login To Resume</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="lesson-section">
+  <div class="wrap">
+    <div class="stamp reveal">Lesson Map</div>
+    <h2 class="sec-title reveal">Lessons 1 Through 5.<br/><em>Designed Outcomes.</em></h2>
+
+    <div class="lesson-list reveal">
+      <article class="lesson-row" data-lesson="lesson-01">
+        <div class="lesson-index">
+          <div class="li-num">01</div>
+          <div class="li-label">Awareness</div>
+        </div>
+        <div class="lesson-main">
+          <h3 class="lesson-title">What Is Programming?</h3>
+          <p class="lesson-purpose">Designed to help you identify conditioning patterns, inherited beliefs, and default reactions that have been driving your decisions unconsciously.</p>
+          <div class="lesson-outcomes">
+            <span class="outcome">Recognize external programming</span>
+            <span class="outcome">Name inherited narratives</span>
+            <span class="outcome">Begin conscious observation</span>
+          </div>
+          <div class="lesson-status" id="status-lesson-01">Not Started</div>
+        </div>
+        <div class="lesson-cta">
+          <a class="lesson-btn" id="btn-lesson-01" href="lesson-01-what-is-programming.html">Open Lesson 1</a>
+        </div>
+      </article>
+
+      <article class="lesson-row" data-lesson="lesson-02">
+        <div class="lesson-index">
+          <div class="li-num">02</div>
+          <div class="li-label">Direction</div>
+        </div>
+        <div class="lesson-main">
+          <h3 class="lesson-title">The Walk Back To Eden</h3>
+          <p class="lesson-purpose">Designed to define the journey itself so you understand the process, pace, and spiritual logic of returning to original identity and alignment.</p>
+          <div class="lesson-outcomes">
+            <span class="outcome">Understand the path framework</span>
+            <span class="outcome">Clarify identity direction</span>
+            <span class="outcome">Commit to the walk</span>
+          </div>
+          <div class="lesson-status" id="status-lesson-02">Not Started</div>
+        </div>
+        <div class="lesson-cta">
+          <a class="lesson-btn" id="btn-lesson-02" href="lesson-02-the-walk-back.html">Open Lesson 2</a>
+        </div>
+      </article>
+
+      <article class="lesson-row" data-lesson="lesson-03">
+        <div class="lesson-index">
+          <div class="li-num">03</div>
+          <div class="li-label">Timing</div>
+        </div>
+        <div class="lesson-main">
+          <h3 class="lesson-title">Sacred Time And The I-N-I Year</h3>
+          <p class="lesson-purpose">Designed to shift your relationship with time from pressure-based scheduling to alignment-based rhythm through sacred calendar awareness.</p>
+          <div class="lesson-outcomes">
+            <span class="outcome">Understand sacred timing</span>
+            <span class="outcome">Begin calendar awareness</span>
+            <span class="outcome">Reduce forced decision cycles</span>
+          </div>
+          <div class="lesson-status" id="status-lesson-03">Not Started</div>
+        </div>
+        <div class="lesson-cta">
+          <a class="lesson-btn" id="btn-lesson-03" href="lesson-03-ini-year.html">Open Lesson 3</a>
+        </div>
+      </article>
+
+      <article class="lesson-row" data-lesson="lesson-04">
+        <div class="lesson-index">
+          <div class="li-num">04</div>
+          <div class="li-label">Method</div>
+        </div>
+        <div class="lesson-main">
+          <h3 class="lesson-title">Aligned Manifestation</h3>
+          <p class="lesson-purpose">Designed to introduce the core methodology so manifestation is practiced from alignment and assignment, not anxiety and force.</p>
+          <div class="lesson-outcomes">
+            <span class="outcome">Learn principle-based creation</span>
+            <span class="outcome">Separate forcing from flow</span>
+            <span class="outcome">Establish aligned action habits</span>
+          </div>
+          <div class="lesson-status" id="status-lesson-04">Not Started</div>
+        </div>
+        <div class="lesson-cta">
+          <a class="lesson-btn" id="btn-lesson-04" href="lesson-04-aligned-manifestation.html">Open Lesson 4</a>
+        </div>
+      </article>
+
+      <article class="lesson-row" data-lesson="lesson-05">
+        <div class="lesson-index">
+          <div class="li-num">05</div>
+          <div class="li-label">Decision</div>
+        </div>
+        <div class="lesson-main">
+          <h3 class="lesson-title">Your First Decision</h3>
+          <p class="lesson-purpose">Designed to bring everything together so you make a conscious commitment: remain in passive learning or enter deeper formation through Sacred Member access.</p>
+          <div class="lesson-outcomes">
+            <span class="outcome">Define next-step commitment</span>
+            <span class="outcome">Identify personal assignment focus</span>
+            <span class="outcome">Transition into deeper chambers</span>
+          </div>
+          <div class="lesson-status" id="status-lesson-05">Not Started</div>
+        </div>
+        <div class="lesson-cta">
+          <a class="lesson-btn" id="btn-lesson-05" href="lesson-05-first-decision.html">Open Lesson 5</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="results-section">
+  <div class="wrap">
+    <div class="stamp reveal">Expected Results</div>
+    <h2 class="sec-title reveal">What You Should Have After Lesson 5.<br/><em>Clarity, Not Confusion.</em></h2>
+
+    <div class="result-grid reveal">
+      <div class="result-card">
+        <div class="r-num">1</div>
+        <div class="r-label">Awareness</div>
+        <p class="r-text">You can identify where programming still controls your patterns.</p>
+      </div>
+      <div class="result-card">
+        <div class="r-num">2</div>
+        <div class="r-label">Identity</div>
+        <p class="r-text">You understand the walk back framework and your role inside it.</p>
+      </div>
+      <div class="result-card">
+        <div class="r-num">3</div>
+        <div class="r-label">Alignment</div>
+        <p class="r-text">You begin choosing rhythm over pressure and flow over force.</p>
+      </div>
+      <div class="result-card">
+        <div class="r-num">4</div>
+        <div class="r-label">Decision</div>
+        <p class="r-text">You are prepared to step into Sacred Member chambers with intention.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="next-section">
+  <div class="next-inner">
+    <div class="next-eyebrow reveal">After Division I</div>
+    <h2 class="next-title reveal">Ready For The Next Layer?<br/><em>Enter Sacred Member Access.</em></h2>
+    <p class="next-desc reveal">If Division I gave you clarity, the chambers give you structure. Move from introduction into full formation: all four journey phases, nine chambers, complete vault access, and direct website purchase and download resources.</p>
+    <div class="next-actions reveal">
+      <a href="members-new.html" class="btn-primary">Choose Sacred Member</a>
+      <a href="members-new.html" class="btn-secondary">Open Member Portal</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="fb-logo">Eden Consciousness</div>
+      <p class="fb-mission">The Walk Back to Eden - built for the exit generation.</p>
+      <div class="fb-corp">Eden Consciousness Corporation<br/>Delaware C-Corp · Est. August 2025<br/>Nazir El · Carlton Patrick Beverly</div>
+    </div>
+    <div class="footer-col">
+      <h4>Lessons</h4>
+      <ul>
+        <li><a href="lesson-01-what-is-programming.html">Lesson 1</a></li>
+        <li><a href="lesson-02-the-walk-back.html">Lesson 2</a></li>
+        <li><a href="lesson-03-ini-year.html">Lesson 3</a></li>
+        <li><a href="lesson-04-aligned-manifestation.html">Lesson 4</a></li>
+        <li><a href="lesson-05-first-decision.html">Lesson 5</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="members-new.html">Join</a></li>
+        <li><a href="members-new.html">Sacred Member Access</a></li>
+        <li><a href="members-new.html">Member Portal</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="home.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="books.html">Books</a></li>
+        <li><a href="music.html">Music</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="fb-copy">© 2026 Nazir El · Eden Consciousness Corporation<br/>All intellectual property held under Eden Consciousness Publishing House · Aligned Manifestation&trade;</div>
+    <div class="fb-mark">ECC</div>
+  </div>
+</footer>
+
+<script>
+  const phaseLessons = [
+    { id: 'lesson-01', url: 'lesson-01-what-is-programming.html' },
+    { id: 'lesson-02', url: 'lesson-02-the-walk-back.html' },
+    { id: 'lesson-03', url: 'lesson-03-ini-year.html' },
+    { id: 'lesson-04', url: 'lesson-04-aligned-manifestation.html' },
+    { id: 'lesson-05', url: 'lesson-05-first-decision.html' }
+  ];
+
+  function nextLessonFromCompleted(completed) {
+    return phaseLessons.find((lesson) => !completed.includes(lesson.id)) || phaseLessons[4];
+  }
+
+  function setPhaseUI(completed, isAuthed) {
+    const completedCount = completed.length;
+    const pct = Math.round((completedCount / phaseLessons.length) * 100);
+    const nextLesson = nextLessonFromCompleted(completed);
+    const done = completedCount >= phaseLessons.length;
+
+    document.getElementById('phaseProgressLabel').textContent = `${completedCount} / 5 Lessons`;
+    document.getElementById('phaseProgressFill').style.width = `${pct}%`;
+
+    const resumeBtn = document.getElementById('resumeLessonBtn');
+    const authBtn = document.getElementById('phaseAuthBtn');
+    const note = document.getElementById('phaseProgressNote');
+
+    if (!isAuthed) {
+      note.textContent = 'Sign in to save progress and resume exactly where you left off.';
+      resumeBtn.href = 'lesson-01-what-is-programming.html';
+      resumeBtn.textContent = 'Start Lesson 1';
+      authBtn.style.display = 'inline-flex';
+    } else if (done) {
+      note.textContent = 'Phase 1 complete. You can review any lesson or continue into Sacred Member chambers.';
+      resumeBtn.href = 'lesson-05-first-decision.html';
+      resumeBtn.textContent = 'Review Lesson 5';
+      authBtn.style.display = 'none';
+    } else {
+      const nextNum = nextLesson.id.split('-')[1];
+      note.textContent = `You are in progress. Resume at Lesson ${parseInt(nextNum, 10)}.`;
+      resumeBtn.href = nextLesson.url;
+      resumeBtn.textContent = `Resume Lesson ${parseInt(nextNum, 10)}`;
+      authBtn.style.display = 'none';
+    }
+
+    phaseLessons.forEach((lesson, idx) => {
+      const row = document.querySelector(`[data-lesson="${lesson.id}"]`);
+      const status = document.getElementById(`status-${lesson.id}`);
+      const cta = document.getElementById(`btn-${lesson.id}`);
+      if (!row || !status || !cta) return;
+
+      row.classList.remove('is-complete', 'is-current');
+
+      if (completed.includes(lesson.id)) {
+        row.classList.add('is-complete');
+        status.textContent = 'Completed';
+        status.className = 'lesson-status complete';
+        cta.textContent = `Review Lesson ${idx + 1}`;
+      } else if (!done && nextLesson.id === lesson.id && isAuthed) {
+        row.classList.add('is-current');
+        status.textContent = 'Current Step';
+        status.className = 'lesson-status current';
+        cta.textContent = `Continue Lesson ${idx + 1}`;
+      } else {
+        status.textContent = 'Not Started';
+        status.className = 'lesson-status';
+        cta.textContent = `Open Lesson ${idx + 1}`;
+      }
+    });
+  }
+
+  function initPhaseProgress() {
+    if (typeof firebase === 'undefined' || !firebase.auth || !firebase.firestore) {
+      setPhaseUI([], false);
+      return;
+    }
+
+    firebase.auth().onAuthStateChanged((user) => {
+      if (!user) {
+        setPhaseUI([], false);
+        return;
+      }
+
+      firebase.firestore().collection('users').doc(user.uid).get().then((doc) => {
+        const data = doc.exists ? doc.data() || {} : {};
+        const completed = data.phase1 && Array.isArray(data.phase1.lessonsCompleted)
+          ? data.phase1.lessonsCompleted
+          : [];
+        setPhaseUI(completed, true);
+      }).catch(() => {
+        setPhaseUI([], true);
+      });
+    });
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+  initPhaseProgress();
+</script>
+
+</body>
+</html>

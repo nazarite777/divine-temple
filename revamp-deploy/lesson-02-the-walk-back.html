@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 2: The Walk Back to Eden | Eden Consciousness</title>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js?v=20260510b"></script>
+  <script src="js/onboarding-flow.js?v=20260510b"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #080b0e;
+      --surface:   #0e1318;
+      --border:    #1a2028;
+      --gold:      #c9a84c;
+      --gold-dim:  #8a6e2f;
+      --cream:     #e8e0cc;
+      --muted:     #5e6a78;
+      --green:     #1e4d3a;
+      --green-lt:  #52b788;
+      --deep:      #0d1f17;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--cream);
+      min-height: 100vh;
+      line-height: 1.75;
+    }
+
+    /* ── TOP NAV ── */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,11,14,0.96);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .nav-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      background: var(--border);
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .completed-badge {
+      display: none;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--green-lt);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: rgba(82,183,136,0.1);
+      padding: 0.3rem 0.85rem;
+      border-radius: 100px;
+    }
+    .completed-badge.visible { display: flex; }
+
+    /* ── HERO BAND ── */
+    .hero-band {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, var(--deep) 0%, var(--bg) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 5rem 2rem 3.5rem;
+      text-align: center;
+    }
+    .hero-band::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(45,106,79,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: var(--green-lt);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+    .hero-eyebrow::before,
+    .hero-eyebrow::after {
+      content: '';
+      display: block;
+      width: 2.5rem;
+      height: 1px;
+      background: var(--green-lt);
+      opacity: 0.4;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+      line-height: 1.12;
+      color: #fff;
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .hero-title em {
+      color: var(--gold);
+      font-style: italic;
+    }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1.75rem 2rem;
+    }
+    .progress-track {
+      height: 2px;
+      background: var(--border);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--green), var(--green-lt));
+      border-radius: 100px;
+      transition: width 0.5s ease;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    /* ── BODY ── */
+    .lesson-body {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 3.5rem 0;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--green-lt);
+      margin-bottom: 1.25rem;
+      opacity: 0.75;
+    }
+
+    /* ── TEACH BLOCK ── */
+    .teach-block { margin-bottom: 2.75rem; }
+    .teach-block h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.65rem;
+      color: #fff;
+      margin-bottom: 1rem;
+      line-height: 1.22;
+    }
+    .teach-block p {
+      font-size: 1.05rem;
+      color: var(--cream);
+      margin-bottom: 1.1rem;
+      opacity: 0.88;
+    }
+    .teach-block p:last-child { margin-bottom: 0; }
+
+    /* ── PULL QUOTE ── */
+    .pull-quote {
+      border-left: 3px solid var(--green-lt);
+      margin: 2.75rem 0;
+      padding: 1.25rem 2rem;
+      background: rgba(82,183,136,0.04);
+      border-radius: 0 10px 10px 0;
+    }
+    .pull-quote p {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-style: italic;
+      color: var(--green-lt);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .pull-quote cite {
+      display: block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.67rem;
+      color: var(--muted);
+      margin-top: 0.75rem;
+      font-style: normal;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── TIMELINE ── */
+    .timeline {
+      position: relative;
+      margin: 2.5rem 0;
+      padding-left: 2.5rem;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0.65rem;
+      top: 0.5rem;
+      bottom: 0.5rem;
+      width: 1px;
+      background: linear-gradient(180deg, var(--green-lt), var(--gold));
+      opacity: 0.3;
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.15rem;
+      top: 0.45rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+    }
+    .timeline-item h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--gold);
+      margin-bottom: 0.4rem;
+    }
+    .timeline-item p {
+      font-size: 0.95rem;
+      color: var(--cream);
+      opacity: 0.8;
+      line-height: 1.6;
+    }
+
+    /* ── TRUTH LIST ── */
+    .truth-list {
+      list-style: none;
+      margin: 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .truth-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      font-size: 1rem;
+      color: var(--cream);
+      opacity: 0.88;
+      line-height: 1.55;
+    }
+    .truth-list li .marker {
+      color: var(--green-lt);
+      font-size: 0.75rem;
+      margin-top: 0.3rem;
+      flex-shrink: 0;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── SONG BLOCK ── */
+    .song-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem;
+      margin: 2.5rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .song-block::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--green), var(--gold));
+    }
+    .song-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .song-block h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: #fff;
+      margin-bottom: 1.25rem;
+    }
+    .song-lines {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--cream);
+      opacity: 0.85;
+      line-height: 1.9;
+      border-left: 2px solid var(--green-lt);
+      padding-left: 1.25rem;
+    }
+
+    /* ── HIGHLIGHT CARD ── */
+    .highlight-card {
+      background: linear-gradient(135deg, rgba(30,77,58,0.3) 0%, rgba(14,19,24,0.8) 100%);
+      border: 1px solid rgba(82,183,136,0.2);
+      border-radius: 14px;
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+    .highlight-card .card-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--green-lt);
+      margin-bottom: 0.75rem;
+    }
+    .highlight-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: #fff;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+    .highlight-card p {
+      font-size: 0.97rem;
+      color: var(--cream);
+      opacity: 0.82;
+      line-height: 1.68;
+    }
+
+    /* ── PATH STEPS ── */
+    .path-steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    @media (max-width: 580px) { .path-steps { grid-template-columns: 1fr; } }
+    .path-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .step-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      margin-bottom: 0.5rem;
+    }
+    .path-step h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+    .path-step p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ── REFLECTION ── */
+    .reflection-section {
+      background: linear-gradient(135deg, rgba(30,77,58,0.12) 0%, rgba(201,168,76,0.05) 100%);
+      border: 1px solid rgba(82,183,136,0.25);
+      border-radius: 16px;
+      padding: 2.5rem;
+      margin: 3rem 0;
+    }
+    .reflection-section .ref-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.67rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--green-lt);
+      margin-bottom: 1rem;
+    }
+    .reflection-section h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: #fff;
+      margin-bottom: 0.65rem;
+    }
+    .reflection-section > p {
+      font-size: 0.95rem;
+      color: var(--cream);
+      opacity: 0.75;
+      margin-bottom: 1.75rem;
+      line-height: 1.65;
+    }
+    .reflection-prompt {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .reflection-prompt strong {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.67rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--green-lt);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .reflection-prompt p {
+      font-size: 0.95rem;
+      color: var(--cream);
+      opacity: 0.85;
+      line-height: 1.6;
+    }
+    .journal-area {
+      width: 100%;
+      min-height: 110px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      resize: vertical;
+      margin-top: 0.75rem;
+      transition: border-color 0.2s;
+    }
+    .journal-area:focus { outline: none; border-color: rgba(82,183,136,0.4); }
+    .journal-area::placeholder { color: var(--muted); }
+
+    /* ── COMPLETE ── */
+    .complete-section { text-align: center; padding: 2rem 0 1rem; }
+    .btn-complete {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: linear-gradient(135deg, var(--green), #2d8a5e);
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 0.9rem 2.5rem;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-complete:hover { opacity: 0.88; transform: translateY(-1px); }
+    .complete-note { font-size: 0.8rem; color: var(--muted); margin-top: 0.65rem; }
+
+    /* ── BRIDGE ── */
+    .upgrade-bridge {
+      display: none;
+      background: var(--surface);
+      border: 1px solid rgba(82,183,136,0.3);
+      border-radius: 16px;
+      padding: 2.75rem 2rem;
+      margin-top: 3rem;
+      text-align: center;
+      animation: fadeUp 0.6s ease forwards;
+    }
+    .upgrade-bridge.visible { display: block; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .bridge-glyph {
+      font-size: 2.75rem;
+      margin-bottom: 1.25rem;
+      display: block;
+    }
+    .upgrade-bridge h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+    .upgrade-bridge p {
+      color: var(--cream);
+      opacity: 0.72;
+      font-size: 0.97rem;
+      max-width: 460px;
+      margin: 0 auto 2rem;
+      line-height: 1.68;
+    }
+    .bridge-btns {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--green);
+      border: 1px solid var(--green-lt);
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 100px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-next:hover { background: #2d8a5e; }
+    .btn-temple {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      border: 1px solid var(--gold-dim);
+      color: var(--gold);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 100px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-temple:hover { background: var(--gold); color: #0a0c0f; }
+
+    /* ── BOTTOM NAV ── */
+    .lesson-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2.25rem 2rem 4rem;
+      border-top: 1px solid var(--border);
+      gap: 1rem;
+    }
+    .lesson-nav-item { font-size: 0.85rem; color: var(--muted); }
+    .lesson-nav-item a { color: var(--gold); text-decoration: none; font-weight: 500; }
+    .lesson-nav-item a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      .lesson-body, .progress-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .hero-band { padding: 3.5rem 1.25rem 2.5rem; }
+      .reflection-section { padding: 1.5rem; }
+      .top-nav { padding: 1rem 1.25rem; }
+      .lesson-nav { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <a class="nav-brand" href="members-new.html">Eden Consciousness</a>
+  <div class="nav-right">
+    <span class="completed-badge" id="completedBadge">✓ Completed</span>
+    <span class="nav-badge">Free Lesson · 2 of 5</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero-band">
+  <div class="hero-eyebrow">Introduction Series — Lesson 2</div>
+  <h1 class="hero-title">The Walk Back<br/>to <em>Eden</em></h1>
+  <p class="hero-sub">The path back to your true self is not a new road. It is an ancient one — and it has been waiting for you to remember it.</p>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-meta">
+    <span>Your progress</span>
+    <span id="progressPct">0%</span>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="lesson-body">
+
+  <!-- SECTION 1 -->
+  <div class="teach-block">
+    <div class="section-label">Where We Begin</div>
+    <h2>You Have Not Lost Your Way — You Were Led Away From It</h2>
+    <p>There is a significant difference between being lost and being led astray. A person who is lost does not know where home is. A person who has been led away from home still carries it inside them — they have just been convinced to ignore the signal.</p>
+    <p>This is what happened to us. This is the story of Adam. Not just the Adam in the text — but Adam as the original archetype of the conscious human being who was given dominion, who walked with the Most High, who knew his assignment — and then stepped away from it.</p>
+    <p>And every generation since has been working to find the way back. Some have called it salvation. Some have called it enlightenment. Some have called it liberation. We call it what it is:</p>
+    <p><strong>The Walk Back to Eden.</strong></p>
+  </div>
+
+  <div class="pull-quote">
+    <p>"I was given dominion, crowned in the garden's light — spoke with the Father daily, everything was right. But I forgot His whisper, chased another voice — lost my way in darkness, traded truth for choice."</p>
+    <cite>— The Walk Back to Eden, Eden Consciousness</cite>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 2 -->
+  <div class="teach-block">
+    <div class="section-label">The Pattern Through Time</div>
+    <h2>How We Got Here — One Man, One Journey</h2>
+    <p>To understand where you are going, you must understand the pattern of how we got here. It is not random. It is not punishment. It is a cycle — and cycles can be broken the moment they are clearly seen.</p>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <h4>The Original Knowing</h4>
+      <p>In the beginning there was alignment. A direct, unmediated relationship between the human being and Source. No intermediary. No doctrine between you and the Most High. You knew your assignment. You operated in dominion over the creation entrusted to you.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>The Departure</h4>
+      <p>Something interrupted that knowing. Another voice. Another authority. A trade — the direct relationship with Source exchanged for external validation, comfort, or fear. This is not ancient history. This happens in every generation. It happened to you.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>The Captivity</h4>
+      <p>Once disconnected from Source, the human being becomes manageable. Controllable. The systems of captivity — mental, spiritual, economic, cultural — move in immediately. Not because you are weak. Because you are powerful, and that power must be redirected or it threatens the systems that need your energy to survive.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>The Remembering</h4>
+      <p>At some point — in some generation — someone starts asking the questions. Someone looks at the cage and says: this does not feel like truth. Someone feels the pull back toward something real. That is you. Right now. Reading this. The remembering has begun.</p>
+    </div>
+    <div class="timeline-item">
+      <h4>The Walk Back</h4>
+      <p>The return is not instantaneous. It is a walk — deliberate, daily, chosen again and again. It requires unlearning as much as it requires learning. It requires courage to let go of what was installed in place of what is original. This is the journey we are walking together.</p>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 3 -->
+  <div class="teach-block">
+    <div class="section-label">The Truth About the Garden</div>
+    <h2>Eden Was Never a Place You Left — It Is a State You Forgot</h2>
+    <p>We have been taught that Eden is a location — a garden in the past, lost to sin, inaccessible now except through religious performance or death. This teaching is convenient for any system that needs you to believe your divine state is somewhere other than where you are right now.</p>
+    <p>The truth is deeper than that.</p>
+    <p>Eden is a state of consciousness. It is the condition of a human being who is fully aligned with Source — operating in their original design, exercising the dominion they were given, in direct communion with the Most High. No intermediary. No doctrine between you and your Creator.</p>
+    <p>You were built for that state. It is your original software. The programming we talked about in Lesson 1 is the overlay that was installed on top of it — but the original code is still running underneath, waiting to be restored.</p>
+  </div>
+
+  <div class="highlight-card">
+    <div class="card-label">Core Teaching</div>
+    <h3>The Walk Back to Eden is not a spiritual achievement. It is a restoration.</h3>
+    <p>You are not trying to become something you have never been. You are uncovering what you have always been — beneath the layers of programming, conditioning, and misdirection that were installed to keep you from operating at your original capacity. The garden was not taken from you. Access was obscured. There is a difference.</p>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 4 -->
+  <div class="teach-block">
+    <div class="section-label">What the Walk Requires</div>
+    <h2>This Is Not a Feeling — It Is a Decision</h2>
+    <p>One of the most important things to understand at the beginning of this journey is that the Walk Back to Eden is not primarily an emotional experience. You are not waiting to feel ready. You are not waiting for a sign. You are not waiting until your life circumstances change.</p>
+    <p>The walk begins the moment you decide it begins. And it continues through every daily choice that either moves you toward alignment or back toward the program.</p>
+  </div>
+
+  <div class="path-steps">
+    <div class="path-step">
+      <div class="step-num">Step 01</div>
+      <h4>Acknowledge the Programming</h4>
+      <p>You cannot walk away from what you are not willing to see. Lesson 1 was this step. Look at what was installed — clearly, without shame.</p>
+    </div>
+    <div class="path-step">
+      <div class="step-num">Step 02</div>
+      <h4>Reclaim the Questions</h4>
+      <p>Programming silences questions. The walk back starts with asking them again — about your beliefs, your identity, your relationship to Source and to authority.</p>
+    </div>
+    <div class="path-step">
+      <div class="step-num">Step 03</div>
+      <h4>Realign with Sacred Time</h4>
+      <p>Your relationship to time shapes your relationship to Source. Operating on divine timing — not artificial schedules — is one of the first acts of reclamation.</p>
+    </div>
+    <div class="path-step">
+      <div class="step-num">Step 04</div>
+      <h4>Practice Daily Alignment</h4>
+      <p>The walk is not a one-time event. It is a daily practice — of choosing alignment over autopilot, truth over comfort, original design over installed behavior.</p>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 5 -->
+  <div class="teach-block">
+    <div class="section-label">The Assignment</div>
+    <h2>You Are Not Just Walking for Yourself</h2>
+    <p>Here is what separates this journey from self-help. This walk is not just about your personal liberation — though it absolutely includes that. Every person who walks back to their original design breaks a generational pattern. Every person who reclaims their direct connection to Source removes one link from a chain that has run through their family line for generations.</p>
+    <p>Your children — biological or spiritual — will begin at a higher point because you did this work. That is the 300-year vision. That is why this matters beyond you.</p>
+    <p>You came into this world as a divine being on assignment. The programming interrupted the assignment. The Walk Back to Eden is how you get back on mission.</p>
+  </div>
+
+  <div class="song-block">
+    <div class="song-label">From the Eden Consciousness Catalog</div>
+    <h4>"The Walk Back to Eden" — Chorus</h4>
+    <div class="song-lines">
+      I'm taking back my strength now, I'm calling out my name<br/>
+      Adam, son of glory, done living in this shame<br/>
+      I forgive the man I was, for every time I fell<br/>
+      I'm walking back to Eden, breaking out this spell<br/><br/>
+      <em>The walk, the walk, the walk back home<br/>
+      The walk, the walk, I'm not alone<br/>
+      The walk, the walk, to who I am<br/>
+      From dust to dominion — this is my stand</em>
+    </div>
+  </div>
+
+  <ul class="truth-list">
+    <li><span class="marker">◈</span>You are not starting over. You are returning — and returning is always faster than the original departure.</li>
+    <li><span class="marker">◈</span>The path back is not through religion, not through doctrine, not through another human authority. It is through your direct, restored relationship with the Most High.</li>
+    <li><span class="marker">◈</span>Forgiveness of yourself — for every time you operated from the program instead of your original design — is not optional. It is the first step of every day on this walk.</li>
+    <li><span class="marker">◈</span>The walk is not walked alone. You are part of a community of people remembering together. That is what Eden Consciousness is.</li>
+  </ul>
+
+  <hr class="divider" />
+
+  <!-- REFLECTION -->
+  <div class="reflection-section">
+    <div class="ref-label">◈ Lesson Reflection</div>
+    <h3>Your Walk Begins With Honesty</h3>
+    <p>Take your time with these. The deeper you go in the reflection, the more real the walk becomes.</p>
+
+    <div class="reflection-prompt">
+      <strong>Prompt 1</strong>
+      <p>What does "returning to your original design" mean to you personally? What version of yourself — before the programming, before the conditioning — do you catch glimpses of?</p>
+      <textarea class="journal-area" placeholder="Write freely here..."></textarea>
+    </div>
+
+    <div class="reflection-prompt">
+      <strong>Prompt 2</strong>
+      <p>Where in your life are you still in captivity — still operating from someone else's script for who you are or what you're capable of? Be specific.</p>
+      <textarea class="journal-area" placeholder="Write freely here..."></textarea>
+    </div>
+
+    <div class="reflection-prompt">
+      <strong>Prompt 3</strong>
+      <p>What is the one thing — one belief, one behavior, one relationship to authority — that, if you changed it today, would most dramatically accelerate your walk back?</p>
+      <textarea class="journal-area" placeholder="Write freely here..."></textarea>
+    </div>
+  </div>
+
+  <!-- COMPLETE -->
+  <div class="complete-section">
+    <button class="btn-complete" id="completeBtn" onclick="markComplete()">
+      ✓ &nbsp; Mark Lesson Complete
+    </button>
+    <p class="complete-note">Progress saved automatically</p>
+  </div>
+
+  <!-- BRIDGE -->
+  <div class="upgrade-bridge" id="upgradeBridge">
+    <span class="bridge-glyph">🌱</span>
+    <h3>Two lessons in. You're moving.</h3>
+    <p>Lesson 3 introduces the I-N-I Year — the sacred calendar system that aligns your daily life with divine timing. Or step into the full temple and access the complete Phase 1 journey.</p>
+    <div class="bridge-btns">
+      <a class="btn-next" href="lesson-03-ini-year.html">Lesson 3: Sacred Time &rarr;</a>
+      <a class="btn-temple" href="pricing.html">Enter the Full Temple</a>
+    </div>
+  </div>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<div class="lesson-nav">
+  <div class="lesson-nav-item">
+    <a href="lesson-01-what-is-programming.html">&larr; Lesson 1: What Is Programming?</a>
+  </div>
+  <div class="lesson-nav-item" style="text-align:right;">
+    Introduction Series<br/>
+    <a href="lesson-03-ini-year.html">Lesson 3: Sacred Time &rarr;</a>
+  </div>
+</div>
+
+<script>
+  const LESSON_ID = 'lesson-02';
+  const NEXT_LESSON_ID = 'lesson-03';
+
+  (function() {
+    function waitForFirebase(attempts) {
+      if (attempts <= 0) return;
+      if (typeof firebase !== 'undefined' && firebase.auth) {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (!user) window.location.href = 'members-new.html';
+        });
+      } else {
+        setTimeout(function() { waitForFirebase(attempts - 1); }, 300);
+      }
+    }
+    waitForFirebase(15);
+  })();
+
+  window.addEventListener('scroll', function() {
+    const doc = document.documentElement;
+    const scrolled = doc.scrollTop;
+    const total = doc.scrollHeight - doc.clientHeight;
+    const pct = total > 0 ? Math.round((scrolled / total) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct + '%';
+  });
+
+  function applyCompletedState() {
+    const btn = document.getElementById('completeBtn');
+    btn.textContent = '✓  Lesson Complete';
+    btn.style.opacity = '0.5';
+    btn.style.cursor = 'default';
+    btn.disabled = true;
+    document.getElementById('completedBadge').classList.add('visible');
+    document.getElementById('upgradeBridge').classList.add('visible');
+  }
+
+  async function persistPhase1Completion() {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+
+    const userRef = firebase.firestore().collection('users').doc(user.uid);
+    await userRef.set({
+      lessons: {
+        [LESSON_ID]: {
+          completed: true,
+          completedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }
+      },
+      onboardingStatus: 'in_progress',
+      'phase1.divisionIntroViewed': true,
+      'phase1.lessonsCompleted': firebase.firestore.FieldValue.arrayUnion(LESSON_ID),
+      'phase1.currentLesson': NEXT_LESSON_ID,
+      'phase1.updatedAt': firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  }
+
+  function markComplete() {
+    applyCompletedState();
+
+    setTimeout(function() {
+      document.getElementById('upgradeBridge').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+
+    try {
+      const progress = JSON.parse(localStorage.getItem('ec_progress') || '{}');
+      progress[LESSON_ID] = { completed: true, date: new Date().toISOString() };
+      localStorage.setItem('ec_progress', JSON.stringify(progress));
+    } catch (e) {}
+
+    persistPhase1Completion().catch(function(e) {
+      console.warn('Lesson save failed:', e);
+    });
+  }
+
+  (function restoreState() {
+    try {
+      const progress = JSON.parse(localStorage.getItem('ec_progress') || '{}');
+      if (progress[LESSON_ID] && progress[LESSON_ID].completed) {
+        applyCompletedState();
+      }
+    } catch (e) {}
+
+    try {
+      if (typeof firebase !== 'undefined' && firebase.auth) {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (!user) return;
+          firebase.firestore().collection('users').doc(user.uid).get().then(function(doc) {
+            if (!doc.exists) return;
+            const data = doc.data() || {};
+            const legacyComplete = !!(data.lessons && data.lessons[LESSON_ID] && data.lessons[LESSON_ID].completed);
+            const phase1Complete = !!(data.phase1 && Array.isArray(data.phase1.lessonsCompleted) && data.phase1.lessonsCompleted.indexOf(LESSON_ID) !== -1);
+            if (legacyComplete || phase1Complete) {
+              applyCompletedState();
+            }
+          }).catch(function() {});
+        });
+      }
+    } catch (e) {}
+  })();
+</script>
+</body>
+</html>

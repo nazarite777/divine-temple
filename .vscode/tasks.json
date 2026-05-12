@@ -1,0 +1,64 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Check Git Deploy Context",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"git status --short; echo '---'; git branch --show-current; echo '---'; git remote -v"
+			]
+		},
+		{
+			"label": "Commit and Git Deploy",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"git add -A; git commit -m \"Deploy latest site updates: audio fixes, temple header fix, and content sync\"; git push"
+			]
+		},
+		{
+			"label": "Git Inspect",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short",
+				"-b"
+			]
+		},
+		{
+			"label": "Git Inspect Context",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"git rev-parse --is-inside-work-tree; git branch --show-current; git remote -v; git status --short"
+			]
+		},
+		{
+			"label": "Git status and remotes",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"git status --short -b; echo '---'; git remote -v"
+			]
+		},
+		{
+			"label": "Install GitHub Copilot",
+			"type": "shell",
+			"command": "winget",
+			"args": [
+				"install",
+				"GitHub.Copilot"
+			]
+		}
+	]
+}
