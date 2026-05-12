@@ -535,9 +535,31 @@ body::before {
   const icon       = document.getElementById('audioIcon');
   const nowPlaying = document.getElementById('nowPlaying');
   const transition = document.getElementById('pageTransition');
+  const AUDIO_HANDOFF_KEY = 'edenSplashAudioHandoff';
 
   let audioStarted = false;
   let navigating   = false;
+
+  function saveAudioHandoff(shouldResume) {
+    try {
+      sessionStorage.setItem(AUDIO_HANDOFF_KEY, JSON.stringify({
+        src: audio.currentSrc || (audio.querySelector('source') && audio.querySelector('source').src) || '',
+        time: Number.isFinite(audio.currentTime) ? audio.currentTime : 0,
+        ts: Date.now(),
+        shouldResume: !!shouldResume
+      }));
+    } catch (_) {
+      // Ignore storage errors.
+    }
+  }
+
+  function clearAudioHandoff() {
+    try {
+      sessionStorage.removeItem(AUDIO_HANDOFF_KEY);
+    } catch (_) {
+      // Ignore storage errors.
+    }
+  }
 
   function enterTemple() {
     if (navigating) return;
@@ -545,6 +567,7 @@ body::before {
     if (!audioStarted) {
       audio.play().then(() => {
         audioStarted = true;
+        saveAudioHandoff(true);
         btn.classList.add('playing');
         icon.classList.add('animating');
         label.textContent = 'Walking Back...';
@@ -553,6 +576,7 @@ body::before {
         setTimeout(() => navigate(), 3200);
 
       }).catch(() => {
+        clearAudioHandoff();
         navigate();
       });
 
@@ -562,22 +586,31 @@ body::before {
   }
 
   function goHome() {
+    clearAudioHandoff();
     navigate();
   }
 
   function navigate() {
     if (navigating) return;
     navigating = true;
+    saveAudioHandoff(audioStarted && !audio.paused && !audio.ended);
 
     transition.classList.add('covering');
 
     setTimeout(() => {
-      window.location.href = 'home.html';
+      window.location.href = 'home.html?entry=splash';
     }, 600);
   }
 
   audio.addEventListener('ended', () => {
+    clearAudioHandoff();
     if (!navigating) navigate();
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    if (!navigating && audioStarted && !audio.paused && !audio.ended) {
+      saveAudioHandoff(true);
+    }
   });
 
   document.addEventListener('keydown', (e) => {

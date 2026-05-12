@@ -1803,7 +1803,79 @@ footer {
   </div>
 </footer>
 
+<audio id="handoff-audio" preload="auto" style="display:none"></audio>
+
 <script>
+  const AUDIO_HANDOFF_KEY = 'edenSplashAudioHandoff';
+  const AUDIO_HANDOFF_TTL = 30 * 60 * 1000;
+  const handoffAudio = document.getElementById('handoff-audio');
+  let pendingResume = false;
+
+  function parseAudioHandoff() {
+    try {
+      const raw = sessionStorage.getItem(AUDIO_HANDOFF_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function clearAudioHandoff() {
+    try {
+      sessionStorage.removeItem(AUDIO_HANDOFF_KEY);
+    } catch (_) {
+      // Ignore storage errors.
+    }
+  }
+
+  function tryResumeHandoff() {
+    const handoff = parseAudioHandoff();
+    if (!handoff || !handoff.shouldResume || !handoff.src || (Date.now() - Number(handoff.ts || 0)) > AUDIO_HANDOFF_TTL) {
+      clearAudioHandoff();
+      return;
+    }
+
+    handoffAudio.src = handoff.src;
+    handoffAudio.currentTime = Math.max(0, Number(handoff.time || 0));
+
+    const playAttempt = handoffAudio.play();
+    if (playAttempt && typeof playAttempt.then === 'function') {
+      playAttempt.then(() => {
+        pendingResume = false;
+      }).catch(() => {
+        pendingResume = true;
+      });
+    }
+  }
+
+  function retryResumeOnUserGesture() {
+    if (!pendingResume) return;
+    pendingResume = false;
+    handoffAudio.play().catch(() => {
+      pendingResume = true;
+    });
+  }
+
+  handoffAudio.addEventListener('timeupdate', () => {
+    try {
+      const handoff = parseAudioHandoff();
+      if (!handoff) return;
+      handoff.time = Number.isFinite(handoffAudio.currentTime) ? handoffAudio.currentTime : (handoff.time || 0);
+      handoff.ts = Date.now();
+      handoff.shouldResume = !handoffAudio.paused && !handoffAudio.ended;
+      sessionStorage.setItem(AUDIO_HANDOFF_KEY, JSON.stringify(handoff));
+    } catch (_) {
+      // Ignore storage errors.
+    }
+  });
+
+  handoffAudio.addEventListener('ended', clearAudioHandoff);
+
+  document.addEventListener('pointerdown', retryResumeOnUserGesture, { passive: true });
+  document.addEventListener('keydown', retryResumeOnUserGesture);
+
+  tryResumeHandoff();
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
