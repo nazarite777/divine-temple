@@ -1,0 +1,593 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Eden Consciousness — Remember Who You Are. The Walk Back to Eden. Books, music, and a spiritual development platform by Nazir El." />
+<meta property="og:title" content="Eden Consciousness — Remember Who You Are" />
+<meta property="og:description" content="The Walk Back to Eden. A spiritual development platform, publishing house, and music vault by Nazir El." />
+<meta property="og:image" content="https://edenconsciousnesssdt.com/images/branding/logoyogabg.png" />
+<title>Eden Consciousness — Remember Who You Are</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:wght@400;700&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet" />
+
+<style>
+/* ═══════════════════════════════════
+   ROOT & RESET
+════════════════════════════════════ */
+:root {
+  --bg:       #050808;
+  --gold:     #C9A84C;
+  --gold-dim: #7A5F2A;
+  --gold-pale:#F0DC9A;
+  --border:   #162020;
+  --border-2: #1E3030;
+  --text:     #EDE8DB;
+  --text-2:   #A89F88;
+  --text-3:   #5C5440;
+  --text-4:   #30302A;
+  --serif:    'Cormorant Garamond', Georgia, serif;
+  --mono:     'Space Mono', monospace;
+  --display:  'Cinzel', serif;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--serif);
+  overflow: hidden;
+  position: relative;
+}
+
+/* ═══════════════════════════════════
+   GRAIN TEXTURE
+════════════════════════════════════ */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  pointer-events: none; z-index: 0; opacity: 0.7;
+}
+
+/* ═══════════════════════════════════
+   RADIAL GLOW — CENTER
+════════════════════════════════════ */
+.glow {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px; height: 800px;
+  background: radial-gradient(circle,
+    rgba(201,168,76,0.05) 0%,
+    rgba(14,40,40,0.04) 40%,
+    transparent 70%
+  );
+  pointer-events: none; z-index: 0;
+  animation: glowPulse 6s ease-in-out infinite;
+}
+@keyframes glowPulse {
+  0%,100% { opacity: 0.6; transform: translate(-50%,-50%) scale(1); }
+  50%      { opacity: 1;   transform: translate(-50%,-50%) scale(1.08); }
+}
+
+/* ═══════════════════════════════════
+   CORNER MARKS — DECORATIVE
+════════════════════════════════════ */
+.corner {
+  position: fixed;
+  width: 40px; height: 40px;
+  z-index: 1;
+  opacity: 0;
+  animation: fadeIn 1s ease 1.2s forwards;
+}
+.corner-tl { top: 28px; left: 28px; border-top: 1px solid var(--border-2); border-left: 1px solid var(--border-2); }
+.corner-tr { top: 28px; right: 28px; border-top: 1px solid var(--border-2); border-right: 1px solid var(--border-2); }
+.corner-bl { bottom: 28px; left: 28px; border-bottom: 1px solid var(--border-2); border-left: 1px solid var(--border-2); }
+.corner-br { bottom: 28px; right: 28px; border-bottom: 1px solid var(--border-2); border-right: 1px solid var(--border-2); }
+
+/* ═══════════════════════════════════
+   VERTICAL SIDE STAMPS
+════════════════════════════════════ */
+.side-stamp {
+  position: fixed;
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 4px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  z-index: 1;
+  opacity: 0;
+  animation: fadeIn 1s ease 1.5s forwards;
+}
+.side-stamp-left {
+  left: 20px; top: 50%;
+  transform: translateX(-50%) translateY(-50%) rotate(-90deg);
+  white-space: nowrap;
+}
+.side-stamp-right {
+  right: 20px; top: 50%;
+  transform: translateX(50%) translateY(-50%) rotate(90deg);
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════
+   MAIN CENTERED LAYOUT
+════════════════════════════════════ */
+.splash {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  z-index: 2;
+  text-align: center;
+}
+
+/* ═══════════════════════════════════
+   LOGO
+════════════════════════════════════ */
+.logo-wrap {
+  margin-bottom: 32px;
+  opacity: 0;
+  animation: fadeDown 0.9s ease 0.2s forwards;
+}
+.logo-img {
+  width: clamp(80px, 14vw, 140px);
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  filter: brightness(0.95) saturate(0.9);
+}
+
+/* ═══════════════════════════════════
+   CORPORATION STAMP
+════════════════════════════════════ */
+.corp-stamp {
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 5px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  opacity: 0;
+  animation: fadeIn 0.8s ease 0.5s forwards;
+}
+.corp-stamp::before,
+.corp-stamp::after {
+  content: '';
+  flex: 0 0 28px;
+  height: 1px;
+  background: var(--gold-dim);
+  opacity: 0.5;
+}
+
+/* ═══════════════════════════════════
+   HEADLINE
+════════════════════════════════════ */
+.headline {
+  font-family: var(--display);
+  font-size: clamp(36px, 8vw, 96px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: fadeUp 0.9s ease 0.4s forwards;
+}
+
+.sub-headline {
+  font-family: var(--serif);
+  font-size: clamp(18px, 3vw, 34px);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--gold);
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.6s forwards;
+}
+
+/* ═══════════════════════════════════
+   TAGLINE
+════════════════════════════════════ */
+.tagline {
+  font-size: clamp(14px, 1.8vw, 18px);
+  font-style: italic;
+  color: var(--text-2);
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 0 auto 44px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.75s forwards;
+}
+
+/* ═══════════════════════════════════
+   DIVIDER LINE
+════════════════════════════════════ */
+.center-rule {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--gold-dim), transparent);
+  margin: 0 auto 36px;
+  opacity: 0;
+  animation: fadeIn 0.8s ease 0.9s forwards;
+}
+
+/* ═══════════════════════════════════
+   CTA BUTTON
+════════════════════════════════════ */
+.cta-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1s forwards;
+}
+
+.enter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  background: transparent;
+  border: 1px solid var(--gold-dim);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  padding: 18px 44px;
+  cursor: pointer;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, color 0.3s;
+}
+
+/* gold fill on hover */
+.enter-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+  z-index: 0;
+}
+.enter-btn:hover::before { transform: scaleX(1); }
+.enter-btn:hover { color: var(--bg); border-color: var(--gold); }
+
+.enter-btn span {
+  position: relative; z-index: 1;
+}
+
+/* Playing state */
+.enter-btn.playing {
+  border-color: var(--gold);
+}
+.enter-btn.playing::before { transform: scaleX(1); }
+.enter-btn.playing { color: var(--bg); }
+
+/* Audio icon */
+.audio-icon {
+  position: relative; z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.audio-icon .bar {
+  width: 3px;
+  background: currentColor;
+  border-radius: 1px;
+  transform-origin: bottom;
+}
+.audio-icon .bar:nth-child(1) { height: 6px;  animation: none; }
+.audio-icon .bar:nth-child(2) { height: 10px; animation: none; }
+.audio-icon .bar:nth-child(3) { height: 14px; animation: none; }
+.audio-icon .bar:nth-child(4) { height: 8px;  animation: none; }
+.audio-icon .bar:nth-child(5) { height: 4px;  animation: none; }
+
+/* Bars animate when playing */
+.audio-icon.animating .bar:nth-child(1) { animation: barPulse 0.9s ease-in-out 0.0s infinite alternate; }
+.audio-icon.animating .bar:nth-child(2) { animation: barPulse 0.9s ease-in-out 0.15s infinite alternate; }
+.audio-icon.animating .bar:nth-child(3) { animation: barPulse 0.9s ease-in-out 0.3s infinite alternate; }
+.audio-icon.animating .bar:nth-child(4) { animation: barPulse 0.9s ease-in-out 0.1s infinite alternate; }
+.audio-icon.animating .bar:nth-child(5) { animation: barPulse 0.9s ease-in-out 0.25s infinite alternate; }
+
+@keyframes barPulse {
+  from { transform: scaleY(0.3); opacity: 0.5; }
+  to   { transform: scaleY(1);   opacity: 1; }
+}
+
+.enter-label { position: relative; z-index: 1; }
+
+/* Skip line */
+.skip-line {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  transition: color 0.2s;
+}
+.skip-line:hover { color: var(--gold); }
+
+/* ═══════════════════════════════════
+   NOW PLAYING LABEL
+════════════════════════════════════ */
+.now-playing {
+  position: fixed;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  white-space: nowrap;
+}
+.now-playing.visible { opacity: 1; }
+
+.np-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: npPulse 1.5s ease-in-out infinite;
+}
+@keyframes npPulse {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+/* ═══════════════════════════════════
+   THREE PATHS — BOTTOM STRIP
+════════════════════════════════════ */
+.paths-strip {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--border);
+  opacity: 0;
+  animation: fadeIn 0.8s ease 1.4s forwards;
+}
+
+.path-item {
+  padding: 14px 20px;
+  border-right: 1px solid var(--border);
+  text-align: center;
+  text-decoration: none;
+  color: var(--text-4);
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.path-item:last-child { border-right: none; }
+.path-item:hover { background: rgba(201,168,76,0.04); color: var(--gold); }
+
+.pi-label {
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* ═══════════════════════════════════
+   TRANSITION — ENTER ANIMATION
+════════════════════════════════════ */
+.page-transition {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.page-transition.covering { opacity: 1; pointer-events: all; }
+
+/* ═══════════════════════════════════
+   AUDIO ELEMENT
+════════════════════════════════════ */
+#splash-audio { display: none; }
+
+/* ═══════════════════════════════════
+   ANIMATIONS
+════════════════════════════════════ */
+@keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+@keyframes fadeUp   { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeDown { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)} }
+
+/* ═══════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════ */
+@media (max-width: 600px) {
+  .splash { padding: 60px 24px 100px; }
+  .side-stamp { display: none; }
+  .corner { width: 24px; height: 24px; }
+  .paths-strip { display: none; }
+  .now-playing { bottom: 20px; }
+  .enter-btn { padding: 16px 32px; }
+  .tagline { margin-bottom: 36px; }
+}
+</style>
+</head>
+<body>
+
+<!-- GLOW -->
+<div class="glow"></div>
+
+<!-- CORNER MARKS -->
+<div class="corner corner-tl"></div>
+<div class="corner corner-tr"></div>
+<div class="corner corner-bl"></div>
+<div class="corner corner-br"></div>
+
+<!-- SIDE STAMPS -->
+<div class="side-stamp side-stamp-left">Eden Consciousness Corporation · Est. August 2025</div>
+<div class="side-stamp side-stamp-right">Nazir El · Carlton Patrick Beverly · The Walk Back to Eden</div>
+
+<!-- AUDIO -->
+<audio id="splash-audio" preload="auto">
+  <source src="https://firebasestorage.googleapis.com/v0/b/sacred-community.firebasestorage.app/o/audio%2FThe%20Walk%20Back%20to%20Eden%20(Remastered).mp3?alt=media&token=9c87b443-fce3-43df-ada9-b0cb879419df" type="audio/mpeg" />
+</audio>
+
+<!-- PAGE TRANSITION -->
+<div class="page-transition" id="pageTransition"></div>
+
+<!-- MAIN SPLASH -->
+<div class="splash">
+
+  <!-- LOGO -->
+  <div class="logo-wrap">
+    <img
+      class="logo-img"
+      src="images/branding/logoyogabg.png"
+      alt="Eden Consciousness"
+      loading="eager"
+    />
+  </div>
+
+  <!-- CORP STAMP -->
+  <div class="corp-stamp">Eden Consciousness Corporation</div>
+
+  <!-- HEADLINE -->
+  <h1 class="headline">Remember</h1>
+  <div class="sub-headline">Who You Are.</div>
+
+  <!-- TAGLINE -->
+  <p class="tagline">We never left Eden. We forgot we were there. This is the walk back.</p>
+
+  <!-- DIVIDER -->
+  <div class="center-rule"></div>
+
+  <!-- CTA -->
+  <div class="cta-wrap">
+    <button class="enter-btn" id="enterBtn" onclick="enterTemple()">
+      <div class="audio-icon" id="audioIcon">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+      <span class="enter-label" id="enterLabel">Enter the Temple</span>
+    </button>
+
+    <button class="skip-line" onclick="goHome()">Continue without audio →</button>
+  </div>
+
+</div>
+
+<!-- NOW PLAYING -->
+<div class="now-playing" id="nowPlaying">
+  <div class="np-dot"></div>
+  Now Playing — The Walk Back to Eden
+</div>
+
+<!-- THREE PATHS STRIP -->
+<div class="paths-strip">
+  <a href="books.html" class="path-item">
+    <span class="pi-label">📖 &nbsp; Books</span>
+  </a>
+  <a href="music.html" class="path-item">
+    <span class="pi-label">🎵 &nbsp; Music</span>
+  </a>
+  <a href="join.html" class="path-item">
+    <span class="pi-label">⬡ &nbsp; Platform</span>
+  </a>
+</div>
+
+<script>
+  const audio      = document.getElementById('splash-audio');
+  const btn        = document.getElementById('enterBtn');
+  const label      = document.getElementById('enterLabel');
+  const icon       = document.getElementById('audioIcon');
+  const nowPlaying = document.getElementById('nowPlaying');
+  const transition = document.getElementById('pageTransition');
+
+  let audioStarted = false;
+  let navigating   = false;
+
+  function enterTemple() {
+    if (navigating) return;
+
+    if (!audioStarted) {
+      audio.play().then(() => {
+        audioStarted = true;
+        btn.classList.add('playing');
+        icon.classList.add('animating');
+        label.textContent = 'Walking Back...';
+        nowPlaying.classList.add('visible');
+
+        setTimeout(() => navigate(), 3200);
+
+      }).catch(() => {
+        navigate();
+      });
+
+    } else {
+      navigate();
+    }
+  }
+
+  function goHome() {
+    navigate();
+  }
+
+  function navigate() {
+    if (navigating) return;
+    navigating = true;
+
+    transition.classList.add('covering');
+
+    setTimeout(() => {
+      window.location.href = 'home.html';
+    }, 600);
+  }
+
+  audio.addEventListener('ended', () => {
+    if (!navigating) navigate();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      enterTemple();
+    }
+    if (e.key === 'Escape') goHome();
+  });
+</script>
+
+</body>
+</html>
