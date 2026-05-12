@@ -1,36 +1,53 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Eden Consciousness Publishing House music intro page - preview of the catalog by Nazir El. Full Music Vault access lives in the Sacred Member Chambers with direct website purchase and download." />
-<title>Music - Eden Consciousness Publishing House</title>
+<meta name="description" content="The Eden Consciousness Music Vault — 11 projects, 100+ tracks by Nazir El. Iron Gospel, Judah, Groundwork, Still Smoking and more. Dirty south spoken-word consciousness." />
+<title>The Vault — Eden Consciousness Music</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Space+Mono:wght@400;700&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Space+Mono:wght@400;700&family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet" />
 
 <style>
+/* ═══════════════════════════════════
+   ROOT
+════════════════════════════════════ */
 :root {
-  --gold: #C9A84C;
-  --gold-dim: #7A5F2A;
+  --bg:        #050708;
+  --bg-2:      #070A0C;
+  --bg-3:      #090C0F;
+  --surface:   #0C1014;
+  --panel:     #0F1318;
+  --panel-2:   #12171C;
+  --border:    #1A2228;
+  --border-2:  #243038;
+  --border-3:  #2E3D48;
+
+  --gold:      #C9A84C;
+  --gold-dim:  #7A5F2A;
   --gold-pale: #F0DC9A;
-  --bg: #050B06;
-  --bg-2: #080F08;
-  --bg-3: #0A1409;
-  --green-deep: #0D1F0E;
-  --green-panel: #142E16;
-  --border: #1B3D1E;
-  --border-2: #254E28;
-  --text: #EDE8DB;
-  --text-2: #B0A890;
-  --text-3: #6B6250;
-  --text-4: #3D3828;
-  --live: #4CAF7D;
-  --build: #5BA3E0;
-  --sealed: #9B7DB8;
-  --serif: 'Cormorant Garamond', Georgia, serif;
-  --mono: 'Space Mono', monospace;
-  --display: 'Cinzel', serif;
+  --gold-glow: rgba(201,168,76,0.08);
+
+  --brass:     #B8924A;
+  --bone:      #EDE0C4;
+  --smoke:     #8A9BA8;
+
+  --text:      #EAE2D0;
+  --text-2:    #9A9080;
+  --text-3:    #5C5448;
+  --text-4:    #38322C;
+
+  --iron:      #4A90B8;    /* Iron Gospel accent */
+  --covenant:  #8B6BB0;    /* Judah accent */
+  --earth:     #6B8B5A;    /* Groundwork accent */
+  --smoke-c:   #7A8A70;    /* Still Smoking accent */
+  --done:      #5A9A70;
+
+  --serif:    'Cormorant Garamond', Georgia, serif;
+  --mono:     'Space Mono', monospace;
+  --display:  'Cinzel', serif;
+  --deco:     'Cinzel Decorative', serif;
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,590 +57,994 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--serif);
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.7;
   overflow-x: hidden;
 }
 
+/* grain overlay */
 body::before {
   content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.5;
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  pointer-events: none; z-index: 0; opacity: 0.7;
 }
 
+/* ═══════════════════════════════════
+   NAV
+════════════════════════════════════ */
 nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
-  height: 64px;
-  background: rgba(5,11,6,0.88);
-  backdrop-filter: blur(12px);
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 62px;
+  background: rgba(5,7,8,0.92);
+  backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0 44px;
 }
 .nav-logo {
   font-family: var(--display);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  color: var(--gold);
-  text-decoration: none;
-  text-transform: uppercase;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.22em; color: var(--gold);
+  text-decoration: none; text-transform: uppercase;
 }
 .nav-links { display: flex; gap: 32px; list-style: none; }
 .nav-links a {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--text-3);
-  text-decoration: none;
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-3); text-decoration: none;
   transition: color 0.2s;
 }
 .nav-links a:hover, .nav-links a.active { color: var(--gold); }
 .nav-cta {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--gold);
-  border: 1px solid var(--gold-dim);
-  padding: 8px 18px;
-  text-decoration: none;
-  transition: background 0.2s, color 0.2s;
+  font-family: var(--mono); font-size: 8px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--gold);
+  border: 1px solid var(--gold-dim); padding: 8px 18px;
+  text-decoration: none; transition: background 0.2s, color 0.2s;
 }
 .nav-cta:hover { background: var(--gold); color: var(--bg); }
 .nav-mobile-btn {
-  display: none;
-  background: none;
-  border: none;
-  color: var(--text-3);
-  font-size: 22px;
-  cursor: pointer;
+  display: none; background: none; border: none;
+  color: var(--text-3); font-size: 22px; cursor: pointer;
 }
 
-.page-hero {
+/* ═══════════════════════════════════
+   PAGE HERO — THE VAULT
+════════════════════════════════════ */
+.vault-hero {
   position: relative;
-  padding: 140px 40px 90px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 120px 44px 80px;
   overflow: hidden;
-  background: linear-gradient(160deg, var(--bg) 0%, var(--bg-3) 100%);
 }
-.page-hero::before {
-  content: '';
+
+/* Large watermark */
+.hero-watermark {
   position: absolute;
-  top: -120px; right: -120px;
-  width: 620px; height: 620px;
-  background: radial-gradient(circle, rgba(201,168,76,0.05) 0%, transparent 65%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -54%);
+  font-family: var(--deco);
+  font-size: clamp(80px, 18vw, 240px);
+  font-weight: 700;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(26,34,40,0.7);
+  white-space: nowrap;
   pointer-events: none;
+  user-select: none;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  animation: fadeWM 1.2s ease 0.3s forwards;
 }
+@keyframes fadeWM {
+  to { opacity: 1; }
+}
+
+/* Stats floating right */
+.hero-stats {
+  position: absolute;
+  top: 50%; right: 44px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  text-align: right;
+  opacity: 0;
+  animation: fadeLeft 0.8s ease 0.7s forwards;
+}
+.hs-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.hs-item:last-child { border-bottom: none; }
+.hs-num {
+  font-family: var(--deco);
+  font-size: 40px; font-weight: 700;
+  color: var(--gold); line-height: 1;
+  letter-spacing: -0.02em;
+}
+.hs-label {
+  font-family: var(--mono); font-size: 7px;
+  letter-spacing: 3px; color: var(--text-4);
+  text-transform: uppercase; margin-top: 3px;
+}
+
+/* left vertical rule */
 .hero-rule {
   position: absolute;
-  left: 40px; top: 100px; bottom: 60px;
+  left: 44px; top: 80px; bottom: 60px;
   width: 1px;
   background: linear-gradient(to bottom, transparent, var(--border) 15%, var(--border) 85%, transparent);
 }
+
 .hero-inner {
   position: relative;
-  padding-left: 40px;
-  max-width: 900px;
+  padding-left: 44px;
+  max-width: 800px;
 }
+
 .hero-stamp {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 4px;
-  color: var(--gold-dim);
-  text-transform: uppercase;
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  opacity: 0;
-  animation: fadeUp 0.8s ease 0.1s forwards;
+  font-family: var(--mono); font-size: 8px; letter-spacing: 4px;
+  color: var(--gold-dim); text-transform: uppercase;
+  margin-bottom: 22px;
+  display: flex; align-items: center; gap: 14px;
+  opacity: 0; animation: fadeUp 0.7s ease 0.2s forwards;
 }
-.hero-stamp::before { content: ''; width: 28px; height: 1px; background: var(--gold-dim); }
-.hero-h1 {
-  font-family: var(--display);
-  font-size: clamp(38px, 6.6vw, 88px);
-  font-weight: 700;
-  line-height: 0.93;
+.hero-stamp::before { content:''; width:28px; height:1px; background:var(--gold-dim); }
+
+.hero-title {
+  font-family: var(--deco);
+  font-size: clamp(52px, 10vw, 130px);
+  font-weight: 700; line-height: 0.9;
   letter-spacing: -0.01em;
   color: var(--text);
-  margin-bottom: 20px;
-  opacity: 0;
-  animation: fadeUp 0.8s ease 0.2s forwards;
+  margin-bottom: 14px;
+  opacity: 0; animation: fadeUp 0.8s ease 0.3s forwards;
 }
-.hero-h1 em {
-  font-style: italic;
-  color: var(--gold);
-  font-family: var(--serif);
-  font-weight: 300;
-  display: block;
-  font-size: 0.8em;
-}
-.hero-sub {
-  font-size: clamp(15px, 1.8vw, 18px);
-  font-style: italic;
-  color: var(--text-2);
-  max-width: 590px;
-  line-height: 1.7;
-  opacity: 0;
-  animation: fadeUp 0.8s ease 0.38s forwards;
-}
-.hero-metrics {
-  margin-top: 28px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  opacity: 0;
-  animation: fadeUp 0.8s ease 0.5s forwards;
-}
-.metric {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 2px;
-  color: var(--text-3);
-  border: 1px solid var(--border);
-  padding: 4px 10px;
-  text-transform: uppercase;
-}
-.metric.gold { color: var(--gold-dim); border-color: var(--gold-dim); }
 
+.hero-sub-title {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.5vw, 32px);
+  font-style: italic; font-weight: 300;
+  color: var(--gold);
+  margin-bottom: 22px;
+  opacity: 0; animation: fadeUp 0.7s ease 0.45s forwards;
+}
+
+.hero-desc {
+  font-size: 16px; font-style: italic;
+  color: var(--text-2); max-width: 500px;
+  line-height: 1.65; margin-bottom: 36px;
+  opacity: 0; animation: fadeUp 0.7s ease 0.58s forwards;
+}
+
+.hero-actions {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp 0.7s ease 0.7s forwards;
+}
+
+/* ═══════════════════════════════════
+   BUTTONS
+════════════════════════════════════ */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold); color: var(--bg);
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase;
+  text-decoration: none; padding: 14px 28px;
+  border: none; cursor: pointer; transition: background 0.2s, transform 0.15s;
+}
+.btn-primary:hover { background: var(--gold-pale); transform: translateY(-1px); }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--text-2);
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 3px; text-transform: uppercase;
+  text-decoration: none; padding: 14px 28px;
+  border: 1px solid var(--border-2);
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: var(--gold-dim); color: var(--gold); transform: translateY(-1px); }
+
+/* ═══════════════════════════════════
+   SHARED SECTION
+════════════════════════════════════ */
 section { position: relative; z-index: 1; }
-.wrap { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 44px; }
+
 .divider {
   width: 100%; height: 1px;
   background: linear-gradient(to right, transparent, var(--border) 20%, var(--border) 80%, transparent);
 }
-.stamp {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 4px;
-  color: var(--gold-dim);
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 20px;
-}
-.stamp::before { content: ''; width: 24px; height: 1px; background: var(--gold-dim); }
-.sec-title {
-  font-family: var(--display);
-  font-size: clamp(24px, 3.5vw, 44px);
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1.05;
-  margin-bottom: 14px;
-}
-.sec-title em {
-  font-style: italic;
-  color: var(--gold);
-  font-family: var(--serif);
-  font-weight: 300;
-}
-.body-text {
-  font-size: 16px;
-  color: var(--text-2);
-  line-height: 1.8;
-}
 
-.tag {
-  font-family: var(--mono);
-  font-size: 7px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 3px 9px;
-  border: 1px solid;
-  white-space: nowrap;
-  display: inline-block;
-}
-.t-live { color: var(--live); border-color: var(--live); }
-.t-build { color: var(--build); border-color: var(--build); }
-.t-sealed { color: var(--sealed); border-color: var(--sealed); }
-.t-gold { color: var(--gold); border-color: var(--gold-dim); }
-
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--gold);
-  color: var(--bg);
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  text-decoration: none;
-  padding: 15px 30px;
-  transition: background 0.2s, transform 0.15s;
-}
-.btn-primary:hover { background: var(--gold-pale); transform: translateY(-1px); }
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: transparent;
-  color: var(--text-2);
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  text-decoration: none;
-  padding: 15px 30px;
-  border: 1px solid var(--border-2);
-  transition: border-color 0.2s, color 0.2s, transform 0.15s;
-}
-.btn-secondary:hover { border-color: var(--gold-dim); color: var(--gold); transform: translateY(-1px); }
-
-.featured-section {
-  padding: 100px 0;
-  background: linear-gradient(to bottom, var(--bg-3), var(--bg-2));
-}
-.featured-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px;
-  margin-top: 52px;
-}
-.featured-card {
-  background: var(--green-panel);
-  border: 1px solid var(--border);
-  padding: 34px 30px;
-  position: relative;
-  overflow: hidden;
-}
-.featured-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: var(--gold);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
-}
-.featured-card:hover::before { transform: scaleX(1); }
-.featured-card.primary { border-color: var(--gold-dim); }
-.f-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 16px;
-}
-.f-title {
-  font-family: var(--display);
-  font-size: clamp(28px, 3.4vw, 44px);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text);
-  margin-bottom: 8px;
-  line-height: 1;
-}
-.f-title.gold { color: var(--gold); }
-.f-sub {
-  font-size: 13px;
-  font-style: italic;
-  color: var(--text-3);
-  margin-bottom: 16px;
-}
-.f-desc {
-  font-size: 14px;
-  color: var(--text-2);
-  line-height: 1.65;
+.sec-stamp {
+  font-family: var(--mono); font-size: 8px; letter-spacing: 4px;
+  color: var(--gold-dim); text-transform: uppercase;
+  display: flex; align-items: center; gap: 14px;
   margin-bottom: 18px;
 }
-.f-track-label {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 2px;
-  color: var(--text-4);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.track-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.track-chip {
-  font-family: var(--mono);
-  font-size: 7px;
-  letter-spacing: 1px;
-  color: var(--text-3);
-  border: 1px solid var(--border);
-  padding: 3px 8px;
-  text-transform: uppercase;
-}
-.track-chip.done { color: var(--live); border-color: rgba(76,175,125,0.5); }
-.track-chip.pending { color: var(--gold-dim); border-color: rgba(201,168,76,0.45); }
+.sec-stamp::before { content:''; width:22px; height:1px; background:var(--gold-dim); }
 
-.vault-section {
-  padding: 100px 0;
-  background: var(--bg-2);
+.sec-title {
+  font-family: var(--deco);
+  font-size: clamp(28px, 4vw, 52px);
+  font-weight: 700; letter-spacing: 0.01em;
+  line-height: 1; margin-bottom: 10px;
 }
-.vault-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 2px;
-  margin-top: 40px;
-}
-.vault-card {
-  background: var(--green-panel);
-  border: 1px solid var(--border);
-  padding: 22px 20px;
-  transition: border-color 0.2s;
-}
-.vault-card:hover { border-color: var(--border-2); }
-.v-num {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 2px;
-  color: var(--text-4);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.v-title {
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  color: var(--text);
-  text-transform: uppercase;
-  margin-bottom: 5px;
-}
-.v-sub {
-  font-size: 12px;
-  font-style: italic;
-  color: var(--text-3);
-  line-height: 1.5;
-  margin-bottom: 10px;
-}
-.v-meta {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 1px;
-  color: var(--gold-dim);
+.sec-title em {
+  font-style: italic; color: var(--gold);
+  font-family: var(--serif); font-weight: 300;
+  font-size: 0.8em; letter-spacing: 0.03em;
 }
 
-.production-section {
-  padding: 100px 0;
-  background: var(--bg-3);
-}
-.production-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px;
-  margin-top: 46px;
-}
-.prod-card {
-  background: var(--green-panel);
-  border: 1px solid var(--border);
-  padding: 30px 28px;
-}
-.prod-title {
-  font-family: var(--display);
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--text);
-  margin-bottom: 10px;
-}
-.prod-desc {
-  font-size: 14px;
-  font-style: italic;
-  color: var(--text-2);
-  line-height: 1.65;
-  margin-bottom: 14px;
-}
-.prod-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-.prod-list li {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 1.5px;
-  color: var(--text-3);
-  text-transform: uppercase;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.prod-list li::before {
-  content: '';
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--gold-dim);
-  flex-shrink: 0;
+.body-text {
+  font-size: 16px; color: var(--text-2);
+  line-height: 1.85; margin-bottom: 16px;
 }
 
-.member-banner {
-  padding: 80px 0;
-  background: var(--green-deep);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-.mb-inner {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 40px;
-  text-align: center;
-}
-.mb-eyebrow {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 4px;
-  color: var(--gold-dim);
-  text-transform: uppercase;
-  margin-bottom: 20px;
-}
-.mb-title {
-  font-family: var(--display);
-  font-size: clamp(24px, 3.5vw, 44px);
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1.1;
-  margin-bottom: 14px;
-}
-.mb-title em { font-style: italic; color: var(--gold); font-family: var(--serif); font-weight: 300; }
-.mb-desc {
-  font-size: 16px;
-  font-style: italic;
-  color: var(--text-2);
-  line-height: 1.7;
-  margin-bottom: 32px;
-}
-.mb-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-
-footer {
-  background: var(--bg-2);
-  border-top: 1px solid var(--border);
-  padding: 60px 40px 40px;
-}
-.footer-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 48px;
-  margin-bottom: 40px;
-}
-.fb-logo {
-  font-family: var(--display);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  color: var(--gold);
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-.fb-mission {
-  font-size: 13px;
-  font-style: italic;
-  color: var(--text-3);
-  line-height: 1.6;
-  margin-bottom: 14px;
-}
-.fb-corp {
-  font-family: var(--mono);
-  font-size: 7px;
-  letter-spacing: 2px;
-  color: var(--text-4);
-  text-transform: uppercase;
-  line-height: 2;
-}
-.footer-col h4 {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 3px;
-  color: var(--gold-dim);
-  text-transform: uppercase;
-  margin-bottom: 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
-}
-.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-.footer-col ul a {
-  font-size: 13px;
-  color: var(--text-3);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.footer-col ul a:hover { color: var(--gold); }
-.footer-bottom {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
-  flex-wrap: wrap;
-  gap: 12px;
-}
-.fb-copy {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 2px;
-  color: var(--text-4);
-  text-transform: uppercase;
-  line-height: 1.8;
-}
-.fb-mark {
-  font-family: var(--display);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--border-2);
-  letter-spacing: -1px;
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+/* REVEAL */
 .reveal {
-  opacity: 0;
-  transform: translateY(24px);
+  opacity: 0; transform: translateY(22px);
   transition: opacity 0.7s ease, transform 0.7s ease;
 }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
-@media (max-width: 960px) {
+/* ═══════════════════════════════════
+   FEATURED — IRON GOSPEL
+════════════════════════════════════ */
+.featured-section {
+  padding: 120px 0;
+  background: linear-gradient(to bottom, var(--bg), var(--bg-2));
+}
+
+.iron-gospel-feature {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  overflow: hidden;
+  margin-top: 52px;
+}
+
+.ig-left {
+  padding: 56px 52px;
+  position: relative;
+  overflow: hidden;
+}
+.ig-left::before {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: -80px;
+  width: 360px; height: 360px;
+  background: radial-gradient(circle, rgba(74,144,184,0.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.ig-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 3px; color: var(--iron);
+  border: 1px solid rgba(74,144,184,0.4);
+  padding: 5px 12px; text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.ig-pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--iron);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:0.4; transform:scale(0.8); }
+}
+
+.ig-title {
+  font-family: var(--deco);
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 700; line-height: 0.92;
+  color: var(--text); margin-bottom: 14px;
+  letter-spacing: -0.01em;
+}
+
+.ig-tagline {
+  font-family: var(--serif);
+  font-size: clamp(16px, 2vw, 22px);
+  font-style: italic; font-weight: 300;
+  color: var(--iron); margin-bottom: 22px;
+  line-height: 1.4;
+}
+
+.ig-desc {
+  font-size: 15px; color: var(--text-2);
+  font-style: italic; line-height: 1.75;
+  margin-bottom: 32px; max-width: 440px;
+}
+
+.ig-sound {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+.sound-tag {
+  font-family: var(--mono); font-size: 7px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-4); border: 1px solid var(--border);
+  padding: 4px 10px;
+}
+
+.ig-right {
+  background: var(--panel-2);
+  border-left: 1px solid var(--border);
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ig-tracks-label {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 3px; color: var(--text-4);
+  text-transform: uppercase; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.ig-tracks-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.track-list {
+  display: flex; flex-direction: column;
+  gap: 0; flex: 1;
+}
+
+.track-item {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 12px; align-items: center;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(26,34,40,0.6);
+}
+.track-item:last-child { border-bottom: none; }
+
+.ti-num {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 1px; color: var(--text-4);
+}
+.ti-title {
+  font-size: 13px; color: var(--text-2);
+  font-style: italic; line-height: 1.3;
+}
+.track-item.done .ti-title { color: var(--text); }
+.track-item.done .ti-num   { color: var(--done); }
+
+.ti-badge {
+  font-family: var(--mono); font-size: 7px;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 2px 7px; border: 1px solid;
+}
+.badge-done    { color: var(--done);    border-color: rgba(90,154,112,0.5); }
+.badge-pending { color: var(--gold-dim); border-color: rgba(122,95,42,0.4); }
+
+.ig-progress-bar {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.ipb-label {
+  font-family: var(--mono); font-size: 7px;
+  letter-spacing: 2px; color: var(--text-4);
+  text-transform: uppercase; margin-bottom: 8px;
+  display: flex; justify-content: space-between;
+}
+.ipb-track {
+  width: 100%; height: 2px; background: var(--border);
+}
+.ipb-fill {
+  height: 100%; background: var(--iron);
+  width: 70%; /* 7 of 10 */
+  transition: width 1.5s ease;
+}
+
+/* ═══════════════════════════════════
+   FEATURED — JUDAH
+════════════════════════════════════ */
+.judah-feature {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-top: none;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+
+.judah-left {
+  background: var(--panel-2);
+  border-right: 1px solid var(--border);
+  padding: 52px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.judah-left::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(139,107,176,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.judah-seal-ring {
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  border: 1px solid var(--border-2);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; margin-bottom: 24px;
+}
+.judah-seal-ring::before {
+  content: '';
+  position: absolute; inset: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(139,107,176,0.3);
+}
+.judah-seal-inner {
+  font-family: var(--deco);
+  font-size: 18px; font-weight: 700;
+  color: var(--covenant);
+  letter-spacing: 0.1em;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.judah-label {
+  font-family: var(--mono); font-size: 7px;
+  letter-spacing: 3px; color: var(--covenant);
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.judah-title-sm {
+  font-family: var(--deco);
+  font-size: 28px; font-weight: 700;
+  color: var(--text); margin-bottom: 6px;
+}
+.judah-tracks-count {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 2px; color: var(--text-4);
+  text-transform: uppercase; margin-bottom: 20px;
+}
+.judah-seal-badge {
+  font-family: var(--mono); font-size: 7px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--covenant);
+  border: 1px solid rgba(139,107,176,0.4);
+  padding: 5px 14px;
+}
+
+.judah-right {
+  padding: 52px 48px;
+  position: relative;
+  overflow: hidden;
+}
+.judah-right::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, rgba(139,107,176,0.05) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.judah-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 3px; color: var(--covenant);
+  border: 1px solid rgba(139,107,176,0.4);
+  padding: 5px 12px; text-transform: uppercase;
+  margin-bottom: 22px;
+}
+
+.judah-heading {
+  font-family: var(--deco);
+  font-size: clamp(28px, 4vw, 52px);
+  font-weight: 700; line-height: 0.95;
+  color: var(--text); margin-bottom: 14px;
+}
+.judah-heading em {
+  font-style: italic; color: var(--covenant);
+  font-family: var(--serif); font-weight: 300;
+  font-size: 0.82em;
+}
+
+.judah-desc {
+  font-size: 16px; font-style: italic;
+  color: var(--text-2); line-height: 1.75;
+  margin-bottom: 28px; max-width: 480px;
+}
+
+.judah-themes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px; margin-bottom: 32px;
+}
+.jt-item {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+}
+.jt-title {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 2px; color: var(--covenant);
+  text-transform: uppercase; margin-bottom: 3px;
+}
+.jt-desc {
+  font-size: 12px; font-style: italic;
+  color: var(--text-3); line-height: 1.4;
+}
+
+.judah-pull {
+  font-family: var(--serif);
+  font-size: clamp(18px, 2vw, 24px);
+  font-style: italic; font-weight: 300;
+  color: var(--text); line-height: 1.4;
+  border-left: 2px solid var(--covenant);
+  padding-left: 22px;
+}
+
+/* ═══════════════════════════════════
+   PRODUCTION SOUND
+════════════════════════════════════ */
+.sound-section {
+  padding: 100px 0;
+  background: var(--bg-3);
+}
+
+.sound-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  margin-top: 52px;
+}
+
+.sound-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 28px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s;
+}
+.sound-card:hover { border-color: var(--border-3); }
+.sound-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: var(--gold-dim);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.35s ease;
+}
+.sound-card:hover::before { transform: scaleX(1); }
+
+.sc-icon {
+  font-size: 28px; margin-bottom: 14px;
+  display: block; opacity: 0.75;
+}
+.sc-title {
+  font-family: var(--deco);
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 8px;
+}
+.sc-desc {
+  font-size: 12px; font-style: italic;
+  color: var(--text-3); line-height: 1.5;
+}
+
+/* ═══════════════════════════════════
+   THE VAULT — 9 SEALED ALBUMS
+════════════════════════════════════ */
+.vault-section {
+  padding: 100px 0;
+  background: linear-gradient(to bottom, var(--bg-3), var(--bg-2));
+}
+
+.vault-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+  margin-top: 52px;
+  margin-bottom: 52px;
+}
+
+.vi-text .body-text { margin-bottom: 10px; }
+
+.vi-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.vis-row {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 16px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.vis-label {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 2px; color: var(--text-3);
+  text-transform: uppercase;
+}
+.vis-val {
+  font-family: var(--deco);
+  font-size: 22px; font-weight: 700;
+  color: var(--gold); letter-spacing: -0.01em;
+}
+
+/* ALBUM GRID */
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.album-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  transition: border-color 0.25s;
+  cursor: default;
+}
+.album-card:hover { border-color: var(--border-3); }
+
+/* color bar per album */
+.album-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+}
+
+.album-card:nth-child(1)::before { background: #5BA3E0; }
+.album-card:nth-child(2)::before { background: #9B7DB8; }
+.album-card:nth-child(3)::before { background: #C9844C; }
+.album-card:nth-child(4)::before { background: #4CAF7D; }
+.album-card:nth-child(5)::before { background: #C9A84C; }
+.album-card:nth-child(6)::before { background: #6B9E6B; }
+.album-card:nth-child(7)::before { background: #E07A5B; }
+.album-card:nth-child(8)::before { background: #7A8A9A; }
+.album-card:nth-child(9)::before { background: #B8924A; }
+
+.album-inner {
+  padding: 28px 26px;
+}
+
+.album-num {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 3px; color: var(--text-4);
+  text-transform: uppercase; margin-bottom: 12px;
+}
+
+.album-title {
+  font-family: var(--deco);
+  font-size: clamp(16px, 2vw, 22px);
+  font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--text);
+  margin-bottom: 8px; line-height: 1.1;
+}
+
+.album-desc {
+  font-size: 12px; font-style: italic;
+  color: var(--text-3); line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+.album-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 26px;
+  background: var(--panel-2);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap; gap: 8px;
+}
+.af-tracks {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 2px; color: var(--gold-dim);
+  text-transform: uppercase;
+}
+.af-sealed {
+  font-family: var(--mono); font-size: 7px;
+  letter-spacing: 2px; color: var(--done);
+  border: 1px solid rgba(90,154,112,0.4);
+  padding: 3px 8px; text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════
+   STANDALONE SINGLE
+════════════════════════════════════ */
+.single-banner {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-top: none;
+  padding: 28px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 2px;
+}
+.sb-left {}
+.sb-label {
+  font-family: var(--mono); font-size: 7px;
+  letter-spacing: 3px; color: var(--text-4);
+  text-transform: uppercase; margin-bottom: 6px;
+}
+.sb-title {
+  font-family: var(--deco);
+  font-size: clamp(18px, 2.5vw, 28px);
+  font-weight: 700; color: var(--gold);
+  letter-spacing: 0.04em;
+}
+.sb-sub {
+  font-size: 13px; font-style: italic;
+  color: var(--text-3); margin-top: 4px;
+}
+.sb-tag {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 2px; color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  padding: 6px 16px; text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════
+   DISTRIBUTION SECTION
+════════════════════════════════════ */
+.distro-section {
+  padding: 100px 0;
+  background: var(--bg-2);
+}
+
+.distro-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+  margin-top: 52px;
+}
+
+.distro-path {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dp-item {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 18px 24px;
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  transition: border-color 0.2s;
+}
+.dp-item:hover { border-color: var(--border-3); }
+.dp-num {
+  font-family: var(--deco);
+  font-size: 18px; font-weight: 700;
+  color: var(--gold-dim); line-height: 1;
+}
+.dp-text {}
+.dp-title {
+  font-size: 14px; font-weight: 600;
+  letter-spacing: 0.02em; color: var(--text);
+  margin-bottom: 2px;
+}
+.dp-desc {
+  font-size: 12px; font-style: italic;
+  color: var(--text-3); line-height: 1.4;
+}
+.dp-status {
+  font-family: var(--mono); font-size: 7px;
+  letter-spacing: 2px; text-transform: uppercase;
+  white-space: nowrap;
+}
+.dp-live    { color: var(--done); }
+.dp-pending { color: var(--gold-dim); }
+.dp-future  { color: var(--text-4); }
+
+.distro-philosophy {}
+.dp-quote {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.5vw, 30px);
+  font-style: italic; font-weight: 300;
+  color: var(--text); line-height: 1.4;
+  border-left: 2px solid var(--gold-dim);
+  padding-left: 24px;
+  margin-bottom: 28px;
+}
+.dp-body {
+  font-size: 15px; font-style: italic;
+  color: var(--text-2); line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+/* ═══════════════════════════════════
+   PREMIUM CTA
+════════════════════════════════════ */
+.music-cta {
+  padding: 100px 0;
+  background: var(--bg-3);
+  text-align: center;
+}
+.mc-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 44px;
+}
+.mc-eyebrow {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 5px; color: var(--gold-dim);
+  text-transform: uppercase; margin-bottom: 24px;
+  display: flex; align-items: center; gap: 14px; justify-content: center;
+}
+.mc-eyebrow::before, .mc-eyebrow::after { content:''; flex: 0 0 32px; height:1px; background:var(--border); }
+.mc-title {
+  font-family: var(--deco);
+  font-size: clamp(26px, 4vw, 50px);
+  font-weight: 700; line-height: 1;
+  margin-bottom: 14px; letter-spacing: 0.01em;
+}
+.mc-title em {
+  font-style: italic; color: var(--gold);
+  font-family: var(--serif); font-weight: 300; font-size: 0.82em;
+}
+.mc-desc {
+  font-size: 16px; font-style: italic;
+  color: var(--text-2); line-height: 1.7;
+  margin-bottom: 36px; max-width: 480px;
+  margin-left: auto; margin-right: auto;
+}
+.mc-opts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px; margin-bottom: 28px;
+  max-width: 520px; margin-left: auto; margin-right: auto;
+}
+.mc-opt {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 24px 20px;
+  text-decoration: none; color: inherit;
+  transition: border-color 0.2s; display: block;
+}
+.mc-opt:hover { border-color: var(--gold-dim); }
+.mc-opt.featured { border-color: var(--gold-dim); }
+.mco-label {
+  font-family: var(--mono); font-size: 7px;
+  letter-spacing: 2px; color: var(--text-4);
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.mco-title {
+  font-family: var(--deco);
+  font-size: 16px; font-weight: 700;
+  color: var(--text); margin-bottom: 5px;
+}
+.mc-opt.featured .mco-title { color: var(--gold); }
+.mco-desc {
+  font-size: 11px; font-style: italic;
+  color: var(--text-4); line-height: 1.4;
+}
+
+/* ═══════════════════════════════════
+   FOOTER
+════════════════════════════════════ */
+footer {
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+  padding: 56px 44px 40px;
+}
+.footer-inner {
+  max-width: 1120px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 48px; margin-bottom: 40px;
+}
+.fb-logo {
+  font-family: var(--display);
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 0.2em; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.fb-mission {
+  font-size: 13px; font-style: italic;
+  color: var(--text-3); line-height: 1.6; margin-bottom: 14px;
+}
+.fb-corp {
+  font-family: var(--mono); font-size: 7px;
+  letter-spacing: 2px; color: var(--text-4);
+  text-transform: uppercase; line-height: 2;
+}
+.footer-col h4 {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 3px; color: var(--gold-dim);
+  text-transform: uppercase; margin-bottom: 16px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--border);
+}
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-col ul a {
+  font-size: 13px; color: var(--text-3);
+  text-decoration: none; transition: color 0.2s;
+}
+.footer-col ul a:hover { color: var(--gold); }
+.footer-bottom {
+  max-width: 1120px; margin: 0 auto;
+  display: flex; justify-content: space-between;
+  align-items: center; padding-top: 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap; gap: 12px;
+}
+.fb-copy {
+  font-family: var(--mono); font-size: 8px;
+  letter-spacing: 2px; color: var(--text-4);
+  text-transform: uppercase; line-height: 1.8;
+}
+.fb-mark {
+  font-family: var(--deco); font-size: 26px;
+  font-weight: 700; color: var(--border-2);
+  letter-spacing: -1px;
+}
+
+/* ═══════════════════════════════════
+   ANIMATIONS
+════════════════════════════════════ */
+@keyframes fadeUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeLeft{ from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+
+/* ═══════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════ */
+@media (max-width: 980px) {
   nav { padding: 0 20px; }
   .nav-links { display: none; }
   .nav-mobile-btn { display: block; }
-  .page-hero { padding: 110px 20px 70px; }
+  .vault-hero { padding: 100px 20px 60px; }
   .hero-rule { left: 20px; }
   .hero-inner { padding-left: 20px; }
+  .hero-stats { position: static; transform: none; flex-direction: row; margin-top: 32px; text-align: left; }
+  .hs-item { border-bottom: none; border-right: 1px solid var(--border); padding: 0 24px 0 0; }
+  .hs-item:last-child { border-right: none; }
   .wrap { padding: 0 20px; }
-  .featured-grid { grid-template-columns: 1fr; }
-  .vault-grid { grid-template-columns: 1fr 1fr; }
-  .production-layout { grid-template-columns: 1fr; }
+  .iron-gospel-feature { grid-template-columns: 1fr; }
+  .ig-right { border-left: none; border-top: 1px solid var(--border); }
+  .judah-feature { grid-template-columns: 1fr; }
+  .judah-left { border-right: none; border-bottom: 1px solid var(--border); padding: 36px; }
+  .sound-grid { grid-template-columns: repeat(3, 1fr); }
+  .vault-intro { grid-template-columns: 1fr; gap: 40px; }
+  .album-grid { grid-template-columns: repeat(2, 1fr); }
+  .distro-layout { grid-template-columns: 1fr; gap: 48px; }
+  .mc-opts { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
 }
-@media (max-width: 620px) {
-  .vault-grid { grid-template-columns: 1fr; }
+@media (max-width: 560px) {
+  .album-grid { grid-template-columns: 1fr; }
+  .sound-grid { grid-template-columns: repeat(2, 1fr); }
+  .judah-themes { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr; }
+  .hero-stats { display: none; }
 }
 </style>
 </head>
-
 <body>
 
+<!-- NAV -->
 <nav>
   <a href="home.html" class="nav-logo">Eden Consciousness</a>
   <ul class="nav-links">
@@ -633,166 +1054,506 @@ footer {
     <li><a href="division-i.html">Division I</a></li>
     <li><a href="members-new.html">Member Portal</a></li>
   </ul>
-  <a href="members-new.html" class="nav-cta">Enter the Temple</a>
-  <button class="nav-mobile-btn" onclick="document.querySelector('.nav-links').style.cssText='display:flex;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:rgba(5,11,6,0.98);padding:24px;border-bottom:1px solid #1B3D1E;z-index:99;gap:0;';">☰</button>
+  <a href="join.html" class="nav-cta">Enter the Temple</a>
+  <button class="nav-mobile-btn" onclick="document.querySelector('.nav-links').style.cssText='display:flex;flex-direction:column;position:fixed;top:62px;left:0;right:0;background:rgba(5,7,8,0.98);padding:24px;border-bottom:1px solid #1A2228;z-index:99;gap:0;';">☰</button>
 </nav>
 
-<div class="page-hero">
+<!-- ═══════════════════════════════════
+     HERO
+════════════════════════════════════ -->
+<div class="vault-hero">
+  <div class="hero-watermark">VAULT</div>
   <div class="hero-rule"></div>
+
+  <div class="hero-stats">
+    <div class="hs-item">
+      <div class="hs-num">11</div>
+      <div class="hs-label">Projects</div>
+    </div>
+    <div class="hs-item">
+      <div class="hs-num">100<span style="font-size:0.5em;color:var(--gold-dim)">+</span></div>
+      <div class="hs-label">Tracks</div>
+    </div>
+    <div class="hs-item">
+      <div class="hs-num">9</div>
+      <div class="hs-label">Sealed</div>
+    </div>
+  </div>
+
   <div class="hero-inner">
-    <div class="hero-stamp">Eden Consciousness Publishing House · Music Introduction</div>
-    <h1 class="hero-h1">The Vault Preview.<br/><em>100+ Tracks. 11 Projects.</em></h1>
-    <p class="hero-sub">This page introduces what exists in the catalog. Full Music Vault access lives inside the Sacred Member Chambers, where members can buy and download directly from this website. Distribution also runs through DistroKid and selected streaming platforms.</p>
-    <div class="hero-metrics">
-      <span class="metric gold">11 Projects</span>
-      <span class="metric gold">100+ Tracks</span>
-      <span class="metric">Iron Gospel In Production</span>
-      <span class="metric">Judah Sealed</span>
-      <span class="metric">Full Vault In Sacred Chambers</span>
+    <div class="hero-stamp">Eden Consciousness Publishing House · Nazir El · Carlton Patrick Beverly</div>
+    <h1 class="hero-title">THE<br/>VAULT</h1>
+    <div class="hero-sub-title">100+ Tracks. 11 Projects. All sealed.</div>
+    <p class="hero-desc">Dirty south spoken-word. Bayou consciousness. Brass and 808. A catalog built in testimony — not for attention, but with intention. The truth dressed in sound.</p>
+    <div class="hero-actions">
+      <a href="join.html#premium" class="btn-primary">Hear It First — Premium</a>
+      <a href="#vault" class="btn-secondary">Browse the Vault ↓</a>
     </div>
   </div>
 </div>
 
 <div class="divider"></div>
 
-<section class="featured-section">
+<!-- ═══════════════════════════════════
+     FEATURED — IRON GOSPEL
+════════════════════════════════════ -->
+<section class="featured-section" id="iron-gospel">
   <div class="wrap">
-    <div class="stamp reveal">Featured Projects</div>
-    <h2 class="sec-title reveal">Now Building.<br/><em>Now Guarding.</em></h2>
+    <div class="sec-stamp reveal">In Production · Active Project</div>
+    <h2 class="sec-title reveal">Iron Gospel<br/><em>7 of 10 Complete.</em></h2>
 
-    <div class="featured-grid reveal">
-      <article class="featured-card primary" id="iron-gospel">
-        <div class="f-tags">
-          <span class="tag t-build">In Production</span>
-          <span class="tag t-live">7 of 10 Complete</span>
+    <div class="iron-gospel-feature reveal">
+      <div class="ig-left">
+        <div class="ig-status">
+          <div class="ig-pulse"></div>
+          In Production · 7 of 10 Tracks Complete
         </div>
-        <h3 class="f-title gold">Iron Gospel</h3>
-        <p class="f-sub">Workout album · empowerment over bass and brass</p>
-        <p class="f-desc">Hard physical energy for builders and executors. Dirty south foundation, military discipline, and covenant-level focus. Built with 808 sub-bass, sousaphone, trombone, and trumpet to hit like pressure and rise like authority.</p>
-        <div class="f-track-label">Track Progress</div>
-        <div class="track-grid">
-          <span class="track-chip done">01 Iron Gospel</span>
-          <span class="track-chip done">02 No Ceiling</span>
-          <span class="track-chip done">03 The Pressure Made Me</span>
-          <span class="track-chip done">04 Burn the Boat</span>
-          <span class="track-chip done">05 Bayou Built</span>
-          <span class="track-chip done">06 Legacy Weight</span>
-          <span class="track-chip done">07 Authority</span>
-          <span class="track-chip pending">08 Sweat Equity</span>
-          <span class="track-chip pending">09 Last Rep</span>
-          <span class="track-chip pending">10 Coronation</span>
+        <h3 class="ig-title">Iron<br/>Gospel</h3>
+        <div class="ig-tagline">Bayou built. Military forged. Empire minded.</div>
+        <p class="ig-desc">A hard workout album built for the ones who train like they have something to prove — because they do. Empowerment over bass and brass. Not a fitness playlist. A covenant declaration set to sound.</p>
+        <div class="ig-sound">
+          <span class="sound-tag">808 Sub-Bass</span>
+          <span class="sound-tag">Sousaphone</span>
+          <span class="sound-tag">Trombone</span>
+          <span class="sound-tag">Trumpet</span>
+          <span class="sound-tag">Dirty South</span>
+          <span class="sound-tag">Spoken Word</span>
         </div>
-      </article>
+        <div class="hero-actions">
+          <a href="join.html#premium" class="btn-primary">Hear Tracks Early — Premium</a>
+        </div>
+      </div>
 
-      <article class="featured-card" id="judah">
-        <div class="f-tags">
-          <span class="tag t-sealed">Sealed</span>
-          <span class="tag t-live">Complete</span>
+      <div class="ig-right">
+        <div class="ig-tracks-label">Track List</div>
+        <div class="track-list">
+          <div class="track-item done">
+            <div class="ti-num">01</div>
+            <div class="ti-title">Iron Gospel</div>
+            <div class="ti-badge badge-done">Done</div>
+          </div>
+          <div class="track-item done">
+            <div class="ti-num">02</div>
+            <div class="ti-title">No Ceiling</div>
+            <div class="ti-badge badge-done">Done</div>
+          </div>
+          <div class="track-item done">
+            <div class="ti-num">03</div>
+            <div class="ti-title">The Pressure Made Me</div>
+            <div class="ti-badge badge-done">Done</div>
+          </div>
+          <div class="track-item done">
+            <div class="ti-num">04</div>
+            <div class="ti-title">Burn the Boat</div>
+            <div class="ti-badge badge-done">Done</div>
+          </div>
+          <div class="track-item done">
+            <div class="ti-num">05</div>
+            <div class="ti-title">Bayou Built</div>
+            <div class="ti-badge badge-done">Done</div>
+          </div>
+          <div class="track-item done">
+            <div class="ti-num">06</div>
+            <div class="ti-title">Legacy Weight</div>
+            <div class="ti-badge badge-done">Done</div>
+          </div>
+          <div class="track-item done">
+            <div class="ti-num">07</div>
+            <div class="ti-title">Authority</div>
+            <div class="ti-badge badge-done">Done</div>
+          </div>
+          <div class="track-item">
+            <div class="ti-num">08</div>
+            <div class="ti-title">Sweat Equity</div>
+            <div class="ti-badge badge-pending">Pending</div>
+          </div>
+          <div class="track-item">
+            <div class="ti-num">09</div>
+            <div class="ti-title">Last Rep</div>
+            <div class="ti-badge badge-pending">Pending</div>
+          </div>
+          <div class="track-item">
+            <div class="ti-num">10</div>
+            <div class="ti-title">Coronation</div>
+            <div class="ti-badge badge-pending">Pending</div>
+          </div>
         </div>
-        <h3 class="f-title">Judah</h3>
-        <p class="f-sub">The most important album in the vault</p>
-        <p class="f-desc">Covenant identity, the 400-year prophecy, and the exit generation in full sound form. This project is guarded and intentional. Not built for passive listening. Built for awakening and assignment.</p>
-        <div class="f-track-label">Core Themes</div>
-        <div class="track-grid">
-          <span class="track-chip done">Yehudah</span>
-          <span class="track-chip done">The Seal</span>
-          <span class="track-chip done">400</span>
-          <span class="track-chip done">Deuteronomy 28</span>
-          <span class="track-chip done">Ship to Shore</span>
-          <span class="track-chip done">Babylon Still</span>
-          <span class="track-chip done">Judah Rises</span>
+
+        <div class="ig-progress-bar">
+          <div class="ipb-label">
+            <span>Production Progress</span>
+            <span>7 / 10</span>
+          </div>
+          <div class="ipb-track">
+            <div class="ipb-fill" id="igProgressFill"></div>
+          </div>
         </div>
-      </article>
+      </div>
+    </div>
+
+    <!-- JUDAH -->
+    <div class="judah-feature reveal" id="judah">
+      <div class="judah-left">
+        <div class="judah-seal-ring">
+          <div class="judah-seal-inner">JUDAH<br/>יְהוּדָה</div>
+        </div>
+        <div class="judah-label">Album · Sealed · Complete</div>
+        <div class="judah-title-sm">Judah</div>
+        <div class="judah-tracks-count">12 Tracks · In the Vault</div>
+        <div class="judah-seal-badge">Sealed · Awaiting Release</div>
+      </div>
+
+      <div class="judah-right">
+        <div class="judah-tag">
+          <span>●</span> Most Important Album in the Vault
+        </div>
+        <h3 class="judah-heading">The Covenant<br/><em>Identity Album.</em></h3>
+        <p class="judah-desc">Twelve tracks built around one truth — who Judah is, where they went, and what the 400 years meant. The prophecy of Deuteronomy 28 as lived testimony. Praise as warfare. The exit generation standing up. This album was sealed because it was complete — not because it was ready for everyone.</p>
+
+        <div class="judah-themes">
+          <div class="jt-item">
+            <div class="jt-title">Covenant Identity</div>
+            <div class="jt-desc">Who the true descendants are and what that means right now</div>
+          </div>
+          <div class="jt-item">
+            <div class="jt-title">400-Year Prophecy</div>
+            <div class="jt-desc">Deuteronomy 28 — the fingerprint that doesn't lie</div>
+          </div>
+          <div class="jt-item">
+            <div class="jt-title">Praise as Warfare</div>
+            <div class="jt-desc">Worship is not passive. It is the weapon the exit generation carries</div>
+          </div>
+          <div class="jt-item">
+            <div class="jt-title">The Exit Generation</div>
+            <div class="jt-desc">The ones who remember — and what comes next</div>
+          </div>
+        </div>
+
+        <div class="judah-pull">"The most important album in the vault is the one they weren't ready for. Until now."</div>
+      </div>
     </div>
   </div>
 </section>
 
 <div class="divider"></div>
 
+<!-- ═══════════════════════════════════
+     THE SOUND
+════════════════════════════════════ -->
+<section class="sound-section">
+  <div class="wrap">
+    <div class="sec-stamp reveal">Production · Sound Design</div>
+    <h2 class="sec-title reveal">The Sound<br/><em>of the Vault.</em></h2>
+
+    <div class="sound-grid reveal">
+      <div class="sound-card">
+        <span class="sc-icon">🥁</span>
+        <div class="sc-title">808 Sub-Bass</div>
+        <div class="sc-desc">The foundation. Dirty south at its root — felt before it's heard. Every track built on the weight of the low end.</div>
+      </div>
+      <div class="sound-card">
+        <span class="sc-icon">🎺</span>
+        <div class="sc-title">Sousaphone</div>
+        <div class="sc-desc">Bayou bloodline. The New Orleans brass tradition running through every album like a covenant thread.</div>
+      </div>
+      <div class="sound-card">
+        <span class="sc-icon">🎷</span>
+        <div class="sc-title">Trombone</div>
+        <div class="sc-desc">The groan of truth. Low, wide, and unmistakable. The instrument that sounds like prophecy when it hits right.</div>
+      </div>
+      <div class="sound-card">
+        <span class="sc-icon">🎵</span>
+        <div class="sc-title">Trumpet</div>
+        <div class="sc-desc">The call. Every album in the vault has a moment where the trumpet declares something. That moment is the point of the whole song.</div>
+      </div>
+      <div class="sound-card">
+        <span class="sc-icon">🗣️</span>
+        <div class="sc-title">Spoken Word</div>
+        <div class="sc-desc">Carlton Patrick Beverly's voice — not performing. Testifying. The difference is everything. This is not poetry. It is testimony over sound.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     THE VAULT — ALL 9 SEALED ALBUMS
+════════════════════════════════════ -->
 <section class="vault-section" id="vault">
   <div class="wrap">
-    <div class="stamp reveal">Vault Introduction</div>
-    <h2 class="sec-title reveal">9 Complete Albums.<br/><em>Preview of What Is Inside.</em></h2>
-    <p class="body-text reveal">This is an introduction to the catalog, not the full vault experience. The complete Music Vault lives in the Sacred Member Chambers, with direct buy and download access from the Eden Consciousness website.</p>
+    <div class="sec-stamp reveal">Eden Consciousness Publishing House · Complete</div>
+    <h2 class="sec-title reveal">The Sealed<br/><em>Vault.</em></h2>
 
-    <div class="vault-grid reveal">
-      <article class="vault-card"><div class="v-num">Album 01</div><h3 class="v-title">Ya Heard Me: The Soundtrack</h3><p class="v-sub">Spiritual awakening and the walk back in sound form.</p><div class="v-meta">8 Tracks</div></article>
-      <article class="vault-card"><div class="v-num">Album 02</div><h3 class="v-title">HIM Awakening</h3><p class="v-sub">Masculine restoration and covenant responsibility.</p><div class="v-meta">16 Tracks</div></article>
-      <article class="vault-card"><div class="v-num">Album 03</div><h3 class="v-title">Lady Love</h3><p class="v-sub">Feminine restoration and alignment.</p><div class="v-meta">17 Tracks</div></article>
-      <article class="vault-card"><div class="v-num">Album 04</div><h3 class="v-title">I-N-I</h3><p class="v-sub">Divine voice, self-ministry, and sacred identity.</p><div class="v-meta">Vault Complete</div></article>
-      <article class="vault-card"><div class="v-num">Album 05</div><h3 class="v-title">THEY THOUGHT</h3><p class="v-sub">Dirty south consciousness and direct response.</p><div class="v-meta">12 Tracks</div></article>
-      <article class="vault-card"><div class="v-num">Album 06</div><h3 class="v-title">Still Smoking</h3><p class="v-sub">Sovereignty, bayou roots, and pressure-tested identity.</p><div class="v-meta">14 Tracks</div></article>
-      <article class="vault-card"><div class="v-num">Album 07</div><h3 class="v-title">No Anesthesia</h3><p class="v-sub">No numbness, no filters, no false comfort.</p><div class="v-meta">12 Tracks</div></article>
-      <article class="vault-card"><div class="v-num">Album 08</div><h3 class="v-title">These Toys</h3><p class="v-sub">Protection, training, and disciplined force.</p><div class="v-meta">14 Tracks</div></article>
-      <article class="vault-card"><div class="v-num">Album 09</div><h3 class="v-title">GROUNDWORK</h3><p class="v-sub">Generational wealth architecture and long vision.</p><div class="v-meta">12 Tracks</div></article>
+    <div class="vault-intro">
+      <div class="vi-text reveal">
+        <p class="body-text">Nine albums sealed and waiting. Not unreleased for lack of completion — sealed because completion was always the standard, not the goal. Every album in this vault was finished before it was announced. The work happened in private because the truth doesn't need an audience to be true.</p>
+        <p class="body-text">Each project lives in a different sonic world, but they share a foundation — dirty south consciousness, bayou roots, and the conviction that testimony over sound changes people in ways that argument cannot.</p>
+      </div>
+      <div class="vi-stats reveal">
+        <div class="vis-row">
+          <div class="vis-label">Albums sealed</div>
+          <div class="vis-val">9</div>
+        </div>
+        <div class="vis-row">
+          <div class="vis-label">Total tracks</div>
+          <div class="vis-val">105+</div>
+        </div>
+        <div class="vis-row">
+          <div class="vis-label">Publisher</div>
+          <div class="vis-val" style="font-size:14px;letter-spacing:0;">ECC Publishing</div>
+        </div>
+        <div class="vis-row">
+          <div class="vis-label">Author / Creator</div>
+          <div class="vis-val" style="font-size:14px;letter-spacing:0;">Nazir El</div>
+        </div>
+        <div class="vis-row">
+          <div class="vis-label">Distribution</div>
+          <div class="vis-val" style="font-size:14px;letter-spacing:0;">DistroKid</div>
+        </div>
+      </div>
     </div>
+
+    <div class="album-grid reveal">
+
+      <div class="album-card">
+        <div class="album-inner">
+          <div class="album-num">Album 01</div>
+          <div class="album-title">Ya Heard Me:<br/>The Soundtrack</div>
+          <div class="album-desc">The companion to the book. Spiritual awakening in sound. The Walk Back to Eden as music — each track a chapter of the memoir in a different form.</div>
+        </div>
+        <div class="album-footer">
+          <div class="af-tracks">8 Tracks</div>
+          <div class="af-sealed">Sealed</div>
+        </div>
+      </div>
+
+      <div class="album-card">
+        <div class="album-inner">
+          <div class="album-num">Album 02</div>
+          <div class="album-title">HIM Awakening</div>
+          <div class="album-desc">Masculine restoration. The man who remembers who he is. Spiritual warrior activation — not toxic, not passive. The man the Creator designed before the programming interrupted.</div>
+        </div>
+        <div class="album-footer">
+          <div class="af-tracks">16 Tracks</div>
+          <div class="af-sealed">Sealed</div>
+        </div>
+      </div>
+
+      <div class="album-card">
+        <div class="album-inner">
+          <div class="album-num">Album 03</div>
+          <div class="album-title">Lady Love</div>
+          <div class="album-desc">Feminine restoration. A celebration of the aligned woman — her power, her covenant position, her sovereignty. Sixteen tracks of truth about who she was before the world told her who to be.</div>
+        </div>
+        <div class="album-footer">
+          <div class="af-tracks">17 Tracks</div>
+          <div class="af-sealed">Sealed</div>
+        </div>
+      </div>
+
+      <div class="album-card">
+        <div class="album-inner">
+          <div class="album-num">Album 04</div>
+          <div class="album-title">I-N-I</div>
+          <div class="album-desc">The sacred personal album. Divine voice. Self-ministry in sound. The album that sustained through the wilderness season — built for the ones walking alone in their truth.</div>
+        </div>
+        <div class="album-footer">
+          <div class="af-tracks">In the Vault</div>
+          <div class="af-sealed">Sealed</div>
+        </div>
+      </div>
+
+      <div class="album-card">
+        <div class="album-inner">
+          <div class="album-num">Album 05</div>
+          <div class="album-title">They Thought</div>
+          <div class="album-desc">Dirty south consciousness. The direct answer to every person who underestimated what was being built. Not anger — authority. The album that says what the results say louder.</div>
+        </div>
+        <div class="album-footer">
+          <div class="af-tracks">12 Tracks</div>
+          <div class="af-sealed">Sealed</div>
+        </div>
+      </div>
+
+      <div class="album-card">
+        <div class="album-inner">
+          <div class="album-num">Album 06</div>
+          <div class="album-title">Still Smoking</div>
+          <div class="album-desc">Dirty south spoken-word / hip-hop concept album. Each track paired with a cannabis strain. Sovereignty, bayou roots, alchemy, detailing-as-theology, Baton Rouge culture. 14 tracks, full lyrics documented.</div>
+        </div>
+        <div class="album-footer">
+          <div class="af-tracks">14 Tracks</div>
+          <div class="af-sealed">Sealed · Full Lyrics</div>
+        </div>
+      </div>
+
+      <div class="album-card">
+        <div class="album-inner">
+          <div class="album-num">Album 07</div>
+          <div class="album-title">No Anesthesia</div>
+          <div class="album-desc">Twelve cuts. Eyes open. No numbing. Generational indictment, etymology, false manhood, the necessary pruning. Dark southern sonic world — swamp 808s, slide guitar, church organ, stomps.</div>
+        </div>
+        <div class="album-footer">
+          <div class="af-tracks">12 Tracks</div>
+          <div class="af-sealed">Sealed</div>
+        </div>
+      </div>
+
+      <div class="album-card">
+        <div class="album-inner">
+          <div class="album-num">Album 08</div>
+          <div class="album-title">These Toys</div>
+          <div class="album-desc">Consciousness album about firearms, covenant protection, and the young men who carry tools without understanding their weight. A veteran's voice on what it means to be armed — spiritually and physically.</div>
+        </div>
+        <div class="album-footer">
+          <div class="af-tracks">14 Tracks</div>
+          <div class="af-sealed">Sealed</div>
+        </div>
+      </div>
+
+      <div class="album-card">
+        <div class="album-inner">
+          <div class="album-num">Album 09</div>
+          <div class="album-title">Groundwork</div>
+          <div class="album-desc">Garden, soil, and harvest as metaphor for generational wealth. Twelve tracks on legacy, discipline, faith, and the 300-year vision. Full manuscript documented. The blueprint in sound.</div>
+        </div>
+        <div class="album-footer">
+          <div class="af-tracks">12 Tracks</div>
+          <div class="af-sealed">Sealed · Full Manuscript</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Standalone -->
+    <div class="single-banner reveal">
+      <div class="sb-left">
+        <div class="sb-label">Standalone Single</div>
+        <div class="sb-title">I AM. YA HEARD ME!!</div>
+        <div class="sb-sub">Eden Consciousness anthem. Identity proclamation. The declaration in one track.</div>
+      </div>
+      <div class="sb-tag">Complete · In the Vault</div>
+    </div>
+
   </div>
 </section>
 
 <div class="divider"></div>
 
-<section class="production-section">
+<!-- ═══════════════════════════════════
+     DISTRIBUTION
+════════════════════════════════════ -->
+<section class="distro-section">
   <div class="wrap">
-    <div class="stamp reveal">Production and Distribution</div>
-    <h2 class="sec-title reveal">How The Sound Is Built.<br/><em>How It Reaches People.</em></h2>
+    <div class="sec-stamp reveal">Distribution · Publishing</div>
+    <h2 class="sec-title reveal">How the Music<br/><em>Moves.</em></h2>
 
-    <div class="production-layout reveal">
-      <article class="prod-card">
-        <h3 class="prod-title">Production Identity</h3>
-        <p class="prod-desc">Catalog developed under Eden Consciousness Publishing House with Nazir El as creative lead and curator. Sound profile blends dirty south cadence with spiritual declaration and heavy low-end movement.</p>
-        <ul class="prod-list">
-          <li>Dirty South cadence and bayou narrative tone</li>
-          <li>Spoken-word consciousness structure</li>
-          <li>Brass layers: trumpet, trombone, sousaphone</li>
-          <li>808 sub-bass as foundation</li>
-          <li>Suno AI workflow + editorial direction</li>
-        </ul>
-      </article>
+    <div class="distro-layout">
+      <div class="distro-path reveal">
+        <div class="dp-item">
+          <div class="dp-num">I</div>
+          <div class="dp-text">
+            <div class="dp-title">Eden Consciousness Publishing House</div>
+            <div class="dp-desc">All music published under this imprint. Author / Creator: Nazir El. Born name: Carlton Patrick Beverly.</div>
+          </div>
+          <div class="dp-status dp-live">Live</div>
+        </div>
+        <div class="dp-item">
+          <div class="dp-num">II</div>
+          <div class="dp-text">
+            <div class="dp-title">DistroKid Distribution</div>
+            <div class="dp-desc">Global digital distribution. Spotify, Apple Music, Amazon, YouTube Music, and 150+ platforms.</div>
+          </div>
+          <div class="dp-status dp-pending">Active</div>
+        </div>
+        <div class="dp-item">
+          <div class="dp-num">III</div>
+          <div class="dp-text">
+            <div class="dp-title">Ya Heard Me — Spotify Audiobook</div>
+            <div class="dp-desc">Ya Heard Me audiobook live on Spotify. ACX / Audible submission in progress.</div>
+          </div>
+          <div class="dp-status dp-live">Live</div>
+        </div>
+        <div class="dp-item">
+          <div class="dp-num">IV</div>
+          <div class="dp-text">
+            <div class="dp-title">Premium Members — Early Access</div>
+            <div class="dp-desc">Iron Gospel tracks released to premium members as they complete. Judah full access inside the Music Vault.</div>
+          </div>
+          <div class="dp-status dp-live">Active</div>
+        </div>
+        <div class="dp-item">
+          <div class="dp-num">V</div>
+          <div class="dp-text">
+            <div class="dp-title">PRO Registration — Royalties</div>
+            <div class="dp-desc">ASCAP / BMI / SESAC registration after copyright filing. Songwriter + publisher share = 100%.</div>
+          </div>
+          <div class="dp-status dp-future">Pending</div>
+        </div>
+      </div>
 
-      <article class="prod-card">
-        <h3 class="prod-title">Distribution Pipeline</h3>
-        <p class="prod-desc">Primary sales flow is direct from this website for purchase and download. Distribution also runs through DistroKid and other platforms with release timing tied to platform phases, member access, and assignment.</p>
-        <ul class="prod-list">
-          <li>Direct website purchase and download</li>
-          <li>DistroKid release management</li>
-          <li>Additional platform distribution</li>
-          <li>Sacred member early access path</li>
-          <li>Single drops timed to curriculum milestones</li>
-          <li>Public rollouts after internal community cycle</li>
-          <li>Catalog-first strategy, not trend-first strategy</li>
-        </ul>
-      </article>
+      <div class="distro-philosophy reveal">
+        <div class="dp-quote">"The vault was built before the release. That's not patience — that's how you build from a position of strength, not need."</div>
+        <p class="dp-body">Eden Consciousness Publishing House owns 100% of every track, every lyric, every melody in the vault. No label. No splits. No rights surrendered. The 300-year vision requires that the catalog stays whole — passing to the next generation with nothing missing.</p>
+        <p class="dp-body">Premium members hear the music before the world does. That is not a marketing tactic. That is covenant — the people who are walking the journey hear the testimony in sound first, because the music is the curriculum in a different form.</p>
+        <div class="hero-actions" style="margin-top:28px;">
+          <a href="join.html#premium" class="btn-primary">Access the Vault</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<section class="member-banner">
-  <div class="mb-inner">
-    <div class="mb-eyebrow reveal">Sacred Member Chambers</div>
-    <h2 class="mb-title reveal">Enter The Vault.<br/><em>Buy. Download. Build.</em></h2>
-    <p class="mb-desc reveal">The full Music Vault is inside Sacred Member Chambers. Members get deeper access, direct website purchase and download options, and early release windows before wider platform distribution.</p>
-    <div class="mb-actions reveal">
-      <a href="members-new.html" class="btn-primary">Enter Sacred Chambers</a>
-      <a href="members-new.html" class="btn-secondary">Member Portal</a>
+<!-- ═══════════════════════════════════
+     CTA
+════════════════════════════════════ -->
+<section class="music-cta">
+  <div class="mc-inner">
+    <div class="mc-eyebrow reveal">Premium Members</div>
+    <h2 class="mc-title reveal">Hear It<br/><em>First.</em></h2>
+    <p class="mc-desc reveal">Premium members get early access to Iron Gospel tracks as they complete, full Judah access, and the Music Vault — all albums paired with the curriculum phase they serve.</p>
+
+    <div class="mc-opts reveal">
+      <a href="join.html#premium" class="mc-opt featured">
+        <div class="mco-label">Premium · Full Access</div>
+        <div class="mco-title">Inner Temple</div>
+        <div class="mco-desc">Music Vault · All 4 Phases · Early releases · Judah + Iron Gospel</div>
+      </a>
+      <a href="join.html" class="mc-opt">
+        <div class="mco-label">Free · Start Here</div>
+        <div class="mco-title">Outer Court</div>
+        <div class="mco-desc">5 free lessons · Ya Heard Me Chapter 1 audio · The game</div>
+      </a>
+    </div>
+
+    <div style="font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--text-4);text-transform:uppercase;" class="reveal">
+      Ya Heard Me audiobook live on Spotify · 118+ members walking · DistroKid distribution active
     </div>
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div>
       <div class="fb-logo">Eden Consciousness</div>
-      <p class="fb-mission">The Walk Back to Eden - built for the exit generation.</p>
-      <div class="fb-corp">Eden Consciousness Corporation<br/>Delaware C-Corp · Est. August 2025<br/>Nazir El · Carlton Patrick Beverly</div>
+      <p class="fb-mission">The Walk Back to Eden — the truth dressed in sound.</p>
+      <div class="fb-corp">
+        Eden Consciousness Corporation<br/>
+        Delaware C-Corp · Est. August 2025<br/>
+        Nazir El · Carlton Patrick Beverly
+      </div>
     </div>
     <div class="footer-col">
-      <h4>Music</h4>
+      <h4>The Vault</h4>
       <ul>
         <li><a href="#iron-gospel">Iron Gospel</a></li>
         <li><a href="#judah">Judah</a></li>
-        <li><a href="#vault">The Vault</a></li>
+        <li><a href="#vault">All 9 Albums</a></li>
+        <li><a href="join.html#premium">Music Vault Access</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -801,32 +1562,47 @@ footer {
         <li><a href="books.html">Ya Heard Me</a></li>
         <li><a href="books.html#series">5-Book Series</a></li>
         <li><a href="books.html#ask">A.S.K. Guides</a></li>
+        <li><a href="books.html#calendar">I-N-I Year Calendar</a></li>
       </ul>
     </div>
     <div class="footer-col">
       <h4>Platform</h4>
       <ul>
-        <li><a href="members-new.html">Join Free</a></li>
-        <li><a href="members-new.html">Sacred Member Access</a></li>
+        <li><a href="join.html">Join Free</a></li>
+        <li><a href="join.html#premium">Premium Access</a></li>
         <li><a href="members-new.html">Member Portal</a></li>
         <li><a href="about.html">About Nazir El</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <div class="fb-copy">© 2026 Nazir El · Eden Consciousness Corporation<br/>All intellectual property held under Eden Consciousness Publishing House · Aligned Manifestation&trade;</div>
+    <div class="fb-copy">
+      © 2026 Nazir El · Eden Consciousness Corporation<br/>
+      All music published under Eden Consciousness Publishing House · All rights reserved
+    </div>
     <div class="fb-mark">ECC</div>
   </div>
 </footer>
 
 <script>
+  // Scroll reveal
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) entry.target.classList.add('visible');
-    });
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+  // Animate Iron Gospel progress bar on scroll
+  const igFill = document.getElementById('igProgressFill');
+  if (igFill) {
+    const igObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { igFill.style.width = '70%'; igObs.unobserve(e.target); }
+      });
+    }, { threshold: 0.5 });
+    igObs.observe(igFill);
+    igFill.style.width = '0%';
+    igFill.style.transition = 'width 1.8s ease 0.3s';
+  }
 </script>
 
 </body>
