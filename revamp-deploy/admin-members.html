@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Members | Eden Consciousness</title>
+  <style>
+    :root {
+      --bg: #0b110d;
+      --panel: #111a14;
+      --panel-2: #132018;
+      --text: #efe8d6;
+      --muted: #a7a086;
+      --gold: #d4af37;
+      --border: rgba(212, 175, 55, 0.28);
+      --success: #4fa978;
+      --danger: #d16a6a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Georgia, serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, #1a2a20, var(--bg) 55%);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    h1 { margin: 0; color: var(--gold); font-size: 28px; }
+    .muted { color: var(--muted); font-size: 14px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 16px;
+    }
+    .card {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      padding: 16px;
+    }
+    .card h2 { margin: 0 0 12px; color: var(--gold); font-size: 18px; }
+    label { display: block; margin: 8px 0 6px; font-size: 13px; color: var(--muted); }
+    input, select {
+      width: 100%;
+      background: #0d140f;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px;
+      outline: none;
+    }
+    .row { display: flex; gap: 10px; }
+    .row > div { flex: 1; }
+    .check { display: flex; align-items: center; gap: 8px; margin-top: 10px; color: var(--muted); }
+    .check input { width: auto; }
+    button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 11px;
+      border: 1px solid var(--border);
+      background: rgba(212, 175, 55, 0.12);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+    }
+    button:hover { background: rgba(212, 175, 55, 0.2); }
+    .msg { margin-top: 10px; min-height: 18px; font-size: 13px; }
+    .ok { color: var(--success); }
+    .err { color: var(--danger); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { color: var(--muted); font-weight: 600; }
+    .pill {
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      display: inline-block;
+      font-size: 11px;
+      color: var(--gold);
+    }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 10px; }
+    .toolbar input { max-width: 280px; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>Admin Members</h1>
+        <div class="muted">Add or update members in Firestore users collection.</div>
+      </div>
+      <a href="members-new.html" style="color:#d4af37">Back to Portal</a>
+    </div>
+
+    <div id="access-state" class="card" style="margin-bottom:16px;">Checking admin access...</div>
+
+    <div id="admin-ui" class="grid" style="display:none;">
+      <section class="card">
+        <h2>Add or Update Member</h2>
+        <form id="member-form">
+          <label for="displayName">Display Name</label>
+          <input id="displayName" required />
+
+          <label for="email">Email</label>
+          <input id="email" type="email" required />
+
+          <div class="row">
+            <div>
+              <label for="membershipLevel">Membership Level</label>
+              <select id="membershipLevel">
+                <option value="basic">basic</option>
+                <option value="student">student</option>
+                <option value="monthly">monthly</option>
+                <option value="premium">premium</option>
+                <option value="founding">founding</option>
+                <option value="admin">admin</option>
+              </select>
+            </div>
+            <div>
+              <label for="username">Username (optional)</label>
+              <input id="username" />
+            </div>
+          </div>
+
+          <label class="check"><input id="isPremium" type="checkbox" /> Mark as premium</label>
+
+          <button type="submit">Save Member</button>
+          <div id="form-msg" class="msg"></div>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="toolbar">
+          <h2 style="margin:0">Members</h2>
+          <input id="search" placeholder="Search by name or email" />
+        </div>
+        <div class="muted" id="members-count" style="margin-bottom:10px;">Loading...</div>
+        <div style="overflow:auto; max-height:60vh;">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Membership</th>
+                <th>Premium</th>
+                <th>Updated</th>
+              </tr>
+            </thead>
+            <tbody id="members-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script>
+    let allMembers = [];
+
+    function escapeHtml(value) {
+      return (value || '').toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function showAccessMessage(text, isError) {
+      const el = document.getElementById('access-state');
+      el.textContent = text;
+      el.style.borderColor = isError ? 'rgba(209,106,106,0.5)' : 'rgba(79,169,120,0.45)';
+      el.style.color = isError ? '#d16a6a' : '#4fa978';
+    }
+
+    function formatDate(value) {
+      if (!value) return '-';
+      const date = value.toDate ? value.toDate() : new Date(value);
+      if (Number.isNaN(date.getTime())) return '-';
+      return date.toLocaleString();
+    }
+
+    function renderMembers(list) {
+      const tbody = document.getElementById('members-body');
+      const count = document.getElementById('members-count');
+      count.textContent = list.length + ' member records';
+
+      if (!list.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="muted">No members found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = list.map((m) => {
+        return '<tr>' +
+          '<td>' + escapeHtml(m.displayName || m.name || '-') + '</td>' +
+          '<td>' + escapeHtml(m.email || '-') + '</td>' +
+          '<td><span class="pill">' + escapeHtml(m.membershipLevel || 'basic') + '</span></td>' +
+          '<td>' + ((m.isPremium || m.premium || m.is_premium) ? 'Yes' : 'No') + '</td>' +
+          '<td>' + escapeHtml(formatDate(m.updatedAt || m.updated_at || m.createdAt)) + '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    async function loadMembers() {
+      const snap = await firebase.firestore().collection('users').orderBy('updatedAt', 'desc').limit(300).get();
+      allMembers = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      renderMembers(allMembers);
+    }
+
+    function filterMembers(query) {
+      const q = (query || '').trim().toLowerCase();
+      if (!q) {
+        renderMembers(allMembers);
+        return;
+      }
+      const filtered = allMembers.filter((m) => {
+        const name = (m.displayName || m.name || '').toLowerCase();
+        const email = (m.email || '').toLowerCase();
+        return name.includes(q) || email.includes(q);
+      });
+      renderMembers(filtered);
+    }
+
+    async function saveMember(event) {
+      event.preventDefault();
+      const msg = document.getElementById('form-msg');
+      msg.className = 'msg';
+      msg.textContent = 'Saving...';
+
+      const displayName = document.getElementById('displayName').value.trim();
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const membershipLevel = document.getElementById('membershipLevel').value;
+      const username = document.getElementById('username').value.trim();
+      const isPremium = document.getElementById('isPremium').checked;
+
+      if (!displayName || !email) {
+        msg.className = 'msg err';
+        msg.textContent = 'Name and email are required.';
+        return;
+      }
+
+      try {
+        const db = firebase.firestore();
+        const query = await db.collection('users').where('email', '==', email).limit(1).get();
+        const base = {
+          email,
+          displayName,
+          username: username || displayName,
+          usernameLower: (username || displayName).toLowerCase().replace(/[^a-z0-9]+/g, '').slice(0, 32),
+          membershipLevel,
+          membership: membershipLevel,
+          isPremium: isPremium || ['premium', 'founding', 'admin', 'monthly', 'student'].includes(membershipLevel),
+          premium: isPremium || ['premium', 'founding', 'admin', 'monthly', 'student'].includes(membershipLevel),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedByPanel: 'admin-members'
+        };
+
+        if (!query.empty) {
+          const doc = query.docs[0];
+          await db.collection('users').doc(doc.id).set(base, { merge: true });
+          msg.className = 'msg ok';
+          msg.textContent = 'Member updated: ' + email;
+        } else {
+          const created = {
+            ...base,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            manualProfileOnly: true
+          };
+          await db.collection('users').add(created);
+          msg.className = 'msg ok';
+          msg.textContent = 'Member added (profile record): ' + email;
+        }
+
+        await loadMembers();
+        document.getElementById('member-form').reset();
+      } catch (error) {
+        console.error(error);
+        msg.className = 'msg err';
+        msg.textContent = 'Failed to save member: ' + error.message;
+      }
+    }
+
+    async function initAdminPage() {
+      firebase.auth().onAuthStateChanged(async (user) => {
+        if (!user) {
+          showAccessMessage('Not signed in. Redirecting to member portal...', true);
+          setTimeout(() => { window.location.href = 'members-new.html'; }, 1200);
+          return;
+        }
+
+        let username = '';
+        try {
+          const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+          username = doc.exists ? (doc.data().username || '') : '';
+        } catch (_) {}
+
+        const isAdmin = window.FirebaseConfig && window.FirebaseConfig.auth
+          ? window.FirebaseConfig.auth.isAuthorizedAdmin(user.email, username)
+          : false;
+
+        if (!isAdmin) {
+          showAccessMessage('Access denied. Admin privileges required.', true);
+          return;
+        }
+
+        showAccessMessage('Admin access verified. You can manage members now.', false);
+        document.getElementById('admin-ui').style.display = 'grid';
+        document.getElementById('member-form').addEventListener('submit', saveMember);
+        document.getElementById('search').addEventListener('input', (e) => filterMembers(e.target.value));
+
+        await loadMembers();
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', initAdminPage);
+  </script>
+  <script src="js/global-site-audio.js?v=2"></script>
+</body>
+</html>
